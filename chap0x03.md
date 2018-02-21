@@ -1,0 +1,395 @@
+---
+title: "Linux系统与网络管理"
+author: 黄玮
+output: revealjs::revealjs_presentation
+---
+
+# 第三章：Linux服务器系统管理基础
+
+---
+
+## System Administrator is root
+
+# Linux服务器管理员的典型工作场景和需求
+
+---
+
+* 本地工作用电脑是Windows或Mac，Linux是远程服务器系统
+* 服务器7x24小时开机，除去系统内核更新等需要重启服务器的情况
+* 远程SSH登录到服务器上是工作常态
+* 移动办公时可以保持远程服务器上的操作被“记住”和“按需复原”
+* 让进程更优雅的运行在后台，退出SSH会话不影响刚才启动的进程
+
+# 远程管理工具箱
+
+---
+
+* 工作电脑
+    * SSH客户端软件
+* 服务器上
+    * tmux（[screen](https://www.gnu.org/software/screen/)的增强版）
+
+---
+
+## tmux
+
+```bash
+# 开启一个tmux会话
+tmux
+# CTRL-B d 脱离(detach)当前tmux会话
+# 再开启一个tmux会话
+tmux
+# CTRL-B d 再脱离(detach)当前tmux会话
+# 查看当前可用的tmux会话列表
+tmux ls
+# 连接到会话编号0的会话
+tmux attach -t 0
+# 退出并关闭当前会话
+exit
+```
+
+---
+
+用tmux重做上一章的ping前后台执行方式实验
+
+
+```bash
+# 本实验建议通过SSH远程登录到虚拟机上执行
+ping www.baidu.com 2>&1 1>/dev/null &
+ping sec.cuc.edu.cn 2>&1 1>/dev/null &
+# 注意查看输出结果，观察ping进程的父进程是谁
+pstree -A
+# 此时退出SSH登录
+exit
+# 再重新SSH登录到虚拟机上执行
+# 注意查看输出结果，观察ping进程的父进程是谁，和退出SSH登录之前相比是否有变化？
+pstree -A
+# 开启一个tmux会话
+tmux
+# 重复上述实验，用后台进程方式开启新的ping进程
+# 再次SSH登录到虚拟机上执行
+# 注意查看输出结果，观察ping进程的父进程是谁，和退出SSH登录之前相比是否有变化？
+pstree -A
+```
+
+# 用户/组与权限管理
+
+---
+
+* su与sudo
+    * visudo
+* passwd
+* adduser/useradd
+* groupadd/addgroup
+* usermod
+* getfacl/setfacl
+
+---
+
+## 用户标识（uid）
+
+```bash
+id --help
+id
+id -g
+id -u
+```
+
+* 上述后2个命令的参数作用是什么？
+* 什么是**effective group ID**？
+* 什么是**effective user ID**？
+
+---
+
+## 查看和理解文件和目录的属主与权限
+
+从🌰开始
+```bash
+$ ls -ld /tmp
+drwxrwxrwt 8 root root 4096 Jan 20 15:26 /tmp
+
+$ ls -l /usr/bin/passwd
+-rwsr-xr-x 1 root root 54256 Mar 29  2016 /usr/bin/passwd
+
+$ ls -l /etc/shadow
+-rw-r----- 1 root shadow 941 Jan 16 12:37 /etc/shadow
+```
+
+---
+
+问题来了：
+
+* rwx我们知道对应“读”、“写”、“执行”权限位标识，这里出现的**d**、**t**、**s**是什么情况？
+* 普通用户为什么可以使用**/usr/bin/passwd**去更改自己的密码（修改**/etc/shadow**文件）？
+
+---
+
+文件类型
+
+```bash
+man ls
+# 在ls的手册页内搜索file mode
+```
+
+* b  &emsp;&emsp;块特殊文件（Block special file）
+* c  &emsp;&emsp;字符特殊文件（Character special file）
+* d  &emsp;&emsp;目录（Directory）
+* l  &emsp;&emsp;符号链接（Symbolic link）
+* s  &emsp;&emsp;套接字链接（Socket link）
+* p  &emsp;&emsp;命名管道（FIFO）
+* \- &emsp;&emsp;普通文件（Regular file）
+
+---
+
+Saved UID (SUID) 
+
+* 对应属主用户列权限位中的**s**标记，取代原有显示**x**标记的位置
+* 当且仅当一个文件是二进制可执行文件（脚本文件即使设置了“可执行”也不行）时可以被设置SUID
+* 一个被设置了SUID的程序，其他用户执行该程序时就会“暂时”得到文件拥有者（通常是root）的权限
+
+---
+
+Saved GID (SGID)
+
+* 对应属主用户组列权限位中的**s**标记，取代原有显示**x**标记的位置
+* 如果SGID设置在二进制**文件**上，则不论用户是谁，在执行该程序的时候，它的有效用户组（effective group）将会变成该程序的用户组所有者（group id）
+* 如果SGID是设置在A**目录**上，则在该A**目录**内所建立的文件或目录的用户组，将强制被设置为此A目录的用户组
+
+---
+
+Sticky Bit
+
+* 对应**t**标记，取代原有显示**x**标记的位置
+* 只能设置在目录上，对文件没有效果
+* 在被设置了**t**标记的目录下，用户若在该目录下具有w及x权限，则当用户在该目录下建立文件或目录时，只有文件属主与root才有权限删除
+
+---
+
+## 改变文件和目录的属主与权限
+
+* chown
+* chgrp
+* chmod
+* umask
+
+```bash
+# 设置SUID
+chmod 4755 filename
+
+# 设置SGID
+chmod 2755 dirname
+
+# 同时设置SUID和SGID（罕见）
+chmod 6755 filename
+
+# 设置Sticky Bit
+chmod 1755 dirname
+```
+
+# 文件系统与存储管理
+
+---
+
+* 文件系统格式
+    * ext3 / ext4 / swap
+    * mkfs
+* 文件分区
+    * 分区原则与策略
+    * fdisk
+    * 大于2TB分区支持使用 [parted](https://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html)
+* 文件系统挂载
+    * U盘 / NFS / iso / 光盘
+    * /etc/fstab
+
+---
+
+## [逻辑卷管理](https://wiki.archlinux.org/index.php/LVM_\(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87\)) - [LVM, Logical Volume Management](https://wiki.ubuntu.com/Lvm)
+
+* LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备
+
+LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统分区独立于底层硬件）。 通过LVM，你可以实现存储空间的抽象化并在上面建立虚拟分区（virtual partitions），可以更简便地扩大和缩小分区，可以增删分区时无需担心某个硬盘上没有足够的连续空间，LVM是用来方便管理的，**不会提供额外的安全保证**。
+
+> [配合存储硬件的Raid技术，提供高可靠性](https://www.ibm.com/developerworks/cn/linux/l-cn-pclvm-rstr/)
+
+---
+
+LVM的基本组成块（building blocks）如下：
+
+* 物理卷(PV, Physical Volume )：可以在上面建立卷组的媒介，可以是硬盘分区，也可以是硬盘本身或者回环文件（loopback file）。物理卷包括一个特殊的header，其余部分被切割为一块块物理区域（physical extents）。基于物理卷可以创建“逻辑上或虚拟的”硬盘。 
+* 卷组(VG, Volume Group)：将一组物理卷收集为一个管理单元。一个卷组就相当于一个“物理”硬盘。
+* 逻辑卷(LV, Logical Volume)：虚拟分区，由物理区域（physical extents）组成。相当于基于“物理”硬盘（卷组）之上的文件系统分区。
+* 物理区域(PE, Physical Extent)：硬盘可供指派给逻辑卷的最小单位（通常为4MB）。
+
+---
+
+优点(1/2)
+
+* 比起正常的硬盘分区管理，LVM更富于弹性：
+* 使用卷组，使众多硬盘空间看起来像一个大硬盘。
+* 使用逻辑卷，可以创建跨越众多硬盘空间的分区。
+* 可以创建小的逻辑卷，在空间不足时再动态调整它的大小。
+* 在调整逻辑卷大小时可以不用考虑逻辑卷在硬盘上的位置，不用担心没有可用的连续空间。
+* 可以在线对逻辑卷和卷组进行创建、删除、调整大小等操作。LVM上的文件系统也需要重新调整大小，某些文件系统也支持这样的在线操作。
+
+---
+
+优点(2/2)
+
+* 无需重新启动服务，就可以将服务中用到的逻辑卷在线/动态迁移至别的硬盘上。
+* 允许创建快照，可以保存文件系统的备份，同时使服务的下线时间（downtime）降低到最小。
+
+这些优点使得LVM对服务器的管理非常有用，对于桌面系统管理的帮助则没有那么显著，你需要根据实际情况进行取舍。
+
+缺点
+
+* 在系统设置时需要更复杂的额外步骤。
+
+# 文件备份 - 文件打包
+
+---
+
+* 大部分的Linux压缩工具遵循***[KISS\(Keep It Simple and Stupid\)原则](http://sec.cuc.edu.cn/huangwei/wiki/teaching_basic_how_to_programming.html)***，即“**每个程序只做一件事，不要试图在单个程序中完成多个任务**”，所以压缩工具只是被设计用来对单个文件进行压缩，如果要对很多文件、一个目录下所有子目录和文件进行压缩，则需要先使用**打包工具**对批量的文件和目录进行打包，变成一个文件之后，再将压缩任务交给专门的压缩工具软件。
+
+# 文件备份 - 文件归档
+
+---
+
+* 连同所有目录、文件的**属主信息**、**时间戳信息**一并**打包**保存
+* 妥善处理ln创建的链接文件（保留原有的目标指向信息），避免重复备份
+* [BackupYourSystem/TAR from ubuntu official documentation](https://help.ubuntu.com/community/BackupYourSystem/TAR)
+* [Full system backup with rsync](https://wiki.archlinux.org/index.php/full_system_backup_with_rsync)
+    * 增量备份
+
+# 文件恢复
+
+---
+
+* 在**系统正常时**要***定期测试备份文件是否可以正常恢复和还原***
+    * [2017年2月1日GitLab.com数据库被误删事件的官方通告](https://about.gitlab.com/2017/02/01/gitlab-dot-com-database-incident/)
+* 恢复前记得先备份当前目标目录和文件，避免错误、不可逆的文件覆盖
+* 恢复前检查备份文件完整性（使用签名、散列值校验等）
+
+# 系统备份
+
+---
+
+备份策略设计约束性因素
+
+* 可移植性（便携性）：是否需要考虑跨OS的数据备份与恢复，如果是，则可以试试**dd**、**tar**、**cpio**等命令行工具
+* 无人值守（自动备份）
+* 用户友好：非专业用户首选交互设计良好的备份恢复工具
+* 远程备份：首选CLI方式的备份恢复工具
+
+---
+
+* 网络备份：首选支持网络存储系统读写的备份恢复工具，如tar
+* 存储介质：成本、可靠性、存储容量和传输性能
+* 可审计：所有数据的备份方案，备份频率如何，备份数据放在哪里，保留多久等优先使用代码进行定义，而不是文档。备份策略的变更可以通过代码变更记录进行审计，对于违反备份策略、可能会引起备份或恢复失败的变更要能阻止变更（代码提交合并）
+
+---
+
+## 系统备份与恢复
+
+* 如果系统被评估为遭受了入侵，建议备份好重要数据之后，彻底重装系统
+* 基于文件备份和恢复机制
+* 使用专用的磁盘和文件系统级别的备份和恢复解决方案
+
+# 开机自启动项管理
+
+---
+
+* [SysVinit](https://en.wikipedia.org/wiki/Init) | [LSBInitScripts](https://wiki.debian.org/LSBInitScripts) | [OpenRC: Gentoo独有的系统服务启动控制机制](https://wiki.gentoo.org/wiki/OpenRC)
+    * /etc/init.d
+* [Upstart: Ubuntu（曾经）团队开发的系统服务启动控制机制](http://upstart.ubuntu.com/)
+    * /usr/share/upstart
+* [Systemd](https://www.freedesktop.org/wiki/Software/systemd/)
+    * /usr/lib/systemd
+
+---
+
+## Systemd - 目前主流发行版支持情况
+
+![](images/chap0x03/systemd-adoption.png)
+
+---
+
+## Systemd - 特性（优点）
+
+* 提供了积极的（服务、进程）并行化启动能力
+* 使用socket 和 D-Bus 机制来激活启动服务
+* 提供了按需启动守护进程能力
+* 实现了基于事务风格依赖管理的服务控制逻辑
+* 使用Linux的cgroup机制管理进程
+* 支持快照和还原
+* 维护挂载和自动挂载点
+
+---
+
+## Systemd - 争议
+
+* 激进的设计
+    * 重新发明了一堆历史悠久的核心服务(syslog, ntp, cron, fstab, dhcpcd等等)，虽然是简化功能和配置，但有经验的系统管理员更信赖他们熟悉的服务（尽管配置较为复杂）
+    * 作为系统的1号进程，承载的功能太多：单点故障风险集中、不符合UNIX设计哲学***[KISS](http://sec.cuc.edu.cn/huangwei/wiki/teaching_basic_how_to_programming.html)***
+    * 不遵循 POSIX 标准，无法移植到Linux之外的平台
+* 过快的开发迭代
+    * 代码质量不高
+    * 不考虑向后兼容
+    * 频繁变更设计和接口
+
+---
+
+## Systemd - 架构
+
+![](images/chap0x03/Systemd_components.svg.png)
+
+# 动手实战Systemd
+
+---
+
+* [Systemd 入门教程：命令篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)
+* [Systemd 入门教程：实战篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)
+    * 参照第2章作业的要求，完整实验操作过程通过[asciinema](https://asciinema.org)进行录像并上传，文档通过github上传
+
+# 本章完成后的自查清单
+
+---
+
+* 如何添加一个用户并使其具备sudo执行程序的权限？
+* 如何将一个用户添加到一个用户组？
+* 如何查看当前系统的分区表和文件系统详细信息？
+* 如何实现开机自动挂载Virtualbox的共享目录分区？
+* 基于LVM（逻辑分卷管理）的分区如何实现动态扩容和缩减容量？
+* 如何通过systemd设置实现在网络连通时运行一个指定脚本，在网络断开时运行另一个脚本？
+* 如何通过systemd设置实现一个脚本在任何情况下被杀死之后会立即重新启动？实现***杀不死***？
+
+
+# 参考文献
+
+---
+
+* [User identifier from WikiPedia](https://en.wikipedia.org/wiki/User_identifier)
+* [Ubuntu Policy Manual Chapter 9 - The Operating System](http://people.canonical.com/~cjwatson/ubuntu-policy/policy.html/ch-opersys.html)
+* [umask](https://wiki.archlinux.org/index.php/umask)
+* [如何评价 2017 年 2 月 1 日 GitLab 数据库被误删？ from 知乎](https://www.zhihu.com/question/55300424)
+
+---
+
+* [Forensics Tools on Linux](http://forensicswiki.org/wiki/Tools)
+* [优雅地使用命令行：Tmux 终端复用](http://harttle.com/2015/11/06/tmux-startup.html)
+* [Tmux - Linux从业者必备利器](http://cenalulu.github.io/linux/tmux/)
+* [Linux Administration Made Easy Chapter 8. Backup and Restore Procedures](http://www.tldp.org/LDP/lame/LAME/linux-admin-made-easy/server-backup.html)
+* [BackupYourSystem from ubuntu official documentation](https://help.ubuntu.com/community/BackupYourSystem)
+* [Systemd 入门教程：命令篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)
+* [Systemd 入门教程：实战篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)
+
+---
+
+* [systemd on wikipedia](https://en.wikipedia.org/wiki/Systemd)
+* [Fedora官网Wiki对Systemd的介绍](https://fedoraproject.org/wiki/Systemd/zh-cn)
+* [ArchiLinux官网Wiki对Systemd的介绍](https://wiki.archlinux.org/index.php/systemd_\(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87\))
+* [Debian官网Wiki对Systemd的介绍](https://wiki.debian.org/systemd)
+* [Ubuntu官网Wiki对Systemd的介绍](https://wiki.ubuntu.com/SystemdForUpstartUsers)
+* [systemd 为什么会有那么大的争议？](https://www.zhihu.com/question/25873473)
+* [Debian官方对目前主流系统引导机制的优缺点分析讨论](https://wiki.debian.org/Debate/initsystem/)
+* [系统启动过程](https://www.freedesktop.org/software/systemd/man/bootup.html)
+
