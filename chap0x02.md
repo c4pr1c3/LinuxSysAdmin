@@ -206,7 +206,7 @@ man apt-file
 
 ---
 
-aptitude - 对**apt-get**进行封装的一个更友好、更易用包管理工具
+aptitude - 对**apt-get**进行封装的一个更友好、更易用（主要体现在自动解决软件依赖bug上）包管理工具
 
 ```bash
 apt-get install aptitude
@@ -263,6 +263,49 @@ Description: terminal-based package manager
 
  aptitude is also Y2K-compliant, non-fattening, naturally cleansing, and housebroken.
 Homepage: http://aptitude.alioth.debian.org/
+```
+
+---
+
+## aptitude, apt-get, apt
+
+整理自：[The Debian Administrator's Handbook](https://debian-handbook.info/browse/stable/sect.apt-get.html)
+
+* CLI: ``apt-get`` 诞生最早；``apt`` 稍晚，改进了 ``apt-get`` 的一些设计缺陷，更简单易用，推荐优先使用
+* GUI: ``synaptic``, ``aptitude``（也有 CLI 接口） 
+
+---
+
+## 在安装前如何确认软件包的版本、来源
+
+```bash
+# apt-cache policy <package-name>
+# apt policy <package-name>
+apt-cache policy mysql-server
+
+mysql-server:
+  Installed: (none)
+  Candidate: 5.7.21-0ubuntu0.16.04.1
+  Version table:
+     5.7.21-0ubuntu0.16.04.1 500
+        500 http://cn.archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages
+        500 http://cn.archive.ubuntu.com/ubuntu xenial-updates/main i386 Packages
+        500 http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages
+        500 http://security.ubuntu.com/ubuntu xenial-security/main i386 Packages
+     5.7.11-0ubuntu6 500
+        500 http://cn.archive.ubuntu.com/ubuntu xenial/main amd64 Packages
+        500 http://cn.archive.ubuntu.com/ubuntu xenial/main i386 Packages
+```
+
+---
+
+## 安装指定版本的软件
+
+```bash
+# 根据 apt-cache policy 输出结果里当前软件包的所有候选版本号
+# apt install <package>=<version>
+# 默认总是安装最新版
+sudo apt install mysql-server=5.7.11-0ubuntu6
 ```
 
 ---
@@ -362,6 +405,7 @@ Commands:
 * grep -A
 * grep -c
 * grep -E
+* grep -v
 
 # sed
 
@@ -1013,7 +1057,7 @@ sed 's/,/ |/g' books.txt
 ---
 
 * 在执行替换操作的时候，如果要替换的内容中包含``/``，这个时候怎么办？很简单，添加转义操作符``\``。
-* 在SED中还可以使用``|``，``@``，``^``，``!``作为命令的分隔符
+* 在SED中还可以使用``|``，``@``，``^``，``#``作为命令的分隔符
 
 ---
 
