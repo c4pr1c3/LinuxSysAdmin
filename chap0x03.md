@@ -104,6 +104,7 @@ id -u
 ## 查看和理解文件和目录的属主与权限
 
 从🌰开始
+
 ```bash
 $ ls -ld /tmp
 drwxrwxrwt 8 root root 4096 Jan 20 15:26 /tmp

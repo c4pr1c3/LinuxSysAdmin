@@ -8,7 +8,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## Don't repeat yourself
+## <font color='red'>D</font>on't <font color='red'>r</font>epeat <font color='red'>y</font>ourself
 
 # Hello World
 
@@ -25,6 +25,7 @@ echo "hello world!"
 ## 详解
 
 * 注释符号  **#**
+* [文件起始处的 ``#!`` 声明自己是一个**脚本**文件](https://asciinema.org/a/z1xLUVCLitp02XLIICSfdnPSC)
 * 当前shell脚本默认使用的**解释器**
 * 查看当前正在使用shell解释器
 
@@ -161,7 +162,7 @@ set +x          # stop debugging from here
 ```bash
 #!/bin/bash
 # 将本段代码复制粘贴保存为一个文件，假设文件名为：test.sh
-echo $3 --> results with: banana
+echo $3 # --> results with: banana
 
 BIG=$5
 
@@ -247,7 +248,7 @@ fi
 
 ---
 
-使用 **$((expression))** 算术运算符表达式，注意这种方式只支持**整数运算**
+使用 **$((expression))** 算术运算符表达式，注意这种方式只支持 **<font color='red'>整数</font>运算**
 
 ```bash
 A=3
@@ -260,6 +261,20 @@ B=$((100 * $A + 5)) # 305
 * a / b division (integer) (a divided by b)
 * a % b modulo (the integer remainder of a divided by b)
 * a ** b exponentiation (a to the power of b)
+
+---
+
+```bash
+# 进阶算术运算请使用命令行工具 bc
+
+# 计算 4 * arctangent(1) ，计算结果保留 10 位有效数字
+# -l 表示使用标准数学库
+pi=$(echo "scale=10; 4*a(1)" | bc -l)
+
+# 计算 4 * arctangent(1) ，计算结果保留 1000 位有效数字
+# 禁止输出结果因超长而自动折行
+pi=$(BC_LINE_LENGTH=0 bc -l <<< "scale=1000; 4*a(1)")
+```
 
 # 基本字符串操作
 
@@ -328,7 +343,14 @@ else
 fi
 ```
 
-ref: [\[\]和\[\[\]\]的区别](http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts)
+
+---
+
+[\[\]和\[\[\]\]的区别](http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts)
+
+* ``[`` 实质上命令 ``test`` 的另一种形式，``[[`` 是一种更符合你期望的 ``test`` 命令
+* ``[`` 符合 POSIX 标准，``[[`` 不符合 POSIX 标准
+* 现代 Linux 发行版自带的 shell 环境普遍支持 ``[[`` ，推荐优先使用（除非需要考虑兼容古老 shell）
 
 ---
 
@@ -337,7 +359,6 @@ bash支持的表达式类型
 * 单个字符串（常量）或者变量
 * 恒假表达式
     * 空字符串
-    * 全空格字符串
     * 未定义变量名
 * 逻辑运算符
     * !   取反
@@ -347,7 +368,29 @@ bash支持的表达式类型
 
 ---
 
-数值比较运算表达式
+## 小测验
+
+```bash
+# 以下代码执行完毕后的输出结果是什么？
+if [[ 0 ]];then printf "%d" 0;fi
+if [[ 1 ]];then printf "%d" 1;fi
+if [[ true ]];then printf "%d" 2;fi
+if [[ false ]];then printf "%d" 3;fi
+if [[ '' ]];then printf "%d" 4;fi
+if [[ '   ' ]];then printf "%d" 5;fi
+if [[ 'true' ]];then printf "%d" 6;fi
+if [[ 'false' ]];then printf "%d" 7;fi
+if [[ '$mamashuozhegebianliangbukenengdingyiguo' ]];then printf "%d" 8;fi
+if [[ "$mamashuozhegebianliangbukenengdingyiguo" ]];then printf "%d" 9;fi
+```
+
+---
+
+## 01235678
+
+---
+
+<font color='red'>数值</font>比较运算表达式
 
 | 比较运算表达式 |   真值条件           |
 |------------+--------------------------|
@@ -360,7 +403,7 @@ bash支持的表达式类型
 
 ---
 
-字符串比较表达式
+<font color='red'>字符串</font>比较表达式
 
 |比较表达式    |  真值条件                |
 |--------------+--------------------------|
@@ -413,6 +456,9 @@ for arg in [list]
 do
  command(s)...
 done
+
+# 单行结构
+for arg in [list];do command(s)...;done
 ```
 
 ---
@@ -512,6 +558,16 @@ while [ $COUNT -lt 10 ]; do
     continue
   fi
   echo $COUNT
+done
+```
+
+---
+
+```bash
+# loop on command output results 健壮性改进版本
+for f in $( ls prog.sh /etc/localtime 2>/dev/null) ; do
+  [[ -e "$f" ]] || continue
+  echo "File is: $f"
 done
 ```
 
@@ -720,6 +776,14 @@ fi
 * **[**  square bracket     方括号
 * **'**  single quote       单引号
 * **"**  double quote       双引号
+
+# 推荐阅读
+
+---
+
+[Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls)
+
+> 参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。
 
 # 参考文献
 
