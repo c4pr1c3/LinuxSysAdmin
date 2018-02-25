@@ -50,6 +50,10 @@ DHCP服务器从一个地址池（有时又被称为一个地址段或区间）�
 
 DHCP服务器通常是给客户端分配一个临时地址，但也能设置有效期为永不过期，从而达到客户端既能自动获取IP地址又能永久使用的效果。
 
+---
+
+防御[Rogue DHCP](https://en.wikipedia.org/wiki/Rogue_DHCP)
+
 # [DNS](https://help.ubuntu.com/lts/serverguide/dns.html)
 
 ---
@@ -73,7 +77,7 @@ In a secondary master configuration BIND9 gets the zone data from another namese
 * dnsmasq
 * isc-dhcp-server
 
-# 常见DNS服务器
+# 常见DNS服务器 {id="dns-common-svrs"}
 
 ---
 
