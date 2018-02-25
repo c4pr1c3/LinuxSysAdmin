@@ -64,7 +64,7 @@ Google: ftpd vsftpd proftpd pure-ftpd comparison
 
 ---
 
-《网络安全》内容闪回
+[《移动互联网安全》内容闪回](http://sec.cuc.edu.cn/huangwei/textbook/mis/chap0x05/main.html#%E7%B3%BB%E7%BB%9F%E5%AE%89%E5%85%A8%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95) 和 [《网络安全》内容闪回](http://sec.cuc.edu.cn/huangwei/textbook/ns/chap0x02/main.html#CVSS%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%E5%92%8C%E4%B8%8D%E8%B6%B3)
 
 * 评价一个系统、一款软件是否安全可以根据其历史漏洞数量、危害性统计来判定？
     * 历史漏洞数量越多、历史漏洞中高危漏洞数量越多说明这款软件的开发团队安全能力越差？
