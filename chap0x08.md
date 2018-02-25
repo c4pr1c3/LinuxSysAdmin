@@ -155,7 +155,7 @@ output: revealjs::revealjs_presentation
 
 ## 持续集成
 
-![](images/chap0x08/ci.jpg)
+![](images/chap0x08/ci-demo.png)
 
 持续集成强调开发人员提交了新代码之后，立刻进行构建、（单元）测试。根据测试结果，开发人员可以确定新代码和原有代码能否正确地集成在一起。
 
@@ -165,9 +165,11 @@ output: revealjs::revealjs_presentation
 
 ![](images/chap0x08/cd-demo.png)
 
+---
+
 持续交付在持续集成的基础上，将集成后的代码部署到更贴近真实运行环境的**类生产环境**（***production-like environments***）中。
 
-比如，开发人员完成单元测试后，可以把代码部署到连接数据库的**模拟**（***Staging***）环境中进行更多的测试。如果代码没有问题，可以继续***手动部署***到生产环境中。
+比如，开发人员完成单元测试后，可以把代码部署到连接数据库的**模拟**（***Staging***）环境中进行更多的测试。如果代码没有问题，可以继续***<font color='red'>手动</font>部署***到生产环境中。
 
 ---
 
@@ -175,7 +177,7 @@ output: revealjs::revealjs_presentation
 
 ![](images/chap0x08/cdeploy-demo.png)
 
-持续部署则是在持续交付的基础上，把部署到生产环境的过程自动化。
+持续部署则是在持续交付的基础上，把部署到生产环境的过程<font color='red'>自动</font>化。
 
 ---
 
@@ -419,33 +421,36 @@ Docker 可以让你像使用集装箱一样快速的组合成应用，并且可�
 
 ## 安装Docker {id="docker-install"}
 
+以官方文档为准: [https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+
 ```bash
-$ sudo apt-get update
+sudo apt-get update
+
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 
 # 导入Docker官方的GPG Key
-$ sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 # 添加Docker官方镜像源地址
-$ sudo apt-add-repository 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
 
-$ sudo apt-get update
+sudo apt-get update
 
 # 确认你的镜像源配置是正确的：从Docker官网下载安装最新版docker，避免从Ubuntu官方镜像源下载旧版的docker
-$ apt-cache policy docker-engine
-docker-engine:
-  Installed: (none)
-  Candidate: 1.13.1-0~ubuntu-xenial
-  Version table:
-     1.13.1-0~ubuntu-xenial 500
-        500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages
-     1.13.0-0~ubuntu-xenial 500
-        500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages
-# ...
-     1.11.0-0~xenial 500
-        500 https://apt.dockerproject.org/repo ubuntu-xenial/main amd64 Packages
+apt-cache madison docker-ce
+
+# docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+# docker-ce | 17.09.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+# docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+#  ...
+# docker-ce | 17.03.1~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
+# docker-ce | 17.03.0~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages
 
 # 安装docker 
-$ sudo apt-get install -y docker-engine
+$ sudo apt-get install -y docker-ce
 
 # 检查docker守护进程是否已自动启动
 $ sudo systemctl status docker
@@ -474,11 +479,13 @@ $ sudo systemctl status docker
 
 ---
 
-## Linux容器架构
+## Linux容器架构 {id="container-arch"}
 
 ![](images/chap0x08/LinuxContainerEcosystem.png)
 
 ---
+
+## Docker生命周期 {id="docker-lifecycle"}
 
 <a href="https://segmentfault.com/a/1190000000751601">![](images/chap0x08/docker-lifecycle.png)</a>
 
@@ -532,87 +539,97 @@ Docker registry相当于git仓库，Docker官方的Docker Hub相当于Github。
 ```bash
 $ sudo docker version
 Client:
- Version:      1.12.3
- API version:  1.24
- Go version:   go1.6.2
- Git commit:   6b644ec
- Built:        Mon, 19 Dec 2016 09:20:48 +1300
- OS/Arch:      linux/amd64
+ Version:	17.12.0-ce
+ API version:	1.35
+ Go version:	go1.9.2
+ Git commit:	c97c6d6
+ Built:	Wed Dec 27 20:11:19 2017
+ OS/Arch:	linux/amd64
 
 Server:
- Version:      1.12.3
- API version:  1.24
- Go version:   go1.6.2
- Git commit:   6b644ec
- Built:        Mon, 19 Dec 2016 09:20:48 +1300
- OS/Arch:      linux/amd64
+ Engine:
+  Version:	17.12.0-ce
+  API version:	1.35 (minimum version 1.12)
+  Go version:	go1.9.2
+  Git commit:	c97c6d6
+  Built:	Wed Dec 27 20:09:53 2017
+  OS/Arch:	linux/amd64
+  Experimental:	false
 
 $ sudo docker
-Usage: docker [OPTIONS] COMMAND [arg...]
-       docker [ --help | -v | --version ]
 
-A self-sufficient runtime for containers.
+Usage:	docker COMMAND
+
+A self-sufficient runtime for containers
 
 Options:
+      --config string      Location of client config files (default "/home/cuc/.docker")
+  -D, --debug              Enable debug mode
+  -H, --host list          Daemon socket(s) to connect to
+  -l, --log-level string   Set the logging level ("debug"|"info"|"warn"|"error"|"fatal") (default "info")
+      --tls                Use TLS; implied by --tlsverify
+      --tlscacert string   Trust certs signed only by this CA (default "/home/cuc/.docker/ca.pem")
+      --tlscert string     Path to TLS certificate file (default "/home/cuc/.docker/cert.pem")
+      --tlskey string      Path to TLS key file (default "/home/cuc/.docker/key.pem")
+      --tlsverify          Use TLS and verify the remote
+  -v, --version            Print version information and quit
 
-  --config=~/.docker              Location of client config files
-  -D, --debug                     Enable debug mode
-  -H, --host=[]                   Daemon socket(s) to connect to
-  -h, --help                      Print usage
-  -l, --log-level=info            Set the logging level
-  --tls                           Use TLS; implied by --tlsverify
-  --tlscacert=~/.docker/ca.pem    Trust certs signed only by this CA
-  --tlscert=~/.docker/cert.pem    Path to TLS certificate file
-  --tlskey=~/.docker/key.pem      Path to TLS key file
-  --tlsverify                     Use TLS and verify the remote
-  -v, --version                   Print version information and quit
+Management Commands:
+  config      Manage Docker configs
+  container   Manage containers
+  image       Manage images
+  network     Manage networks
+  node        Manage Swarm nodes
+  plugin      Manage plugins
+  secret      Manage Docker secrets
+  service     Manage services
+  stack       Manage Docker stacks
+  swarm       Manage Swarm
+  system      Manage Docker
+  trust       Manage trust on Docker images (experimental)
+  volume      Manage volumes
 
 Commands:
-    attach    Attach to a running container
-    build     Build an image from a Dockerfile
-    commit    Create a new image from a container's changes
-    cp        Copy files/folders between a container and the local filesystem
-    create    Create a new container
-    diff      Inspect changes on a container's filesystem
-    events    Get real time events from the server
-    exec      Run a command in a running container
-    export    Export a container's filesystem as a tar archive
-    history   Show the history of an image
-    images    List images
-    import    Import the contents from a tarball to create a filesystem image
-    info      Display system-wide information
-    inspect   Return low-level information on a container, image or task
-    kill      Kill one or more running containers
-    load      Load an image from a tar archive or STDIN
-    login     Log in to a Docker registry.
-    logout    Log out from a Docker registry.
-    logs      Fetch the logs of a container
-    network   Manage Docker networks
-    node      Manage Docker Swarm nodes
-    pause     Pause all processes within one or more containers
-    port      List port mappings or a specific mapping for the container
-    ps        List containers
-    pull      Pull an image or a repository from a registry
-    push      Push an image or a repository to a registry
-    rename    Rename a container
-    restart   Restart a container
-    rm        Remove one or more containers
-    rmi       Remove one or more images
-    run       Run a command in a new container
-    save      Save one or more images to a tar archive (streamed to STDOUT by default)
-    search    Search the Docker Hub for images
-    service   Manage Docker services
-    start     Start one or more stopped containers
-    stats     Display a live stream of container(s) resource usage statistics
-    stop      Stop one or more running containers
-    swarm     Manage Docker Swarm
-    tag       Tag an image into a repository
-    top       Display the running processes of a container
-    unpause   Unpause all processes within one or more containers
-    update    Update configuration of one or more containers
-    version   Show the Docker version information
-    volume    Manage Docker volumes
-    wait      Block until a container stops, then print its exit code
+  attach      Attach local standard input, output, and error streams to a running container
+  build       Build an image from a Dockerfile
+  commit      Create a new image from a container's changes
+  cp          Copy files/folders between a container and the local filesystem
+  create      Create a new container
+  diff        Inspect changes to files or directories on a container's filesystem
+  events      Get real time events from the server
+  exec        Run a command in a running container
+  export      Export a container's filesystem as a tar archive
+  history     Show the history of an image
+  images      List images
+  import      Import the contents from a tarball to create a filesystem image
+  info        Display system-wide information
+  inspect     Return low-level information on Docker objects
+  kill        Kill one or more running containers
+  load        Load an image from a tar archive or STDIN
+  login       Log in to a Docker registry
+  logout      Log out from a Docker registry
+  logs        Fetch the logs of a container
+  pause       Pause all processes within one or more containers
+  port        List port mappings or a specific mapping for the container
+  ps          List containers
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  rename      Rename a container
+  restart     Restart one or more containers
+  rm          Remove one or more containers
+  rmi         Remove one or more images
+  run         Run a command in a new container
+  save        Save one or more images to a tar archive (streamed to STDOUT by default)
+  search      Search the Docker Hub for images
+  start       Start one or more stopped containers
+  stats       Display a live stream of container(s) resource usage statistics
+  stop        Stop one or more running containers
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+  top         Display the running processes of a container
+  unpause     Unpause all processes within one or more containers
+  update      Update configuration of one or more containers
+  version     Show the Docker version information
+  wait        Block until one or more containers stop, then print their exit codes
 
 Run 'docker COMMAND --help' for more information on a command.
 ```
