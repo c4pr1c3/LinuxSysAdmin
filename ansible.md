@@ -40,8 +40,7 @@ ansible 2.4.0.0
 
 ---
 
-Ansible 官方推荐 ``Red Hat Enterprise Linux (TM), CentOS, Fedora, Debian, Ubuntu`` 操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过 Python 的包管理器 ``pip`` 进行安装。
-
+Ansible 官方推荐 ``Red Hat Enterprise Linux (TM)``, ``CentOS``, ``Fedora``, ``Debian``, ``Ubuntu`` 操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过 Python 的包管理器 ``pip`` 进行安装。
 
 # 核心术语
 
@@ -141,7 +140,7 @@ ignore_newlines: >
             despite appearances
 ```
 
-# 变量 {{ id='variables' }}
+# 变量 { id='variables' }
 
 ---
 
@@ -174,6 +173,18 @@ extra vars (always win precedence)
 # [Modules](http://docs.ansible.com/ansible/latest/modules.html)
 
 ---
+
+常见运维任务都可以找到 ``ansible`` 内置模块的支持，例如：
+
+* [文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等](http://docs.ansible.com/ansible/latest/list_of_files_modules.html)
+* [bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具](http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html)
+* [操作系统级别管理工具：用户/用户组管理、systemd服务管理、时区管理、内核加载模块管理等](http://docs.ansible.com/ansible/latest/list_of_system_modules.html)
+* [远程命令执行、脚本执行等](http://docs.ansible.com/ansible/latest/list_of_commands_modules.html)
+* [PKI 证书管理](http://docs.ansible.com/ansible/latest/list_of_crypto_modules.html)
+* [常见数据库管理](http://docs.ansible.com/ansible/latest/list_of_database_modules.html)
+* [常见Web基础设施管理：supervisorctl、htpasswd、apache2_module、letsencrypt等](http://docs.ansible.com/ansible/latest/list_of_web_infrastructure_modules.html)
+* [常见版本控制工具管理](http://docs.ansible.com/ansible/latest/list_of_source_control_modules.html)
+
 
 # [Ansible Vault](http://docs.ansible.com/ansible/latest/vault.html)
 
