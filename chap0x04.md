@@ -777,6 +777,55 @@ fi
 * **'**  single quote       单引号
 * **"**  double quote       双引号
 
+---
+
+* **\_** underscore         下划线
+* **/**  slash              斜线（URL、**\*NIX** 路径分隔符）
+* **\\**  backslash          反斜线（转义符号、**Windows** 路径分隔符）
+
+---
+
+```bash
+# 16进制表示的 ascii 码: 7c，英文术语：vertical bar，Shell编程里的“管道操作符”
+printf '%s' '|' | xxd  
+
+# ref: https://www.zhihu.com/question/21747929/answer/319675621
+printf '%s' '丨' | xxd # 16进制表示的 ascii 码: e4b8a8，汉语拼音：gun
+```
+
+---
+
+```bash
+# ref: https://practicaltypography.com/hyphens-and-dashes.html
+# 16进制表示的 ascii 码: 2d，英文术语：hyphen，中文术语：连字符，俗称：短杠
+printf '%s' '-' | xxd 
+
+# 16进制表示的 ascii 码: e28093，英文术语：en dash
+printf '%s' '–' | xxd 
+
+# 16进制表示的 ascii 码: e28094，这是中文输入法打出来的破折号的一半，英文术语：em dash
+printf '%s' '—' | xxd 
+```
+
+---
+
+## 一个常见的 Bash 编程陷阱
+
+```bash
+# 你能用 echo 打印出上述 hyphen 字符吗？
+echo '-' # ?
+echo "-" # ?
+
+hyphen='-'
+hyphen_prefix='-e hello world'
+echo "$hyphen"
+echo "$hyphen_prefix"
+echo $hyphen
+echo $hyphen_prefix
+
+# 现在想想为什么上一页的 🌰 我们用的 printf 来代替 echo
+```
+
 # 推荐阅读
 
 ---
@@ -784,6 +833,8 @@ fi
 [Bash Pitfalls](https://mywiki.wooledge.org/BashPitfalls)
 
 > 参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。
+
+> 刚才的 Bash 编程陷阱在这里有介绍: 3. Filenames with leading dashes 和 14. echo $foo
 
 # 参考文献
 
