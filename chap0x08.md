@@ -398,6 +398,9 @@ curl http://192.168.56.101
 
 ⚠️  我们**所以**选择在一个***纯净***的虚拟机环境中做上述实验！
 
+---
+
+[番外：Ansible](ansible.md.html)
 
 # [docker](https://www.docker.com/)
 
