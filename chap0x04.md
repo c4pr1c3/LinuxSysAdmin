@@ -15,7 +15,7 @@ output: revealjs::revealjs_presentation
 ---
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 echo "hello world!"
 ```
@@ -35,13 +35,36 @@ ps | grep $$
 * 查看当前shell解释器对应的文件绝对路径
 
 ```bash
-which bash
+type bash
 ```
 
 * 查看当前bash的版本号
 
 ```bash
 bash --version
+```
+
+---
+
+## [为什么使用 `#!/usr/bin/env bash`](https://stackoverflow.com/questions/16365130/what-is-the-difference-between-usr-bin-env-bash-and-usr-bin-bash)
+
+当我们通过 `./target.sh` 执行脚本时：
+
+* 避免目标系统上的解释器路径和预期不一致
+    * 例如同时存在多个版本的 Bash，通过环境变量设置的优先解释器路径不同于期望的 `/bin/bash`
+* 类似的我们可以在 Python 脚本文件行首书写 `!#/usr/bin/env python` 
+* 例外：如果就是希望指定路径的脚本解释器执行当前脚本，而非环境变量中设置的优先脚本解释器
+
+如果我们通过 `bash target.sh` 或 `/bin/bash target.sh` 执行脚本则上述设置相当于原本的注释行作用
+
+# Shell 内置帮助
+
+---
+
+```bash
+help type
+
+help help
 ```
 
 # 变量
@@ -92,14 +115,14 @@ FILELIST=`ls`
 FileWithTimeStamp=/tmp/file_$(/bin/date +%Y-%m-%d).txt
 ```
 
-上述代码中的**``**符号和**$()**都可以用于命令输出结果替换变量赋值结果。
+上述代码中的 **``** 符号和 **$()** 都可以用于命令输出结果替换变量赋值结果。
 
 ---
 
 课堂练习
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 # 代码填空，使用最终输出3个包含correct的语句
 BIRTHDATE=   # 填入一个字符串
 Presents=    # 填入一个整数
@@ -145,6 +168,13 @@ $ bash -x <script.sh>
 set -x          # activate debugging from here
 w
 set +x          # stop debugging from here
+
+# 写文件
+echo -e "$msg" >> /tmp/debug.log
+
+# 如果打印变量内容包含「不可打印字符」
+# msg="hello world\x01\x02"
+echo -n -e "$msg" | xxd -p >> /tmp/debug.log
 ```
 
 # 给脚本传参
@@ -153,9 +183,11 @@ set +x          # stop debugging from here
 
 * 参照使用C语言代码编写的命令行可执行程序传参语法规范
 * 参数与参数之间、脚本文件名与参数之间使用1个或多个空格分隔
-* **$0** 指代脚本文件本身
-* **$1** 指代命令行上的第1个参数
-* **$2** 指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法
+* `$0` 指代脚本文件本身
+* `$1` 指代命令行上的第1个参数
+* `$2` 指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法
+* `$@` 指代命令行上的所有参数（参数数组）
+* `$#` 指代命令行上的参数个数（参数数组大小）
 
 ---
 
@@ -168,11 +200,15 @@ BIG=$5
 
 echo "A $BIG costs just $6"
 
+# 输出所有参数
+echo "$@"
+
 # 以下代码输出命令行参数的总数
 echo $#
 ```
 
 用以下方法执行该脚本，观察脚本输出结果
+
 ```bash
 bash test.sh apple 5 banana 8 "Fruit Basket" 15
 ```
@@ -181,9 +217,30 @@ bash test.sh apple 5 banana 8 "Fruit Basket" 15
 
 ---
 
+* [Bash 4.0 开始支持关联数组](https://www.tldp.org/LDP/abs/html/bashver4.html)
+* `declare -a` 声明的是「索引」数组，`declare -A` 声明的是「关联」数组。[如果同时使用 `-a -A` ，`-A` 优先级更高，数组被声明为「关联」数组](https://www.gnu.org/software/bash/manual/html_node/Arrays.html)
+* [Bash 4.2](https://stackoverflow.com/questions/10806357/associative-arrays-are-local-by-default) 开始支持 `declare -g` 方式声明关联数组为「全局」变量，在此之前，关联数组仅限局部变量作用域
+
+---
+
+## 示例
+
 ```bash
-# 标准的bash数组赋值方法如下
+# 查看当前 Bash 的 declare 支持的参数
+# help declare
+
+# 声明一个「索引」数组
+declare -a indexed_arr
+
+# 声明一个「关联」数组
+declare -A associative_arr
+
+# Bash 数组赋值方法如下
+# 「索引」数组可以跳过数组声明直接赋值的同时即完成了数组初始化
 my_array=(apple banana "Fruit Basket" orange)
+
+associative_arr['hello']='world'
+associative_arr['well']='done'
 
 # bash支持“稀疏”数组：即数组元素不必连续存在，个别索引位置上可以有未初始化的元素
 new_array[2]=apricot
@@ -194,6 +251,17 @@ echo ${#my_array[@]}
 # 随机读取数组中的元素，{}是必须有的
 echo ${my_array[2]}
 # echo $my_array[2] 是错误的读取方法
+
+# 遍历数组的方法
+## 「索引」数组
+for ele in "${my_array[@]}";do
+    echo "$ele"
+done
+
+## 「关联」数组
+for key in "${!associative_arr[@]}";do
+    echo "$key ${associative_arr[$key]}"
+done
 ```
 
 ---
@@ -252,7 +320,7 @@ fi
 
 ```bash
 A=3
-B=$((100 * $A + 5)) # 305
+B=$((100 * A + 5)) # 305
 ```
 
 * a + b addition (a plus b)
@@ -285,6 +353,13 @@ pi=$(BC_LINE_LENGTH=0 bc -l <<< "scale=1000; 4*a(1)")
 STRING="this is a string"
 echo ${#STRING}            # 16
 
+# 注意非拉丁语系字符串长度计算
+M_STRING="中文"
+export LANG=C.UTF-8
+echo ${#M_STRING}            # 2
+export LANG=C
+echo ${#M_STRING}            # 6
+
 # 字符串截取子串
 STRING="this is a string"
 POS=1
@@ -292,6 +367,12 @@ LEN=3
 echo ${STRING:$POS:$LEN}   # his
 echo ${STRING:1}           # $STRING contents without leading character
 echo ${STRING:12}          # ring
+
+# 注意非拉丁语系字符串截取
+export LANG=C
+echo -n "${M_STRING:0:1}" | xxd -p # e4
+export LANG=C.UTF-8
+echo -n "${M_STRING:0:1}" | xxd -p # e4b8ad
 
 # 字符串查找并替换第一次匹配到的子串
 STRING="to be or not to be"
@@ -393,24 +474,24 @@ if [[ "$mamashuozhegebianliangbukenengdingyiguo" ]];then printf "%d" 9;fi
 <font color='red'>数值</font>比较运算表达式
 
 | 比较运算表达式 |   真值条件           |
-|------------+--------------------------|
-| $a -lt $b  | $a < $b                  |
-| $a -gt $b  | $a > $b                  |
-| $a -le $b  | $a <= $b                 |
-| $a -ge $b  | $a >= $b                 |
-| $a -eq $b  | $a is equal to $b        |
-| $a -ne $b  | $a is not equal to $b    |
+|:--------------:|:--------------------:|
+| \$a -lt \$b  | \$a < \$b                  |
+| \$a -gt \$b  | \$a > \$b                  |
+| \$a -le \$b  | \$a <= \$b                 |
+| \$a -ge \$b  | \$a >= \$b                 |
+| \$a -eq \$b  | \$a is equal to \$b        |
+| \$a -ne \$b  | \$a is not equal to \$b    |
 
 ---
 
 <font color='red'>字符串</font>比较表达式
 
 |比较表达式    |  真值条件                |
-|--------------+--------------------------|
-|"$a" = "$b"   |  $a is the same as $b    |
-|"$a" == "$b"  |  $a is the same as $b    |
-|"$a" != "$b"  |  $a is different from $b |
-|-z "$a"       |  $a is empty             |
+|:------------:|:------------------------:|
+| "\$a" = "\$b"  |  \$a is the same as \$b    |
+| "\$a" == "\$b" |  \$a is the same as \$b    |
+| "\$a" != "\$b" |  \$a is different from $b |
+| -z "\$a"      |  \$a is empty             |
 
 > 注意：上面表达式中的双引号不能省略，避免字符串中包含的空格会改变表达式的语义
 
@@ -473,8 +554,8 @@ for N in ${NAMES[@]} ; do
 done
 
 # loop on command output results
-for f in $( ls prog.sh /etc/localtime ) ; do
-  echo "File is: $f"
+for f in $(ps -eo command) ; do
+  ls "$f"
 done
 ```
 
@@ -488,6 +569,14 @@ while [ condition ]
 do
  command(s)...
 done
+
+# 模拟 do .. while 循环
+while [ : ];do
+  if [ condition ];then
+    break
+  fi
+  command(s)...
+done
 ```
 
 ---
@@ -500,13 +589,22 @@ while [ $COUNT -gt 0 ]; do
   echo "Value of count is: $COUNT"
   COUNT=$(($COUNT - 1))
 done
+
+COUNT=4
+while [ : ]; do
+  echo "Value of count is: $COUNT"
+  COUNT=$(($COUNT - 1))
+  if [[ $COUNT -eq 0 ]];then
+     break
+  fi
+done
 ```
 
 ---
 
 until循环
 
-```
+```bash
 # basic construct
 until [ condition ]
 do
@@ -565,11 +663,24 @@ done
 
 ```bash
 # loop on command output results 健壮性改进版本
-for f in $( ls prog.sh /etc/localtime 2>/dev/null) ; do
+set -e
+for f in $(ps -eo command 2>/dev/null) ; do
   [[ -e "$f" ]] || continue
-  echo "File is: $f"
+  ls "$f"
+done
+
+# 下面是改进前的「脆弱」版本，对比执行找不同
+set -e
+for f in $(ps -eo command) ; do
+  ls "$f"
 done
 ```
+
+# 编写健壮的 shell 脚本
+
+---
+
+**set -e**
 
 # 函数
 
@@ -665,13 +776,22 @@ IFS= read -r line < file
 line=$(head -1 file)
 line=`head -1 file`
 
-# 逐行读文件
+# 构造一个「畸形」测试用例
+echo -n -e " 123 \x0a456" > file
+# 逐行读文件 **有 BUG**
 while read -r line; do
       # do something with $line
+      echo "$line" | xxd -p
 done < file
-# 逐行读文件，防止行两端的空白字符被删除
+# 逐行读文件，防止行两端的空白字符被删除 **依然有 BUG**
 while IFS= read -r line; do
       # do something with $line
+      echo "$line" | xxd -p
+done < file
+# 文件读写的最佳实践
+while IFS= read -r line || [[ -n "$line" ]]; do
+      # do something with $line
+      echo "$line" | xxd -p
 done < file
 ```
 
