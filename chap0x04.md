@@ -927,25 +927,6 @@ printf '%s' '–' | xxd
 printf '%s' '—' | xxd 
 ```
 
----
-
-## 一个常见的 Bash 编程陷阱
-
-```bash
-# 你能用 echo 打印出上述 hyphen 字符吗？
-echo '-' # ?
-echo "-" # ?
-
-hyphen='-'
-hyphen_prefix='-e hello world'
-echo "$hyphen"
-echo "$hyphen_prefix"
-echo $hyphen
-echo $hyphen_prefix
-
-# 现在想想为什么上一页的 🌰 我们用的 printf 来代替 echo
-```
-
 # 推荐阅读
 
 ---
@@ -954,7 +935,11 @@ echo $hyphen_prefix
 
 > 参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。
 
-> 刚才的 Bash 编程陷阱在这里有介绍: 3. Filenames with leading dashes 和 14. echo $foo
+---
+
+[千万别混淆 Bash/Zsh 的四种运行模式](https://zhuanlan.zhihu.com/p/47819029)
+
+> Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢 bash 的速度，还会发生明明写了登录配置但是就是没生效的情况
 
 # 参考文献
 
@@ -965,6 +950,7 @@ echo $hyphen_prefix
 * [Shell Style Guide by Google Inc.](https://google.github.io/styleguide/shell.xml)
 * [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
 * [The Bash Academy](http://www.bash.academy/)
+
 
 
 
