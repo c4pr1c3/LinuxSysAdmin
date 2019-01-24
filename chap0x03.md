@@ -187,6 +187,34 @@ chmod 6755 filename
 chmod 1755 dirname
 ```
 
+# sudo 的一些坑
+
+---
+
+## shell 内部命令无法 sudo
+
+```bash
+cmds=(echo cd history getopts kill pwd); for cmd in "${cmds[@]}";do type -a "$cmd";done
+# echo is a shell builtin
+# cd is a shell builtin
+# history is a shell builtin
+# getopts is a shell builtin
+# kill is a shell builtin
+# kill is /bin/kill
+# pwd is a shell builtin
+# pwd is /bin/pwd
+```
+
+---
+
+## 以下场景不要 sudo
+
+* 编辑用户家目录下的文件
+* 源代码编译
+* 针对 Mac 用户
+    * <del>sudo brew install</del>
+    * <del>sudo pip install</del>
+
 # 文件系统与存储管理
 
 ---

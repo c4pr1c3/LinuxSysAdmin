@@ -368,9 +368,14 @@ man 3 printf
 
 ---
 
-## [什么是shell](http://billie66.github.io/TLCL/book/chap02.html)
+## [什么是shell](https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html)
 
-shell就是一个程序，它接受从键盘输入的命令，然后把命令传递给操作系统去执行
+* shell 就是一个执行命令的「宏」处理器：输入的文本和符号被扩展为更「宏大」的表达式
+* Unix shell 即是一个「命令解释器」，也是一种「编程语言」
+* shell 的运行模式：交互模式、非交互模式
+    * 交互模式：从键盘输入指令解释执行
+    * 非交互模式：从文件读取指令解释执行
+* shell 同时支持同步或异步执行指令
 
 ---
 

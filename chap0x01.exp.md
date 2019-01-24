@@ -15,8 +15,8 @@ output: revealjs::revealjs_presentation
 ---
 
 * Virtualbox
-* Ubuntu 16.04 Server 64bit
-    * 备选：Ubuntu 14.04 Server 64bit
+* Ubuntu 18.04 Server 64bit
+    * 备选：Ubuntu 16.04 Server 64bit
     * 备选：Ubuntu 16.04 Desktop 64bit
 
 # 实验问题
@@ -57,6 +57,7 @@ output: revealjs::revealjs_presentation
 ---
 
 ```bash
+# 根据实际情况，自行替换其中的参数
 # 在当前用户目录下创建一个用于挂载iso镜像文件的目录
 mkdir loopdir
 
@@ -97,8 +98,9 @@ label autoinstall
 * 提前阅读并编辑定制Ubuntu官方提供的示例[preseed.cfg](https://help.ubuntu.com/lts/installation-guide/example-preseed.txt)，并将该文件保存到刚才创建的工作目录``~/cd/preseed/ubuntu-server-autoinstall.seed``
 * 修改isolinux/isolinux.cfg，增加内容``timeout 10``（可选，否则需要手动按下ENTER启动安装界面）
 
-```bash
+---
 
+```bash
 # 重新生成md5sum.txt
 cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
 
@@ -121,6 +123,13 @@ mkisofs -r -V "Custom Ubuntu Install CD" \
 一个我修改定制好的[ubuntu-server-autoinstall.seed](exp/chap0x01/cd-rom/preseed/ubuntu-server-autoinstall.seed)，请自行和官方示例文件进行比对，自行思考理解和掌握：
 
 * 我做了哪些修改？
+    * 用什么「工具」能提高「差异」比对的效率？
 * 这些修改的作用是什么？
 
+---
+
+## 友情提醒
+
+* preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 [ubuntu-18.04.1-live-server-amd64.iso](https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server)
+* txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的
 

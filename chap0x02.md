@@ -1305,6 +1305,24 @@ man bash
 
 ## 提问的智慧 - 使用自动化的工具描述你的环境
 
+```bash
+# 获得硬件信息
+report-hw
+
+# reportbug 需要另行安装
+
+reportbug
+# *** ERROR: "Ubuntu" BTS is currently unsupported. Please use "ubuntu-bug" (from the apport package) for reporting bugs in Ubuntu. You can report bugs to Debian by
+# specifying 'bts debian' in your ~/.reportbugrc or by passing the -B debian option on the commandline (see reportbug(1)).
+
+reportbug --template --bts debian -S normal vim
+
+# 将指定软件的相关信息保存到本地而不是直接提交给软件作者
+sudo ubuntu-bug openssh-server --save openssh-server.bug
+```
+
+---
+
 * 目标应用程序官方提供的故障诊断工具运行日志
 * [An Eye on your system](https://nicolargo.github.io/glances/)
 

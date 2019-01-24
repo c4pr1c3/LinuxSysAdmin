@@ -234,7 +234,7 @@ output: revealjs::revealjs_presentation
 * git（github/gitlab）
 * ansible（puppet、chef、salt等）
 * docker（dockerfile/k8s/dockerhub）
-* jenkins
+* jenkins / travis / Gitlab CI
 * openstack（KVM、Xen）
 * openvswitch
 * tcpreplay + tcpcopy
@@ -657,13 +657,74 @@ Run 'docker COMMAND --help' for more information on a command.
 * [Docker集群管理](https://www.digitalocean.com/community/tutorials/how-to-create-a-cluster-of-docker-containers-with-docker-swarm-and-digitalocean-on-ubuntu-16-04)
 * [Docker生态](https://gigaom.com/report/docker-and-the-current-linux-container-ecosystem/)
 
-# [jenkins](https://jenkins.io)
+# 持续集成与持续部署工具
 
 ---
 
+## [jenkins](https://jenkins.io)
+
+
 > Jenkins is a self-contained, open source automation server which can be used to automate all sorts of tasks such as building, testing, and deploying software.
 
-Jenkins是被广泛应用的持续集成、自动化测试、持续部署的框架，甚至有些项目组顺便将其用来做流程管理的工具。
+Jenkins 是被广泛应用的持续集成、自动化测试、持续部署的框架，甚至有些项目组顺便将其用来做流程管理的工具。
+
+
+---
+
+## [travis](https://travis-ci.org/)
+
+> Test and Deploy Your Code with Confidence
+
+[只支持 GitHub 托管代码](https://docs.travis-ci.com/user/tutorial/)的持续集成服务，同时支持[持续部署到指定的一些第三方云计算平台](https://docs.travis-ci.com/user/deployment/)。
+
+对于 GitHub 上的私有仓库代码，需要付费购买[travis-ci.com](https://travis-ci.com/)的服务。对于 GitHub 上的开源项目代码，可以免费使用 [travis-ci.org](https://travis-ci.org/) ，未来将逐步转向统一由[travis-ci.com](https://travis-ci.com/)继续向 GitHub.com 上的开源项目继续提供免费服务。
+
+---
+
+[![](images/chap0x08/travis-supported-deploy-providers.png)](https://docs.travis-ci.com/user/deployment/)
+
+---
+
+🌰
+
+[基于 Travis 的自动构建系统编写的一个在线自动判题系统](https://github.com/c4pr1c3/TravisBasedOJ)
+
+---
+
+### 🌰  单元测试方案选型 {id="unittestcomparison"}
+
+![2019-01-24 Snapshot](images/chap0x08/test-case-framework-comparison.png)
+
+---
+
+| | [shpec](https://github.com/rylnd/shpec/) | [sharness](https://github.com/chriscool/sharness)  | [bats](https://github.com/sstephenson/bats)  | [bats-core](https://github.com/bats-core/bats-core)  | [shunit2](https://github.com/kward/shunit2) | [assert.sh](https://github.com/lehmannro/assert.sh) |
+|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+| 最近一次提交 | ![last-commit](https://img.shields.io/github/last-commit/rylnd/shpec.svg?label=%20) | ![](https://img.shields.io/github/last-commit/chriscool/sharness.svg?label=%20) | ![](https://img.shields.io/github/last-commit/sstephenson/bats.svg?label=%20) | ![](https://img.shields.io/github/last-commit/bats-core/bats-core.svg?label=%20) | ![](https://img.shields.io/github/last-commit/kward/shunit2.svg?label=%20) | ![](https://img.shields.io/github/last-commit/lehmannro/assert.sh.svg?label=%20) |
+| 点赞数 | ![stars of rylnd/shpec](https://img.shields.io/github/stars/rylnd/shpec.svg) | ![](https://img.shields.io/github/stars/chriscool/sharness.svg) | ![](https://img.shields.io/github/stars/sstephenson/bats.svg) |![](https://img.shields.io/github/stars/bats-core/bats-core.svg) | ![](https://img.shields.io/github/stars/kward/shunit2.svg) | ![](https://img.shields.io/github/stars/lehmannro/assert.sh.svg) |
+| 最近一次自动构建 | [![Build Status](https://travis-ci.org/rylnd/shpec.svg?branch=master)](https://travis-ci.org/rylnd/shpec) | [![Build Status](https://travis-ci.org/chriscool/sharness.svg?branch=master)](https://travis-ci.org/chriscool/sharness) | [![Build Status](https://travis-ci.org/sstephenson/bats.svg?branch=master)](https://travis-ci.org/sstephenson/bats) | [![Build Status](https://travis-ci.org/bats-core/bats-core.svg?branch=master)](https://travis-ci.org/bats-core/bats-core) | [![Build Status](https://travis-ci.org/kward/shunit2.svg?branch=master)](https://travis-ci.org/kward/shunit2)  | [![Build Status](https://travis-ci.org/lehmannro/assert.sh.svg?branch=master)](https://travis-ci.org/lehmannro/assert.sh) |
+| 最近一年的提交次数 | ![shpec](https://img.shields.io/github/commit-activity/y/rylnd/shpec.svg?label=%20) | ![](https://img.shields.io/github/commit-activity/y/chriscool/sharness.svg?label=%20) | ![](https://img.shields.io/github/commit-activity/y/sstephenson/bats.svg?label=%20) | ![](https://img.shields.io/github/commit-activity/y/bats-core/bats-core.svg?label=%20) | ![](https://img.shields.io/github/commit-activity/y/kward/shunit2.svg?label=%20) |  ![](https://img.shields.io/github/commit-activity/y/lehmannro/assert.sh.svg?label=%20%20) |
+| travis CI | [.travis.yml](https://github.com/rylnd/shpec/blob/master/.travis.yml) | [.travis.yml](https://github.com/chriscool/sharness/blob/master/.travis.yml) | [.travis.yml](https://github.com/sstephenson/bats/blob/master/.travis.yml)  | [.travis.yml](https://github.com/bats-core/bats-core/blob/master/.travis.yml)  | [.travis.yml](https://github.com/kward/shunit2/blob/master/.travis.yml) | [.travis.yml](https://github.com/lehmannro/assert.sh/blob/master/.travis.yml) |
+| [Test Anything Protocol](https://testanything.org/) | 行为驱动开发（BDD）模式 | ✅ | ✅ | ✅ | 基于 [xUnit](https://en.wikipedia.org/wiki/XUnit) 模式 | ✅ |
+| 特色 | 架构设计仿照 [RSpec](https://github.com/rspec/rspec), [Jasmine](https://github.com/jasmine/jasmine), [mocha](https://github.com/mochajs/mocha) |  提取自 Git 的脚本自动化框架 | [知名成功案例多：大量知名开源项目都在使用该项目](https://github.com/sstephenson/bats/wiki/Projects-Using-Bats) | 基于 [bats 最后一次更新 0360811](https://github.com/sstephenson/bats/commit/03608115df2071fff4eaaff1605768c275e5f81f) 的 fork 版 | 支持的 shell 类型多 | 代码量小，轻量级测试框架 |
+
+---
+
+## [Gitlab CI](https://docs.gitlab.com/ce/ci/README.html)
+
+![](images/chap0x08/gitlab_cicd_pipeline_infograph.png)
+
+GitLab 内置的持续集成和持续部署功能，开源社区版也可以免费使用该功能。
+
+---
+
+### jenkins / travis / Gitlab CI
+
+| | jenkins | travis | Gitlab CI |
+|:--:|:--:|:--:|:--:|
+| CI | 支持自定义来源的代码托管仓库 | 仅限 GitHub.com 上托管的代码 | 仅限 GitLab.com 和使用 GitLab 自建仓库托管的代码 |
+| CD | 支持自定义部署目标 | [官方指定第三方平台若干](https://docs.travis-ci.com/user/deployment/) | 支持自定义部署目标 |
+| docker | ✅ |  ✅ | ✅|
+| 自建服务 | ✅ |   ❌  |  ✅  |
 
 # [openstack](https://www.openstack.org/)
 
