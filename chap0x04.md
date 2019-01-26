@@ -680,7 +680,49 @@ done
 
 ---
 
+## [Fail-Fast: 避免错误蔓延](https://dzone.com/articles/fail-fast-principle-in-software-development)
+
+* 越早期的 Bug 越容易被检测到、发现，从而可以更快被修复
+    * 执行过但没「崩溃」的代码都是「无 BUG」的
+* 避免一连串 Bug 协同后产生的「雪崩效应」
+
+---
+
+### Fail-Fast 的典型应用场景
+
+* 测试驱动开发
+* 持续集成
+
+---
+
 **set -e**
+
+> 脚本只要发生错误，就终止执行
+
+**set +e**
+
+> 关闭 -e 选项
+
+---
+
+**set -o pipefail**
+
+* ``set -e`` 不能终止管道命令中执行出错的语句
+    * 只要最后一个子命令不失败，管道命令总是会执行成功
+* `set -eo pipefail` 可以让脚本在更严格的条件下执行
+
+---
+
+## 使用静态分析工具
+
+* 程序静态分析是指在不运行代码的方式下，通过词法分析、语法分析、控制流分析等技术对程序代码进行扫描，验证代码是否满足规范性、安全性、可靠性、可维护性等指标的一种代码分析技术。
+* 静态分析的一个重要优势是能够在代码中出现大量错误后立刻检测到，因此修复这些错误的成本也不会过高。越早检测到错误，更正错误的成本越低。
+
+---
+
+### [shellcheck](https://github.com/koalaman/shellcheck) - shell 脚本静态分析工具
+
+![shellcheck in vim](images/chap0x04/shellcheck-in-vim.png)
 
 # 函数
 
