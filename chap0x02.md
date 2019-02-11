@@ -437,6 +437,25 @@ SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进�
 
 ---
 
+### 管道 Pipe
+
+> 回顾「第一章」实验中用到的这个命令里使用的操作符：| 
+
+```bash
+cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
+```
+
+---
+
+上一页的例子中
+
+* `-print0` 将标准输出中的多条记录使用 **NULL**（`\00`）字符拼接成一个「长字符串」一次性输出到「标准输出」
+* 如果不使用 `xargs` 命令，`md5sum` 将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5 散列值
+* `xargs` 的 `-0` 参数将「标准输入」中的 **NULL** 字符视为「数组分隔符」来「解析」标准输入内容
+* `xargs` 从「标准输入」中每解析出「一个参数」就按照构造好的 `命令+参数` 执行一次指定的命令（此处是 `md5sum [fileN]` ），直到「标准输入」被解析完毕
+
+---
+
 * **模式空间** 是一块活跃的缓冲区，在sed编辑器执行命令时它会保存待检查的文本
 * 默认情况下，所有的SED命令都是在模式空间中执行，因此输入文件并不会发生改变
 * 还有另外一个缓冲区叫做**保持空间**（***hold buffer***），在处理模式空间中的某些行时，***可以用保持空间来临时保存一些行***。在每一个循环结束时，SED将会移除模式空间中的内容，但是**保持空间**中的内容在所有的循环过程中是持久存储的。SED命令无法直接在该缓冲区中执行，因此SED允许数据在 **保持空间**和**模式空间**之间切换
@@ -444,9 +463,9 @@ SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进�
 * 如果没有提供输入文件，SED将会从标准输入接收请求
 * 如果没有提供地址范围，默认情况下SED将会对所有的行进行操作
 
----
+# SED实例one by one
 
-## SED实例one by one
+---
 
 将[网络安全2016模拟测试题](http://sec.cuc.edu.cn/huangwei/textbook/ns/exam/2016.html)另存到本地文件``exam.html``，接下来我们来用sed做一些实验：
 
@@ -498,126 +517,6 @@ sed -e '3d' -e '5d' exam.html
 -i[SUFFIX]，--in-place[=SUFFIX]：该选项用于对当前文件进行编辑，如果提供了SUFFIX的话，将会备份原始文件，否则将会覆盖原始文件
 -r，--regexp-extended：该选项将启用扩展的正则表达式
 -u， --unbuffered：指定该选项的时候，SED将会从输入文件中加载最少的数据，并且更加频繁的刷出到输出缓冲区。在编辑tail -f命令的输出，你不希望等待输出的时候该选项是非常有用的。
-```
-
-# SED循环 {id="sed-loop"}
-
----
-
-与其它编程语言类似，SED提供了用于控制执行流的循环和分支语句。
-
-SED中的循环有点类似于**goto**语句，SED可以根据标签（label）跳转到某一行继续执行，在SED中，我们可以定义如下的标签：
-
-```bash
-:label 
-:start 
-:end 
-:up
-```
-
----
-
-在上面的示例中，我们创建了四个标签。
-
-要跳转到指定的标签，使用 b 命令后面跟着标签名，如果忽略标签名的话，SED将会跳转到SED文件的结尾。
-
-> b标签用于无条件的跳转到指定的label。
-
----
-
-为了更好地理解SED中的循环和分支，让我们创建一个名为books2.txt的文本文件，其中包含一些图书的标题和作者信息，下面的示例中会合并图书的标题和作者，使用逗号分隔。之后搜索所有匹配“Paulo”的行，如果匹配的话就在这一行的开头添加-，否则跳转到Print标签，打印出该行内容。
-
----
-
-```bash
-$ cat books2.txt
-A Storm of Swords
-George R. R. Martin
-The Two Towers
-J. R. R. Tolkien
-The Alchemist
-Paulo Coelho
-The Fellowship of the Ring
-J. R. R. Tolkien
-The Pilgrimage
-Paulo Coelho
-A Game of Thrones
-George R. R. Martin
-
-$ sed -n '
-h;n;H;x
-s/\n/, /
-/Paulo/!b Print
-s/^/- /
-:Print
-p' books2.txt
-A Storm of Swords , George R. R. Martin
-The Two Towers , J. R. R. Tolkien
-- The Alchemist , Paulo Coelho
-The Fellowship of the Ring , J. R. R. Tolkien
-- The Pilgrimage , Paulo Coelho
-A Game of Thrones , George R. R. Martin
-```
-
----
-
-* 第一行是``h;n;H;x``这几个命令，记得上面我们提到的**保持空间**吗？
-    * **h** 是指将当前模式空间中的内容覆盖到**保持空间**中
-    * **n** 用于提前读取下一行，并且覆盖当前模式空间中的这一行
-    * **H** 将当前模式空间中的内容追加到**保持空间**中
-    * **x** 用于交换模式空间和保持空间中的内容。
-    * 因此第一行命令的作用就是指每次读取两行放到模式空间中交给下面的命令进行处理
-* 接下来是 ``s/\n/, /`` 用于将上面的两行内容中的换行符替换为逗号
-* 第三个命令在不匹配的时候跳转到Print标签，否则继续执行第四个命令
-* :Print仅仅是一个标签名，而p则是print命令
-
----
-
-为了提高可读性，每一个命令都占了一行，当然，你也可以把所有命令放在一行
-
-```bash
-# 注意不同命令之间使用;进行分隔
-sed -n 'h;n;H;x;s/\n/, /;/Paulo/!b Print; s/^/- /; :Print;p' books2.txt 
-```
-
-# SED分支 {id="sed-switch"}
-
----
-
-使用 t 命令创建分支。只有当前置条件成功的时候，t 命令才会跳转到该标签。
-
-> t命令只有在前一个替换（s）命令执行成功的时候才会执行。
-
-让我们看一些前面章节中的例子，与之前不同的是，这次我们将打印四个连字符"-"，而之前是一个。
-
----
-
-```bash
-$ sed -n '
-h;n;H;x
-s/\n/, /
-:Loop
-/Paulo/s/^/-/
-/----/!t Loop
-p' books2.txt
-A Storm of Swords , George R. R. Martin
-The Two Towers , J. R. R. Tolkien
-----The Alchemist , Paulo Coelho
-The Fellowship of the Ring , J. R. R. Tolkien
-----The Pilgrimage , Paulo Coelho
-A Game of Thrones , George R. R. Martin
-```
-
----
-
-在上面的例子中，前面两行与上一节中讲的作用一致，第三行定义了一个Loop标签，接下来匹配存在“Paulo”的行，如果存在则在最前面添加一个-，接下来是我们这里的重点：
-
-``/----/!t Loop``这一行首先检查上面添加``-``之后是否满足四个``-``，如果不满足则跳转到Loop继续执行第三行，这样不停的追加``-``，最后如果改行满足前面有四个``-``才继续往下执行。
-
-为了提高可读性，我们将每一个SED命令独立一行，我们也可以在同一行中使用：
-
-```bash
-sed -n 'h;n;H;x; s/\n/, /; :Loop;/Paulo/s/^/-/; /----/!t Loop; p' books.txt 
 ```
 
 # 模式空间
@@ -707,23 +606,6 @@ sed -n '/script/, /gitbook/p'  exam.html
 # 在使用文本模式过滤器的时候，与数字方式的行寻址类似，可以使用加号操作符 +，它会输出从当前匹配位置开始的某几行，下面的示例会从每一次script出现的位置开始输出接下来的4行
 sed -n '/script/, +4p'  exam.html
 ```
-
-# 保持空间
-
----
-
-
-在处理模式空间中的某些行时，可以用保持空间来临时保存一些行。有5条命令可用来操作保持空间
-
-| 命令 | 描述 | 
-|-+-|
-| h | 将模式空间复制到保持空间 | 
-| H | 将模式空间附加到保持空间 | 
-| g | 将保持空间复制到模式空间 | 
-| G | 将保持空间附加到模式空间 | 
-| x | 交换模式空间和保持空间的内容 |
-
-关于保持空间这里就不在举例了，前面在[循环部分](#sed-loop)讲解下面这个命令的时候我们已经对它的使用做了说明。
 
 # SED基本命令 {id="sed-commands"}
 
@@ -915,35 +797,10 @@ echo -e "date\ncal\nuname" | sed 'e'
 感叹号命令（**!**）用来排除命令，也就是让原本会起作用的命令不起作用。
 
 ```bash
-echo -e "hello\nworld\n" | sed -n '/hello/p'                                                                                  master ✱ ◼
+echo -e "hello\nworld\n" | sed -n '/hello/p' 
 
 # p命令原先是只输出匹配hello的行，添加!之后，变成了只输出不匹配hello的行。
-echo -e "hello\nworld\n" | sed -n '/hello/!p'                                                                                 master ✱ ◼
-```
-
-# SED多行操作 {id="sed-multilines"}
-
----
-
-在使用sed编辑器的基础命令时，你可能注意到了一个局限。所有的sed编辑器命令都是针对**单行**数据执行操作的。在sed编辑器读取数据流时，它会基于**换行符**的位置将数据分成行。sed编辑器根据定义好的脚本命令一次处理一行数据，然后移到下一行重复这个过程。
-
-幸运的是，sed编辑器的设计人员已经考虑到了这种情况，并设计了对应的解决方案。sed编辑器包含了三个可用来处理多行文本的特殊命令。
-
-* **N**：将数据流中的下一行加进来创建一个多行组来处理
-* **D**：删除多行组中的一行。它只删除模式空间中的第一行。该命令会删除到换行符（含 换行符）为止的所有字符。
-* **P**：打印多行组中的一行，用于输出N命令创建的多行文本的模式空间中的第一行。
-
----
-
-默认情况下，SED是基于单行进行操作的，有些情况下我们可能需要使用多行进行编辑，启用多行编辑使用N命令，与n不同的是，N并不会清除、输出模式空间的内容，而是采用了追加模式。
-
-```bash
-[address1[,address2]]N
-```
-
-```bash
-# 下面的示例将会把books2.txt中的标题和作者放到同一行展示，并且使用逗号进行分隔
-$ sed 'N; s/\n/,/g' books2.txt
+echo -e "hello\nworld\n" | sed -n '/hello/!p'
 ```
 
 # 其它SED常用命令 {id="sed-common-cmds"}
@@ -1082,6 +939,18 @@ One Two Three
 
 * [Google: sed思维导图](https://www.google.com/#newwindow=1&q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE)
 * [sed单行常用脚本](http://sed.sourceforge.net/sed1line_zh-CN.html)
+
+# 社区驱动的「脱水版」帮助手册
+
+---
+
+[tldr: To Long, Don't Read](https://github.com/tldr-pages/tldr)
+
+> 跟着「范例」学命令
+
+---
+
+![](images/chap0x02/TLDR-example.png)
 
 # 文本内容查找替换神器之AWK
 

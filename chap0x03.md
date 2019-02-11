@@ -379,6 +379,123 @@ LVM的基本组成块（building blocks）如下：
 * [Systemd 入门教程：实战篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)
     * 参照第2章作业的要求，完整实验操作过程通过[asciinema](https://asciinema.org)进行录像并上传，文档通过github上传
 
+# [NetPlan](https://netplan.io/)
+
+---
+
+## 又一个「网络配置管理」工具
+
+设计用于「替代」经典 Linux 网络管理工具 [ifupdown](http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html)
+
+![](images/chap0x03/netplan_design_overview.png)
+
+---
+
+## 哪些发行版本在用
+
+* [Ubuntu 17.10](https://blog.ubuntu.com/2017/07/10/netplan-by-default-in-17-10) 开始在 Ubuntu 家族所有发行版中默认安装和启用
+* 目前其他发行版应用更广泛的还是经典的  [ifupdown](http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html)
+
+---
+
+## 快速上手
+
+* 配置文件路径 `/etc/netplan/*.yaml`
+	* `/run/netplan/*.yaml` 
+	* `/lib/netplan/*.yaml`
+* 测试和应用配置 `netplan apply`
+	* 验证 YAML 语法正确性 `yamllint`
+* [FAQ](https://netplan.io/faq)
+
+---
+
+## 配置示例
+
+```yaml
+# https://netplan.io/examples#using-dhcp-and-static-addressing
+# https://netplan.io/reference
+# https://github.com/CanonicalLtd/netplan/tree/master/examples
+network:
+  version: 2
+# renderer: NetworkManager
+  renderer: networkd
+  ethernets:
+    enp3s0:
+      dhcp4: true 
+    enp5s0:
+      addresses:
+        - 10.10.10.2/24
+      match:
+        macaddress: 56:2d:d1:8e:62:17
+      gateway4: 10.10.10.1
+      nameservers:
+          search: [mydomain, otherdomain]
+          addresses: [10.10.10.1, 1.1.1.1]
+```
+
+---
+
+## 新的网卡命名风格
+
+`enp3s0`
+
+* `en` 代表以太网卡
+* `p3s0` 代表 PCI 接口的物理位置为 `(3, 0)`, 其中横座标代表 `bus`，纵座标代表 `slot`
+
+---
+
+摘自 [udev/udev-builtin-net_id.c](https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L10)
+
+```c
+/* http://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames
+ *
+ * Two character prefixes based on the type of interface:
+ *   en — Ethernet
+ *   ib — InfiniBand
+ *   sl — serial line IP (slip)
+ *   wl — wlan
+ *   ww — wwan
+ *
+ * Type of names:
+ *   b<number>                             — BCMA bus core number
+ *   c<bus_id>                             — bus id of a grouped CCW or CCW device,
+ *                                           with all leading zeros stripped [s390]
+ *   o<index>[n<phys_port_name>|d<dev_port>]
+ *                                         — on-board device index number
+ *   s<slot>[f<function>][n<phys_port_name>|d<dev_port>]
+ *                                         — hotplug slot index number
+ *   x<MAC>                                — MAC address
+ *   [P<domain>]p<bus>s<slot>[f<function>][n<phys_port_name>|d<dev_port>]
+ *                                         — PCI geographical location
+ *   [P<domain>]p<bus>s<slot>[f<function>][u<port>][..][c<config>][i<interface>]
+ *                                         — USB port number chain
+ *   v<slot>                               - VIO slot number (IBM PowerVM)
+ *   a<vendor><model>i<instance>           — Platform bus ACPI instance id
+ */
+```
+
+# 其他过时的知名网络管理工具
+
+---
+
+[net-tools](https://wiki.linuxfoundation.org/networking/net-tools) 已过时，[iproute2](https://wiki.linuxfoundation.org/networking/iproute2) 是现在。
+
+> Most network configuration manuals still refer to ifconfig and route as the primary network configuration tools, but ifconfig is known to behave inadequately in modern network environments. **They should be deprecated**, but most distros still include them.
+
+---
+
+| [过时命令 net-tools ](http://net-tools.sourceforge.net/) | [替代命令 iproute2 ](https://dougvitale.wordpress.com/2011/12/21/deprecated-linux-networking-commands-and-their-replacements/) |
+|:---:|:---:|
+| arp	| ip n (ip neighbor) |
+| ifconfig |	ip a (ip addr), ip link, ip -s (ip -stats) |
+| iwconfig	| iw |
+| nameif |	ip link, ifrename |
+| netstat |	ss |
+| netstat -i | ip -s link |
+| netstat -r | ip route |
+| netstat -g | ip maddr |
+| route	| ip r (ip route) |
+
 # 本章完成后的自查清单
 
 ---
