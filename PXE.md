@@ -176,7 +176,7 @@ printf '%02X' ${IP//./ }; echo
 
 ---
 
-<embed src='http://player.youku.com/player.php/sid/XNDA2NjgxOTc2NA==/v.swf' allowFullScreen='true' quality='high' width='480' height='400' align='middle' allowScriptAccess='always' type='application/x-shockwave-flash'></embed>
+[![](images/pxe/cover.jpg)](https://www.bilibili.com/video/av43936728/)
 
 # 小结
 
