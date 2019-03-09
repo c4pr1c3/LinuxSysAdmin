@@ -362,7 +362,7 @@ man 3 printf
 
 ## 内置帮助系统 - 惯例
 
-* 大多数命令行程序都支持**-h**或**--help**参数来获取内置的简洁使用帮助
+* 大多数命令行程序都支持 `-h` 或 `--help` 参数来获取内置的简洁使用帮助
 
 # Shell
 
@@ -434,6 +434,7 @@ man ssh_config
 * Linux / Mac
     * ssh
 * Windows
+    * [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
     * [putty](http://www.putty.org/)
     * [xshell](https://www.netsarang.com/download/down_xsh.html)
     * [MobaXterm](http://mobaxterm.mobatek.net/)

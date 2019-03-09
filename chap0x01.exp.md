@@ -32,9 +32,9 @@ output: revealjs::revealjs_presentation
 
 ---
 
-* 使用markdown格式纯文本
-* fork[作业仓库 CUCCS/linux](https://github.com/cuccs/linux)并提交作业到自己的仓库
-* 每次的实验报告放在自己**私有**子目录下的独立的子目录，目录命名应简洁、清晰
+* 使用 `markdown` 格式纯文本
+* 使用 [Github Classroom](https://classroom.github.com/classrooms) 管理作业（课堂当日宣讲为准）
+* 每次作业应 `commit` 到独立分支并通过 `Pull Request` 分别提交每一次作业
 * 实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业
 * 记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接
 
@@ -53,6 +53,15 @@ output: revealjs::revealjs_presentation
 * 定制一个普通用户名和默认密码
 * 定制安装OpenSSH Server
 * 安装过程禁止自动联网更新软件包
+
+---
+
+## 实验提醒
+
+* 先「有人值守」方式安装好 **一个可用的 Ubuntu 系统环境**
+* 以下操作指令均在上述环境的 **命令行** 中输入完成
+* 根据需要 **酌情** 修改指令
+* 遇到指令执行出错务必 **仔细** 阅读出错信息并在搜索引擎中搜索 **错误关键字**
 
 ---
 
