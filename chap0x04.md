@@ -983,6 +983,20 @@ printf '%s' '—' | xxd
 
 > Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢 bash 的速度，还会发生明明写了登录配置但是就是没生效的情况
 
+# 推荐工具
+
+---
+
+[![explainshell.com](images/chap0x04/explainshell.png)](https://explainshell.com/)
+
+---
+
+## [Bash Automated Testing System](https://github.com/bats-core/bats-core)
+
+[![bats-core / bats-core](images/chap0x04/bats-core.png)](https://travis-ci.org/3c1rp4c/TravisBasedOJ)
+
+> Bats is a [TAP](https://testanything.org/)-compliant testing framework for Bash. It provides a simple way to verify that the UNIX programs you write behave as expected.
+
 # 参考文献
 
 ---
