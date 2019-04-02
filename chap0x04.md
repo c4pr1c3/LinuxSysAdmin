@@ -14,6 +14,13 @@ output: revealjs::revealjs_presentation
 
 ---
 
+
+[![在线 Bash 解释器和编辑器环境](images/chap0x04/bash-online.png)](https://repl.it/@c4pr1c3/LinuxSysAdmin)
+
+> 扫码或点击图片「零安装、零配置」直接在浏览器里体验 Bash 编程
+
+---
+
 ```bash
 #!/usr/bin/env bash
 
@@ -32,6 +39,9 @@ echo "hello world!"
 ```bash
 ps | grep $$
 ```
+
+---
+
 * 查看当前shell解释器对应的文件绝对路径
 
 ```bash
@@ -52,8 +62,20 @@ bash --version
 
 * 避免目标系统上的解释器路径和预期不一致
     * 例如同时存在多个版本的 Bash，通过环境变量设置的优先解释器路径不同于期望的 `/bin/bash`
-* 类似的我们可以在 Python 脚本文件行首书写 `!#/usr/bin/env python` 
-* 例外：如果就是希望指定路径的脚本解释器执行当前脚本，而非环境变量中设置的优先脚本解释器
+
+---
+
+类似的我们可以在 Python 脚本文件行首书写 
+
+```bash
+#!/usr/bin/env python
+```
+
+---
+
+> 例外：如果就是希望指定路径的脚本解释器执行当前脚本，而非环境变量中设置的优先脚本解释器
+
+---
 
 如果我们通过 `bash target.sh` 或 `/bin/bash target.sh` 执行脚本则上述设置相当于原本的注释行作用
 
