@@ -21,6 +21,13 @@ output: revealjs::revealjs_presentation
 
 ---
 
+## 备用在线 Bash 解释器和编辑器环境
+
+* [CodingGround@tutorialspoint.com](https://www.tutorialspoint.com/execute_bash_online.php)
+* [paiza.io](https://paiza.io/en/projects/new?language=bash)
+
+---
+
 ```bash
 #!/usr/bin/env bash
 
