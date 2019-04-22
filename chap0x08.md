@@ -422,6 +422,10 @@ Docker 可以让你像使用集装箱一样快速的组合成应用，并且可�
 
 ---
 
+[![Docker 配置 Demo on Ubuntu 18.04](https://asciinema.org/a/voYA63mKW6MFOpBHgZhLs3xaP.svg)](https://asciinema.org/a/voYA63mKW6MFOpBHgZhLs3xaP)
+
+---
+
 ## 安装Docker {id="docker-install"}
 
 以官方文档为准: [https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
