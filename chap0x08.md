@@ -510,7 +510,7 @@ $ sudo systemctl status docker
 
 > An ***image*** is a filesystem and parameters to use at runtime. It doesn’t have state and never changes. A ***container*** is a running instance of an image.
 
-镜像可以类比Virtubox的基础镜像概念，容器可以类比Virtubox的差分增量镜像。
+镜像可以类比 VirtualBox 的基础镜像概念，容器可以类比 VirtualBox 的差分增量镜像。
 
 > A ***Dockerfile*** is a recipe which describes the files, environment, and commands that make up an image.
 
