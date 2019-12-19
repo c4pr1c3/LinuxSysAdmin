@@ -41,6 +41,8 @@ if [[ -x $(command -v pandoc) ]];then
     pandoc -t html5 -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_html}" -V revealjs-url="${parent_dir}/reveal.js" -V history=true
     echo "generated presentation file: ${output_html}"
   done
+  # 生成默认首页
+  pandoc -f gfm index.md -s -o index.html
 else
   echo "You need to install pandoc to run this script"
   exit 1
