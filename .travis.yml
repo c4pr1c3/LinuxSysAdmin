@@ -9,11 +9,10 @@ script:
   - bash render.sh
 
 after_script:
-  - git init
-  - git remote add origin https://${REF}
-  - git add .
+  - git checkout -b gh-pages
+  - git add *.html
   - git commit -m "Updated By Travis-CI With Build $TRAVIS_BUILD_NUMBER For Github Pages"
-  - git push --force --quiet "https://${TOKEN}@${REF}" master:gh-pages
+  - git push --force --quiet "https://${TOKEN}@${REF}" gh-pages
 
 branches:
   only:
