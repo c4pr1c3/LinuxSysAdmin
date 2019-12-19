@@ -36,9 +36,9 @@ if [[ -x $(command -v pandoc) ]];then
     fi
     output_ppt="${input}.html"
     output_html="${input}.print.html"
-    pandoc -t revealjs -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_ppt}" -V revealjs-url="${parent_dir}/reveal.js" -V history=true
+    pandoc -t revealjs -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_ppt}" -V revealjs-url="reveal.js" -V history=true
     echo "generated presentation file: ${output_ppt}"
-    pandoc -t html5 -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_html}" -V revealjs-url="${parent_dir}/reveal.js" -V history=true
+    pandoc -t html5 -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_html}" -V revealjs-url="reveal.js" -V history=true
     echo "generated presentation file: ${output_html}"
   done
   # 生成默认首页
