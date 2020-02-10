@@ -181,7 +181,7 @@ Hardware Manufacturer  硬件制造商
 * Linux基金会
 * OpenStack基金会
 * Apache
-* Canoical
+* Canonical
 
 ---
 
