@@ -1,6 +1,6 @@
 # Linux系统与网络管理
 
-中国传媒大学 信息安全本科专业（[教学Wiki](http://sec.cuc.edu.cn/huangwei/wiki)） **Linux系统与网络管理**相关课件的源代码仓库。
+中国传媒大学 信息安全本科专业（[教学Wiki](https://c4pr1c3.github.io/cuc-wiki/linux.html)） **Linux系统与网络管理**相关课件的源代码仓库。
 
 所有课件内容汇编自互联网，课件成果反馈回互联网。
 
@@ -13,6 +13,6 @@ git submodule update --recursive --remote
 bash render.sh
 ```
 
-[课件网站在线版](http://sec.cuc.edu.cn/huangwei/wiki/teaching_linux_sysadmin.html)。
+[课件网站在线版](https://c4pr1c3.github.io/LinuxSysAdmin/)。
 
 
