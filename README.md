@@ -13,6 +13,6 @@ git submodule update --recursive --remote
 bash render.sh
 ```
 
-[课件网站在线版](https://c4pr1c3.github.io/LinuxSysAdmin/)。
+[课件网站在线版](https://c4pr1c3.github.io/LinuxSysAdmin/) 和 [课程视频录像](https://space.bilibili.com/388851616/channel/detail?cid=103824)。
 
 
