@@ -36,7 +36,7 @@ if [[ -x $(command -v pandoc) ]];then
     fi
     output_ppt="${input}.html"
     output_html="${input}.print.html"
-    pandoc -t revealjs -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_ppt}" -V revealjs-url="reveal.js" -V history=true
+    pandoc -t revealjs --template=revealjs.template.html -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_ppt}" -V revealjs-url="reveal.js" -V history=true --no-highlight -V hlss=zenburn -V mathjax=true
     echo "generated presentation file: ${output_ppt}"
     pandoc -t html5 -s "${input}" -V theme=white -V transition=fade -V incremental=true -V slideNumber=true -o "${output_html}" -V revealjs-url="reveal.js" -V history=true
     echo "generated presentation file: ${output_html}"
