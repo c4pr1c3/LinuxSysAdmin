@@ -8,18 +8,20 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 提纲 {id="sec-1.agenda"}
+## 课程提纲 {id="sec-1.agenda"}
 
-1. 安装镜像获取
-2. 虚拟机基本配置
-3. 安装过程 FAQ
-4. 安装后 FAQ
+```
+I.   安装镜像获取
+II.  虚拟机基本配置
+III. 安装过程 FAQ
+IV.  安装后 FAQ
+```
 
-# 安装镜像获取
+# I. 安装镜像获取
 
 ---
 
-## 提纲 {id="sec-1.1.agenda"}
+## 本节提纲 {id="sec-1.1.agenda"}
 
 1. 安装镜像下载渠道选择
 2. 镜像文件版本选择
@@ -29,7 +31,7 @@ output: revealjs::revealjs_presentation
 
 ## 1. 安装镜像下载渠道选择
 
-* 优先选择 **官方** 下载
+* 优先[选择 **官方** 下载](https://ubuntu.com/download)
 * 不要贪图下载速度而随意使用 **第三方** 下载镜像：软件包「投毒」和「后门」风险
     * [2008 年的一篇信息安全顶会论文](refs/cappos_mirror_ccs_08.pdf)
     * [2015 年的Xcode非官方版本恶意代码污染事件](https://www.antiy.com/response/xcodeghost.html)
@@ -38,13 +40,46 @@ output: revealjs::revealjs_presentation
 
 ## 2. 镜像文件版本选择
 
-首推 [Ubuntu 官方的 FAQ](https://help.ubuntu.com/community/ServerFaq) ，你们关心的系统安装问题这里都有。
+**TL;DR**
+
+> ubuntu-18.04.4-server-amd64.iso
+
+或
+
+> ubuntu-<当前官方最新的 LTS 版本号>-server-amd64.iso
+
+```ini
+<OS_name>-<version-number>-<type>-<cpu_arch>.iso
+```
 
 ---
 
-### [live 版 vs. server 版](https://askubuntu.com/questions/1028580/what-is-the-difference-between-ubuntu-18-04-server-and-ubuntu-18-04-live-server)
+### 安装前 FAQ
 
-* 基于 preseed 实现「无人值守」安装只能选择非 `live` 版
+首推 [Ubuntu 官方的 FAQ](https://help.ubuntu.com/community/ServerFaq) ，新手关心的服务器版系统安装问题这里都有。
+
+其次还是 [Ubuntu 官方的 FAQ](https://help.ubuntu.com/community/Installation) ，进阶用户关心的诸如双系统共存、U盘安装、升级安装等问题这里都有。
+
+---
+
+### [live-server 版 vs. server 版](https://askubuntu.com/questions/1028580/what-is-the-difference-between-ubuntu-18-04-server-and-ubuntu-18-04-live-server)
+
+* 基于 preseed 实现「无人值守」安装只能选择非 `live-server` 版
+* 当前 Ubuntu 18.04 Server 版的官方下载托管域名 [cdimage.ubuntu.com](http://cdimage.ubuntu.com/releases/18.04.4/release/)
+* 当前 Ubuntu 18.04 Live-Server 版和 Desktop 版的官方下载托管域名 [releases.ubuntu.com](http://releases.ubuntu.com/18.04/)
+* 历史 Ubuntu 版本的官方下载托管域名 [old-releases.ubuntu.com](http://old-releases.ubuntu.com/releases/)
+
+---
+
+### 使用搜索引擎要仔细
+
+![](images/lab.setup/google.search.buggy.png)
+
+---
+
+### 善用搜索引擎
+
+![](images/lab.setup/google.search.exact.png)
 
 ---
 
@@ -76,6 +111,16 @@ output: revealjs::revealjs_presentation
 
 ---
 
+### 再次认准虚拟镜像文件名
+
+> ubuntu-18.04.4-server-amd64.iso
+
+```ini
+<OS_name>-<version-number>-<type>-<cpu_arch>.iso
+```
+
+---
+
 ## 3. 镜像文件完整性校验
 
 ```bash
@@ -95,17 +140,18 @@ shasum -c SHA256SUMS
 # ubuntu-18.04.4-live-server-amd64.iso: OK
 
 # linux
+sha256sum ubuntu-18.04.4-server-amd64.iso
 
 # windows
 certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 # e2 ec da ce 33 c9 39 52 7c bc 9e 8d 23 57 63 81 c4 93 b0 71 10 72 07 d2 04 0a f7 25 95 f8 99 0b
 ```
 
-# 虚拟机基本配置
+# II. 虚拟机基本配置
 
 ---
 
-## 提纲 {id="sec-2.agenda"}
+## 本节提纲 {id="sec-2.agenda"}
 
 1. 虚拟机软件选择
 2. 网卡配置
@@ -115,7 +161,7 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 
 ## 1. 虚拟机软件选择
 
-* [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
+* 开源、免费、全功能 [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 
 > 不要忘记安装 **VirtualBox Extension Pack**
 
@@ -131,26 +177,27 @@ refs:
 - [Virtualbox 虚拟网络类型差异可视化详解](https://www.nakivo.com/blog/virtualbox-network-setting-guide/)
 - [本人的 Virtualbox 虚拟网络详解（2014年课件）](https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf)
 
-# 安装过程 FAQ
+# III. 安装过程 FAQ
 
 ---
 
-## 提纲 {id="sec-3.agenda"}
+## 本节提纲 {id="sec-3.agenda"}
 
 1. 安装选项
 2. 分区方式
 3. 多网卡选择
 4. 自动更新
 
-# 安装后 FAQ
+# IV. 安装后 FAQ
 
 ---
 
-## 提纲 {id="sec-4.agenda"}
+## 本节提纲 {id="sec-4.agenda"}
 
 1. `多重加载` 虚拟硬盘文件配置
 2. 使用 `快照` 功能备份和还原虚拟机状态
-3. `net-plan` 配置
-4. 网络连通性测试方法
+3. 使用 `描述` 功能备注虚拟机重要配置
+4. `net-plan` 配置
+5. 网络连通性测试方法
 
 
