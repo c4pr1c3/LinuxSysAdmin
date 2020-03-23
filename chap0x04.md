@@ -1036,6 +1036,9 @@ printf '%s' '—' | xxd
 * [Bash Reference Manual](https://www.gnu.org/software/bash/manual/html_node/index.html)
 * [The Bash Academy](http://www.bash.academy/)
 
+# 延伸学习
 
+---
 
+* [技巧汇编：使用纯 Bash 脚本代替外部程序调用](https://github.com/dylanaraps/pure-bash-bible)
 
