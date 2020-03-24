@@ -11,7 +11,7 @@ output: revealjs::revealjs_presentation
 
 # 软件环境
 
-* Ubuntu 16.04 Server 64bit
+* Ubuntu 18.04 Server 64bit
 * 在[asciinema](https://asciinema.org)注册一个账号，并在本地安装配置好asciinema
 
 ---

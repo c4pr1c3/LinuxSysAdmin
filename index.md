@@ -5,7 +5,7 @@ author: 黄玮
 
 ## 幻灯片列表
 
-* [第一章：Linux基础](chap0x01.md.html) | [第一章：Linux基础（实验）](chap0x01.exp.md.html)
+* [第一章：Linux基础](chap0x01.md.html) | [第一章：Linux基础（实验）](chap0x01.exp.md.html) | [本章补丁视频-1：操作系统安装与虚拟机配置基础](lab.setup.md.html) | [本章补丁视频-2：《计算机网络》先修基础快速入门](get-networks-done-asap.md.html)
 * [第二章：Linux服务器系统使用基础](chap0x02.md.html) | [第二章：Linux服务器系统使用基础（实验）](chap0x02.exp.md.html)
 * [第三章：Linux服务器系统管理基础](chap0x03.md.html)
 * [第四章：shell脚本编程基础](chap0x04.md.html) | [第四章：shell脚本编程基础（实验）](chap0x04.exp.md.html)
@@ -25,4 +25,8 @@ author: 黄玮
 * [第七章](chap0x07.md.print.html)
 * [第八章](chap0x08.md.print.html)
 
+
+## 其他配套材料
+
+* [本课程配套录播课程](https://space.bilibili.com/388851616/channel/detail?cid=103824)
 
