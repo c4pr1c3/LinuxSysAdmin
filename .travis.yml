@@ -33,3 +33,7 @@ branches:
 env:
   global:
     - REF=github.com/c4pr1c3/LinuxSysAdmin.git # 设置 github 地址
+
+addons:
+  ssh_known_hosts:
+    - gitee.com
