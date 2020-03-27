@@ -18,8 +18,31 @@ output: revealjs::revealjs_presentation
 ---
 
 * URI: Universal Resource **Identifiers**
+* URL: Universal Resource **Locators**
 * HTML: HyperText Markup Language
 * HTTP: HyperText Transfer Protocol
+
+# RFC
+
+---
+
+* Request for Comments
+* IETF（互联网工程任务组）发布的互联网相关备忘录
+* [Not All RFCs are Standards ***RFC 1796***](https://datatracker.ietf.org/doc/rfc1796/?include_text=1)
+
+> In fact, each RFC has a status, relative to its relation with the Internet standardization process: **Informational**, **Experimental**, or **Standards Track** (`Proposed Standard`, `Draft Standard`, `Internet Standard`), or **Historic**. 
+
+---
+
+![RFC 1630](images/chap0x05/rfc-1630.png)
+
+---
+
+![RFC 1738](images/chap0x05/rfc-1738.png)
+
+---
+
+![RFC 2396](images/chap0x05/rfc-2396.png)
 
 # 协议族
 
@@ -67,6 +90,98 @@ output: revealjs::revealjs_presentation
 
 IRI (International Resource Identifier)：URI语法的扩展，用来支持非ASCII字符集，例如UTF-8就是最为广泛支持的字符编码集合。
 
+# 认识 [URL](https://datatracker.ietf.org/doc/rfc1738/)
+
+---
+
+> This document was written by the URI working group of the Internet Engineering Task Force.
+
+完整定义详见「RFC 1738」 `5. BNF for specific URL schemes` 。
+
+---
+
+## URL 的一般形式
+
+```
+genericurl     = scheme ":" schemepart
+```
+
+---
+
+```
+scheme         = 1*[ lowalpha | digit | "+" | "-" | "." ]
+schemepart     = *xchar | ip-schemepart
+ip-schemepart  = "//" login [ "/" urlpath ]
+```
+
+- \* 表示「重复」0或多次后面的内容
+- 1* 表示仅允许后面的内容出现 1 次
+
+---
+
+### 常见 scheme
+
+* ftp - 文件传输协议（本课程第六章内容之一）
+* http - 超文本传输协议
+* mailto - 电子邮件地址
+* file - 主机文件名
+
+---
+
+```
+reserved       = ";" | "/" | "?" | ":" | "@" | "&" | "="
+hex            = digit | "A" | "B" | "C" | "D" | "E" | "F" |
+                 "a" | "b" | "c" | "d" | "e" | "f"
+escape         = "%" hex hex
+
+unreserved     = alpha | digit | safe | extra
+uchar          = unreserved | escape
+xchar          = unreserved | reserved | escape
+```
+
+---
+
+## HTTP URL
+
+以下内容摘录自「RFC 1738」`3.3. HTTP`
+
+```
+http://<host>:<port>/<path>?<searchpart>
+```
+
+* scheme - http
+* schemepart - `//<host>:<port>/<path>?<searchpart>`
+
+---
+
+* host - 网络主机的 FQDN（Fully Qualified Domain Name） 或 IP 地址
+* port - 端口号如果省略，则左边冒号必须一并省掉
+
+---
+
+### 大小写敏感?
+
+* scheme - [不区分大小写](https://datatracker.ietf.org/doc/rfc2396/?include_text=1)
+* host   - 不区分大小写
+* path   - HTTP 服务器实现相关
+
+> For resiliency, programs interpreting URI should treat upper case letters as equivalent to lower case in scheme names (e.g., allow "HTTP" as well as "http").
+
+---
+
+### 🌰 找不同 {id="url-example-1"} 
+
+* https://git<font color='blue'>hub</font>.com/c4pr1c3/LinuxSysAdmin
+* https://git<font color='red'>ee</font>.com/c4pr1c3/LinuxSysAdmin
+
+---
+
+### 🌰 找不同 {id="url-example-2"}
+
+* https://c4pr1c3.git<font color='blue'>hub</font>.io/<font color='blue'>L</font>inux<font color='blue'>S</font>ys<font color='blue'>A</font>dmin/
+* https://c4pr1c3.git<font color='red'>ee</font>.io/<font color='red'>l</font>inux<font color='red'>s</font>ys<font color='red'>a</font>dmin/
+
+
 # Web技术架构
 
 ---
@@ -85,23 +200,34 @@ IRI (International Resource Identifier)：URI语法的扩展，用来支持非AS
 
 ---
 
-NetCraft在2017年1月根据全球1,800,047,111个站点、6,328,006台服务器的信息统计结果绘制更新以下Web服务器市场占有率统计图
+NetCraft在2020年3月根据全球257,194,796个站点、1,263,025,546台服务器的信息统计结果绘制更新以下Web服务器市场占有率统计图
 
 <a href="https://news.netcraft.com/archives/category/web-server-survey">![](images/chap0x05/web-svr-share-netcraft.png)</a>
 
 ---
 
-w3techs根据[Alexa排名](http://www.alexa.com/)全球前1000万网站使用的WEB服务器信息统计
+[Alexa排名](http://www.alexa.com/)全球前1000万网站使用WEB服务器统计
 
 <a href="https://w3techs.com/technologies/cross/web_server/ranking">![](images/chap0x05/top1000w-web-svr-share.png)</a>
 
 ---
 
-据w3techs在2017年1月19日的统计数据表明：
 
-* 在全球Top 1,000的网站中，有51.9%的网站在使用Nginx
-* 在全球Top 10,000的网站中，有57.8%的网站在使用Nginx
-* 在全球Top 100,000的网站中，有50.3%的网站在使用Nginx
+据w3techs在2020年3月27日的统计数据表明：
+
+* 在全球Top 1K 的网站中，有 62.4% 的网站在使用 Nginx（其中 20.3% 是用的[cloudflare-nginx](https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/)）
+* 在全球Top 10K 的网站中，有 68.3%的网站在使用 Nginx（其中 28.2% 是用的[cloudflare-nginx](https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/)）
+* 在全球Top 100K 的网站中，有 62.5% 的网站在使用 Nginx（其中 26.9% 是用的[cloudflare-nginx](https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/)）
+* 在全球Top 10M 网站中，有 45.6% 的网站在使用 Nginx（其中 26.9% 是用的[cloudflare-nginx](https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/)）
+
+
+---
+
+![[](https://w3techs.com/technologies/details/ws-cloudflare)](images/chap0x05/cloudflare-nginx.png)
+
+---
+
+[Cloudflare](https://www.cloudflare.com/zh-cn/network/china/) 是一家以全球「内容分发网络」（CDN）起家的公司，目前可以提供包括内容交付优化、Web 应用程序防火墙、分布式拒绝服务（DDoS）缓解、SSL 等多种互联网「安全增值」服务。根据 [nginx.com 上的一篇文章](https://www.nginx.com/success-stories/cloudflare-boosts-performance-stability-millions-websites-with-nginx/) 我们可以进一步了解到 `nginx` 在 `Cloudflare` 旗下 `CDN` 产品的广泛应用。
 
 ---
 
@@ -236,7 +362,7 @@ VeryNginx基于lua_nginx_module(openrestry)开发，实现了高级的WEB防火�
 
 ---
 
-[How To Install WordPress with LEMP on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-16-04)
+[How To Install WordPress with LEMP on Ubuntu 18.04](https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-18-04)
 
 # 客户端
 
@@ -245,15 +371,15 @@ VeryNginx基于lua_nginx_module(openrestry)开发，实现了高级的WEB防火�
 * GUI 
     * 桌面、手机、平板等浏览器
 * CLI
-    * curl、wget、w3m等
+    * [curl](https://curl.haxx.se/) 、[wget](https://www.gnu.org/software/wget/) 、[httpie](https://httpie.org/) 等
 
 ---
 
-## cURL是什么
+## cURL是什么 {id='what-is-curl'}
 
 以下摘自cURL的man手册页说明：
 
-curl  is  a  tool to transfer data from or to a server, using one of the supported protocols (DICT, ***FILE***, FTP, FTPS, GOPHER, **HTTP**, **HTTPS**, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMTP, SMTPS, TELNET and TFTP).  The command is designed to work without user interaction.
+curl  is  a  tool to transfer data from or to a server, using one of the supported protocols (DICT, ***FILE***, FTP, FTPS, GOPHER, **HTTP**, **HTTPS**, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET and TFTP).  The command is designed to work without user interaction.
 
 curl offers a busload of useful tricks like proxy support, user authentication, FTP upload, HTTP post, SSL connections, cookies, file transfer resume, Metalink, and more. As you will see below, the  number of features will make your head spin!
 
@@ -272,14 +398,14 @@ The Hypertext Transfer Protocol (HTTP) is an **application-level** protocol for 
 
 ```bash
 # 标准HTTP GET请求标准静态Web Server
-curl -v http://sec.cuc.edu.cn
+curl -v http://www.cuc.edu.cn
 
 # 标准HTTP GET请求有前端缓存系统的静态Web Server
 curl -v https://www.qq.com -o q.html 
 curl -v https://www.taobao.com -o t.html
 
 # 标准HEAD请求
-curl -v -I http://sec.cuc.edu.cn -o s.html
+curl -v -I http://www.cuc.edu.cn -o s.html
 
 # 服务器端使用自定义HTTP响应头
 curl -v https://www.baidu.com
@@ -295,10 +421,10 @@ curl -vv -L https://www.baidu.com -o baidu_c.html
 vimdiff baidu_a.html baidu_c.html
 
 # GET传参
-curl -vv 'https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E4%BC%A0%E5%AA%92%E5%A4%A7%E5%AD%A6'
-curl 'https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E4%BC%A0%E5%AA%92%E5%A4%A7%E5%AD%A6' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36'
+curl -vv 'https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E4%BC%A0%E5%AA%92%E5%A4%A7%E5%AD%A6' -o baidu_cuc_curl.html -L
+curl 'https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=0&rsv_idx=1&tn=baidu&wd=%E4%BC%A0%E5%AA%92%E5%A4%A7%E5%AD%A6' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36' -o baidu_cuc_mac.html -L
 # 比较使用不同User-Agent进行百度搜索得到的结果差异
-vimdiff baidu_a.html baidu_c.html
+vimdiff baidu_cuc_curl.html baidu_cuc_mac.html
 
 # 启用传输流压缩
 curl -vv -H 'Accept-Encoding: gzip, deflate' https://www.baidu.com -o baidu.html.gz
