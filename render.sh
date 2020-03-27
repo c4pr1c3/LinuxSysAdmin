@@ -8,11 +8,15 @@ css_min_file="reveal.js/css/reveal.min.css"
 js_src_file="${parent_dir}/reveal.js/js/reveal.js"
 js_min_file="reveal.js/js/reveal.min.js"
 
+if [[ "$1" == "gitee" ]];then
+  git_repo_url="https://gitee.com/c4pr1c3/reveal.js"
+fi
+
 if [ ! -f "${css_src_file}" ] || [ ! -f "${js_src_file}" ];then
   # download reveal.js repo
   git_tmp=$(mktemp -d)
   echo "git cloning ${git_repo_url}"
-  if [[ $(git --git-dir="${git_tmp}" clone --depth=1 ${git_repo_url}) ]];then
+  if [[ -z $(git --git-dir="${git_tmp}" clone --depth=1 ${git_repo_url} 2>&1) ]];then
     echo "Done with git clone ${git_repo_url}"
   else
     echo "Failed with git clone ${git_repo_url}"
