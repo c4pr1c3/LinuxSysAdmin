@@ -4,7 +4,6 @@ notifications:
 
 before_install:
   - export TZ='Asia/Shanghai'
-  - gunzip .travis/travis.key.enc.gz
   - openssl aes-256-cbc -in .travis/travis.key.enc -out ~/.ssh/id_rsa -d -pbkdf2 -k ${SSH_PSW} 
   - chmod 600 ~/.ssh/id_rsa
   - eval $(ssh-agent -s)
