@@ -2,6 +2,14 @@ notifications:
   email:
     on_success: never
 
+before_install:
+  - export TZ='Asia/Shanghai'
+  - gunzip .travis/travis.key.enc.gz
+  - openssl aes-256-cbc -in .travis/travis.key.enc -out ~/.ssh/id_rsa -d -pbkdf2 -k ${SSH_PSW} 
+  - chmod 600 ~/.ssh/id_rsa
+  - eval $(ssh-agent -s)
+  - ssh-add
+
 install:
   - sudo apt-get update 
   - wget https://github.com/jgm/pandoc/releases/download/2.9.1.1/pandoc-2.9.1.1-1-amd64.deb && sudo dpkg -i pandoc-2.9.1.1-1-amd64.deb
@@ -17,6 +25,7 @@ after_script:
   - git add *.html
   - git commit -m "Updated By Travis-CI With Build $TRAVIS_BUILD_NUMBER For Github Pages"
   - git push --force --quiet "https://${TOKEN}@${REF}" gh-pages
+  - git push --force --quiet git@gitee.com:c4pr1c3/LinuxSysAdmin.git gh-pages
 
 branches:
   only:
@@ -25,3 +34,7 @@ branches:
 env:
   global:
     - REF=github.com/c4pr1c3/LinuxSysAdmin.git # 设置 github 地址
+
+addons:
+  ssh_known_hosts:
+    - gitee.com
