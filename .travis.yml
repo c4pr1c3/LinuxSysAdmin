@@ -7,7 +7,7 @@ before_install:
   - chmod 600 gitee_deploy_key
   - eval $(ssh-agent)
   - ssh-add gitee_deploy_key
-  - git remote set-url gitee git@gitee.com:c4pr1c3/LinuxSysAdmin.git
+  - git remote add gitee git@gitee.com:c4pr1c3/LinuxSysAdmin.git
 
 install:
   - sudo apt-get update 
