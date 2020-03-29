@@ -384,9 +384,9 @@ echo ${#STRING}            # 16
 
 # 注意非拉丁语系字符串长度计算
 M_STRING="中文"
-export LANG=C.UTF-8
+export LC_ALL=C.UTF-8
 echo ${#M_STRING}            # 2
-export LANG=C
+export LC_ALL=C
 echo ${#M_STRING}            # 6
 
 # 字符串截取子串
@@ -502,25 +502,14 @@ if [[ "$mamashuozhegebianliangbukenengdingyiguo" ]];then printf "%d" 9;fi
 
 <font color='red'>数值</font>比较运算表达式
 
-| 比较运算表达式 |   真值条件           |
-|:--------------:|:--------------------:|
-| \$a -lt \$b  | \$a < \$b                  |
-| \$a -gt \$b  | \$a > \$b                  |
-| \$a -le \$b  | \$a <= \$b                 |
-| \$a -ge \$b  | \$a >= \$b                 |
-| \$a -eq \$b  | \$a is equal to \$b        |
-| \$a -ne \$b  | \$a is not equal to \$b    |
+![](images/chap0x04/numeric-cmp.png)
 
 ---
 
 <font color='red'>字符串</font>比较表达式
 
-|比较表达式    |  真值条件                |
-|:------------:|:------------------------:|
-| "\$a" = "\$b"  |  \$a is the same as \$b    |
-| "\$a" == "\$b" |  \$a is the same as \$b    |
-| "\$a" != "\$b" |  \$a is different from $b |
-| -z "\$a"      |  \$a is empty             |
+
+![](images/chap0x04/str-cmp.png)
 
 > 注意：上面表达式中的双引号不能省略，避免字符串中包含的空格会改变表达式的语义
 
