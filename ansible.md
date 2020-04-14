@@ -87,19 +87,19 @@ ansible all -i hosts -a 'ip addr'
 
 ---
 
-## YAML Quick Start
+## YAML 快速上手 {id="yaml-quickstart"}
 
-* （可选）``---`` 定义 YAML 文件开始，``...`` 定义 YAML 文件结束
-* ``list`` 数据结构，使用 ``- `` （一个短杠和一个空格）
-* ``dict`` 数据结构，使用 ``key: value`` 形式
+* （可选）`---` 定义 YAML 文件开始，`...` 定义 YAML 文件结束
+* `list` 数据结构，使用 `- ` （一个短杠和一个空格）
+* `dict` 数据结构，使用 `key: value` 形式
 * 续行符
-    * ``|`` 包含换行符
-    * ``>`` 忽略换行符
+    * `|` 包含换行符
+    * `>` 忽略换行符
 * 尽可能多的使用 **双引号** 包围变量的赋值
 
 ---
 
-## YAML Basic Examples
+## YAML 简单例子 {id="yaml-basic-examples"}
 
 ```yaml
 # Employee records
@@ -119,14 +119,13 @@ ansible all -i hosts -a 'ip addr'
       - erlang
 
 # 上述例子的等价单行写法如下：
----
 martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 fruits: ['Apple', 'Orange', 'Strawberry', 'Mango']
 ```
 
 ---
 
-## YAML Multiple Lines Span Examples
+## YAML 多行字符串例子 {id="yaml-multiple-lines"}
 
 ```yaml
 include_newlines: |
@@ -174,7 +173,7 @@ extra vars (always win precedence)
 
 ---
 
-常见运维任务都可以找到 ``ansible`` 内置模块的支持，例如：
+常见运维任务都可以找到 `ansible` 内置模块的支持，例如：
 
 * [文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等](http://docs.ansible.com/ansible/latest/list_of_files_modules.html)
 * [bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具](http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html)
@@ -190,23 +189,23 @@ extra vars (always win precedence)
 
 ---
 
-## [What Can Be Encrypted With Vault](http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault)
+## [使用 Vault 加密敏感数据](http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault)
 
 可以对以下路径下的文件加密
 
-* ``group_vars/``
-* ``host_vars/``
+* `group_vars/`
+* `host_vars/`
 
 也可以对 Ansible 变量加密
 
 ---
 
 * **建议-1** 仅对需要加密的变量进行加密，避免加密扩大化；
-* **建议-2** 为了便于 ``grep`` 等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个 **中间变量** 来隔离 ``被引用变量`` 和 ``加密数据``。
+* **建议-2** 为了便于 `grep` 等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个 **中间变量** 来隔离 `被引用变量` 和 `加密数据`。
 
 ---
 
-变量加密推荐做法实例
+## 变量加密推荐做法实例 {id="var-encrypted-examples"}
 
 ```yaml
 # group_vars/demo/vars.html
@@ -232,9 +231,9 @@ vault_demo_users:
 
 ---
 
-[Ansible Best Practices](http://docs.ansible.com/ansible/latest/playbooks_best_practices.html)
+[Ansible 最佳实践](http://docs.ansible.com/ansible/latest/playbooks_best_practices.html)
 
-在官方推荐的 [Directory Layout](http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout) 基础之上，进一步精简一个常用目录组织结构：
+在官方推荐的 [目录布局](http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout) 基础之上，进一步精简一个常用目录组织结构：
 
 ```yaml
 production                # 生产环境服务器清单文件
