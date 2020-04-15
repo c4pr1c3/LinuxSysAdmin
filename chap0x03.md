@@ -166,6 +166,12 @@ Sticky Bit
 
 ---
 
+## 关于 SUID 和 SGID 的实践验证 🌰 {id='suid-sgid-exp'}
+
+[![asciicast](https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf.svg)](https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf)
+
+---
+
 ## 改变文件和目录的属主与权限
 
 * chown

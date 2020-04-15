@@ -25,6 +25,12 @@ author: 黄玮
 * [第七章](chap0x07.md.print.html)
 * [第八章](chap0x08.md.print.html)
 
+## 番外课件
+
+* [第八章的「番外」说明](chap0x08-extras-index.md.html)
+    * [PXE](PXE.md.html)
+    * [Cloud-Init](cloud-init.md.html)
+    * [ansible](ansible.md.html)
 
 ## 其他配套材料
 
