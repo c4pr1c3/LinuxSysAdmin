@@ -48,11 +48,11 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## Cloud-Init 的作用
+## Cloud-Init 的作用 {id="cloud-init-usage"}
 
 > 解决 `从一到二、到三，乃至万物` （从基本系统到可编程、可配置） 的 **自动化** 问题
 
-# 从「第一个 🌰 」开始体验 cloud-init
+# 从「第一个 🌰 」开始体验 cloud-init {id="hello-cloud-init"}
 
 ---
 
@@ -165,7 +165,7 @@ ssh_pwauth: True
 | --- | --- | --- |
 | Ubuntu<br />SLES/openSUSE<br />RHEL/CentOS<br />Fedora<br />Gentoo Linux<br />Debian<br />ArchLinux<br />FreeBSD<br />NetBSD<br />OpenBSD<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /> | Amazon Web Services<br />Microsoft Azure<br />Google Cloud Platform<br />Oracle Cloud Infrastructure<br />Softlayer<br />Rackspace Public Cloud<br />IBM Cloud<br />Digital Ocean<br />Bigstep<br />Hetzner<br />Joyent<br />CloudSigma<br />Alibaba Cloud<br />OVH<br />OpenNebula<br />Exoscale<br />Scaleway<br />CloudStack<br />AltCloud<br />SmartOS<br />HyperOne<br />Rootbox<br /> | Bare metal installs<br />OpenStack<br />LXD<br />KVM<br />Metal-as-a-Service (MAAS)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />|
 
-# 查看当前已安装 Cloud-Init 版本
+# 查看当前已安装 Cloud-Init 版本 {id="check-cloud-init-version"}
 
 ---
 
@@ -306,7 +306,7 @@ cat /var/lib/cloud/instances/1/boot-finished
 
 如果希望重新执行 `init-cidata.iso` 里定义的操作，需要变更 `meta-data` 文件里的 `instance-id` 赋值为 `/var/lib/cloud/instances/` 下不存在重名子目录的其他值。
 
-# [调试 user-data](https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data)
+# [调试 user-data](https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data) {id="debug-user-data"}
 
 ---
 
@@ -324,7 +324,7 @@ cloud-init devel schema -c user-data --annotate
 
 ---
 
-## [Cloud-Init 主要阶段](https://cloudinit.readthedocs.io/en/19.4/topics/boot.html)
+## [Cloud-Init 主要阶段](https://cloudinit.readthedocs.io/en/19.4/topics/boot.html) {id="boot-stages"}
 
 结合 `/etc/cloud/cloud.cfg` 文件内容来理解不同「启动阶段」：文件中一共定义了 3 个阶段:
 
@@ -508,7 +508,185 @@ system_info:
    ssh_svcname: ssh
 ```
 
-# 更复杂的 🌰 们
+# cloud-init 实战 🌰 {id="cloud-init-real-example"}
+
+---
+
+## 需求描述
+
+1. 重置 [machine-id](https://www.freedesktop.org/software/systemd/man/machine-id.html)
+2. 添加 ssh 免密登录
+3. 安装 python3
+
+# 为什么需要重置 `machine-id` {id="why-reset-machine-id"}
+
+---
+
+## machine-id {id="machine-id-1"}
+
+> The `/etc/machine-id` file contains the unique machine ID of the local system that is set during installation or boot. The machine ID is a single newline-terminated, hexadecimal, 32-character, lowercase ID. When decoded from hexadecimal, this corresponds to a 16-byte/128-bit value. This ID may not be all zeros.
+
+---
+
+## machine-id {id="machine-id-2"}
+
+> systemd-machine-id-setup(1) may be used by installer tools to initialize the machine ID at install time, but /etc/machine-id may also be written using any other means.
+
+---
+
+## machine-id {id="machine-id-3"}
+
+> For operating system images which are created once and used on multiple machines, for example for containers or in the cloud, `/etc/machine-id` **should be an empty file** in the generic file system image. `An ID will be generated during boot and saved to this file if possible`. **Having an empty file** in place is useful because it allows a temporary file to be bind-mounted over the real file, in case the image is used read-only.
+
+---
+
+## 为什么我克隆出来的虚拟机总是获得相同 IP 地址？
+
+根据[网友 `wickedchicken` 在 SO 网站上的回答](https://unix.stackexchange.com/a/419322)
+
+> `systemd-networkd` uses a different method to generate the DUID than `dhclient`. `dhclient` [by default uses the link-layer address](https://manpages.debian.org/jessie/isc-dhcp-client/dhclient.8.en.html) while systemd-networkd uses [the contents of /etc/machine-id](https://www.freedesktop.org/software/systemd/man/networkd.conf.html#DUIDType=). Since the VMs were cloned, they have the same `machine-id` and the DHCP server returns the same IP for both.
+
+---
+
+> To fix, replace the contents of one or both of /etc/machine-id. This can be anything, but deleting the file and running systemd-machine-id-setup will create a random machine-id in the same way done on machine setup.
+
+---
+
+另一种解决方案：修改 `/etc/netplan/01-netcfg.yaml` ，在网卡的 `dhcp` 配置列表里添加配置参数：[dhcp-identifier: mac](https://netplan.io/reference)
+
+```yaml
+# ref: https://netplan.io/examples#integration-with-a-windows-dhcp-server
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: yes
+    enp8s0:
+      dhcp4: yes
+      dhcp-identifier: mac
+```
+
+---
+
+## 变更 `machine-id` 之后为什么需要重启 {id="reboot-after-machine-id-reset"}
+
+以下内容摘自 `man dbus-uuidgen`
+
+> If you try to change an existing machine-id on a running system, it will probably result in bad things happening. Don't try to change this file. Also, don't make it the same on two different systems; it needs to be different anytime there are two different kernels running.
+
+---
+
+以下结论摘自 [网友 `hvd` 在 SO 网站上的回答结论](https://unix.stackexchange.com/a/403054) ：
+
+> **So after doing this, definitely don't continue using the system without rebooting.**
+
+# cloud-init 实战 🌰 马上开始 {id="cloud-init-real-example-get-started"}
+
+---
+
+1. 确保目标系统内已安装 `cloud-init`
+2. 检查 `/etc/machine-id` 此时的值
+3. 检查 `/etc/netplan/` 目录下此时的文件
+4. 检查 `/etc/netplan/01-netcfg.yaml` 文件内容
+5. 检查当前第二块网卡的 IP 地址
+
+---
+
+## 关键配置
+
+* `user-data`
+* `meta-data`
+
+---
+
+### `user-data` 示例 {id="user-data-real-example"}
+
+```yaml
+#cloud-config
+users:
+  - name: cuc
+    lock_passwd: false # Disable password login. Default: true
+    passwd: 123456 # !!DEMO only!! Hashed password is recommended in Production.
+    ssh_authorized_keys:
+      - <ssh-pub-key-1>
+      - <ssh-pub-key-2>
+
+# run the following cmds after system is booted and rootfs is mounted
+runcmd:
+  - echo -n '' > /etc/machine-id # clear but not delete
+  - /bin/systemd-machine-id-setup
+
+# Install additional packages on first boot
+#
+# Default: none
+#
+# if packages are specified, this apt_update will be set to true
+#
+# packages may be supplied as a single package name or as a list
+# with the format [<package>, <version>] wherein the specifc
+# package version will be installed.
+packages:
+  - python3 # required by ansible remote 
+
+## poweroff or reboot system after finished
+# default: none
+#
+# power_state can be used to make the system shutdown, reboot or
+# halt after boot is finished.  This same thing can be acheived by
+# user-data scripts or by runcmd by simply invoking 'shutdown'.
+#
+# Doing it this way ensures that cloud-init is entirely finished with
+# modules that would be executed, and avoids any error/log messages
+# that may go to the console as a result of system services like
+# syslog being taken down while cloud-init is running.
+#
+# If you delay '+5' (5 minutes) and have a timeout of
+# 120 (2 minutes), then the max time until shutdown will be 7 minutes.
+# cloud-init will invoke 'shutdown +5' after the process finishes, or
+# when 'timeout' seconds have elapsed.
+#
+# delay: form accepted by shutdown.  default is 'now'. other format
+#        accepted is +m (m in minutes)
+# mode: required. must be one of 'poweroff', 'halt', 'reboot'
+# message: provided as the message argument to 'shutdown'. default is none.
+# timeout: the amount of time to give the cloud-init process to finish
+#          before executing shutdown.
+# condition: apply state change only if condition is met.
+#            May be boolean True (always met), or False (never met),
+#            or a command string or list to be executed.
+#            command's exit code indicates:
+#               0: condition met
+#               1: condition not met
+#            other exit codes will result in 'not met', but are reserved
+#            for future use.
+#
+power_state:
+ delay: "now"
+ mode: reboot
+ message: Make new machine-id take effect
+ timeout: 10
+ condition: True
+```
+
+---
+
+### `meta-data` 示例 {id="meta-data-real-example"}
+
+```yaml
+instance-id: 1
+local-hostname: ansible-slave
+```
+
+---
+
+## 实验完成后检查清单
+
+1. 检查 `/etc/machine-id` 此时的值
+2. 检查 `/etc/netplan/` 目录下此时的文件
+3. 检查当前第二块网卡的 IP 地址
+
+
+# 更复杂的 🌰 们 {id="more-examples"}
 
 ---
 
