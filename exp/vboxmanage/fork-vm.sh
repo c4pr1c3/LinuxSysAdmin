@@ -67,16 +67,16 @@ fi
 VBoxManage createvm --name "$vm_name" --ostype Oracle_64 --register --groups "/Linux"
 
 # 创建一个 IDE 控制器
-VBoxManage storagectl "$vm_name" --name "IDE Controller" --add ide
+VBoxManage storagectl "$vm_name" --name "IDE" --add ide
 # 向该控制器安装一个「光驱」
-VBoxManage storageattach "$vm_name" --storagectl "IDE Controller" --port 0 \
+VBoxManage storageattach "$vm_name" --storagectl "IDE" --port 0 \
   --device 0 --type dvddrive --medium "$ci_iso" 
 
 # 创建一个 SATA 控制器
-VBoxManage storagectl "$vm_name" --name "SATA Controller" --add sata --controller IntelAHCI
+VBoxManage storagectl "$vm_name" --name "SATA" --add sata --controller IntelAHCI
 # 向该控制器安装一个「硬盘」
 ## --medium 指定本地的一个「多重加载」虚拟硬盘文件
-VBoxManage storageattach "$vm_name" --storagectl "SATA Controller" --port 0 \
+VBoxManage storageattach "$vm_name" --storagectl "SATA" --port 0 \
   --device 0 --type hdd --medium "$vdi_base"
 
 # 修改虚拟机配置

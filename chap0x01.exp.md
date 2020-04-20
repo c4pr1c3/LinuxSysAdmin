@@ -110,14 +110,18 @@ label autoinstall
 ---
 
 ```bash
+# 切换到 root 用户身份
+sudo su -
+
 # 重新生成md5sum.txt
-cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
+cd "$HOME/cd" && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
 
 # 封闭改动后的目录到.iso
 IMAGE=custom.iso
-BUILD=~/cd/
+BUILD="$HOME/cd/"
 
-mkisofs -r -V "Custom Ubuntu Install CD" \
+apt update && apt install -y genisoimage
+genisoimage -r -V "Custom Ubuntu Install CD" \
             -cache-inodes \
             -J -l -b isolinux/isolinux.bin \
             -c isolinux/boot.cat -no-emul-boot \
