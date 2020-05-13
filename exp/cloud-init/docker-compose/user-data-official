@@ -1,0 +1,32 @@
+#cloud-config
+# vim: ft=yaml
+
+#users:
+#  - name: cuc
+#    lock_passwd: false # Disable password login. Default: true
+#    passwd: 123456 # !!DEMO only!! Hashed password is recommended in Production.
+#    ssh_authorized_keys:
+#      - <ssh-pub-key-1>
+#      - <ssh-pub-key-2>
+
+# ref: https://cloudinit.readthedocs.io/en/latest/topics/modules.html#host-keys
+# For each host key type for which this module has been instructed to create a keypair, if a key of the same type is already present on the system (i.e. if ssh_deletekeys was false), no key will be generated.
+#ssh_deletekeys: false
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - git
+  - software-properties-common
+  - python3-pip
+
+runcmd:
+  - [sh, -c, "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -"]
+  - [sh, -c, "add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\""]
+  - [sh, -c, "apt-get update"]
+  - [sh, -c, "apt-get install -y docker-ce docker-ce-cli containerd.io"]
+  - [sh, -c, "pip3 install docker-compose"]

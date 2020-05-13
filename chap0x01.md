@@ -425,7 +425,7 @@ man 3 printf
 # ProxyCommand
 man ssh_config
 ```
-* [SSH服务器安全加固](http://sec.cuc.edu.cn/huangwei/course/2014_2/nsLecture0x10.pdf)
+* [SSH服务器安全加固](https://github.com/c4pr1c3/cuc-courses/raw/master/2014_2/nsLecture0x10.pdf)
 
 ---
 
