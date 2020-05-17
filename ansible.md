@@ -212,7 +212,7 @@ apt policy python3.8
 
 ```bash
 # 使用 ansible 内置的 ping 模块
-## 在 清单 文件中名为 ubuntu 的主机或主机组定义的所有主机 上执行
+## 在 清单 文件中名为 ubuntu 的主机或主机组定义的所有主机上执行
 ansible ubuntu -i hosts -m ping
 ## 在 清单 文件中定义的所有 不重复主机 上执行
 ansible all -i hosts -m ping
@@ -243,7 +243,7 @@ ansible all -i hosts -a 'ip addr'
 "{{ base_path }}/22"
 
 {# ansible hostname -m setup #}
-{{ ansible_facts['devices']['xvda']['model'] }}
+{{ ansible_facts['devices']['sda']['model'] }}
 ```
 
 更多关于模版（Jinja2）的帮助请阅读[ Ansible 官方文档](https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html) 。
@@ -317,7 +317,7 @@ extra vars (always win precedence)
 ### 变量加密推荐做法实例 {id="var-encrypted-examples"}
 
 ```yaml
-# group_vars/demo/vars.html
+# group_vars/demo/vars.yml
 demo_group_name: "demo"
 demo_users: 
   alice:
@@ -327,7 +327,7 @@ demo_users:
     group: "vault_group"
     passwd: "{{ vault_demo_users.bob.passwd }}"
 
-# group_vars/demo/vault.html
+# group_vars/demo/vault.yml
 # 该文件的实际内容使用 ansible-vault 加密存储
 vault_demo_users:
   alice:
@@ -501,19 +501,19 @@ pip install ansible-lint yamllint
 ```yaml
 # Employee records
 - martin:
-  name: Martin D'vloper
-  job: Developer
-  skills:
-    - python
-    - perl
-    - pascal
+    name: Martin D'vloper
+    job: Developer
+    skills:
+      - python
+      - perl
+      - pascal
 - tabitha:
-  name: Tabitha Bitumen
-  job: Developer
-  skills:
-    - lisp
-    - fortran
-    - erlang
+    name: Tabitha Bitumen
+    job: Developer
+    skills:
+      - lisp
+      - fortran
+      - erlang
 
 # 上述例子的等价单行写法如下：
 # 可以将以下内容复制粘贴到 http://www.yamllint.com/ 进行验证
