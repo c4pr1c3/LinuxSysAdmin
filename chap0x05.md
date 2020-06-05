@@ -455,4 +455,5 @@ curl -vv -H 'Accept-Encoding: gzip, deflate' https://www.baidu.com -o baidu.html
 * [The Art Of Scripting HTTP Requests Using Curl](http://curl.haxx.se/docs/httpscripting.html)
 * [Techniques for Mastering cUR](http://net.tutsplus.com/tutorials/php/techniques-and-resources-for-mastering-curl/)
 * [curl and libcurl Vulnerabilities Table Overview](http://curl.haxx.se/docs/vulnerabilities.html)
+* [Nginx 图形化配置文件生成工具](https://www.digitalocean.com/community/tools/nginx)
 

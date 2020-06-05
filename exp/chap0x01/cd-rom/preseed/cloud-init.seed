@@ -210,7 +210,7 @@ d-i partman-auto-lvm/guided_size string max
 # - atomic: all files in one partition
 # - home:   separate /home partition
 # - multi:  separate /home, /var, and /tmp partitions
-d-i partman-auto/choose_recipe select multi
+d-i partman-auto/choose_recipe select atomic
 
 # Or provide a recipe of your own...
 # If you have a way to get a recipe file into the d-i environment, you can

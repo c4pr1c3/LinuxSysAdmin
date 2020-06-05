@@ -14,6 +14,8 @@
 # For each host key type for which this module has been instructed to create a keypair, if a key of the same type is already present on the system (i.e. if ssh_deletekeys was false), no key will be generated.
 #ssh_deletekeys: false
 
+locale: en_US.UTF-8
+
 package_update: true
 package_upgrade: true
 package_reboot_if_required: true

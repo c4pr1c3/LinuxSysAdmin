@@ -22,4 +22,18 @@ genisoimage -output init.iso -volid cidata -joliet -rock user-data meta-data
 mkisofs -output init.iso -volid cidata -joliet -rock user-data meta-data
 ```
 
+### 网络配置
 
+`network-config` 里定义了 `net-plan` 兼容的[网卡配置](https://cloudinit.readthedocs.io/en/latest/topics/network-config-format-v2.html) 。
+
+根据[官方文档说明](https://cloudinit.readthedocs.io/en/latest/topics/datasources/nocloud.html)，文件名同样不能修改，必须是 `network-config` ：
+
+> Network configuration can also be provided to cloud-init in either Networking Config Version 1 or Networking Config Version 2 by providing that yaml formatted data in a file named `network-config`. If found, this file will override a network-interfaces file.
+
+```bash
+# ubuntu
+genisoimage -output init.iso -volid cidata -joliet -rock user-data meta-data network-config
+
+# mac
+mkisofs -output init.iso -volid cidata -joliet -rock user-data meta-data network-config
+```
