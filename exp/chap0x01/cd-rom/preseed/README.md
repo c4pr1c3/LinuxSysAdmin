@@ -3,6 +3,10 @@
 
 参考 [第一章 实验报告](../../../../chap0x01.exp.md) 里的方法去构建「无人值守」安装镜像。
 
+> ⚠️ 重要提醒⚠️
+
+在使用虚拟化技术制作「基础镜像」时，[强烈建议清空 `/etc/machine-id` 内容](../../../../cloud-init.md#为什么需要重置-machine-id-idwhy-reset-machine-id) 后，再关机制作「基础镜像」。
+
 ## cloud-init.seed VS. ubuntu-server-autoinstall.seed
 
 |              | cloud-init.seed           | ubuntu-server-autoinstall.seed |
