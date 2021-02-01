@@ -146,3 +146,12 @@ genisoimage -r -V "Custom Ubuntu Install CD" \
 * preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 [ubuntu-18.04.1-live-server-amd64.iso](https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server)
 * txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的
 
+---
+
+## 推荐阅读
+
+* [在 VirtualBox 中一键安装 macOS](https://github.com/myspaghetti/macos-virtualbox)
+    * 命令行操作 VirtualBox 的最佳示范应用
+    * 跨平台 Bash 脚本的最佳示范应用（建议学完「第四章」后再看、再学习体会）
+    * 获得 macOS 平台体验机会
+
