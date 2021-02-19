@@ -15,9 +15,10 @@ output: revealjs::revealjs_presentation
 ---
 
 * Virtualbox
-* Ubuntu 18.04 Server 64bit
-    * 备选：Ubuntu 16.04 Server 64bit
-    * 备选：Ubuntu 16.04 Desktop 64bit
+* Ubuntu 20.04 Server 64bit
+    * 备选：Ubuntu 18.04 Server 64bit
+    * 备选：Ubuntu 18.04 Desktop 64bit
+* 课件内容均在 18.04 版本时代制作，同学们在实验时遇到实际情况与课件描述不符之处，应以实际环境为准，切忌唯课件论
 
 # 实验问题
 
