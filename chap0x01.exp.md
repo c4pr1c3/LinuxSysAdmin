@@ -45,11 +45,65 @@ output: revealjs::revealjs_presentation
 
 * [No “eth0” listed in ifconfig -a, only enp0s3 and lo](http://askubuntu.com/questions/704035/no-eth0-listed-in-ifconfig-a-only-enp0s3-and-lo)
 
-# 无人值守安装iso制作过程示例
+# Focal Fossa 无人值守安装 iso 制作过程示例
+
+---
+
+⚠️ 仅适用于基于 [subiquity](https://github.com/CanonicalLtd/subiquity) 的 Ubuntu 安装镜像 ⚠️
+
+* [Ubuntu 20.04 Live Server](https://releases.ubuntu.com/focal/)
+    * 当前已验证 [20.04.2](https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso)
+
+---
+
+## 先修但可以跳过的技术基础
+
+[Cloud-Init](cloud-init.md)
 
 ---
 
 ## 实现特性
+
+* 定制一个普通用户名和默认密码
+* 定制安装 OpenSSH Server
+
+---
+
+## 实验提醒
+
+* 根据需要 **酌情** 修改指令
+* 遇到指令执行出错务必 **仔细** 阅读出错信息并在搜索引擎中搜索 **错误关键字**
+
+---
+
+## 主要操作步骤 {id="steps-to-auto-focal-1"}
+
+* 提前下载好[纯净版 Ubuntu 安装镜像 iso 文件](https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso)
+* 使用手动安装 Ubuntu 后得到的一个初始「自动配置描述文件」 :  `/var/log/installer/autoinstall-user-data` 对照 [Ubuntu 20.04 + Autoinstall + VirtualBox](https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c) 中提供的示例配置文件 **酌情修改**
+    * 也可以 **偷懒跳过** 上述步骤，直接使用我提供的一个 [可用配置文件 user-data](exp/chap0x01/cd-rom/nocloud/user-data)
+    * `meta-data` 文件必不可少，但可以是空文件
+* 同手工安装系统步骤，新建可以用于安装 `Ubuntu 64位系统` 的虚拟机配置
+
+---
+
+## 主要操作步骤 {id="steps-to-auto-focal-2"}
+
+* 参考 [番外章节 Cloud-Init 实验目录中的说明文件](exp/cloud-init/docker-compose/README.md) ，制作包含 `user-data` 和 `meta-data` 的 ISO 镜像文件，假设命名为 `focal-init.iso`
+* 移除上述虚拟机「设置」-「存储」-「控制器：IDE」
+* 在「控制器：SATA」下新建 2 个虚拟光盘，分别挂载「纯净版 Ubuntu 安装镜像文件」和 `focal-init.iso`
+* 启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 `yes` 并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了
+
+> Continue with autoinstall? (yes/no)
+
+# (2021 年以前版本) 无人值守安装iso制作过程示例 
+
+---
+
+⚠️ 仅限 Ubuntu 18.04 和 16.04 ，不适用于 Ubuntu 20.04 及后续更新版本 ⚠️
+
+---
+
+## 实现特性 {id="features-2020"}
 
 * 定制一个普通用户名和默认密码
 * 定制安装OpenSSH Server
@@ -57,7 +111,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 实验提醒
+## 实验提醒 {id="tips-2020"}
 
 * 先「有人值守」方式安装好 **一个可用的 Ubuntu 系统环境**
 * 以下操作指令均在上述环境的 **命令行** 中输入完成
@@ -142,7 +196,7 @@ genisoimage -r -V "Custom Ubuntu Install CD" \
 
 ---
 
-## 友情提醒
+## 友情提醒 {id="tips-2020-1"}
 
 * preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 [ubuntu-18.04.1-live-server-amd64.iso](https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server)
 * txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的
