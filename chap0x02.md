@@ -467,7 +467,7 @@ cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
 
 ---
 
-将[网络安全2016模拟测试题](http://sec.cuc.edu.cn/huangwei/textbook/ns/exam/2016.html)另存到本地文件``exam.html``，接下来我们来用sed做一些实验：
+将[网络安全2016模拟测试题](https://c4pr1c3.github.io/cuc-ns/exam/2016.html)另存到本地文件``exam.html``，接下来我们来用sed做一些实验：
 
 ```bash
 # 以下命令类似于cat exam.html
@@ -1046,7 +1046,7 @@ ping www.baidu.com 1>/dev/null 2>&1 &
 # 整个世界都清净了，终端不会再被“涌出”的ping输出结果“污染”
 # 查看进程会发现ping在“后台”一直运行着
 ps aux | grep ping
-ping sec.cuc.edu.cn 1>/dev/null 2>&1 &
+ping www.cuc.edu.cn 1>/dev/null 2>&1 &
 # 杀死所有ping进程
 killall ping
 ```

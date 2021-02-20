@@ -56,7 +56,7 @@ exit
 ```bash
 # 本实验建议通过SSH远程登录到虚拟机上执行
 ping www.baidu.com 2>&1 1>/dev/null &
-ping sec.cuc.edu.cn 2>&1 1>/dev/null &
+ping www.cuc.edu.cn 2>&1 1>/dev/null &
 # 注意查看输出结果，观察ping进程的父进程是谁
 pstree -A
 # 此时退出SSH登录
@@ -283,7 +283,7 @@ LVM的基本组成块（building blocks）如下：
 
 ---
 
-* 大部分的Linux压缩工具遵循***[KISS\(Keep It Simple and Stupid\)原则](http://sec.cuc.edu.cn/huangwei/wiki/teaching_basic_how_to_programming.html)***，即“**每个程序只做一件事，不要试图在单个程序中完成多个任务**”，所以压缩工具只是被设计用来对单个文件进行压缩，如果要对很多文件、一个目录下所有子目录和文件进行压缩，则需要先使用**打包工具**对批量的文件和目录进行打包，变成一个文件之后，再将压缩任务交给专门的压缩工具软件。
+* 大部分的Linux压缩工具遵循 `KISS(Keep It Simple and Stupid)原则` ，即“**每个程序只做一件事，不要试图在单个程序中完成多个任务**”，所以压缩工具只是被设计用来对单个文件进行压缩，如果要对很多文件、一个目录下所有子目录和文件进行压缩，则需要先使用**打包工具**对批量的文件和目录进行打包，变成一个文件之后，再将压缩任务交给专门的压缩工具软件。
 
 # 文件备份 - 文件归档
 
@@ -364,7 +364,7 @@ LVM的基本组成块（building blocks）如下：
 
 * 激进的设计
     * 重新发明了一堆历史悠久的核心服务(syslog, ntp, cron, fstab, dhcpcd等等)，虽然是简化功能和配置，但有经验的系统管理员更信赖他们熟悉的服务（尽管配置较为复杂）
-    * 作为系统的1号进程，承载的功能太多：单点故障风险集中、不符合UNIX设计哲学***[KISS](http://sec.cuc.edu.cn/huangwei/wiki/teaching_basic_how_to_programming.html)***
+    * 作为系统的1号进程，承载的功能太多：单点故障风险集中、不符合UNIX设计哲学 `KISS`
     * 不遵循 POSIX 标准，无法移植到Linux之外的平台
 * 过快的开发迭代
     * 代码质量不高

@@ -103,6 +103,12 @@ output: revealjs::revealjs_presentation
 
 ---
 
+## Ubuntu 20.04 Legacy 版 {id="focal-legacy"}
+
+[![](images/chap0x01/ubuntu-server-install-survey.png)](http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04.1/release/)
+
+---
+
 ## 实现特性 {id="features-2020"}
 
 * 定制一个普通用户名和默认密码
