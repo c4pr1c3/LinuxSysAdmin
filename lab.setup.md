@@ -11,11 +11,20 @@ output: revealjs::revealjs_presentation
 ## 课程提纲 {id="sec-1.agenda"}
 
 ```
+0.   直接导入 .ova 文件
 I.   安装镜像获取
 II.  虚拟机基本配置
 III. 安装过程 FAQ
 IV.  安装后 FAQ
 ```
+
+# 0. 直接导入 .ova 文件
+
+---
+
+链接: https://pan.baidu.com/s/1gjzqIxxF85fctbCHGKhzOA 提取码: pkue 复制这段内容后打开百度网盘手机App，操作更方便哦 
+
+![](images/lab.setup/pan.baidu.com.png)
 
 # I. 安装镜像获取
 
@@ -68,6 +77,12 @@ IV.  安装后 FAQ
 * 当前 Ubuntu 18.04 Server 版的官方下载托管域名 [cdimage.ubuntu.com](http://cdimage.ubuntu.com/releases/18.04.4/release/)
 * 当前 Ubuntu 18.04 Live-Server 版和 Desktop 版的官方下载托管域名 [releases.ubuntu.com](http://releases.ubuntu.com/18.04/)
 * 历史 Ubuntu 版本的官方下载托管域名 [old-releases.ubuntu.com](http://old-releases.ubuntu.com/releases/)
+
+---
+
+### live-server 版专属「无人值守」安装方法
+
+详见 [第一章 实验指南](chap0x01.exp.md)
 
 ---
 
@@ -185,8 +200,17 @@ refs:
 
 1. 安装选项
 2. 分区方式
+    * 存储分区方式选择时，建议安装时勾选「LVM」和不勾选各来一次，得到 2 种分区方式的系统备用
 3. 多网卡选择
 4. 自动更新
+
+---
+
+## 图文版安装向导
+
+`ubuntu install 20.04 step by step`
+
+![](images/lab.setup/step-by-step-install.png)
 
 # IV. 安装后 FAQ
 
