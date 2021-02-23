@@ -97,7 +97,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions)
+## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions) {id="linux-distros-1"}
 
 * Linux内核
     * [Debian](https://www.debian.org/): 非营利性组织运营的开源软件构建发布版本
@@ -105,16 +105,25 @@ output: revealjs::revealjs_presentation
             * [Linux Mint](https://www.linuxmint.com/about.php)：开源社区维护
     * Fedora
         * RHEL: Red Hat Enterprise Linux
-            * CentOS
+            * [CentOS is dead, CentOS Stream `is not a replacement`](https://blog.centos.org/2020/12/future-is-centos-stream/)
+                * CentOS Stream, founded in 2019, is “a rolling preview of what's next in RHEL.”
             * Oracle Linux
+---
+
+## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions) {id="linux-distros-2"}
+
+* Linux内核
     * [SUSE](https://www.suse.com/)
         * SLES: SUSE Linux Enterprise Server
         * [openSUSE](https://zh.opensuse.org/)
     * 其他发行版
+        * Arch Linux
+        * Gentoo
+        * Slackware
 
 ---
 
-## Linux生态圈 - 发行版
+## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/List_of_Linux_distributions) {id="linux-distros-3"}
 
 <a href="http://tuxradar.com/content/best-distro-2011">![](images/chap0x01/LinuxPublisherComparison.jpg)</a>
 
@@ -161,13 +170,13 @@ output: revealjs::revealjs_presentation
 
 ---
 
-ISV(Independent Software Vendor) 独立软件开发商
+## ISV(Independent Software Vendor) 独立软件开发商
 
 <a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf">![](images/chap0x01/OpenSourceISV.png)</a>
 
 ---
 
-Hardware Manufacturer  硬件制造商 
+## Hardware Manufacturer  硬件制造商 
 
 * [Hardware on LinuxMint](https://community.linuxmint.com/hardware)
 * [Ubuntu 认证硬件](https://certification.ubuntu.com/)
@@ -189,17 +198,24 @@ Hardware Manufacturer  硬件制造商
 
 * 孵化了[大量知名开源项目](https://www.linuxfoundation.org/projects)
     * 例如：KVM、Xen、nodejs、Open vSwitch等
-* Linux基金会采用的是[会员制，分为：银级、金级、白金级三个等级，白金级是最高等级](https://www.linuxfoundation.org/about/bylaws)。
+* Linux基金会采用的是[会员制，分为：准会员、银级、金级、白金级四个等级，白金级是最高等级](https://www.linuxfoundation.org/about/bylaws)。
     * [白金会员（年费50万美元）：思科、富士通、惠普企业、华为、IBM、英特尔、NEC、甲骨文、高通、三星和微软](https://www.linuxfoundation.org/members/corporate)
     * 黄金会员（年费10万美元）
     * 银级会员，按员工数量规模浮动5千美元/年 ～ 2万美元/年
+    * 准会员：非盈利组织和政府实体才可加入，无投票权，费用采取审核批准制（免费与否不固定）
 
 ---
 
-## [OpenStack基金会](https://www.openstack.org/foundation/)
+## [OpenStack基金会](https://www.openstack.org/foundation/) {id="openinfra-1"}
 
 * OpenStack由NASA（美国国家航空航天局）和Rackspace合作研发并发起，旨在为公共及私有云的建设与管理提供软件的开源项目
-* 目前（截止2017年2月）共有来自全球180个国家超过6万名独立会员
+* 2020年10月正式升级为：开源基础设施基金会 - OIF (Open Infrastructure Foundation)
+* 截止2017年2月，共有来自全球180个国家超过6万名独立会员。截止2021年2月，会员数已超过10万人
+
+---
+
+## [OpenStack基金会](https://www.openstack.org/foundation/) {id="openinfra-2"}
+
 * [白金会员](https://www.openstack.org/join/)：50万美元/年起步，2名全职工程师贡献
 * 黄金会员：5万 ～20万美元/年，按照企业净收入的0.025%为参考
 * 企业赞助：创业公司1万美元/年起，其他公司2.5万美元/年起
@@ -212,10 +228,10 @@ Hardware Manufacturer  硬件制造商
 * Apache软件基金会，简称为ASF，它支持的Apache项目与子项目中，所发行的软件产品都需要遵循Apache许可证（Apache License）。
 * 目前其已经监管了[数百个开源项目](https://www.apache.org/index.html#projects-list)，其中的知名项目包括：Apache HTTP Server、Hadoop、Spark、Kafka、Groovy、Struts等。
 * [会员赞助制](https://www.apache.org/foundation/sponsorship.html)，这里是[赞助商名单致谢清单](https://www.apache.org/foundation/thanks.html)
-    * 白金：10万美元/年
-    * 黄金：4万美元/年
-    * 白银：2万美元/年
-    * 青铜：5千美元/年
+    * 白金：12.5万美元/年
+    * 黄金：5万美元/年
+    * 白银：2.5万美元/年
+    * 青铜：6千美元/年
 * [任性打赏捐赠](https://www.apache.org/foundation/contributing.html)
 
 ---
@@ -234,7 +250,7 @@ Hardware Manufacturer  硬件制造商
 
 不同版本的维护周期规划
 
-![](images/chap0x01/UbuntuLTS.jpg)
+[![](images/chap0x01/UbuntuLTS.png)](https://ubuntu.com/about/release-cycle)
 
 # Ubuntu安装 {id="ubuntu-install"}
 
@@ -251,7 +267,7 @@ Hardware Manufacturer  硬件制造商
     * 刻盘 / U盘
 * 新手避免直接在物理主机上安装Linux，推荐在虚拟机里安装（直接挂载使用iso文件）
 * 磁盘容量准备
-    * [桌面版](https://www.ubuntu.com/download/desktop/install-ubuntu-desktop): 至少20GB
+    * [桌面版](https://www.ubuntu.com/download/desktop/install-ubuntu-desktop)：至少20GB
     * [服务器](https://www.ubuntu.com/download/server/install-ubuntu-server)：至少10GB
     * 虚拟机安装推荐使用**动态分配**的虚拟硬盘，预分配80GB磁盘空间
 * 优先选择64位系统
@@ -261,7 +277,7 @@ Hardware Manufacturer  硬件制造商
 ## 安装中
 
 * 推荐在安装时软件包选择界面勾选（使用**空格键**确认勾选，使用**方向键**移动菜单光标）安装**OpenSSH server**
-* 建议断网安装，避免安装时由于网速慢、联网更新会导致整个安装过程时间较长
+* <del>建议断网安装，避免安装时由于网速慢、联网更新会导致整个安装过程时间较长</del>
 
 ---
 
@@ -277,6 +293,7 @@ Hardware Manufacturer  硬件制造商
     * [基于官方iso格式安装镜像制作无人值守定制安装镜像](https://help.ubuntu.com/community/InstallCDCustomization)
     * [Automating the installation using preseeding by Ubuntu](https://help.ubuntu.com/lts/installation-guide/amd64/apb.html)
         * [Ubuntu官方提供的preseed示例文件](https://help.ubuntu.com/lts/installation-guide/example-preseed.txt)
+* 基于 [subiquity](https://github.com/CanonicalLtd/subiquity)  - Ubuntu 18.04+ only
 * [Kickstart by RedHat](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html)
     * [Cobbler](http://cobbler.github.io/)
 
@@ -284,9 +301,9 @@ Hardware Manufacturer  硬件制造商
 
 ---
 
-* server版的ubuntu如何从命令行挂载Virtualbox的虚拟光驱中镜像？
-* server版的ubuntu如何安装Virtualbox增强功能套件？
-* server版的ubuntu如何从命令行挂载Virtualbox的共享目录？
+* server 版的 Ubuntu 如何从命令行挂载 Virtualbox 的虚拟光驱中镜像？
+* server 版的 Ubuntu 如何安装 Virtualbox 增强功能套件？
+* server 版的 Ubuntu 如何从命令行挂载 Virtualbox 的共享目录？
 
 ***自行Google解决上述问题***，OR ***第3章内容学习完成之后来解决***
 
@@ -421,10 +438,12 @@ man 3 printf
     * ssh-copy-id
     * ~/.ssh/authorized_keys
 * SSH跳板与堡垒主机
+
 ```bash
 # ProxyCommand
 man ssh_config
 ```
+
 * [SSH服务器安全加固](https://github.com/c4pr1c3/cuc-courses/raw/master/2014_2/nsLecture0x10.pdf)
 
 ---
@@ -438,6 +457,7 @@ man ssh_config
     * [putty](http://www.putty.org/)
     * [xshell](https://www.netsarang.com/download/down_xsh.html)
     * [MobaXterm](http://mobaxterm.mobatek.net/)
+    * [git for windows](https://gitforwindows.org/)
 
 # Virtualbox虚拟机实验环境建议
 
