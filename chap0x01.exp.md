@@ -45,6 +45,75 @@ output: revealjs::revealjs_presentation
 
 * [No “eth0” listed in ifconfig -a, only enp0s3 and lo](http://askubuntu.com/questions/704035/no-eth0-listed-in-ifconfig-a-only-enp0s3-and-lo)
 
+
+# 关于查看虚拟机 IP 地址的 FAQ {id="howto-get-vm-ips"}
+
+---
+
+## ip a {id="ip-a-1"}
+
+![](images/chap0x01/howto-get-ips.png)
+
+---
+
+## ip a {id="ip-a-2"}
+
+| 接口名称 | 网卡类型 | 网卡标识 | IP 地址/子网掩码  | MAC 地址          | 物理层正常可用状态 |
+| :-       | :-       | :-       | :-                | :-                | :-                 |
+| 回环接口 | 虚拟网卡 | lo       | 127.0.0.1/8       | 00:00:00:00:00:00 | UNKNOWN            |
+| 以太网卡 | 物理网卡 | enp0s3   | 10.0.2.15/24      | 08:00:27:d3:eb:c9 | UP                 |
+| 以太网卡 | 物理网卡 | enp0s8   | 192.168.56.170/24 | 08:00:27:ea:0a:94 | UP                 |
+
+---
+
+## 不同视角的物理网卡 {id="vnic-by-views"}
+
+* 宿主机（`Host OS`）视角 
+
+![](images/chap0x01/pnic-by-host.png)
+
+* 虚拟机（客户机系统, `Guest OS`）视角
+    * 上述 `ip a` 输出结果里的 `enp0s3` 和 `enp0s8`
+
+---
+
+## 不同视角的虚拟网卡 {id="vnic-by-views"}
+
+* 宿主机（`Host OS`）视角
+
+![](images/chap0x01/vnic-by-host.png)
+
+* 虚拟机（客户机系统, `Guest OS`）视角
+    * 上述 `ip a` 输出结果里的 `lo`
+
+---
+
+## Host-only 网络默认分配 IP 地址范围
+
+![](images/chap0x01/host-only-ip-config.png)
+
+---
+
+## NAT 默认分配 IP 地址 {id="nat-ip-config"}
+
+10.0.2.15/24
+
+---
+
+## 「NAT 网络」默认分配 IP 地址 {id="natnetwork-ip-config"}
+
+![](images/chap0x01/natnetwork.png)
+
+---
+
+## 如果你的 Host-only 网络无法正常使用 {id="nat-portfwd"}
+
+![](images/chap0x01/nat-portfwd-demo.png)
+
+* 开启 `端口转发` 后，就可以  `ssh cuc@127.0.0.1 -p 2222` 登录 Linux
+    * 如果宿主机上 `2222` 端口已经被占用，请更换为其他可用端口号（建议 1024 以上）
+* `NAT` 或 `NAT 网络` 创建的虚拟网卡对应的虚拟机内地址不能在宿主机上直接访问到
+
 # Focal Fossa 无人值守安装 iso 制作过程示例
 
 ---
@@ -90,10 +159,10 @@ output: revealjs::revealjs_presentation
 
 * 参考 [番外章节 Cloud-Init 实验目录中的说明文件](exp/cloud-init/docker-compose/README.md) ，制作包含 `user-data` 和 `meta-data` 的 ISO 镜像文件，假设命名为 `focal-init.iso`
 * 移除上述虚拟机「设置」-「存储」-「控制器：IDE」
-* 在「控制器：SATA」下新建 2 个虚拟光盘，分别挂载「纯净版 Ubuntu 安装镜像文件」和 `focal-init.iso`
+* 在「控制器：SATA」下新建 2 个虚拟光盘，**按顺序** 先挂载「纯净版 Ubuntu 安装镜像文件」后挂载 `focal-init.iso`
 * 启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 `yes` 并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了
 
-> Continue with autoinstall? (yes/no)
+> Continue with autoinstall? (yes|no)
 
 # (2021 年以前版本) 无人值守安装iso制作过程示例 
 
