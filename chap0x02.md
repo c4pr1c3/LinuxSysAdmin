@@ -16,6 +16,8 @@ output: revealjs::revealjs_presentation
 
 ---
 
+## 提纲
+
 * sources.list格式
 * 小心添加第三方软件源
 * 查找：apt-get update && apt-cache search、apt-file、google、dpkg -S、aptitude
@@ -27,79 +29,24 @@ output: revealjs::revealjs_presentation
 
 ---
 
-sources.list范例——Ubuntu 16.04.1默认
+## Ubuntu 16.04 vs 20.04 /etc/apt/sources.list
 
-```ini
-#
-
-# deb cdrom:[Ubuntu-Server 16.04.1 LTS _Xenial Xerus_ - Release amd64 (20160719)]/ xenial main restricted
-
-#deb cdrom:[Ubuntu-Server 16.04.1 LTS _Xenial Xerus_ - Release amd64 (20160719)]/ xenial main restricted
-
-# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
-# newer versions of the distribution.
-deb http://us.archive.ubuntu.com/ubuntu/ xenial main restricted
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial main restricted
-
-## Major bug fix updates produced after the final release of the
-## distribution.
-deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates main restricted
-
-## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
-## team. Also, please note that software in universe WILL NOT receive any
-## review or updates from the Ubuntu security team.
-deb http://us.archive.ubuntu.com/ubuntu/ xenial universe
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial universe
-deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates universe
-
-## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
-## team, and may not be under a free licence. Please satisfy yourself as to
-## your rights to use the software. Also, please note that software in
-## multiverse WILL NOT receive any review or updates from the Ubuntu
-## security team.
-deb http://us.archive.ubuntu.com/ubuntu/ xenial multiverse
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial multiverse
-deb http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-updates multiverse
-
-## N.B. software from this repository may not have been tested as
-## extensively as that contained in the main release, although it includes
-## newer versions of some applications which may provide useful features.
-## Also, please note that software in backports WILL NOT receive any review
-## or updates from the Ubuntu security team.
-deb http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
-# deb-src http://us.archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe multiverse
-
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu xenial partner
-# deb-src http://archive.canonical.com/ubuntu xenial partner
-
-deb http://security.ubuntu.com/ubuntu xenial-security main restricted
-# deb-src http://security.ubuntu.com/ubuntu xenial-security main restricted
-deb http://security.ubuntu.com/ubuntu xenial-security universe
-# deb-src http://security.ubuntu.com/ubuntu xenial-security universe
-deb http://security.ubuntu.com/ubuntu xenial-security multiverse
-# deb-src http://security.ubuntu.com/ubuntu xenial-security multiverse
-```
+![](images/chap0x02/vimdiff-16vs20.sources.list.png)
 
 ---
 
-sources.list格式说明
+## sources.list 格式说明
 
 ```bash
 man sources.list
 ```
 
-* xenial是Ubuntu 16.04的[官方版本代号](https://en.wikipedia.org/wiki/Ubuntu_version_history)
+* xenial 是 Ubuntu 16.04 的[官方版本代号](https://en.wikipedia.org/wiki/Ubuntu_version_history)
+* focal 是 Ubuntu 20.04 的[官方版本代号](https://en.wikipedia.org/wiki/Ubuntu_version_history)
 
 ---
 
-[软件包类型代号：关于main / restricted / universe / multiverse](https://help.ubuntu.com/community/Repositories/Ubuntu)
+## [软件包类型代号](https://help.ubuntu.com/community/Repositories/Ubuntu) {id="soft-type-codename-1"}
 
 * Main - Canonical官方支持的免费和开源软件
 * Universe - （开源）社区维护的免费和开源软件
@@ -108,37 +55,59 @@ man sources.list
 
 以下是[Wikipedia的软件包分类和支持分类说明](https://en.wikipedia.org/wiki/Ubuntu_%28operating_system%29#Package_classification_and_support)
 
-| | 免费软件 | 非免费软件 |
-|--+----+-----|
-|官方支持    | main   | restricted    |
-|官方不支持（社区或第三方支持）  | universe   | multiverse    |
+|                                | 免费软件 | 非免费软件 |
+| :-                             | :-       | :-         |
+| 官方支持                       | main     | restricted |
+| 官方不支持（社区或第三方支持） | universe | multiverse |
 
 ---
 
-软件包类型代号：关于[backports](https://help.ubuntu.com/community/UbuntuBackports) / [partner](https://help.ubuntu.com/community/Repositories/Ubuntu#Enabling_Canonical_Partner_Repositories)
+## [软件包类型代号](https://help.ubuntu.com/community/Repositories/Ubuntu) {id="soft-type-codename-2"}
 
-* backports  
-    * 官方安全审查小组**不会**提供任何安全审查和安全性承诺保障
+* [backports](https://help.ubuntu.com/community/UbuntuBackports)
+    * 官方安全审查小组 **不会** 提供任何 `安全审查和安全性承诺保障`
     * 向旧版本系统提供较新且兼容旧版系统和所有依赖关系的软件
-* partner
+* [partner](https://help.ubuntu.com/community/Repositories/Ubuntu#Enabling_Canonical_Partner_Repositories)
     * 非Ubuntu系统的必要组件，是Canonical公司及其合作伙伴向Ubuntu用户提供的附加软件：通常是闭源和商业版权软件
 
 ---
 
-举例讲解
+### 举例讲解
 
 ```ini
-deb http://us.archive.ubuntu.com/ubuntu/ xenial multiverse
+deb http://cn.archive.ubuntu.com/ubuntu/ xenial multiverse
 ```
 
 **apt-get update**的过程是访问一个构造好的URL，该URL使用内置的字符串“拼接”规则构造成
 
 ```ini
-http://us.archive.ubuntu.com/ubuntu/dists/xenial/multiverse/binary-amd64/
+http://cn.archive.ubuntu.com/ubuntu/dists/xenial/multiverse/binary-amd64/
 ```
 
-* 其中**binary-amd64**是根据当前系统是64位而“换算”得来的，如果是32位系统该位置字符串会被替换为**binary-i386**
+* 其中 **binary-amd64** 是根据当前系统是64位而“换算”得来的，如果是32位系统该位置字符串会被替换为 **binary-i386**
 * 当前发行版版本代号后面有不止一个软件包类型代号时，有几个软件包类型代号就对应会构造出几个实际的软件列表下载地址
+
+---
+
+## ports.ubuntu.com
+
+* [无人值守安装时卡住很久？](https://www.yuque.com/c4pr1c3/linux/ttkz7y#comment-9934732) 
+    * [软件源 http://ports.ubuntu.com 收录的架构为 arm64，armhf，PowerPC，ppc64el 等](https://wiki.ubuntu.com/UbuntuDevelopment/PackageArchive)
+    * 软件源 http://cn.archive.ubuntu.com 收录的架构为 amd64 和 i386
+* Ubuntu 官方支持的技术架构：amd64, armhf, i386
+
+---
+
+### 验证 ports.ubuntu.com 访问
+
+[![](images/chap0x02/ipip.net.ping.test.png)](https://tools.ipip.net/newping.php)
+
+---
+
+### 解决 ports.ubuntu.com 导致的无人值守安装卡住问题
+
+* 删除 `ports.ubuntu.com` 相关的 2 行配置代码
+* 搜索 `ports.ubuntu.com 中国镜像` 进行镜像源地址修改，推荐阿里云、中科大、清华的镜像源
 
 ---
 
@@ -407,6 +376,26 @@ Commands:
 * grep -E
 * grep -v
 
+# 管道 Pipe
+
+---
+
+> 回顾「第一章」实验中用到的这个命令里使用的操作符：| 
+
+```bash
+cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
+```
+
+---
+
+上一页的例子中
+
+* `-print0` 将标准输出中的多条记录使用 **NULL**（`\00`）字符拼接成一个「长字符串」一次性输出到「标准输出」
+* 如果不使用 `xargs` 命令，`md5sum` 将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5 散列值
+* `xargs` 的 `-0` 参数将「标准输入」中的 **NULL** 字符视为「数组分隔符」来「解析」标准输入内容
+* `xargs` 从「标准输入」中每解析出「一个参数」就按照构造好的 `命令+参数` 执行一次指定的命令（此处是 `md5sum [fileN]` ），直到「标准输入」被解析完毕
+
+
 # sed
 
 ---
@@ -428,517 +417,60 @@ SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进�
 
 ---
 
-## 工作流
-
-* read：SED从输入流（文件，管道或者标准输入）中读取一行并且存储到它叫做**模式空间**（***pattern buffer***）的内部缓冲区
-* execute：默认情况下，所有的SED命令都在**模式空间**中***顺序***的执行，除非指定了行的地址，否则SED命令将会在所有的行上依次执行
-* display：发送修改后的内容到输出流。在发送数据之后，**模式空间**将会被清空。
-* 在文件所有的内容都被处理完成之前，上述过程将会重复执行
+## SED Quick Reference
 
 ---
 
-### 管道 Pipe
-
-> 回顾「第一章」实验中用到的这个命令里使用的操作符：| 
-
-```bash
-cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
-```
+* [三十分钟学会SED](http://www.ituring.com.cn/article/273760)
+* [Google: sed思维导图](https://www.google.com/#newwindow=1&q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE)
+* [sed单行常用脚本](http://sed.sourceforge.net/sed1line_zh-CN.html)
 
 ---
 
-上一页的例子中
+## 学习 SED 的模式
 
-* `-print0` 将标准输出中的多条记录使用 **NULL**（`\00`）字符拼接成一个「长字符串」一次性输出到「标准输出」
-* 如果不使用 `xargs` 命令，`md5sum` 将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5 散列值
-* `xargs` 的 `-0` 参数将「标准输入」中的 **NULL** 字符视为「数组分隔符」来「解析」标准输入内容
-* `xargs` 从「标准输入」中每解析出「一个参数」就按照构造好的 `命令+参数` 执行一次指定的命令（此处是 `md5sum [fileN]` ），直到「标准输入」被解析完毕
-
----
-
-* **模式空间** 是一块活跃的缓冲区，在sed编辑器执行命令时它会保存待检查的文本
-* 默认情况下，所有的SED命令都是在模式空间中执行，因此输入文件并不会发生改变
-* 还有另外一个缓冲区叫做**保持空间**（***hold buffer***），在处理模式空间中的某些行时，***可以用保持空间来临时保存一些行***。在每一个循环结束时，SED将会移除模式空间中的内容，但是**保持空间**中的内容在所有的循环过程中是持久存储的。SED命令无法直接在该缓冲区中执行，因此SED允许数据在 **保持空间**和**模式空间**之间切换
-* 初始情况下，**保持空间**和**模式空间**都是空的
-* 如果没有提供输入文件，SED将会从标准输入接收请求
-* 如果没有提供地址范围，默认情况下SED将会对所有的行进行操作
-
-# SED实例one by one
-
----
-
-将[网络安全2016模拟测试题](https://c4pr1c3.github.io/cuc-ns/exam/2016.html)另存到本地文件``exam.html``，接下来我们来用sed做一些实验：
-
-```bash
-# 以下命令类似于cat exam.html
-# 两个单引号是要执行的SED命令
-# exam.html是输入的文件名
-sed '' exam.html
-
-```
-
-* 以上命令，SED将会读取exam.html文件中的一行内容存储到它的模式空间中，然后会在该缓冲区中执行SED命令。
-* 在这里，没有提供SED命令，因此对该缓冲区没有要执行的操作，最后它会删除模式空间中的内容并且打印该内容到标准输出。
-
----
-
-## 基础语法
-
-```bash
-# -n 默认情况下，模式空间中的内容在处理完成后将会打印到标准输出，该选项用于阻止该行为
-# 使用单引号指定要执行的命令
-sed [-n] [-e] 'command(s)' files 
-
-# 指定了包含SED命令的脚本文件
-sed [-n] -f scriptfile files
-
-# 这两种方法也可以同时使用
-```
-
----
-
-```bash
-# 删除exam.html文件的第3行和第5行
-sed -e '3d' -e '5d' exam.html
-
-# 小练习：新建一个命令文件用于实现上述等价效果的命令并构造一个SED命令去读取该命令文件执行该操作
-```
-
----
-
-## GNU选项
-
-这些选项是GNU规范定义的，可能对于某些版本的SED（例如mac平台上的sed）并不支持。
-
-```bash
--n， --quiet, --slient：与标准的-n选项相同
--e script，--expression=script：与标准的-e选项相同
--f script-file， --file=script-file：与标准的-f选项相同
--i[SUFFIX]，--in-place[=SUFFIX]：该选项用于对当前文件进行编辑，如果提供了SUFFIX的话，将会备份原始文件，否则将会覆盖原始文件
--r，--regexp-extended：该选项将启用扩展的正则表达式
--u， --unbuffered：指定该选项的时候，SED将会从输入文件中加载最少的数据，并且更加频繁的刷出到输出缓冲区。在编辑tail -f命令的输出，你不希望等待输出的时候该选项是非常有用的。
-```
-
-# 模式空间
-
----
-
-对任何文件的来说，最基本的操作就是输出它的内容，为了实现该目的，在SED中可以使用``print``命令打印出模式空间中的内容。
-
-```bash
-# 对比以下3个命令的执行结果差异
-
-sed '' exam.html
-
-# 默认情况下，SED将会输出模式空间中的内容，另外，我们的命令中包含了输出命令p，因此每一行被打印两次。
-sed 'p' exam.html
-
-sed -n 'p' exam.html
-```
-
----
-
-## 行寻址
-
-默认情况下，在SED中使用的命令会作用于文本数据的所有行。如果只想将命令作用于特定的行或者某些行，则需要使用**行寻址**功能。
-
-在SED中包含两种形式的行寻址：
-
-* 以数字形式表示的行区间
-* 以文本模式来过滤行
-
-基本语法格式
-
-```bash
-# 方括号不包含在输入命令序列之中
-[address]command
-```
-
----
-
-### 数字方式的行寻址
-
-```bash
-# 只会对第3行进行操作
-sed -n '3p' exam.html
-
-# 输出2-5行
-sed -n '2,5 p' exam.html
-
-# 输出最后一行，使用正则表达式的元字符 $
-sed -n '$ p' exam.html
-
-# 输出第3行到最后一行（包括）之间的所有行
-sed -n '3,$ p' exam.html
-
-# M, +n 将会打印出从第M行开始的下n行（共计n+1行）
-# 输出从第2行开始的下4行
-sed -n '2,+4 p' exam.html
-
-# 使用M~N的形式，它告诉SED应该处理M行开始的每N行
-# 以下命令只输出文件中的奇数行
-sed -n '1~2 p' exam.html
-```
-
----
-
-### 文本方式的行寻址
-
-```bash
-# 必须用正斜线将要指定的pattern封起来。sed编辑器会将该命令作用到包含指定文本模式的行上。
-/pattern/command
-```
-
----
-
-```bash
-# 输出匹配script关键字的行
-sed -n '/script/p' exam.html
-
-# 模式匹配也可以与数字形式的寻址同时使用
-# 下面的示例会从第一次匹配到script开始输出，直到最后一行为止
-sed -n '/script/, $p'  exam.html
-
-# 使用逗号（,）操作符指定匹配多个匹配的模式
-# 下列的示例将会输出script和gitbook之间的所有行
-sed -n '/script/, /gitbook/p'  exam.html
-
-# 在使用文本模式过滤器的时候，与数字方式的行寻址类似，可以使用加号操作符 +，它会输出从当前匹配位置开始的某几行，下面的示例会从每一次script出现的位置开始输出接下来的4行
-sed -n '/script/, +4p'  exam.html
-```
-
-# SED基本命令 {id="sed-commands"}
-
----
-
-删除命令 d
-
-```bash
-[address1[,address2]]d 
-```
-
-``address1``和``address2``是开始和截止地址，它们可以是行号或者字符串匹配模式，这两种地址都是可选的。
-
-由命令的名称可以知道，delete 命令是用来执行删除操作的，并且因为SED是基于行的编辑器，因此我们说该命令是用来删除行的。注意的是，该命令只会移除模式空间中的行，这样该行就不会被发送到输出流，但原始内容不会改变。
-
----
-
-```bash
-# 删除所有行，输出为空
-sed 'd' exam.html
-
-# 删除第4行，输出只缺少了第4行
-sed '4d' exam.html
-
-# 删除第2-4行
-sed '2, 4 d' exam.html
-
-# 指定模式匹配作为地址
-# 删除所有包含script关键字的行
-sed '/script/d' exam.html
-
-# 删除包含script和gitbook关键字之间（包括匹配行）的所有行
-# 只要匹配script就开始删除，直到遇到gitbook关键字匹配才停止删除操作
-sed '/script/,/gitbook/d' exam.html
-```
-
----
-
-文件写入命令 w
-
-SED提供了 write 命令用于将模式空间中的内容写入到文件，与 delete 命令类似，下面是 write 命令的语法
-
-```bash
-# 在 w 和 file 之间只能有一个空格
-[address1[,address2]]w file 
-```
-
-w 指定是写命令， file 指的是存储文件内容的文件名。使用 file 操作符的时候要小心，当提供了文件名但是文件不存在的时候它会自动创建，如果已经存在的话则会**覆盖**原文件的内容。
-
----
-
-```bash
-# 把所有包含script关键字的行另存为script.txt
-sed -n '/script/w script.txt' exam.html
-```
-
----
-
-追加命令 a
-
-```bash
-[address]a Append text 
-
-# 以下格式利用的是bash的续行符特性
-[address]a\ 
-Append text 
-```
-
-在匹配成功之后下一行追加文本。
-
----
-
-行替换命令 c
-
-SED通过 c 提供了 change 和 replace 命令，该命令帮助我们使用新文本替换已经存在的行，当提供行的地址范围时，所有的行都被作为一组被替换为单行文本
-
-```bash
-[address1[,address2]]c\ 
-Replace text
-```
-
----
-
-插入命令 i
-
-插入命令与追加命令类似，唯一的区别是插入命令是在匹配的位置前插入新的一行。
-
-```bash
-[address1[,address2]]i\ 
-Replace text
-```
-
----
-
-转换命令 y
-
-转换（Translate）命令 y 是唯一可以处理单个字符的sed编辑器命令。转换命令格式 如下
-
-```bash
-[address]y/inchars/outchars/
-```
-
-转换命令会对inchars和outchars值进行一对一的映射。inchars中的第一个字符会被转换为outchars中的第一个字符，第二个字符会被转换成outchars中的第二个字符。这个映射过程会一直持续到处理完指定字符。如果inchars和outchars的长度不同，则sed编辑器会产生一条错误消息。
-
-```bash
-echo "2017 u can u up" | sed 'y/ucanp/UCANP/'
-```
-
----
-
-输出隐藏字符命令 l
-
-你能通过直接观察区分出单词是通过空格还是tab进行分隔的吗？显然是不能的，但是SED可以为你做到这点。使用l命令（英文字母L的小写）可以显示文本中的隐藏字符（例如\t或者$字符）。
-
-```bash
-[address1[,address2]]l 
-[address1[,address2]]l [len] 
-```
-
-```bash
-echo -e "hello\tworld\n"
-echo -e "hello\tworld\n" | sed -n 'l'
-# 使用l命令的时候，一个很有趣的特性是我们可以使用它来实现文本按照指定的宽度换行。
-echo -e "hello\tworld\n" | sed -n 'l 8'
-# 上面的示例中在l命令后跟了一个数字8，它告诉SED按照每行8个字符进行换行，如果指定这个数字为0的话，则只有在存在换行符的情况下才进行换行。
-```
-
----
-
-退出命令 q
-
-在SED中，可以使用Quit命令退出当前的执行流
-
-```bash
-[address]q 
-
-# q命令也支持提供一个value，这个value将作为程序的返回代码返回
-[address]q [value]
-```
-
-需要注意的是，q命令不支持地址范围，只支持单个地址匹配。默认情况下SED会按照读取、执行、重复的工作流执行，但当它遇到q命令的时候，它会退出当前的执行流。
-
----
-
-文件读取命令 r
-
-在SED中，我们可以让SED使用Read命令从外部文件中读取内容并且在满足条件的时候显示出来。
-
-```bash
-[address]r file
-```
-
-需要注意的是，r命令和文件名之间必须只有一个空格。
-
----
-
-```bash
-echo -e "hello\tworld\n" > junk.txt
-
-# 以下示例在exam.html的行尾追加junk.txt的内容
-sed '$ r junk.txt' exam.html
-```
-
-r命令也支持地址范围，例如``3, 5 r junk.txt``会在第三行，第四行，第五行后面分别插入junk.txt的内容
-
----
-
-执行外部命令 e
-
-⚠️ 此处要小心“**代码注入**”风险！！！
-
-```bash
-[address1[,address2]]e [command]
-```
-
-```bash
-# 下面的命令会在第三行之前执行date命令
-sed '3 e date' exam.html
-
-# ⚠️  在没有提供外部命令的时候，SED会将模式空间中的内容作为要执行的命令。
-echo -e "date\ncal\nuname" | sed 'e'
-
-```
-
----
-
-排除命令 !
-
-感叹号命令（**!**）用来排除命令，也就是让原本会起作用的命令不起作用。
-
-```bash
-echo -e "hello\nworld\n" | sed -n '/hello/p' 
-
-# p命令原先是只输出匹配hello的行，添加!之后，变成了只输出不匹配hello的行。
-echo -e "hello\nworld\n" | sed -n '/hello/!p'
-```
-
-# 其它SED常用命令 {id="sed-common-cmds"}
-
----
-
-n - 单行next
-
-小写的n命令会告诉sed编辑器移动到数据流中的下一文本行，并且覆盖当前模式空间中的行。
-
-v - SED版本检查
-
-v命令用于检查SED的版本，如果版本大于参数中的版本则正常执行，否则失败
-
-```bash
-[address1[,address2]]v [version]
-```
-
-```bash
-$ sed --version                                                                                                                                        ⏎
-sed (GNU sed) 4.2.2
-
-$ sed 'v 5' exam.html
-sed: -e expression #1, char 3: expected newer version of sed
-```
-
-# SED特殊字符 {id="sed-specials"}
-
----
-
-在SED中提供了两个可以用作命令的特殊字符：``=`` 和 ``&`` 。
-
----
-
-## =
-
-``=``命令用于输出行号，语法格式为
-
-```bash
-[/pattern/]= 
-
-[address1[,address2]]=
-```
-
----
-
-```bash
-# 匹配script的输出行号
-sed '/script/ =' books2.txt
-
-sed -n '/script/ =' books2.txt
-
-# 对比以上命令的输出结果
-sed -n '/script/=; /script/p' exam.html
-
-# 输出文件的总行数
-sed -n '$ =' exam.html
-```
-
----
-
-## &
-
-特殊字符``&``用于存储匹配模式的内容，通常与替换命令``s``一起使用。
-
-```bash
-echo -e "1) A Storm of Swords, George R. R. Martin, 1216 
-2) The Two Towers, J. R. R. Tolkien, 352 
-3) The Alchemist, Paulo Coelho, 197 
-4) The Fellowship of the Ring, J. R. R. Tolkien, 432 
-5) The Pilgrimage, Paulo Coelho, 288 
-6) A Game of Thrones, George R. R. Martin, 864" > books.txt
-
-sed 's/[[:digit:]]/Book number &/' books.txt
-sed 's/[[:digit:]]* *$/Pages = &/' books.txt
-```
-
-# SED字符串操作 {id="sed-strings"}
-
----
-
-替换命令 **s**
-
-文本替换命令非常常见，其格式如下
-
-```bash
-[address1[,address2]]s/pattern/replacement/[flags]
-```
-
----
-
-```bash
-# 在SED中，使用替换命令的时候默认只会对第一个匹配的位置进行替换。
-sed 's/,/ |/' books.txt
-
-# 使用g选项告诉SED对所有内容进行替换：
-sed 's/,/ |/g' books.txt
-
-# 如果对匹配模式（或地址范围）的行进行替换，则只需要在s命令前添加地址即可。比如只替换匹配The Pilgrimage的行：sed '/The Pilgrimage/ s/,/ | /g' books.txt
-```
-
----
-
-还有一些其它的选项，这里就简单的描述一下，不在展开讲解
-
-* 数字n: 只替换第n次匹配，比如``sed 's/,/ | /2' books.txt``，只替换每行中第二个逗号
-* p：只输出改变的行，比如``sed -n 's/Paulo Coelho/PAULO COELHO/p' books.txt``
-* w：存储改变的行到文件，比如``sed -n 's/Paulo Coelho/PAULO COELHO/w junk.txt' books.txt``
-* i：匹配时忽略大小写，比如``sed -n 's/pAuLo CoElHo/PAULO COELHO/pi' books.txt``
-
----
-
-* 在执行替换操作的时候，如果要替换的内容中包含``/``，这个时候怎么办？很简单，添加转义操作符``\``。
-* 在SED中还可以使用``|``，``@``，``^``，``#``作为命令的分隔符
-
----
-
-## 匹配子字符串
-
-在SED中，使用``\(``和``\)``对匹配的内容进行分组，使用``\N``的方式进行引用。请看下面示例
-
-```bash
-echo "Three One Two" | sed 's|\(\w\+\) \(\w\+\) \(\w\+\)|\2 \3 \1|'
-One Two Three
-```
+* REPL: read–eval–print loop
 
 # 正则表达式
 
 ---
 
-<a href="images/chap0x02/davechild_regular-expressions.bw.jpg">![](images/chap0x02/davechild_regular-expressions.bw.jpg)</a>
-
-# SED Quick Reference
+> 正则表达式是用于匹配字符串中字符组合的 **模式** ，可以用来检查一个串是否 **包含** 有某种子串、将匹配的子串 **替换** 或者从某个串中 **取出** 符合某个条件的子串等。
 
 ---
 
-* [Google: sed思维导图](https://www.google.com/#newwindow=1&q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE)
-* [sed单行常用脚本](http://sed.sourceforge.net/sed1line_zh-CN.html)
+## 在线正则表达式调试工具
+
+`regular expression tester`
+
+> 不同编程语言对正则表达式的支持存在细微差异
+
+---
+
+## Linux 命令行工具对正则表达式的支持 {id="regexp-cli-tools"}
+
+```bash
+sed
+# -E, -r, --regexp-extended
+#               use extended regular expressions in the script (for portability use POSIX -E)
+
+awk
+# man awk
+
+grep
+# -E, --extended-regexp
+#               Interpret PATTERNS as extended regular expressions (EREs, see below).
+# -G, --basic-regexp
+#        Interpret PATTERNS as basic regular expressions (BREs, see below).  This is the default.
+# -P, --perl-regexp
+#        Interpret PATTERNS as Perl-compatible regular expressions (PCREs).  This option is experimental when combined
+#        with the -z (--null-data) option, and grep -P may warn of unimplemented features.
+```
+
+
+---
+
+<a href="images/chap0x02/davechild_regular-expressions.bw.jpg">![](images/chap0x02/davechild_regular-expressions.bw.jpg)</a>
 
 # 社区驱动的「脱水版」帮助手册
 
@@ -952,6 +484,36 @@ One Two Three
 
 ![](images/chap0x02/TLDR-example.png)
 
+---
+
+## 快速安装与上手使用
+
+```bash
+sudo apt update && sudo apt install tldr
+# 从自建 gitee 镜像下载 tldr 所有手册页
+git clone https://gitee.com/c4pr1c3/tldr ~/.tldr/tldr
+
+# 如果需要查看中文帮助信息
+# ⚠️ 警告⚠️ 很多手册页并没有中文翻译版
+# 以下方法切换默认查询目录后会导致很多命令查询失败
+## 确保进入正确目录
+cd $HOME/.tldr/tldr
+
+## 确认当前目录下不存在 pages.en 目录
+ls pages.en
+# ls: cannot access 'pages.en': No such file or directory
+
+## 备份默认英文帮助子目录
+mv pages pages.en
+
+## 将中文帮助目录设置为默认查询帮助信息目录
+ln -s pages.zh pages
+
+# 恢复默认英文查询手册页设置
+rm pages
+ln -s pages.en pages
+```
+
 # 文本内容查找替换神器之AWK
 
 ---
@@ -963,6 +525,7 @@ One Two Three
 ---
 
 * head / tail
+    * 服务器上监视日志持续变化 `tail -F`
 * cut
     * ``cut -d ":" -f 1,6 /etc/passwd``
 * tr
@@ -972,6 +535,8 @@ One Two Three
 # 一些文本处理的任务
 
 ---
+
+## 学会使用搜索引擎
 
 * 查找并统计某函数在整个“项目”中被调用次数，并输出在哪些文件、具体那些行中调用到了该函数
 * 在整个目录中查找某关键词出现在哪些文件的哪些行
@@ -1092,12 +657,12 @@ man bash
 
 ---
 
-* arp
-* ifconfig
 * ip
-* route
-* netstat
 * lsof
+* <del>arp</del>
+* <del>ifconfig</del>
+* <del>route</del>
+* <del>netstat</del>
 
 ---
 
@@ -1205,6 +770,4 @@ sudo ubuntu-bug openssh-server --save openssh-server.bug
 * [提问的智慧](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md)
 * [ReportingBugs Tutorial by Ubuntu Official Documentation](https://help.ubuntu.com/community/ReportingBugs)
 * [DebuggingProcedures Tutorial by Ubuntu Official Documentation](https://wiki.ubuntu.com/DebuggingProcedures)
-* [三十分钟学会SED](http://www.ituring.com.cn/article/273760)
-
 
