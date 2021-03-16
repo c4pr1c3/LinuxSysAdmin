@@ -26,8 +26,80 @@ output: revealjs::revealjs_presentation
 
 * 工作电脑
     * SSH客户端软件
+    * [Visual Studio Code Remote - SSH](https://code.visualstudio.com/docs/remote/ssh)
 * 服务器上
     * tmux（[screen](https://www.gnu.org/software/screen/)的增强版）
+
+---
+
+## [Visual Studio Code Remote - SSH](https://code.visualstudio.com/docs/remote/ssh)
+
+![](images/ansible/architecture-ssh.png)
+
+---
+
+### [系统依赖条件](https://code.visualstudio.com/docs/remote/ssh#_getting-started) {id="system-requirements"}
+
+* 工作主机依赖条件
+    * SSH 客户端软件
+        * **Windows 平台** `推荐但可选` `git-bash`
+* 远程主机依赖条件
+    * 开启 `SSH 服务` 的当前主流 Linux 发行版本
+        * [远程主机可以访问互联网](https://code.visualstudio.com/docs/remote/faq#_what-are-the-connectivity-requirements-for-vs-code-server)
+
+---
+
+### Windows 平台安装与配置 {id="setup-vscode-remote-on-win-1"}
+
+* `VSCode` 扩展应用商店安装 [Remote Development Extenstion Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack)
+* （推荐但可选）配置 SSH 免密登录远程主机
+    * 使用 `git-bash` 配置 SSH 免密登录
+
+---
+
+### 使用 `git-bash` 配置 SSH 免密登录
+
+1. 添加新的 `SSH Targets`
+2. 打开 `git bash` ，输入以下指令完成 `git bash` SSH 免密登录
+3. 在选择 `SSH 配置文件` 时，选择当前用户 `家目录` 下 `.ssh/config` 用于保存远程主机配置信息
+4. 在 `VSCode` 里连接新添加的远程 SSH 主机
+
+```bash
+# 检查是否已经生成过 SSH 公私钥对 id_rsa.pub 和 id_rsa
+ls ~/.ssh/
+
+# 如果没有上述 2 个文件时
+# 生成 RSA 算法 4096 位秘钥长度的 SSH 公私钥对
+# 否则，跳过当前步骤
+ssh-keygen -t rsa -b 4096
+
+# 配置免密登录
+# 假设远程主机的连接信息为 cuc@192.168.56.161
+ssh-copy-id -i ~/.ssh/id_rsa.pub cuc@192.168.56.161
+
+# 连接验证免密登录配置成功
+ssh cuc@192.168.56.161
+```
+
+---
+
+### 配置示例截图
+
+![](images/chap0x03/vscode-remote.png)
+
+---
+
+### 已知缺陷 {id="known-issues"}
+
+* 快捷键绑定冲突
+    * `CTRL-F` 在 `Windows` 平台的 `VSCode` 里是默认绑定的「打开搜索对话框」快捷键，与 `vim` 注册快捷键冲突
+* 远程 Linux 主机上会启动一个 `node` 服务进程用于响应本地 `VSCode` 的远程编辑与管理任务
+    * `100MB+` 内存占用，对于小内存 Linux 系统来说是一个不小的负担
+
+```bash
+# 验证 vscode 远程服务进程的内存占用率
+ps -o pid,user,%mem,command ax | sort -b -k3 -r | head
+```
 
 ---
 
@@ -125,12 +197,9 @@ $ ls -l /etc/shadow
 
 ---
 
-文件类型
+### 文件类型
 
-```bash
-man ls
-# 在ls的手册页内搜索file mode
-```
+> [FreeBSD 的 man 手册页 ls 摘录](https://www.freebsd.org/cgi/man.cgi?query=ls&apropos=0&sektion=0&manpath=FreeBSD+11.1-RELEASE+and+Ports&arch=default&format=html)
 
 * b  &emsp;&emsp;块特殊文件（Block special file）
 * c  &emsp;&emsp;字符特殊文件（Character special file）
@@ -142,7 +211,7 @@ man ls
 
 ---
 
-Saved UID (SUID) 
+## Saved UID (SUID) 
 
 * 对应属主用户列权限位中的**s**标记，取代原有显示**x**标记的位置
 * 当且仅当一个文件是二进制可执行文件（脚本文件即使设置了“可执行”也不行）时可以被设置SUID
@@ -150,7 +219,7 @@ Saved UID (SUID)
 
 ---
 
-Saved GID (SGID)
+## Saved GID (SGID)
 
 * 对应属主用户组列权限位中的**s**标记，取代原有显示**x**标记的位置
 * 如果SGID设置在二进制**文件**上，则不论用户是谁，在执行该程序的时候，它的有效用户组（effective group）将会变成该程序的用户组所有者（group id）
@@ -158,7 +227,7 @@ Saved GID (SGID)
 
 ---
 
-Sticky Bit
+## Sticky Bit
 
 * 对应**t**标记，取代原有显示**x**标记的位置
 * 只能设置在目录上，对文件没有效果
@@ -202,12 +271,16 @@ chmod 1755 dirname
 ```bash
 cmds=(echo cd history getopts kill pwd); for cmd in "${cmds[@]}";do type -a "$cmd";done
 # echo is a shell builtin
+# echo is /usr/bin/echo
+# echo is /bin/echo
 # cd is a shell builtin
 # history is a shell builtin
 # getopts is a shell builtin
 # kill is a shell builtin
+# kill is /usr/bin/kill
 # kill is /bin/kill
 # pwd is a shell builtin
+# pwd is /usr/bin/pwd
 # pwd is /bin/pwd
 ```
 
@@ -248,7 +321,7 @@ LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统�
 
 ---
 
-LVM的基本组成块（building blocks）如下：
+## LVM 的基本组成块（building blocks）
 
 * 物理卷(PV, Physical Volume )：可以在上面建立卷组的媒介，可以是硬盘分区，也可以是硬盘本身或者回环文件（loopback file）。物理卷包括一个特殊的header，其余部分被切割为一块块物理区域（physical extents）。基于物理卷可以创建“逻辑上或虚拟的”硬盘。 
 * 卷组(VG, Volume Group)：将一组物理卷收集为一个管理单元。一个卷组就相当于一个“物理”硬盘。
@@ -257,7 +330,7 @@ LVM的基本组成块（building blocks）如下：
 
 ---
 
-优点(1/2)
+### LVM 优点(1/2) {id="lvm-advantages-1"}
 
 * 比起正常的硬盘分区管理，LVM更富于弹性：
 * 使用卷组，使众多硬盘空间看起来像一个大硬盘。
@@ -268,16 +341,20 @@ LVM的基本组成块（building blocks）如下：
 
 ---
 
-优点(2/2)
+### LVM 优点(2/2) {id="lvm-advantages-2"}
 
 * 无需重新启动服务，就可以将服务中用到的逻辑卷在线/动态迁移至别的硬盘上。
 * 允许创建快照，可以保存文件系统的备份，同时使服务的下线时间（downtime）降低到最小。
 
 这些优点使得LVM对服务器的管理非常有用，对于桌面系统管理的帮助则没有那么显著，你需要根据实际情况进行取舍。
 
-缺点
 
-* 在系统设置时需要更复杂的额外步骤。
+---
+
+### LVM 缺点 {id="lvm-shortcomings"}
+
+* 在系统设置时需要更复杂的额外步骤
+* LVM 配置丢失或损坏时，数据恢复难度较高
 
 # 文件备份 - 文件打包
 
@@ -308,7 +385,7 @@ LVM的基本组成块（building blocks）如下：
 
 ---
 
-备份策略设计约束性因素
+## 备份策略设计约束性因素 {id="how-to-backup-1"}
 
 * 可移植性（便携性）：是否需要考虑跨OS的数据备份与恢复，如果是，则可以试试**dd**、**tar**、**cpio**等命令行工具
 * 无人值守（自动备份）
@@ -316,6 +393,8 @@ LVM的基本组成块（building blocks）如下：
 * 远程备份：首选CLI方式的备份恢复工具
 
 ---
+
+## 备份策略设计约束性因素 {id="how-to-backup-2"}
 
 * 网络备份：首选支持网络存储系统读写的备份恢复工具，如tar
 * 存储介质：成本、可靠性、存储容量和传输性能

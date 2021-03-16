@@ -5,13 +5,14 @@ output: revealjs::revealjs_presentation
 ---
 
 # 第二章：（实验）
-> From GUI to CLI
 
 ---
 
-# 软件环境
+## From GUI to CLI
 
-* Ubuntu 18.04 Server 64bit
+## 软件环境
+
+* 当前课程推荐的 Linux 发行版本
 * 在[asciinema](https://asciinema.org)注册一个账号，并在本地安装配置好asciinema
 
 ---
@@ -20,6 +21,26 @@ output: revealjs::revealjs_presentation
 * 上传本人亲自动手完成的**vimtutor**操作全程录像
 * 在自己的github仓库上新建markdown格式纯文本文件附上asciinema的分享URL
 * **提醒** 避免在终端操作录像过程中暴漏**密码、个人隐私**等任何机密数据
+
+# 如果你需要中文 vimtutor {id="vimtutor-in-chinese"}
+
+---
+
+> 强烈建议使用英文原版 vimtutor
+
+---
+
+> 除非你真的不想进行英文阅读理解练习
+
+---
+
+```bash
+# 下载安装简体中文语言包
+sudo apt update && sudo apt install language-pack-zh-hans
+
+# 临时设置 简体中文 环境变量并启动 vimtutor
+LANG=zh_CN.UTF-8 vimtutor
+```
 
 # vimtutor完成后的自查清单
 
