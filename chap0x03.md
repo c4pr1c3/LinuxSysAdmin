@@ -303,11 +303,34 @@ cmds=(echo cd history getopts kill pwd); for cmd in "${cmds[@]}";do type -a "$cm
     * mkfs
 * 文件分区
     * 分区原则与策略
-    * fdisk
+    * fdisk / gdisk
     * 大于2TB分区支持使用 [parted](https://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html)
 * 文件系统挂载
     * U盘 / NFS / iso / 光盘
     * /etc/fstab
+
+---
+
+## 常规磁盘管理步骤
+
+```bash
+# 0. 使用管理员权限
+sudo su -
+
+# 1. 选择物理磁盘
+lsblk
+
+# 2. 创建分区 
+fdisk {{/dev/sdX}}
+
+# 3. 在指定分区上创建文件系统 
+# 通过 Shell 「自动补全」功能查看当前支持的文件系统类型
+# mkfs.<TAB><TAB>
+mkfs -t {{ext4}} {{path/to/partition}}
+
+# 4. 将分区挂载到指定目录 
+mount -t {{filesystem_type}} {{path/to/device_file}} {{path/to/target_directory}}
+```
 
 ---
 
@@ -327,6 +350,89 @@ LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统�
 * 卷组(VG, Volume Group)：将一组物理卷收集为一个管理单元。一个卷组就相当于一个“物理”硬盘。
 * 逻辑卷(LV, Logical Volume)：虚拟分区，由物理区域（physical extents）组成。相当于基于“物理”硬盘（卷组）之上的文件系统分区。
 * 物理区域(PE, Physical Extent)：硬盘可供指派给逻辑卷的最小单位（通常为4MB）。
+
+---
+
+## 基于 LVM 的磁盘管理步骤 {id="lvm-based-partitions"}
+
+```bash
+# 0. 使用管理员权限
+sudo su -
+
+# 1. 选择物理磁盘
+lsblk
+
+# 2. 创建分区 
+gdisk {{/dev/sdX}}
+
+# 2.1. PV 管理阶段
+# 2.1.1. 在物理分区上创建 PV
+pvcreate {{/dev/sdX1}}
+
+# 查看所有可用 PV
+pvs
+pvscan
+
+# 2.2. VG 管理阶段
+# 2.2.1. 创建 VG
+# 以下例子将 3 个物理分区加入到一个名为 vg1 的 VG
+vgcreate {{ubuntu-vg}} {{/dev/sda1}} {{/dev/sdb1}} {{/dev/sdc1}}
+
+# 2.2.2. 从指定 VG 中移除一个 PV
+vgreduce {{ubuntu-vg}} {{/dev/sdc1}}
+
+# 2.2.3. 将一个 PV 加入到一个指定 VG 中
+vgextend {{ubuntu-vg}} {{/dev/sda5}}
+
+# 查看 VG 详细信息
+vgdisplay
+
+# 2.3. LV 阶段
+# -L 指定分区大小，-n 指定逻辑分区名称
+lvcreate -L 10G -n {{demo-lv}} {{ubuntu-vg}}
+
+# 查看 LV 详细信息
+lvdisplay
+# --- Logical volume ---
+#   LV Path                /dev/ubuntu-vg/demo-lv
+#   LV Name                demo-lv
+#   VG Name                ubuntu-vg
+#   LV UUID                FKJDB5-KJkj-aIp1-t5BR-lp1w-68Yb-BVor5k
+#   LV Write Access        read/write
+#   LV Creation host, time cuc-lab, 2021-03-19 13:36:21 +0000
+#   LV Status              available
+#   # open                 0
+#   LV Size                <29.50 GiB
+#   Current LE             7551
+#   Segments               1
+#   Allocation             inherit
+#   Read ahead sectors     auto
+#   - currently set to     256
+#   Block device           253:1
+
+# 3. 在指定分区上创建文件系统 
+# 通过 Shell 「自动补全」功能查看当前支持的文件系统类型
+# mkfs.<TAB><TAB>
+# 此处 {{path/to/partition}} 对应 lvdisplay 输出信息里的 LV Path 字段值
+mkfs -t {{ext4}} {{path/to/partition}}
+
+# 4. 将分区挂载到指定目录 
+mount -t {{filesystem_type}} {{path/to/device_file}} {{path/to/target_directory}}
+
+# 5. 调整分区大小
+# 5.1. 卸载指定 LVM 分区
+umount {{path/to/device_file}}
+
+# 5.2. 检查 ext2/ext3/ext4 分区是否有损坏
+e2fsck -f {{path/to/device_file}}
+
+# 5.3. 分区扩容
+lvresize --size +{{120G}} --resizefs {{volume_group}}/{{logical_volume}}
+lvresize --size {{100}}%FREE {{volume_group}}/{{logical_volume}}
+
+# 5.4. 分区缩减（可能会由于缩减后存储容量不足导致数据丢失）
+lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}
+```
 
 ---
 
