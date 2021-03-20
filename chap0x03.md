@@ -353,6 +353,12 @@ LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统�
 
 ---
 
+## 基于 LVM 的磁盘管理体系结构 {id="lvm-arch"}
+
+[![](images/chap0x03/lvm-arch.png)](images/chap0x03/lvm-arch.svg)
+
+---
+
 ## 基于 LVM 的磁盘管理步骤 {id="lvm-based-partitions"}
 
 ```bash
@@ -375,7 +381,7 @@ pvscan
 
 # 2.2. VG 管理阶段
 # 2.2.1. 创建 VG
-# 以下例子将 3 个物理分区加入到一个名为 vg1 的 VG
+# 以下例子将 3 个物理分区加入到一个名为 ubuntu-vg 的 VG
 vgcreate {{ubuntu-vg}} {{/dev/sda1}} {{/dev/sdb1}} {{/dev/sdc1}}
 
 # 2.2.2. 从指定 VG 中移除一个 PV
@@ -390,6 +396,7 @@ vgdisplay
 # 2.3. LV 阶段
 # -L 指定分区大小，-n 指定逻辑分区名称
 lvcreate -L 10G -n {{demo-lv}} {{ubuntu-vg}}
+lvcreate -l {{100%FREE}} -n {{demo-lv}} {{ubuntu-vg}}
 
 # 查看 LV 详细信息
 lvdisplay
@@ -417,6 +424,7 @@ lvdisplay
 mkfs -t {{ext4}} {{path/to/partition}}
 
 # 4. 将分区挂载到指定目录 
+mkdir -p {{path/to/target_directory}}
 mount -t {{filesystem_type}} {{path/to/device_file}} {{path/to/target_directory}}
 
 # 5. 调整分区大小
