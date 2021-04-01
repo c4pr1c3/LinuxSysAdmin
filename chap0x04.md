@@ -1015,6 +1015,15 @@ printf '%s' '—' | xxd
 
 > Bats is a [TAP](https://testanything.org/)-compliant testing framework for Bash. It provides a simple way to verify that the UNIX programs you write behave as expected.
 
+---
+
+## VSCode Remote 配置 Bash 集成开发环境
+
+* [Bash IDE](https://marketplace.visualstudio.com/items?itemName=mads-hartmann.bash-ide-vscode)
+    * 跳转到函数定义、查找代码片段引用、自动补全代码、鼠标悬停代码关键词显示帮助文档等
+* [ShellCheck](https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck)
+* [Bash Debug](https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug)
+
 # 参考文献
 
 ---
