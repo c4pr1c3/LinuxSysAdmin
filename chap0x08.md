@@ -269,8 +269,80 @@ output: revealjs::revealjs_presentation
 
 
 ```bash
-$ sudo apt-get install ansible
+# 确认系统版本信息和 ansible 版本信息
+lsb_release -a
+# No LSB modules are available.
+# Distributor ID:	Ubuntu
+# Description:	Ubuntu 20.04.2 LTS
+# Release:	20.04
+# Codename:	focal
+
+apt policy ansible
+# ansible:
+#   Installed: (none)
+#   Candidate: 2.9.6+dfsg-1
+#   Version table:
+#      2.9.6+dfsg-1 500
+#         500 http://cn.archive.ubuntu.com/ubuntu focal/universe amd64 Packages
+
+sudo apt-get install ansible
+
+# 验证当前已安装 ansible 版本
+ansible --version
+# ansible 2.9.6
+#   config file = /etc/ansible/ansible.cfg
+#   configured module search path = ['/home/cuc/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+#   ansible python module location = /usr/lib/python3/dist-packages/ansible
+#   executable location = /usr/bin/ansible
+#   python version = 3.8.5 (default, Jan 27 2021, 15:41:15) [GCC 9.3.0]
+
+# pip 方式可以安装到最新版本的 ansible（可选）
+# ref: https://pypi.org/project/ansible/
+# 根据 https://www.ansible.com/blog/ansible-3.0.0-qa
+# To upgrade to Ansible-3.0 from Ansible-2.10: pip install --upgrade ansible.  
+# To upgrade to Ansible-3.0 from Ansible-2.9 or earlier: pip uninstall ansible; pip install ansible. This is due to a limitation in pip.
+# 升级安装
+sudo apt remove ansible
+# 使用国内 pypi 镜像加速下载
+pip3 install ansible -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# 验证 pip 方式安装的 ansible 版本
+pip3 freeze | grep ansible
+# ansible==3.2.0
+# ansible-base==2.10.7
+
+# 以下命令只能验证 ansible-base 的版本
+# ansible 来自于 ansible-base
+ansible --version
+# ansible 2.10.7
+#   config file = /etc/ansible/ansible.cfg
+#   configured module search path = ['/home/cuc/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+#   ansible python module location = /home/cuc/.local/lib/python3.8/site-packages/ansible
+#   executable location = /home/cuc/.local/bin/ansible
+#   python version = 3.8.5 (default, Jan 27 2021, 15:41:15) [GCC 9.3.0]
 ```
+
+---
+
+## Ansible 3 开始的新版本命名惯例 {id="ansible3-versioning"}
+
+* [2019.7.23. 公布 Ansible 项目重构计划](https://www.ansible.com/blog/thoughts-on-restructuring-the-ansible-project)：一拆为三
+    * 核心引擎 [ansible-base/ansible-core](https://www.ansible.com/blog/ansible-3.0.0-qa)
+        * 2.11 以前命名为 `ansible-base` , [2.11 开始重命名为 `ansible-core`](https://github.com/ansible/ansible/blob/devel/docs/docsite/rst/roadmap/ROADMAP_2_11.rst)
+    * 核心模块和插件
+    * 第三方（开源社区和商业公司各自独立）维护的模块和插件
+* [2021.2.18 Ansible 3.0 发布](https://www.ansible.com/blog/ansible-3.0.0-qa)
+
+---
+
+## [Ansible 版本和维护计划](https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html) {id="ansible-releases-and-maintenance"}
+
+| Ansible 社区发布包                                | ansible-core                                 |
+| :-                                                | :-                                           |
+| 使用新的[语义化版本命名规则](https://semver.org/) | 延续“经典 Ansible”命名惯例（2.10, 2.11, ...) |
+| 只维护一个最新版                                  | 同时维护一个最新版和2个最近的旧版本          |
+| 包含语言、运行时和指定 Collections（`all-in-one`）| 包含语言、运行时和内置插件                   |
+| 在 Collections 仓库开发和维护                     | 在 ansible/ansible 仓库开发和维护            |
 
 ---
 
@@ -316,6 +388,8 @@ $ sudo mkdir /root/.ssh
 $ sudo cp /home/cuc/.ssh/authorized_keys /root/.ssh/authorized_keys
 # 假设B上没有安装过python
 $ sudo apt-get update && sudo apt-get install -y python-minimal
+# python 2.x 从 2020.1.1 开始终止维护更新
+# 上述 python-minimal 也相应地在部分发行版中被移除，替代品是 python3-minimal
 $ exit
 
 # 继续在A上执行命令
@@ -343,41 +417,75 @@ $ ansible all -m ping -u root -i hosts
 
 ---
 
+## Ansible Galaxy {id="intro-to-galaxy"}
+
 ansible使用[playbooks](http://docs.ansible.com/ansible/playbooks.html)来定义远程管理“脚本”，playbooks使用YAML语法。
 
 [role](http://docs.ansible.com/ansible/playbooks_roles.html)是ansible中用来抽象**可重用**配置脚本的概念。通常一个role中包括[变量](http://docs.ansible.com/ansible/playbooks_variables.html)、[任务](http://docs.ansible.com/ansible/playbooks_intro.html#tasks-list)和[句柄](http://docs.ansible.com/ansible/playbooks_intro.html#handlers-running-operations-on-change)。
 
-[Ansible Galaxy](https://galaxy.ansible.com/)是ansible官方维护的一个role分享社区。通过[在线搜索nginx](https://galaxy.ansible.com/list#/roles?page=1&page_size=10&autocomplete=nginx)，我们可以很快发现这个[mrlesmithjr.nginx](https://galaxy.ansible.com/mrlesmithjr/nginx/)
+[collections](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html) 是 `Ansible` 的一种打包封装格式，可以包含 `playbooks`, `roles`, `modules` 和 `plugins` 。`Ansible core` 仓库里的 `modules` 正在逐渐重构迁移到 `collections` 。
+
+[Ansible Galaxy](https://galaxy.ansible.com/)是ansible官方维护的一个 `collections` 和 `role` 分享社区。通过[在线搜索nginx](https://galaxy.ansible.com/search?deprecated=false&keywords=nginx&order_by=-relevance&page=1)，我们可以很快发现这个[nginxinc/nginx_core](https://galaxy.ansible.com/nginxinc/nginx_core)
 
 ---
+
+## Ansible Galaxy 快速体验 {id="galaxy-quickstart-1"}
 
 ```bash
 # 确保你在当前用户可写的目录中
 $ mkdir roles
 # 以下命令会在当前目录的子目录roles下创建一个名为jeqo.nginx的子目录
-$ ansible-galaxy install mrlesmithjr.nginx -p roles
-# 可以进入该目录查看自动下载好的一个nginx role（一堆配置文件和ansible脚本）
-# 可以 cd roles/mrlesmithjr.nginx 重点查看README.md，获得作者留给我们的第一手帮助文档
+$ ansible-galaxy collection install nginxinc.nginx_core
+# Starting galaxy collection install process
+# Process install dependency map
+# ERROR! Unknown error when attempting to call Galaxy at 'https://galaxy.ansible.com/api/': <urlopen error [Errno -3] Temporary failure in name resolution>
+# 遇到如上网络连接错误时，需要使用第三方域名解析服务查询对应远程主机域名的『正确』IP
+
+# ansible-galaxy collection install nginxinc.nginx_core
+# Starting galaxy collection install process
+# Process install dependency map
+# Starting collection install process
+# Installing 'nginxinc.nginx_core:0.3.0' to '/home/cuc/.ansible/collections/ansible_collections/nginxinc/nginx_core'
+# Downloading https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz to /home/cuc/.ansible/tmp/ansible-local-12102kn8levp/tmpn8vk89lk
+# ERROR! Unexpected Exception, this is probably a bug: <urlopen error [Errno -3] Temporary failure in name resolution>
+
+# 继续解决域名解析结果被污染的问题
+# wget https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz
+# --2021-04-12 01:37:40--  https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz
+# Resolving galaxy.ansible.com (galaxy.ansible.com)... 172.67.68.251, 104.26.1.234, 104.26.0.234, ...
+# Connecting to galaxy.ansible.com (galaxy.ansible.com)|172.67.68.251|:443... connected.
+# HTTP request sent, awaiting response... 302 Found
+# Location: https://ansible-galaxy.s3.amazonaws.com/artifact/bd/f9de1f668f868a872bfdc64df23423e53ad7f08195217437c653bfc97aa2e8?response-content-disposition=attachment%3B%20filename%3Dnginxinc-nginx_core-0.3.0.tar.gz&AWSAccessKeyId=AKIAJZZ23S6M5JUH2EOA&Signature=8InBUVhESAvuX5Ee1CxmqPZYUiY%3D&Expires=1618195061 [following]
+# --2021-04-12 01:37:41--  https://ansible-galaxy.s3.amazonaws.com/artifact/bd/f9de1f668f868a872bfdc64df23423e53ad7f08195217437c653bfc97aa2e8?response-content-disposition=attachment%3B%20filename%3Dnginxinc-nginx_core-0.3.0.tar.gz&AWSAccessKeyId=AKIAJZZ23S6M5JUH2EOA&Signature=8InBUVhESAvuX5Ee1CxmqPZYUiY%3D&Expires=1618195061
+# Resolving ansible-galaxy.s3.amazonaws.com (ansible-galaxy.s3.amazonaws.com)... failed: Temporary failure in name resolution.
+# wget: unable to resolve host address ‘ansible-galaxy.s3.amazonaws.com’
+
+# 经过以上 2 步网络连接错误手动修复，在 /etc/hosts 中一共添加 2 条域名解析记录
+# 52.217.8.132 ansible-galaxy.s3.amazonaws.com
+# 104.26.1.234 galaxy.ansible.com
+
+# 可以进入 ~/.ansible/collections/ansible_collections/nginxinc/nginx_core
+# 查看自动下载好的一个nginx collections（一堆配置文件和ansible脚本）
+# 可以 cd playbooks 查看所有示例 playbooks
 # 由于全是脚本，所以文档解决不了的问题可以直接查看代码
 ```
 
 ---
 
-将以下内容粘贴到上述实验中roles的父级目录中新创建的文件，假设文件名为``deploy.yml``
+### 离线安装 Ansible Galaxy {id="offline-install-galaxy"}
 
-```ini
+[![](images/chap0x08/ansible-galaxy.png)](https://docs.ansible.com/ansible/latest/user_guide/collections_using.html#installing-collections-with-ansible-galaxy)
+
 ---
-- hosts: web
-  become: true
-  vars:
-  roles:
-    - role: mrlesmithjr.nginx
-  tasks:
-```
+
+## Ansible Galaxy 快速体验 {id="galaxy-quickstart-2"}
 
 ```bash
+# 自行替换其中的 192.168.56.202 为目标主机 IP
+echo -e "[web]\n192.168.56.202 ansible_user=cuc ansible_become=true ansible_become_method=sudo" >> hosts
+
 # 把本地的nginx配置“代码”在远程主机上执行起来吧！
-$ ansible-playbook deploy.yml -i hosts -u root -v
+ansible-playbook deploy-nginx.yml -i hosts -K
 ```
 
 ---
@@ -385,7 +493,7 @@ $ ansible-playbook deploy.yml -i hosts -u root -v
 验证你的第一个ansible-playbook的成果吧！
 
 ```bash
-curl http://192.168.56.101
+curl http://192.168.56.202
 ```
 
 ---
@@ -401,6 +509,61 @@ curl http://192.168.56.101
 ---
 
 [番外：Ansible](ansible.md.html)
+
+# 容器基本概念 {id="container-concepts"}
+
+---
+
+## 虚拟机 VS. 容器 {id="vm-vs-container-1"}
+
+[![](images/chap0x08/DockerVSVM.png)](https://www.freecodecamp.org/news/demystifying-containers-101-a-deep-dive-into-container-technology-for-beginners-d7b60d8511c1/)
+
+> 注意：Docker只是容器技术目前最“火”的一种，Docker不是容器技术的代名词，只是方案之一。
+
+---
+
+## 虚拟机 VS. 容器 {id="vm-vs-container-2"}
+
+|                  | 容器的优势 | 虚拟机的优势 |
+| :-               | :-         | :-           |
+| 一致的运行时环境 | ✔️          | ✔️            |
+| 应用沙盒化       | ✔️          | ✔️            |
+| 占用存储空间少   | ✔️          |              |
+| 开销低           | ✔️          |              |
+
+---
+
+## OCI 标准 {id="oci-specs"}
+
+* [Open Container Initiative (OCI)](https://opencontainers.org/)
+    * 镜像规范 `Image Spec`
+    * 运行时规范 `Runtime Spec`
+
+[![](images/chap0x08/oci-specs.png)](https://alibaba-cloud.medium.com/open-container-initiative-oci-specifications-375b96658f55)
+
+---
+
+## 容器生命周期  镜像>容器>进程
+
+[![](images/chap0x08/image-container-process.png)](https://alibaba-cloud.medium.com/open-container-initiative-oci-specifications-375b96658f55)
+
+---
+
+## 编排容器 {id="container-orchestration-1"}
+
+> 容器全生命周期管理方案。
+
+---
+
+## 编排容器 {id="container-orchestration-2"}
+
+* 镜像管理（获取镜像的渠道和方式）
+* 容器管理
+* 可用计算资源管理
+* 外部访问控制管理
+* 负载均衡
+* 服务健康状况监测
+* （容器）服务间依赖关系管理
 
 # [docker](https://www.docker.com/)
 
@@ -428,7 +591,7 @@ Docker 可以让你像使用集装箱一样快速的组合成应用，并且可�
 
 ## 安装Docker {id="docker-install"}
 
-以官方文档为准: [https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
+以官方文档为准: [https://docs.docker.com/install/linux/docker-ce/ubuntu/](https://docs.docker.com/install/linux/docker-ce/ubuntu/) ，以下内容为 **过时** 内容，仅为『证明』：基本安装步骤不会有大的变化，但和『最新版』安装方法一定 **有差别**
 
 ```bash
 sudo apt-get update
@@ -474,27 +637,17 @@ $ sudo systemctl status docker
            └─1622 containerd -l unix:///var/run/docker/libcontainerd/docker-containerd.sock --shim containerd-shim --metrics-interval=0 --sta
 ```
 
-# Docker基本概念 {id="docker-concepts"}
-
 ---
 
-## 虚拟机 VS. 容器
-
-![](images/chap0x08/DockerVSVM.png)
-
-> 注意：Docker只是容器技术目前最“火”的一种，Docker不是容器技术的代名词，只是方案之一。
-
----
-
-## Linux容器架构 {id="container-arch"}
-
-![](images/chap0x08/LinuxContainerEcosystem.png)
-
----
-
-## Docker生命周期 {id="docker-lifecycle"}
+## Docker生命周期 {id="docker-lifecycle-1"}
 
 <a href="https://segmentfault.com/a/1190000000751601">![](images/chap0x08/docker-lifecycle.png)</a>
+
+---
+
+## Docker生命周期 {id="docker-lifecycle-2"}
+
+[![](images/chap0x08/docker-deployment.png)](https://www.freecodecamp.org/news/demystifying-containers-101-a-deep-dive-into-container-technology-for-beginners-d7b60d8511c1/)
 
 ---
 
@@ -656,6 +809,7 @@ Run 'docker COMMAND --help' for more information on a command.
 
 ## 其他需要了解的Docker功能与特性 {id="docker-ecosystem"}
 
+* 容器编排方案 [Kubernetes/K8s - 容器编排的工业界开源标准](https://kubernetes.io/) | [Docker swarm](https://docs.docker.com/engine/swarm/) | [docker-compose](https://docs.docker.com/compose/)
 * [Docker虚拟网络的特性与管理](https://docs.docker.com/engine/tutorials/networkingcontainers/)
 * [镜像、容器以及宿主机数据管理（共享、隔离等）](https://docs.docker.com/engine/tutorials/dockervolumes/)
 * [Docker集群管理](https://www.digitalocean.com/community/tutorials/how-to-create-a-cluster-of-docker-containers-with-docker-swarm-and-digitalocean-on-ubuntu-16-04)
