@@ -195,6 +195,12 @@ output: revealjs::revealjs_presentation
 
 ### 以本课程的课件项目为例 {id="demo-case-3"}
 
+[![](images/chap0x08/secret-runtime-config-1.png)](https://travis-ci.com/github/c4pr1c3/LinuxSysAdmin/jobs/498022666/config)
+
+---
+
+### 以本课程的课件项目为例 {id="demo-case-4"}
+
 * 代码 **手动** 提交 `git push to github`
 * **自动** 构建 `travis-ci build`
 * **自动** 交付 `travis-ci deploy to github pages` + `git add && git push to gitee pages`
@@ -204,7 +210,15 @@ output: revealjs::revealjs_presentation
 
 ---
 
-### 以本课程的课件项目为例的 CI/CD 思考 {id="demo-case-4"}
+### 以本课程的课件项目为例的 CI/CD 思考 {id="demo-case-5.0"}
+
+* `开发` 和 `运维` 角色实现 `代码` 与 `运行时配置` 独立管理、互不干扰
+
+![](images/chap0x08/secret-runtime-config-2.png)
+
+---
+
+### 以本课程的课件项目为例的 CI/CD 思考 {id="demo-case-5.1"}
 
 * [render.sh](https://github.com/c4pr1c3/LinuxSysAdmin/blob/master/render.sh) 负责定义线上和开发环境 `统一构建` 规则
     * `构建规则` 纳入「版本管理」，实现「变更可追溯」
@@ -218,7 +232,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-### 以 [c4pr1c3/vimrc](https://github.com/c4pr1c3/vimrc) 为例的 CI/CD 思考 {id="demo-case-5"}
+### 以 [c4pr1c3/vimrc](https://github.com/c4pr1c3/vimrc) 为例的 CI/CD 思考 {id="demo-case-6"}
 
 * [每日定时自动构建：防止代码腐化](https://travis-ci.org/github/c4pr1c3/vimrc/builds)
 
@@ -226,7 +240,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-### 以 [c4pr1c3/vimrc](https://github.com/c4pr1c3/vimrc) 为例的 CI/CD 思考 {id="demo-case-6"}
+### 以 [c4pr1c3/vimrc](https://github.com/c4pr1c3/vimrc) 为例的 CI/CD 思考 {id="demo-case-7"}
 
 * [构建矩阵：支持一份代码在多种运行环境中构建与测试](https://travis-ci.org/github/c4pr1c3/vimrc/jobs/766852103)
 
