@@ -121,8 +121,7 @@ NFS允许系统将其目录和文件共享给网络上的其他系统。通过NF
 
 ***resumed***
 
-* [ ] （可选加分任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？
-    * 提示：我们在《网络安全》第4章《网络监听》中介绍过的工具filesnarf
+* [ ] （可选任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？
 
 # SMB/CIFS {id="smbcifsheading"}
 
@@ -177,7 +176,6 @@ CIFS协议是SMB协议的一个本地化实现（dialect，直译为“方言”
 
 ## [安装和配置Samba独立共享服务器](https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server)
 
-* Linux设置匿名访问共享目录
 * Linux设置用户名密码方式的共享目录
 
 ```bash
@@ -186,9 +184,15 @@ sudo apt-get install samba
 
 # 创建Samba共享专用的用户
 sudo useradd -M -s /sbin/nologin demoUser
+sudo groupadd demoGroup
+sudo usermod -a -G demoGroup demoUser
 sudo passwd demoUser
 # 创建的用户必须有一个同名的Linux用户，密码是独立的
-sudo smbpasswd -a demoUser
+sudo smbpasswd -a cuc
+
+# 创建测试用共享目录
+sudo mkdir -p /srv/samba/demo
+sudo chown -R demoUser:demoGroup /srv/samba/demo
 ```
 
 ---
@@ -208,15 +212,155 @@ sudo smbpasswd -a demoUser
 
 ---
 
-smbclient
+## smbclient
+
+* 分别查看基于 Windows 和 Linux 搭建 SMB 共享服务包含的共享目录清单
+* 向远程共享目录上传文件和目录
+* 从远程共享目录中下载文件和目录
+
+---
+
+## smbclient 操作速查 {id="smbclient-faq"}
 
 ```bash
 sudo apt-get install smbclient
+
+# 查看远程 SMB 共享服务的共享目录清单
+# Linux 搭建的 SMB 共享服务
+smbclient -L 192.168.56.193 -U demoUser
+# Enter WORKGROUP\demoUser's password:
+# 
+# 	Sharename       Type      Comment
+# 	---------       ----      -------
+# 	print$          Disk      Printer Drivers
+# 	demo            Disk
+# 	IPC$            IPC       IPC Service (cuc-lab server (Samba, Ubuntu))
+# SMB1 disabled -- no workgroup available
+
+# Windows 搭建的 SMB 共享服务
+smbclient -L 192.168.56.182 -U demo
+# Enter WORKGROUP\demo's password:
+# 
+# 	Sharename       Type      Comment
+# 	---------       ----      -------
+# 	anon_share      Disk
+# 	IPC$            IPC       远程 IPC
+# 	smb_share       Disk
+# SMB1 disabled -- no workgroup available
+
+# 连接指定共享目录
+smbclient //192.168.56.193/demo -U demoUser
+# 输入密码
+
+# 下载整个文件夹
+tarmode
+recurse
+prompt
+## 下载指定目录 target_dir
+mget target_dir
+## 下载所有目录和文件
+mget *
 ```
 
-* Linux访问Windows的匿名共享目录
-* Linux访问Windows的用户名密码方式共享目录
-* [下载整个目录](https://indradjy.wordpress.com/2010/04/14/getting-whole-folder-using-smbclient/)
+# SMB 共享实验 FAQ {id="windows-share-faq"}
+
+---
+
+* 无法 ping 通 Windows 主机
+* 设置使用非当前登录账号作为 SMB 共享用户
+* 向共享目录写入文件失败
+
+---
+
+## 无法 ping 通 Windows 主机
+
+* 检查「各层」网络连通性
+* 排查 Windows 防火墙设置
+
+---
+
+### 配置 Windows 防火墙策略 {id="windows-fw-config-0"}
+
+* `开始菜单` --> `gpedit.msc` --> `Windows 设置` --> `安全设置` --> `网络列表管理器策略` --> `无法识别的网络`
+    * 位置类型：专用
+    * 用户权限：用户可以更改位置
+
+---
+
+### 配置 Windows 防火墙策略 {id="windows-fw-config-1"}
+
+![](images/chap0x06/windows-fw-config-1.png)
+
+---
+
+### 配置 Windows 防火墙策略 {id="windows-fw-config-2"}
+
+![](images/chap0x06/windows-fw-config-2.png)
+
+---
+
+## 设置使用非当前登录账号作为 SMB 共享用户
+
+```bash
+# 在 Windows CMD 中输入以下命令完成用户添加与口令设置
+# 添加用户 demo 密码为 pass 用于访问共享文件夹
+net user demo pass /ADD
+
+# 实验完毕 删除用户
+net user demo /DELETE
+```
+
+---
+
+## 向共享目录写入文件失败
+
+* 目录写入权限设置检查
+* `put` 只支持上传 **当前目录下** 文件
+* 在 SMB 交互式终端中通过 `!` 命令前缀执行本地 `shell` 命令
+
+```bash
+smb: \> ls
+#   .                                   D        0  Thu Apr 22 05:38:17 2021
+#   ..                                  D        0  Thu Apr 22 05:38:17 2021
+#   upload_demo                         A       12  Fri Apr 16 03:16:19 2021
+#   新建文件夹                     D        0  Thu Apr 22 06:57:22 2021
+# 
+#                 33405695 blocks of size 4096. 21963037 blocks available
+smb: \> !ls -la
+# total 52
+# drwxr-xr-x 6 cuc  cuc  4096 Apr 22 23:09 .
+# drwxr-xr-x 3 root root 4096 Feb 20 11:21 ..
+# drwx------ 3 cuc  cuc  4096 Apr 12 01:31 .ansible
+# -rw------- 1 cuc  cuc  2472 Apr 22 07:53 .bash_history
+# -rw-r--r-- 1 cuc  cuc   220 Feb 25  2020 .bash_logout
+# -rw-r--r-- 1 cuc  cuc  3789 Apr 12 06:40 .bashrc
+# drwx------ 2 cuc  cuc  4096 Feb 20 11:43 .cache
+# -rw------- 1 cuc  cuc    39 Apr 22 06:33 .lesshst
+# -rw-r--r-- 1 cuc  cuc   807 Feb 25  2020 .profile
+# drwx------ 2 cuc  cuc  4096 Apr 12 01:31 .ssh
+# -rw-r--r-- 1 cuc  cuc     0 Feb 20 11:44 .sudo_as_admin_successful
+# -rw-rw-r-- 1 cuc  cuc     0 Apr 22 23:09 test
+# -rw-rw-r-- 1 cuc  cuc    12 Apr 22 06:02 upload_demo
+# -rw------- 1 cuc  cuc   867 Apr 22 06:18 .viminfo
+# drwxrwxr-x 3 cuc  cuc  4096 Apr 22 06:57 新建文件夹
+
+smb: \> help lcd
+# HELP lcd:
+# 	[directory] change/report the local current working directory
+```
+
+---
+
+### 目录写入权限设置检查
+
+```bash
+# Linux 宿主机
+ls -ld /srv/samba/demo/
+# drwxr-xr-x 2 demoUser demoGroup 4096 Apr 22 05:35 /srv/samba/demo/
+
+# Windows 宿主机
+
+```
 
 # 移动互联时代的文件共享
 

@@ -52,7 +52,15 @@ DHCP服务器通常是给客户端分配一个临时地址，但也能设置有�
 
 ---
 
-防御[Rogue DHCP](https://en.wikipedia.org/wiki/Rogue_DHCP)
+## [Rogue DHCP](https://en.wikipedia.org/wiki/Rogue_DHCP)
+
+![](images/chap0x07/rogue-dhcp.png)
+
+---
+
+## 防御 [Rogue DHCP: DHCP snooping](https://en.wikipedia.org/wiki/DHCP_snooping)
+
+![](images/chap0x07/dhcp-snooping.png)
 
 # [DNS](https://help.ubuntu.com/lts/serverguide/dns.html)
 
