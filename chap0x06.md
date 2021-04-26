@@ -362,13 +362,153 @@ ls -ld /srv/samba/demo/
 
 ```
 
+# 远程管理 Windows 主机简介 {id="windows-rm-intro"}
+
+---
+
+## 常见远程管理方式
+
+* GUI: Windows 远程桌面
+* CLI
+    * [Powershell Remote](https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands)
+    * [SSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview)
+
+---
+
+### Windows 远程桌面 {id="windows-rdp"}
+
+* [微软官方文档: 如何使用远程桌面 Windows 10](https://support.microsoft.com/zh-cn/windows/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2-5fe128d5-8fb1-7a23-3b8a-41e636865e8c)
+* [Windows 10 Home 版开启远程桌面: stascorp/rdpwrap](https://github.com/stascorp/rdpwrap)
+
+---
+
+### CLI - OpenSSH Server {id="sshd-configure-1"}
+
+* 安装 Windows 可选功能组件：`OpenSSH Server`
+
+![](images/chap0x06/install-openssh-server.png)
+
+---
+
+### CLI - OpenSSH Server {id="sshd-configure-2"}
+
+* 启动并配置 `OpenSSH Server` 开机自启动
+
+```bash
+# 以下代码需要在「管理员权限」的 PowerShell 中执行
+Start-Service sshd
+# OPTIONAL but recommended:
+Set-Service -Name sshd -StartupType 'Automatic'
+# Confirm the firewall rule is configured. It should be created automatically by setup.
+Get-NetFirewallRule -Name *ssh*
+# There should be a firewall rule named "OpenSSH-Server-In-TCP", which should be enabled
+# If the firewall does not exist, create one
+New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+```
+
+---
+
+### CLI - OpenSSH Server {id="sshd-configure-3"}
+
+* 配置 OpenSSH 客户端连接后启动的默认 Shell 为 `PowerShell`
+
+```bash
+# 以下代码需要在「管理员权限」的 PowerShell 中执行
+New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
+```
+
+---
+
+### CLI - OpenSSH Server {id="sshd-configure-4"}
+
+* 配置 SSH 免密登录
+
+```bash
+# 不能使用 ssh-copy-id
+
+# 在「管理员权限」的 powershell 中执行以下命令
+cd $ENV:PROGRAMDATA/ssh
+New-Item -ItemType file administrators_authorized_keys
+
+# 将公钥指纹信息写入上述新创建的 administrators_authorized_keys
+# 请自行替换以下 <> 内的公钥指纹信息
+# 这里的 -encoding ascii 非常重要，因为默认不使用该参数时
+# Out-File 写入的文本是双字节编码且使用了 BOM 文件头
+echo '<content-of-id_rsa.pub>' | Out-File -encoding ascii administrators_authorized_keys
+
+# 检查自己使用的 PowerShell 版本
+# $PSVersionTable
+
+# Name                           Value
+# ----                           -----
+# PSVersion                      5.1.19041.906
+# PSEdition                      Desktop
+# PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}
+# BuildVersion                   10.0.19041.906
+# CLRVersion                     4.0.30319.42000
+# WSManStackVersion              3.0
+# PSRemotingProtocolVersion      2.3
+# SerializationVersion           1.1.0.1
+
+# ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-5.1
+# 5.1 版 Powershell 使用 Out-File 写入文件时所有多字节编码方式均用到了 BOM 头
+
+# ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-7
+# 7.0+ 版 Powershell 提供了 utf8NoBOM 编码方式
+
+# 配置上述 administrators_authorized_keys 正确的属主和访问权限
+$acl = Get-Acl $ENV:PROGRAMDATA\ssh\administrators_authorized_keys
+$acl.SetAccessRuleProtection($true, $false)
+$administratorsRule = New-Object system.security.accesscontrol.filesystemaccessrule("Administrators","FullControl","Allow")
+$systemRule = New-Object system.security.accesscontrol.filesystemaccessrule("SYSTEM","FullControl","Allow")
+$acl.SetAccessRule($administratorsRule)
+$acl.SetAccessRule($systemRule)
+$acl | Set-Acl
+
+# 检查 administrators_authorized_keys 文件的权限设置
+# Access 一项只能且必须只有 
+# Access : NT AUTHORITY\SYSTEM Allow  FullControl
+#          BUILTIN\Administrators Allow  FullControl
+get-acl .\administrators_authorized_keys | fl
+# Path   : Microsoft.PowerShell.Core\FileSystem::C:\ProgramData\ssh\administrators_authorized_keys
+# Owner  : BUILTIN\Administrators
+# Group  : DESKTOP-HQOR9HG\None
+# Access : NT AUTHORITY\SYSTEM Allow  FullControl
+#          BUILTIN\Administrators Allow  FullControl
+# Audit  :
+# Sddl   : O:BAG:S-1-5-21-3489025807-4051503630-1690866609-513D:PAI(A;;FA;;;SY)(A;;FA;;;BA)
+```
+
+---
+
+### CLI - OpenSSH Server {id="sshd-configure-5"}
+
+* 从 Linux 主机获取开启 OpenSSH Server 的 Windows 主机上的文件
+
+```bash
+# 注意 Windows 路径分隔符要使用 / 而不是 \
+scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./
+```
+
 # 移动互联时代的文件共享
 
 ---
 
-* [owncloud](https://owncloud.org/)
-* [seafile](https://www.seafile.com/home/)
-* [Syncthing](https://syncthing.net/)
+## 功能特性
+
+* 多终端平台支持: PC / macOS / iOS / Android / ...
+* 文件变更自动在多终端平台同步
+* **加分点** 加密和隐私保护
+* **加分点** 支持数据的物理存储自己管理
+
+---
+
+## 开源解决方案
+
+* [自建文件传输/同步解决方案](https://github.com/awesome-selfhosted/awesome-selfhosted#file-transfersynchronization)
+    * [ownCloud](https://owncloud.org/)
+    * [Seafile](https://www.seafile.com/home/)
+    * [Syncthing](https://syncthing.net/)
 
 # 参考文献
 
