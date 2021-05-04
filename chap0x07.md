@@ -187,6 +187,12 @@ sudo systemctl start dnsmasq
 # 启动 dhcp-client 测试 DHCP 和 DNS 服务是否生效
 ```
 
+---
+
+## 主要操作步骤录屏
+
+[![asciicast](https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg)](https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss)
+
 # 参考文献
 
 ---
