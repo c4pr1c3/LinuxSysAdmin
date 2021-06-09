@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="番外cloud-init" class="title-slide slide level1">
+<h1>番外：Cloud-Init</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><code>ansible</code> 的使用对目标运行环境也有依赖要求
+<ul>
+<li>Python 解释器</li>
+<li>SSH 免密登录</li>
+</ul></li>
+<li>以 <code>puppet</code> 为代表的基于 <code>agent</code> 的自动化管理系统方案需要在「基础镜像」中提前安装好对应的 <code>agent</code> 并进行运行时环境相关的必要配置</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>以上需求可以通过在定制「基础镜像」阶段将上述依赖软件预装在系统中</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>但是，上述做法并不「优雅」。</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>「基础镜像」应该满足以下特性：</p>
+<ul>
+<li>最大化「可复用」场景：最小化安装系统，只装「最普遍需要」的基础软件</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>考虑以下集群服务器管理的常见需求：</p>
+<ul>
+<li>新安装的系统需要预先配置不同用户的不同 SSH 免密登录受信任公钥</li>
+<li>部分新系统需要安装软件A，另一部分新系统需要安装软件B</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>以上需求对应的操作过程均要求 <strong>自动化</strong> 。</p>
+</section>
+<section class="slide level2">
+
+<p>这就是 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题。</p>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>怎么解决 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题？</p>
+</blockquote>
+</section>
+<section id="cloud-init-usage" class="slide level2">
+<h2>Cloud-Init 的作用</h2>
+<blockquote>
+<p>解决 <code>从一到二、到三，乃至万物</code> （从基本系统到可编程、可配置） 的 <strong>自动化</strong> 问题</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="hello-cloud-init" class="title-slide slide level1">
+<h1>从「第一个 🌰 」开始体验 cloud-init</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 在制作无人值守安装镜像或 PXE 镜像时将 cloud-init 和 openssh-server 预装
+sudo apt update &amp;&amp; sudo apt install cloud-init genisoimage
+
+mkdir -p ~/workspace/cloud-init &amp;&amp; cd ~/workspace/cloud-init 
+
+cat &lt;&lt; EOF &gt; ~/workspace/cloud-init/meta-data
+instance-id: 1
+local-hostname: cuc-cloud-init
+EOF
+
+cat &lt;&lt; EOF &gt; ~/workspace/cloud-init/user-data
+#cloud-config
+password: mypassword 
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+
+genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>将虚拟机内的 <code>init-cidata.iso</code> 下载到宿主机系统</li>
+<li>在 Virtualbox 的当前虚拟机设置界面挂载 <code>init-cidata.iso</code></li>
+</ul>
+<p><img data-src="images/cloud-init/vb-cidata.png" /></p>
+</section>
+<section class="slide level2">
+
+<p>重启 <code>当前虚拟机</code> ，登录进入系统后：</p>
+<pre class="bash"><code># 系统的主机名变成了上述配置文件示例里的 cuc-cloud-init
+
+# 查看系统中会新多出一个用户 `ubuntu` 
+id ubuntu
+
+# 输入上述配置文件示例里设置的口令 `mypassword` 
+su ubuntu
+
+# 检查当前用户身份
+id</code></pre>
+</section>
+</section>
+<section>
+<section id="详解上一个" class="title-slide slide level1">
+<h1>详解上一个🌰</h1>
+
+</section>
+<section id="user-data" class="slide level2">
+<h2>user-data</h2>
+<pre class="yaml"><code>#cloud-config</code></pre>
+<ul>
+<li>标识当前文件是一个 <code>cloud-config</code> 类型文件，这是最常用的一类 <code>User-Data</code></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="yaml"><code>password: mypassword </code></pre>
+<p><code>Ubuntu</code> 发行版默认创建的用户名为 <code>ubuntu</code>，此处 <code>password</code> 指令等价于先创建新用户 <code>ubuntu</code> ，然后设置口令为 <code>mypassword</code> 。</p>
+<ul>
+<li><a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups">users 配置关键字定义的列表中第一个用户就是系统的默认用户，如果希望保留发行版默认标准用户名则第一个用户应设置为 default</a> 。</li>
+<li>口令格式既可以是明文，也可以是 <code>mkpasswd</code> 创建的「哈希后口令」。</li>
+</ul>
+</section>
+<section id="创建哈希后口令的" class="slide level2">
+<h2>创建「哈希后口令」的🌰</h2>
+<pre class="bash"><code>sudo apt install whois
+mkpasswd -m help # 获取当前版本支持的哈希算法
+mkpasswd -m sha-512 mypassword</code></pre>
+</section>
+<section class="slide level2">
+
+<pre class="yaml"><code>chpasswd: { expire: False }</code></pre>
+<p><code>chpasswd</code> 用于对系统中 <strong>已有</strong> 用户更改口令或设置口令强制过期策略。支持 <code>expire</code> 和 <code>list</code> 属性。其中 <code>list</code> 关键字支持 <code>username:password</code> 列表形式，既可以是 <code>YAML list</code> 格式，也可以是「一行一键值对」的 <code>多行</code> 字符串。</p>
+</section>
+<section class="slide level2">
+
+<pre class="yaml"><code>ssh_pwauth: True</code></pre>
+<p><code>ssh_pwauth</code> 配置 <code>/etc/ssh/sshd_config</code> 里 <code>PasswordAuthentication</code> 字段值。</p>
+</section>
+</section>
+<section>
+<section id="正式入门" class="title-slide slide level1">
+<h1>正式入门</h1>
+
+</section>
+<section id="必读官方文档" class="slide level2">
+<h2><a href="https://cloudinit.readthedocs.io/en/latest/index.html">必读：官方文档</a></h2>
+<ul>
+<li>工业级标准（<a href="https://cloudinit.readthedocs.io/en/latest/topics/availability.html">主流 Linux 发行版、公有云服务提供商、私有云平台、裸机安装</a>）</li>
+<li>支持从多种「数据源」加载用户配置，定制从「基础镜像」到「个性化可用系统」的自动化实现</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>支持的发行版</th>
+<th>支持的公有云</th>
+<th>支持的私有云</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ubuntu<br />SLES/openSUSE<br />RHEL/CentOS<br />Fedora<br />Gentoo Linux<br />Debian<br />ArchLinux<br />FreeBSD<br />NetBSD<br />OpenBSD<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+<td>Amazon Web Services<br />Microsoft Azure<br />Google Cloud Platform<br />Oracle Cloud Infrastructure<br />Softlayer<br />Rackspace Public Cloud<br />IBM Cloud<br />Digital Ocean<br />Bigstep<br />Hetzner<br />Joyent<br />CloudSigma<br />Alibaba Cloud<br />OVH<br />OpenNebula<br />Exoscale<br />Scaleway<br />CloudStack<br />AltCloud<br />SmartOS<br />HyperOne<br />Rootbox<br /></td>
+<td>Bare metal installs<br />OpenStack<br />LXD<br />KVM<br />Metal-as-a-Service (MAAS)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="check-cloud-init-version" class="title-slide slide level1">
+<h1>查看当前已安装 Cloud-Init 版本</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>cloud-init --version
+# /usr/bin/cloud-init 19.4-33-gbb4131a2-0ubuntu1~18.04.1</code></pre>
+<p>根据以上版本信息，推荐阅读<a href="https://cloudinit.readthedocs.io/en/19.4/index.html">官方 v19.4 版文档</a> 。</p>
+</section>
+</section>
+<section>
+<section id="数据源" class="title-slide slide level1">
+<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html">数据源</a></h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>「数据源」指的是 <code>cloud-init</code> 的配置数据来源，通常来自用户（例如 <code>user-data</code>）或来自创建配置驱动器的云（例如 <code>meta-data</code> ）。</li>
+<li>典型的「用户数据」包括「文件」，「yaml」和「Shell 脚本」</li>
+<li>典型的「元数据」包括「服务器名称」，「实例 ID」，「显示名称」和「其他特定于云服务提供商」的详细信息</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>实例（Instance）在云计算场景中，一般指「云主机实例」。对于 <code>Virtualbox</code> 来说，每一个本地虚拟机也可以看作是一个「实例」。</p>
+</section>
+<section class="slide level2">
+
+<p>当前系统上执行过 <code>Cloud-Init</code> 之后会将「元数据」保存在 <code>/run/cloud-init/instance-data.json</code> ，如下所示是「第一个 🌰 」对应的「元数据」：</p>
+<pre class="json"><code>{
+ &quot;base64_encoded_keys&quot;: [],
+ &quot;ds&quot;: {
+  &quot;_doc&quot;: &quot;EXPERIMENTAL: The structure and format of content scoped under the &#39;ds&#39; key may change in subsequent releases of cloud-init.&quot;,
+  &quot;meta_data&quot;: {
+   &quot;dsmode&quot;: &quot;net&quot;,
+   &quot;instance-id&quot;: 1,
+   &quot;local-hostname&quot;: &quot;cuc-cloud-init&quot;
+  }
+ },
+ &quot;sensitive_keys&quot;: [],
+ &quot;v1&quot;: {
+  &quot;_beta_keys&quot;: [
+   &quot;subplatform&quot;
+  ],
+  &quot;availability-zone&quot;: null,
+  &quot;availability_zone&quot;: null,
+  &quot;cloud-name&quot;: &quot;unknown&quot;,
+  &quot;cloud_name&quot;: &quot;unknown&quot;,
+  &quot;instance-id&quot;: &quot;1&quot;,
+  &quot;instance_id&quot;: &quot;1&quot;,
+  &quot;local-hostname&quot;: &quot;cuc-cloud-init&quot;,
+  &quot;local_hostname&quot;: &quot;cuc-cloud-init&quot;,
+  &quot;platform&quot;: &quot;nocloud&quot;,
+  &quot;public_ssh_keys&quot;: [],
+  &quot;region&quot;: null,
+  &quot;subplatform&quot;: &quot;config-disk (/dev/sr0)&quot;
+ }
+}</code></pre>
+</section>
+<section class="slide level2">
+
+<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html#known-sources">已知支持数据源类型</a></p>
+<table>
+<thead>
+<tr class="header">
+<th>排</th>
+<th>名</th>
+<th>不</th>
+<th>分</th>
+<th>先后</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alibaba Cloud (AliYun)</td>
+<td>Alt Cloud</td>
+<td>Azure</td>
+<td>CloudSigma</td>
+<td>CloudStack</td>
+</tr>
+<tr class="even">
+<td>Config Drive</td>
+<td>Digital Ocean</td>
+<td>E24Cloud</td>
+<td>Amazon EC2</td>
+<td>Exoscale</td>
+</tr>
+<tr class="odd">
+<td>Fallback/None</td>
+<td>Google Compute Engine</td>
+<td>MAAS</td>
+<td><strong>NoCloud</strong></td>
+<td>OpenNebula</td>
+</tr>
+<tr class="even">
+<td>OpenStack</td>
+<td>Oracle</td>
+<td>OVF</td>
+<td>Rbx Cloud</td>
+<td>SmartOS Datasource</td>
+</tr>
+<tr class="odd">
+<td>ZStack</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="查看我们在虚拟机里使用的数据源类型" class="slide level2">
+<h2>查看我们在虚拟机里使用的数据源类型</h2>
+<pre class="bash"><code>cloud-id
+# nocloud</code></pre>
+</section>
+</section>
+<section>
+<section id="nocloud" class="title-slide slide level1">
+<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources/nocloud.html#nocloud">NoCloud</a></h1>
+
+</section>
+<section class="slide level2">
+
+<p>回顾之前我们创建 iso 镜像文件时使用的命令</p>
+<pre class="bash"><code>genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</code></pre>
+<ul>
+<li><code>-volid cidata</code> 指定新创建的 iso 文件的「卷标识」为 <code>cidata</code></li>
+</ul>
+<p><img data-src="images/cloud-init/nocloud-cidata.png" /></p>
+</section>
+<section class="slide level2">
+
+<p>回顾之前我们创建 iso 镜像文件时使用的命令</p>
+<pre class="bash"><code>genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</code></pre>
+<p><img data-src="images/cloud-init/nocloud-contents.png" /></p>
+<ul>
+<li>iso 镜像文件里的文件名必须是 <code>user-data</code> 和 <code>meta-data</code></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>回顾之前的 <code>meta-data</code> 文件内容</p>
+<pre class="yaml"><code>instance-id: 1
+local-hostname: cuc-cloud-init</code></pre>
+<p>其中 <code>instance-id: 1</code> 用来告诉 <code>cloud-init</code> 引擎该实例「是否首次启动」。</p>
+<pre class="bash"><code># 查看该实例启动过一次之后在当前系统内留下的痕迹
+ls /var/lib/cloud/instances/1/
+# boot-finished     datasource  obj.pkl  sem            user-data.txt.i  vendor-data.txt.i
+# cloud-config.txt  handlers    scripts  user-data.txt  vendor-data.txt</code></pre>
+</section>
+<section class="slide level2">
+
+<p>其中 <code>boot-finished</code> 文件记录了该实例定义的启动时间，例如：</p>
+<pre class="bash"><code>cat /var/lib/cloud/instances/1/boot-finished
+# 11.28 - Tue, 14 Apr 2020 07:33:47 +0000 - v. 19.4-33-gbb4131a2-0ubuntu1~18.04.1</code></pre>
+</section>
+<section class="slide level2">
+
+<p>当上述目录结构存在时，只要 <code>init-cidata.iso</code> 内容不变。即使一直挂载在虚拟机的光驱里，每次启动虚拟机系统时，也不会再重新执行一遍光盘里定义的 <code>cloud-init</code> 操作了。</p>
+</section>
+<section class="slide level2">
+
+<p>如果希望重新执行 <code>init-cidata.iso</code> 里定义的操作，需要变更 <code>meta-data</code> 文件里的 <code>instance-id</code> 赋值为 <code>/var/lib/cloud/instances/</code> 下不存在重名子目录的其他值。</p>
+</section>
+</section>
+<section>
+<section id="debug-user-data" class="title-slide slide level1">
+<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data">调试 user-data</a></h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 验证 user-data 文件是否存在语法错误
+cloud-init devel schema -c user-data --annotate
+# Valid cloud-config file user-data</code></pre>
+</section>
+</section>
+<section>
+<section id="认识模块" class="title-slide slide level1">
+<h1>认识模块</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://cloudinit.readthedocs.io/en/19.4/topics/cli.html#modules">/etc/cloud/cloud.cfg</a> 中定义了当前系统中 <code>Cloud-Init</code> 在「不同阶段」加载了哪些模块。</li>
+</ul>
+</section>
+<section id="boot-stages" class="slide level2">
+<h2><a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">Cloud-Init 主要阶段</a></h2>
+<p>结合 <code>/etc/cloud/cloud.cfg</code> 文件内容来理解不同「启动阶段」：文件中一共定义了 3 个阶段:</p>
+<ul>
+<li>init</li>
+<li>config</li>
+<li>final</li>
+</ul>
+<p>每个阶段可以「完成」哪些操作可以根据包含的「模块」功能知悉。</p>
+</section>
+<section class="slide level2">
+
+<p><code>/etc/cloud/cloud.cfg</code> 🌰</p>
+<pre class="yaml"><code># ref: https://cloudinit.readthedocs.io/en/19.4/topics/modules.html
+# 以下各个阶段定义的「模块」均在以上官方文档中有详细使用说明
+
+# The modules that run in the &#39;init&#39; stage
+cloud_init_modules:
+ - migrator
+ - seed_random
+ - bootcmd
+ - write-files
+ - growpart
+ - resizefs
+ - disk_setup
+ - mounts
+ - set_hostname
+ - update_hostname
+ - update_etc_hosts
+ - ca-certs
+ - rsyslog
+ - users-groups
+ - ssh
+
+# The modules that run in the &#39;config&#39; stage
+cloud_config_modules:
+# Emit the cloud config ready event
+# this can be used by upstart jobs for &#39;start on cloud-config&#39;.
+ - emit_upstart
+ - snap
+ - ssh-import-id
+ - locale
+ - set-passwords
+ - grub-dpkg
+ - apt-pipelining
+ - apt-configure
+ - ubuntu-advantage
+ - ntp
+ - timezone
+ - disable-ec2-metadata
+ - runcmd
+ - byobu
+
+# The modules that run in the &#39;final&#39; stage
+cloud_final_modules:
+ - package-update-upgrade-install
+ - fan
+ - landscape
+ - lxd
+ - ubuntu-drivers
+ - puppet
+ - chef
+ - mcollective
+ - salt-minion
+ - rightscale_userdata
+ - scripts-vendor
+ - scripts-per-once
+ - scripts-per-boot
+ - scripts-per-instance
+ - scripts-user
+ - ssh-authkey-fingerprints
+ - keys-to-console
+ - phone-home
+ - final-message
+ - power-state-change</code></pre>
+</section>
+<section class="slide level2">
+
+<p>结合 <a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">官方文档里「启动阶段」</a> 一节的描述可知：<code>init</code> 阶段又可以分为：</p>
+<ul>
+<li>Generator</li>
+<li>Local</li>
+<li>Network</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="理解模块" class="title-slide slide level1">
+<h1>理解模块</h1>
+
+</section>
+<section class="slide level2">
+
+<p>相当于「导入函数」或「导入库」的作用，如果在指定「启动阶段」没有「定义」使用某个「模块」，则在 <code>user-data</code> 中不能调用相应指令。</p>
+</section>
+<section class="slide level2">
+
+<p>再回看「第一个 🌰 」</p>
+<pre class="yaml"><code>#cloud-config
+password: mypassword 
+chpasswd: { expire: False }
+ssh_pwauth: True</code></pre>
+<p>上述 3 个配置指令 <code>password</code>, <code>chpasswd</code>, <code>ssh_pwauth</code> 均定义在 <a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-passwords">set-passwords</a> 模块中。</p>
+</section>
+</section>
+<section>
+<section id="理解缺省设置" class="title-slide slide level1">
+<h1>理解缺省设置</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="yaml"><code># The top level settings are used as module
+# and system configuration.
+
+# A set of users which may be applied and/or used by various modules
+# when a &#39;default&#39; entry is found it will reference the &#39;default_user&#39;
+# from the distro configuration specified below
+users:
+   - default
+
+# If this is set, &#39;root&#39; will not be able to ssh in and they
+# will get a message to login instead as the default $user
+disable_root: true
+
+# This will cause the set+update hostname module to not operate (if true)
+preserve_hostname: false
+
+# Example datasource config
+# datasource:
+#    Ec2:
+#      metadata_urls: [ &#39;blah.com&#39; ]
+#      timeout: 5 # (defaults to 50 seconds)
+#      max_wait: 10 # (defaults to 120 seconds)
+
+# 此处省略 3 个阶段的模块定义相关指令
+
+# System and/or distro specific settings
+# (not accessible to handlers/transforms)
+system_info:
+   # This will affect which distro class gets used
+   distro: ubuntu
+   # Default user name + that default users groups (if added/used)
+   default_user:
+     name: ubuntu
+     lock_passwd: True
+     gecos: Ubuntu
+     groups: [adm, audio, cdrom, dialout, dip, floppy, lxd, netdev, plugdev, sudo, video]
+     sudo: [&quot;ALL=(ALL) NOPASSWD:ALL&quot;]
+     shell: /bin/bash
+   # Automatically discover the best ntp_client
+   ntp_client: auto
+   # Other config here will be given to the distro class and/or path classes
+   paths:
+      cloud_dir: /var/lib/cloud/
+      templates_dir: /etc/cloud/templates/
+      upstart_dir: /etc/init/
+   package_mirrors:
+     - arches: [i386, amd64]
+       failsafe:
+         primary: http://archive.ubuntu.com/ubuntu
+         security: http://security.ubuntu.com/ubuntu
+       search:
+         primary:
+           - http://%(ec2_region)s.ec2.archive.ubuntu.com/ubuntu/
+           - http://%(availability_zone)s.clouds.archive.ubuntu.com/ubuntu/
+           - http://%(region)s.clouds.archive.ubuntu.com/ubuntu/
+         security: []
+     - arches: [arm64, armel, armhf]
+       failsafe:
+         primary: http://ports.ubuntu.com/ubuntu-ports
+         security: http://ports.ubuntu.com/ubuntu-ports
+       search:
+         primary:
+           - http://%(ec2_region)s.ec2.ports.ubuntu.com/ubuntu-ports/
+           - http://%(availability_zone)s.clouds.ports.ubuntu.com/ubuntu-ports/
+           - http://%(region)s.clouds.ports.ubuntu.com/ubuntu-ports/
+         security: []
+     - arches: [default]
+       failsafe:
+         primary: http://ports.ubuntu.com/ubuntu-ports
+         security: http://ports.ubuntu.com/ubuntu-ports
+   ssh_svcname: ssh</code></pre>
+</section>
+</section>
+<section>
+<section id="cloud-init-real-example" class="title-slide slide level1">
+<h1>cloud-init 实战 🌰</h1>
+
+</section>
+<section id="需求描述" class="slide level2">
+<h2>需求描述</h2>
+<ol type="1">
+<li>重置 <a href="https://www.freedesktop.org/software/systemd/man/machine-id.html">machine-id</a></li>
+<li>添加 ssh 免密登录</li>
+<li>安装 python3</li>
+</ol>
+</section>
+</section>
+<section>
+<section id="why-reset-machine-id" class="title-slide slide level1">
+<h1>为什么需要重置 <code>machine-id</code></h1>
+
+</section>
+<section id="machine-id-1" class="slide level2">
+<h2>machine-id</h2>
+<blockquote>
+<p>The <code>/etc/machine-id</code> file contains the unique machine ID of the local system that is set during installation or boot. The machine ID is a single newline-terminated, hexadecimal, 32-character, lowercase ID. When decoded from hexadecimal, this corresponds to a 16-byte/128-bit value. This ID may not be all zeros.</p>
+</blockquote>
+</section>
+<section id="machine-id-2" class="slide level2">
+<h2>machine-id</h2>
+<blockquote>
+<p>systemd-machine-id-setup(1) may be used by installer tools to initialize the machine ID at install time, but /etc/machine-id may also be written using any other means.</p>
+</blockquote>
+</section>
+<section id="machine-id-3" class="slide level2">
+<h2>machine-id</h2>
+<blockquote>
+<p>For operating system images which are created once and used on multiple machines, for example for containers or in the cloud, <code>/etc/machine-id</code> <strong>should be an empty file</strong> in the generic file system image. <code>An ID will be generated during boot and saved to this file if possible</code>. <strong>Having an empty file</strong> in place is useful because it allows a temporary file to be bind-mounted over the real file, in case the image is used read-only.</p>
+</blockquote>
+</section>
+<section id="为什么我克隆出来的虚拟机总是获得相同-ip-地址" class="slide level2">
+<h2>为什么我克隆出来的虚拟机总是获得相同 IP 地址？</h2>
+<p>根据<a href="https://unix.stackexchange.com/a/419322">网友 <code>wickedchicken</code> 在 SO 网站上的回答</a></p>
+<blockquote>
+<p><code>systemd-networkd</code> uses a different method to generate the DUID than <code>dhclient</code>. <code>dhclient</code> <a href="https://manpages.debian.org/jessie/isc-dhcp-client/dhclient.8.en.html">by default uses the link-layer address</a> while systemd-networkd uses <a href="https://www.freedesktop.org/software/systemd/man/networkd.conf.html#DUIDType=">the contents of /etc/machine-id</a>. Since the VMs were cloned, they have the same <code>machine-id</code> and the DHCP server returns the same IP for both.</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>To fix, replace the contents of one or both of /etc/machine-id. This can be anything, but deleting the file and running systemd-machine-id-setup will create a random machine-id in the same way done on machine setup.</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>另一种解决方案：修改 <code>/etc/netplan/01-netcfg.yaml</code> ，在网卡的 <code>dhcp</code> 配置列表里添加配置参数：<a href="https://netplan.io/reference">dhcp-identifier: mac</a></p>
+<pre class="yaml"><code># ref: https://netplan.io/examples#integration-with-a-windows-dhcp-server
+network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: yes
+    enp8s0:
+      dhcp4: yes
+      dhcp-identifier: mac</code></pre>
+</section>
+<section id="reboot-after-machine-id-reset" class="slide level2">
+<h2>变更 <code>machine-id</code> 之后为什么需要重启</h2>
+<p>以下内容摘自 <code>man dbus-uuidgen</code></p>
+<blockquote>
+<p>If you try to change an existing machine-id on a running system, it will probably result in bad things happening. Don’t try to change this file. Also, don’t make it the same on two different systems; it needs to be different anytime there are two different kernels running.</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>以下结论摘自 <a href="https://unix.stackexchange.com/a/403054">网友 <code>hvd</code> 在 SO 网站上的回答结论</a> ：</p>
+<blockquote>
+<p><strong>So after doing this, definitely don’t continue using the system without rebooting.</strong></p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="cloud-init-real-example-get-started" class="title-slide slide level1">
+<h1>cloud-init 实战 🌰 马上开始</h1>
+
+</section>
+<section class="slide level2">
+
+<ol type="1">
+<li>确保目标系统内已安装 <code>cloud-init</code></li>
+<li>检查 <code>/etc/machine-id</code> 此时的值</li>
+<li>检查 <code>/etc/netplan/</code> 目录下此时的文件</li>
+<li>检查 <code>/etc/netplan/01-netcfg.yaml</code> 文件内容</li>
+<li>检查当前第二块网卡的 IP 地址</li>
+</ol>
+</section>
+<section id="关键配置" class="slide level2">
+<h2>关键配置</h2>
+<ul>
+<li><code>user-data</code></li>
+<li><code>meta-data</code></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="user-data-real-example"><code>user-data</code> 示例</h3>
+<pre class="yaml"><code>#cloud-config
+users:
+  - name: cuc
+    lock_passwd: false # Disable password login. Default: true
+    passwd: 123456 # !!DEMO only!! Hashed password is recommended in Production.
+    ssh_authorized_keys:
+      - &lt;ssh-pub-key-1&gt;
+      - &lt;ssh-pub-key-2&gt;
+
+# run the following cmds after system is booted and rootfs is mounted
+runcmd:
+  - echo -n &#39;&#39; &gt; /etc/machine-id # clear but not delete
+  - /bin/systemd-machine-id-setup
+
+# Install additional packages on first boot
+#
+# Default: none
+#
+# if packages are specified, this apt_update will be set to true
+#
+# packages may be supplied as a single package name or as a list
+# with the format [&lt;package&gt;, &lt;version&gt;] wherein the specifc
+# package version will be installed.
+packages:
+  - python3 # required by ansible remote 
+
+## poweroff or reboot system after finished
+# default: none
+#
+# power_state can be used to make the system shutdown, reboot or
+# halt after boot is finished.  This same thing can be acheived by
+# user-data scripts or by runcmd by simply invoking &#39;shutdown&#39;.
+#
+# Doing it this way ensures that cloud-init is entirely finished with
+# modules that would be executed, and avoids any error/log messages
+# that may go to the console as a result of system services like
+# syslog being taken down while cloud-init is running.
+#
+# If you delay &#39;+5&#39; (5 minutes) and have a timeout of
+# 120 (2 minutes), then the max time until shutdown will be 7 minutes.
+# cloud-init will invoke &#39;shutdown +5&#39; after the process finishes, or
+# when &#39;timeout&#39; seconds have elapsed.
+#
+# delay: form accepted by shutdown.  default is &#39;now&#39;. other format
+#        accepted is +m (m in minutes)
+# mode: required. must be one of &#39;poweroff&#39;, &#39;halt&#39;, &#39;reboot&#39;
+# message: provided as the message argument to &#39;shutdown&#39;. default is none.
+# timeout: the amount of time to give the cloud-init process to finish
+#          before executing shutdown.
+# condition: apply state change only if condition is met.
+#            May be boolean True (always met), or False (never met),
+#            or a command string or list to be executed.
+#            command&#39;s exit code indicates:
+#               0: condition met
+#               1: condition not met
+#            other exit codes will result in &#39;not met&#39;, but are reserved
+#            for future use.
+#
+power_state:
+ delay: &quot;now&quot;
+ mode: reboot
+ message: Make new machine-id take effect
+ timeout: 10
+ condition: True</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="meta-data-real-example"><code>meta-data</code> 示例</h3>
+<pre class="yaml"><code>instance-id: 1
+local-hostname: ansible-slave</code></pre>
+</section>
+<section id="实验完成后检查清单" class="slide level2">
+<h2>实验完成后检查清单</h2>
+<ol type="1">
+<li>检查 <code>/etc/machine-id</code> 此时的值</li>
+<li>检查 <code>/etc/netplan/</code> 目录下此时的文件</li>
+<li>检查当前第二块网卡的 IP 地址</li>
+</ol>
+</section>
+</section>
+<section>
+<section id="more-examples" class="title-slide slide level1">
+<h1>更复杂的 🌰 们</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/examples.html">官方文档中给出的更多 cloud-config 配置文件示例</a></p>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

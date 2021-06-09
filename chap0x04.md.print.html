@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第四章shell脚本编程基础">第四章：shell脚本编程基础</h1>
+<hr />
+<h2 id="dont-repeat-yourself"><font color='red'>D</font>on’t <font color='red'>r</font>epeat <font color='red'>y</font>ourself</h2>
+<h1 id="hello-world">Hello World</h1>
+<hr />
+<p><a href="https://repl.it/@c4pr1c3/LinuxSysAdmin"><img src="images/chap0x04/bash-online.png" alt="在线 Bash 解释器和编辑器环境" /></a></p>
+<blockquote>
+<p>扫码或点击图片「零安装、零配置」直接在浏览器里体验 Bash 编程</p>
+</blockquote>
+<hr />
+<h2 id="备用在线-bash-解释器和编辑器环境">备用在线 Bash 解释器和编辑器环境</h2>
+<ul>
+<li><a href="https://www.tutorialspoint.com/execute_bash_online.php">CodingGround@tutorialspoint.com</a></li>
+<li><a href="https://paiza.io/en/projects/new?language=bash">paiza.io</a></li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="bu">echo</span> <span class="st">&quot;hello world!&quot;</span></span></code></pre></div>
+<hr />
+<h2 id="详解">详解</h2>
+<ul>
+<li>注释符号 <strong>#</strong></li>
+<li><a href="https://asciinema.org/a/z1xLUVCLitp02XLIICSfdnPSC">文件起始处的 <code>#!</code> 声明自己是一个<strong>脚本</strong>文件</a></li>
+<li>当前shell脚本默认使用的<strong>解释器</strong></li>
+<li>查看当前正在使用shell解释器</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">ps</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="va">$$</span></span></code></pre></div>
+<hr />
+<ul>
+<li>查看当前shell解释器对应的文件绝对路径</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="bu">type</span> bash</span></code></pre></div>
+<ul>
+<li>查看当前bash的版本号</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">bash</span> --version</span></code></pre></div>
+<hr />
+<h2 id="为什么使用-usrbinenv-bash"><a href="https://stackoverflow.com/questions/16365130/what-is-the-difference-between-usr-bin-env-bash-and-usr-bin-bash">为什么使用 <code>#!/usr/bin/env bash</code></a></h2>
+<p>当我们通过 <code>./target.sh</code> 执行脚本时：</p>
+<ul>
+<li>避免目标系统上的解释器路径和预期不一致
+<ul>
+<li>例如同时存在多个版本的 Bash，通过环境变量设置的优先解释器路径不同于期望的 <code>/bin/bash</code></li>
+</ul></li>
+</ul>
+<hr />
+<p>类似的我们可以在 Python 脚本文件行首书写</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#!/usr/bin/env python</span></span></code></pre></div>
+<hr />
+<blockquote>
+<p>例外：如果就是希望指定路径的脚本解释器执行当前脚本，而非环境变量中设置的优先脚本解释器</p>
+</blockquote>
+<hr />
+<p>如果我们通过 <code>bash target.sh</code> 或 <code>/bin/bash target.sh</code> 执行脚本则上述设置相当于原本的注释行作用</p>
+<h1 id="shell-内置帮助">Shell 内置帮助</h1>
+<hr />
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="bu">help</span> type</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="bu">help</span> help</span></code></pre></div>
+<h1 id="变量">变量</h1>
+<hr />
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="va">PRICE_PER_APPLE=</span>5</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="va">MyFirstLetters=</span>ABC</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="va">greeting=</span><span class="st">&#39;Hello        world!&#39;</span></span></code></pre></div>
+<ul>
+<li>变量名区分大小写</li>
+<li><strong>=</strong>左右两边不能有空格</li>
+<li>单引号包围的字符串中不对特殊符号做解释执行</li>
+<li>双引号包围的字符串中对特殊符号解释执行</li>
+<li>使用 <strong>\</strong> 转义特殊符号避免被解释执行</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="va">PRICE_PER_APPLE=</span>5</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="bu">echo</span> <span class="st">&quot;The price of an Apple today is: </span><span class="dt">\$</span><span class="st">HK </span><span class="va">$PRICE_PER_APPLE</span><span class="st">&quot;</span></span></code></pre></div>
+<hr />
+<ul>
+<li>使用 <strong>${}</strong> 包围变量名避免变量名被解释执行时的二义性</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="va">MyFirstLetters=</span>ABC</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="bu">echo</span> <span class="st">&quot;The first 10 letters in the alphabet are: </span><span class="va">${MyFirstLetters}</span><span class="st">DEFGHIJ&quot;</span></span></code></pre></div>
+<ul>
+<li>使用双引号 <strong>""</strong> 包围变量名可以保留所有空格字符</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="va">greeting=</span><span class="st">&#39;Hello        world!&#39;</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># 此处实际上实现了一个字符串 拼接/连接 操作</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="bu">echo</span> <span class="va">$greeting</span><span class="st">&quot; now with spaces: </span><span class="va">$greeting</span><span class="st">&quot;</span></span></code></pre></div>
+<hr />
+<ul>
+<li>其他程序的输出结果直接赋值给shell变量</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="va">FILELIST=</span><span class="kw">`</span><span class="fu">ls</span><span class="kw">`</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="va">FileWithTimeStamp=</span>/tmp/file_<span class="va">$(</span><span class="ex">/bin/date</span> +%Y-%m-%d<span class="va">)</span>.txt</span></code></pre></div>
+<p>上述代码中的 <strong>``</strong> 符号和 <strong>$()</strong> 都可以用于命令输出结果替换变量赋值结果。</p>
+<hr />
+<p>课堂练习</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="co">#!/usr/bin/env bash</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="co"># 代码填空，使用最终输出3个包含correct的语句</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="va">BIRTHDATE=</span>   <span class="co"># 填入一个字符串</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="va">Presents=</span>    <span class="co"># 填入一个整数</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a><span class="va">BIRTHDAY=</span>    <span class="co"># 使用命令替换方法赋值</span></span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co"># 测试代码 - 勿修改</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a></span>
+<span id="cb12-10"><a href="#cb12-10"></a><span class="kw">if</span><span class="bu"> [</span> <span class="st">&quot;</span><span class="va">$BIRTHDATE</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;Jan 1 2000&quot;</span><span class="bu"> ]</span> ; <span class="kw">then</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a>    <span class="bu">echo</span> <span class="st">&quot;BIRTHDATE is correct, it is </span><span class="va">$BIRTHDATE</span><span class="st">&quot;</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="kw">else</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a>    <span class="bu">echo</span> <span class="st">&quot;BIRTHDATE is incorrect - please retry&quot;</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="kw">fi</span></span>
+<span id="cb12-15"><a href="#cb12-15"></a><span class="kw">if</span><span class="bu"> [</span> <span class="va">$Presents</span> <span class="ot">==</span> 10<span class="bu"> ]</span> ; <span class="kw">then</span></span>
+<span id="cb12-16"><a href="#cb12-16"></a>    <span class="bu">echo</span> <span class="st">&quot;correct! I have received </span><span class="va">$Presents</span><span class="st"> presents&quot;</span></span>
+<span id="cb12-17"><a href="#cb12-17"></a><span class="kw">else</span></span>
+<span id="cb12-18"><a href="#cb12-18"></a>    <span class="bu">echo</span> <span class="st">&quot;Presents is incorrect - please retry&quot;</span></span>
+<span id="cb12-19"><a href="#cb12-19"></a><span class="kw">fi</span></span>
+<span id="cb12-20"><a href="#cb12-20"></a><span class="kw">if</span><span class="bu"> [</span> <span class="st">&quot;</span><span class="va">$BIRTHDAY</span><span class="st">&quot;</span> <span class="ot">==</span> <span class="st">&quot;Saturday&quot;</span><span class="bu"> ]</span> ; <span class="kw">then</span></span>
+<span id="cb12-21"><a href="#cb12-21"></a>    <span class="bu">echo</span> <span class="st">&quot;correct! I was born on a </span><span class="va">$BIRTHDAY</span><span class="st">&quot;</span></span>
+<span id="cb12-22"><a href="#cb12-22"></a><span class="kw">else</span></span>
+<span id="cb12-23"><a href="#cb12-23"></a>    <span class="bu">echo</span> <span class="st">&quot;BIRTHDAY is incorrect - please retry&quot;</span></span>
+<span id="cb12-24"><a href="#cb12-24"></a><span class="kw">fi</span></span></code></pre></div>
+<hr />
+<blockquote>
+<p>提示：可以使用以下方法将形如“Jan 1 2000”的日期时间字符串$date1转换出星期几</p>
+</blockquote>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">date</span> -d <span class="st">&quot;</span><span class="va">$date1</span><span class="st">&quot;</span> +%A</span></code></pre></div>
+<h1 id="脚本调试的方法"><a href="http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_03.html">脚本调试的方法</a></h1>
+<hr />
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># 调试模式运行，逐行执行“命令”并打印“命令”接受的输入参数值</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>$ <span class="fu">bash</span> -x <span class="op">&lt;</span>script.sh<span class="op">&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3"></a></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co"># 代码片段临时开启调试模式</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="kw">set</span> <span class="ex">-x</span>          <span class="co"># activate debugging from here</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="fu">w</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="kw">set</span> <span class="ex">+x</span>          <span class="co"># stop debugging from here</span></span>
+<span id="cb14-8"><a href="#cb14-8"></a></span>
+<span id="cb14-9"><a href="#cb14-9"></a><span class="co"># 写文件</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="bu">echo</span> -e <span class="st">&quot;</span><span class="va">$msg</span><span class="st">&quot;</span> <span class="op">&gt;&gt;</span> /tmp/debug.log</span>
+<span id="cb14-11"><a href="#cb14-11"></a></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="co"># 如果打印变量内容包含「不可打印字符」</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="co"># msg=&quot;hello world\x01\x02&quot;</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a><span class="bu">echo</span> -n -e <span class="st">&quot;</span><span class="va">$msg</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p <span class="op">&gt;&gt;</span> /tmp/debug.log</span></code></pre></div>
+<h1 id="给脚本传参">给脚本传参</h1>
+<hr />
+<ul>
+<li>参照使用C语言代码编写的命令行可执行程序传参语法规范</li>
+<li>参数与参数之间、脚本文件名与参数之间使用1个或多个空格分隔</li>
+<li><code>$0</code> 指代脚本文件本身</li>
+<li><code>$1</code> 指代命令行上的第1个参数</li>
+<li><code>$2</code> 指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法</li>
+<li><code>$@</code> 指代命令行上的所有参数（参数数组）</li>
+<li><code>$#</code> 指代命令行上的参数个数（参数数组大小）</li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="co"># 将本段代码复制粘贴保存为一个文件，假设文件名为：test.sh</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="bu">echo</span> <span class="va">$3</span> <span class="co"># --&gt; results with: banana</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="va">BIG=$5</span></span>
+<span id="cb15-6"><a href="#cb15-6"></a></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="bu">echo</span> <span class="st">&quot;A </span><span class="va">$BIG</span><span class="st"> costs just </span><span class="va">$6</span><span class="st">&quot;</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a></span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="co"># 输出所有参数</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$@</span><span class="st">&quot;</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="co"># 以下代码输出命令行参数的总数</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a><span class="bu">echo</span> <span class="va">$#</span></span></code></pre></div>
+<p>用以下方法执行该脚本，观察脚本输出结果</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">bash</span> test.sh apple 5 banana 8 <span class="st">&quot;Fruit Basket&quot;</span> 15</span></code></pre></div>
+<h1 id="数组">数组</h1>
+<hr />
+<ul>
+<li><a href="https://www.tldp.org/LDP/abs/html/bashver4.html">Bash 4.0 开始支持关联数组</a></li>
+<li><code>declare -a</code> 声明的是「索引」数组，<code>declare -A</code> 声明的是「关联」数组。<a href="https://www.gnu.org/software/bash/manual/html_node/Arrays.html">如果同时使用 <code>-a -A</code> ，<code>-A</code> 优先级更高，数组被声明为「关联」数组</a></li>
+<li><a href="https://stackoverflow.com/questions/10806357/associative-arrays-are-local-by-default">Bash 4.2</a> 开始支持 <code>declare -g</code> 方式声明关联数组为「全局」变量，在此之前，关联数组仅限局部变量作用域</li>
+</ul>
+<hr />
+<h2 id="示例">示例</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># 查看当前 Bash 的 declare 支持的参数</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co"># help declare</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="co"># 声明一个「索引」数组</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="bu">declare</span> -a <span class="va">indexed_arr</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="co"># 声明一个「关联」数组</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="bu">declare</span> -A <span class="va">associative_arr</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="co"># Bash 数组赋值方法如下</span></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="co"># 「索引」数组可以跳过数组声明直接赋值的同时即完成了数组初始化</span></span>
+<span id="cb17-12"><a href="#cb17-12"></a><span class="va">my_array=(</span>apple banana <span class="st">&quot;Fruit Basket&quot;</span> orange<span class="va">)</span></span>
+<span id="cb17-13"><a href="#cb17-13"></a></span>
+<span id="cb17-14"><a href="#cb17-14"></a><span class="va">associative_arr[</span><span class="st">&#39;hello&#39;</span><span class="va">]=</span><span class="st">&#39;world&#39;</span></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="va">associative_arr[</span><span class="st">&#39;well&#39;</span><span class="va">]=</span><span class="st">&#39;done&#39;</span></span>
+<span id="cb17-16"><a href="#cb17-16"></a></span>
+<span id="cb17-17"><a href="#cb17-17"></a><span class="co"># bash支持“稀疏”数组：即数组元素不必连续存在，个别索引位置上可以有未初始化的元素</span></span>
+<span id="cb17-18"><a href="#cb17-18"></a><span class="va">new_array[2]=</span>apricot</span>
+<span id="cb17-19"><a href="#cb17-19"></a></span>
+<span id="cb17-20"><a href="#cb17-20"></a><span class="co"># 数组元素的个数通过 ${#arrayname[@]} 获得</span></span>
+<span id="cb17-21"><a href="#cb17-21"></a><span class="bu">echo</span> <span class="va">${#my_array[@]}</span></span>
+<span id="cb17-22"><a href="#cb17-22"></a></span>
+<span id="cb17-23"><a href="#cb17-23"></a><span class="co"># 随机读取数组中的元素，{}是必须有的</span></span>
+<span id="cb17-24"><a href="#cb17-24"></a><span class="bu">echo</span> <span class="va">${my_array[2]}</span></span>
+<span id="cb17-25"><a href="#cb17-25"></a><span class="co"># echo $my_array[2] 是错误的读取方法</span></span>
+<span id="cb17-26"><a href="#cb17-26"></a></span>
+<span id="cb17-27"><a href="#cb17-27"></a><span class="co"># 遍历数组的方法</span></span>
+<span id="cb17-28"><a href="#cb17-28"></a><span class="co">## 「索引」数组</span></span>
+<span id="cb17-29"><a href="#cb17-29"></a><span class="kw">for</span> <span class="ex">ele</span> in <span class="st">&quot;</span><span class="va">${my_array[@]}</span><span class="st">&quot;</span><span class="kw">;do</span></span>
+<span id="cb17-30"><a href="#cb17-30"></a>    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$ele</span><span class="st">&quot;</span></span>
+<span id="cb17-31"><a href="#cb17-31"></a><span class="kw">done</span></span>
+<span id="cb17-32"><a href="#cb17-32"></a></span>
+<span id="cb17-33"><a href="#cb17-33"></a><span class="co">## 「关联」数组</span></span>
+<span id="cb17-34"><a href="#cb17-34"></a><span class="kw">for</span> <span class="ex">key</span> in <span class="st">&quot;</span><span class="va">${!associative_arr[@]}</span><span class="st">&quot;</span><span class="kw">;do</span></span>
+<span id="cb17-35"><a href="#cb17-35"></a>    <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$key</span><span class="st"> </span><span class="va">${associative_arr[$key]}</span><span class="st">&quot;</span></span>
+<span id="cb17-36"><a href="#cb17-36"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<p>课堂练习</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="va">NAMES=(</span> John Eric Jessica <span class="va">)</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="co"># 代码填空，使得以下代码避免输出failed关键字</span></span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="va">NUMBERS=()</span>  <span class="co"># 构造包含1到10整数的数组</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="va">STRINGS=()</span>  <span class="co"># 构造分别包含hello和world字符串的数组</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a><span class="va">NumberOfNames=</span>0 <span class="co"># 请使用动态计算数组元素个数的方法</span></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="va">second_name=</span><span class="st">&#39;&#39;</span>  <span class="co"># 读取NAMES数组的第2个元素值进行赋值</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a></span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="co"># 测试代码 - 勿修改</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a></span>
+<span id="cb18-12"><a href="#cb18-12"></a><span class="va">T_NUMBERS=$(</span><span class="fu">seq</span> 1 10<span class="va">)</span></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="va">T_STRINGS=(</span>hello world<span class="va">)</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a></span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="co"># Test Case 1</span></span>
+<span id="cb18-16"><a href="#cb18-16"></a><span class="va">i=</span>0</span>
+<span id="cb18-17"><a href="#cb18-17"></a><span class="kw">for</span> <span class="ex">n</span> in <span class="va">${T_NUMBERS[@]}</span><span class="kw">;do</span></span>
+<span id="cb18-18"><a href="#cb18-18"></a>  <span class="kw">if [[</span> <span class="va">${n}</span> <span class="ot">-ne</span> <span class="va">${NUMBERS[${i}]}</span><span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb18-19"><a href="#cb18-19"></a>    <span class="bu">echo</span> <span class="st">&quot;failed in NUMBERS test&quot;</span></span>
+<span id="cb18-20"><a href="#cb18-20"></a>  <span class="kw">fi</span></span>
+<span id="cb18-21"><a href="#cb18-21"></a>  <span class="va">i=$((</span>i+1<span class="va">))</span></span>
+<span id="cb18-22"><a href="#cb18-22"></a><span class="kw">done</span></span>
+<span id="cb18-23"><a href="#cb18-23"></a></span>
+<span id="cb18-24"><a href="#cb18-24"></a><span class="co"># Test Case 2</span></span>
+<span id="cb18-25"><a href="#cb18-25"></a><span class="va">i=</span>0</span>
+<span id="cb18-26"><a href="#cb18-26"></a><span class="kw">for</span> <span class="ex">n</span> in <span class="va">${T_STRINGS[@]}</span><span class="kw">;do</span></span>
+<span id="cb18-27"><a href="#cb18-27"></a>  <span class="kw">if [[</span> <span class="st">&quot;</span><span class="va">${n}</span><span class="st">&quot;</span> <span class="ot">!=</span> <span class="st">&quot;</span><span class="va">${STRINGS[${i}]}</span><span class="st">&quot;</span><span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb18-28"><a href="#cb18-28"></a>    <span class="bu">echo</span> <span class="st">&quot;failed in STRINGS test&quot;</span></span>
+<span id="cb18-29"><a href="#cb18-29"></a>  <span class="kw">fi</span></span>
+<span id="cb18-30"><a href="#cb18-30"></a>  <span class="va">i=$((</span>i+1<span class="va">))</span></span>
+<span id="cb18-31"><a href="#cb18-31"></a><span class="kw">done</span></span>
+<span id="cb18-32"><a href="#cb18-32"></a></span>
+<span id="cb18-33"><a href="#cb18-33"></a><span class="co"># Test Case 3</span></span>
+<span id="cb18-34"><a href="#cb18-34"></a><span class="kw">if [[</span> <span class="va">$NumberOfNames</span> <span class="ot">-ne</span> <span class="va">${#NAMES[@]}</span><span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb18-35"><a href="#cb18-35"></a>    <span class="bu">echo</span> <span class="st">&quot;failed in NumberOfNames test&quot;</span></span>
+<span id="cb18-36"><a href="#cb18-36"></a><span class="kw">fi</span></span>
+<span id="cb18-37"><a href="#cb18-37"></a></span>
+<span id="cb18-38"><a href="#cb18-38"></a><span class="co"># Test Case 4</span></span>
+<span id="cb18-39"><a href="#cb18-39"></a><span class="kw">if [[</span> <span class="st">&quot;</span><span class="va">${NAMES[1]}</span><span class="st">&quot;</span> <span class="ot">!=</span> <span class="st">&quot;</span><span class="va">${second_name}</span><span class="st">&quot;</span><span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb18-40"><a href="#cb18-40"></a>  <span class="bu">echo</span> <span class="st">&quot;failed in Array Element Access test&quot;</span></span>
+<span id="cb18-41"><a href="#cb18-41"></a><span class="kw">fi</span></span></code></pre></div>
+<h1 id="基本算术运算">基本算术运算</h1>
+<hr />
+<p>使用 <strong>$((expression))</strong> 算术运算符表达式，注意这种方式只支持 <strong><font color='red'>整数</font>运算</strong></p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1"></a><span class="va">A=</span>3</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="va">B=$((</span>100 * A + 5<span class="va">))</span> <span class="co"># 305</span></span></code></pre></div>
+<ul>
+<li>a + b addition (a plus b)</li>
+<li>a - b substraction (a minus b)</li>
+<li>a * b multiplication (a times b)</li>
+<li>a / b division (integer) (a divided by b)</li>
+<li>a % b modulo (the integer remainder of a divided by b)</li>
+<li>a ** b exponentiation (a to the power of b)</li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># 进阶算术运算请使用命令行工具 bc</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a></span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="co"># 计算 4 * arctangent(1) ，计算结果保留 10 位有效数字</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="co"># -l 表示使用标准数学库</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="va">pi=$(</span><span class="bu">echo</span> <span class="st">&quot;scale=10; 4*a(1)&quot;</span> <span class="kw">|</span> <span class="fu">bc</span> -l<span class="va">)</span></span>
+<span id="cb20-6"><a href="#cb20-6"></a></span>
+<span id="cb20-7"><a href="#cb20-7"></a><span class="co"># 计算 4 * arctangent(1) ，计算结果保留 1000 位有效数字</span></span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="co"># 禁止输出结果因超长而自动折行</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a><span class="va">pi=$(BC_LINE_LENGTH=</span>0 <span class="fu">bc</span> -l <span class="op">&lt;&lt;&lt;</span> <span class="st">&quot;scale=1000; 4*a(1)&quot;</span><span class="va">)</span></span></code></pre></div>
+<h1 id="基本字符串操作">基本字符串操作</h1>
+<hr />
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># 获得字符串长度值</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="va">STRING=</span><span class="st">&quot;this is a string&quot;</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="bu">echo</span> <span class="va">${#STRING}</span>            <span class="co"># 16</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a></span>
+<span id="cb21-5"><a href="#cb21-5"></a><span class="co"># 注意非拉丁语系字符串长度计算</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="va">M_STRING=</span><span class="st">&quot;中文&quot;</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="bu">export</span> <span class="va">LC_ALL=</span>C.UTF-8</span>
+<span id="cb21-8"><a href="#cb21-8"></a><span class="bu">echo</span> <span class="va">${#M_STRING}</span>            <span class="co"># 2</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a><span class="bu">export</span> <span class="va">LC_ALL=</span>C</span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="bu">echo</span> <span class="va">${#M_STRING}</span>            <span class="co"># 6</span></span>
+<span id="cb21-11"><a href="#cb21-11"></a></span>
+<span id="cb21-12"><a href="#cb21-12"></a><span class="co"># 字符串截取子串</span></span>
+<span id="cb21-13"><a href="#cb21-13"></a><span class="va">STRING=</span><span class="st">&quot;this is a string&quot;</span></span>
+<span id="cb21-14"><a href="#cb21-14"></a><span class="va">POS=</span>1</span>
+<span id="cb21-15"><a href="#cb21-15"></a><span class="va">LEN=</span>3</span>
+<span id="cb21-16"><a href="#cb21-16"></a><span class="bu">echo</span> <span class="va">${STRING:$POS:$LEN}</span>   <span class="co"># his</span></span>
+<span id="cb21-17"><a href="#cb21-17"></a><span class="bu">echo</span> <span class="va">${STRING:1}</span>           <span class="co"># $STRING contents without leading character</span></span>
+<span id="cb21-18"><a href="#cb21-18"></a><span class="bu">echo</span> <span class="va">${STRING:12}</span>          <span class="co"># ring</span></span>
+<span id="cb21-19"><a href="#cb21-19"></a></span>
+<span id="cb21-20"><a href="#cb21-20"></a><span class="co"># 注意非拉丁语系字符串截取</span></span>
+<span id="cb21-21"><a href="#cb21-21"></a><span class="bu">export</span> <span class="va">LANG=</span>C</span>
+<span id="cb21-22"><a href="#cb21-22"></a><span class="bu">echo</span> -n <span class="st">&quot;</span><span class="va">${M_STRING:0:1}</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p <span class="co"># e4</span></span>
+<span id="cb21-23"><a href="#cb21-23"></a><span class="bu">export</span> <span class="va">LANG=</span>C.UTF-8</span>
+<span id="cb21-24"><a href="#cb21-24"></a><span class="bu">echo</span> -n <span class="st">&quot;</span><span class="va">${M_STRING:0:1}</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p <span class="co"># e4b8ad</span></span>
+<span id="cb21-25"><a href="#cb21-25"></a></span>
+<span id="cb21-26"><a href="#cb21-26"></a><span class="co"># 字符串查找并替换第一次匹配到的子串</span></span>
+<span id="cb21-27"><a href="#cb21-27"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb21-28"><a href="#cb21-28"></a><span class="bu">echo</span> <span class="va">${STRING[@]/</span>be<span class="va">/</span>eat<span class="va">}</span>   <span class="co"># to eat or not to be</span></span></code></pre></div>
+<hr />
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1"></a><span class="co"># 字符串查找并替换所有匹配到的子串</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="bu">echo</span> <span class="va">${STRING[@]//</span>be<span class="va">/</span>eat<span class="va">}</span>  <span class="co"># to eat or not to eat</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a></span>
+<span id="cb22-5"><a href="#cb22-5"></a><span class="co"># 字符串查找并删除（替换为空）所有匹配到的子串</span></span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a><span class="bu">echo</span> <span class="va">${STRING[@]//</span> not<span class="va">/}</span>        <span class="co"># to be or to be</span></span>
+<span id="cb22-8"><a href="#cb22-8"></a></span>
+<span id="cb22-9"><a href="#cb22-9"></a><span class="co"># 字符串查找并替换匹配到行首的子串</span></span>
+<span id="cb22-10"><a href="#cb22-10"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb22-11"><a href="#cb22-11"></a><span class="bu">echo</span> <span class="va">${STRING[@]/</span>#to be<span class="va">/</span>eat now<span class="va">}</span>    <span class="co"># eat now or not to be</span></span>
+<span id="cb22-12"><a href="#cb22-12"></a></span>
+<span id="cb22-13"><a href="#cb22-13"></a><span class="co"># 字符串查找并替换匹配到行尾的子串</span></span>
+<span id="cb22-14"><a href="#cb22-14"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb22-15"><a href="#cb22-15"></a><span class="bu">echo</span> <span class="va">${STRING[@]/</span>%be<span class="va">/</span>eat<span class="va">}</span>        <span class="co"># to be or not to eat</span></span>
+<span id="cb22-16"><a href="#cb22-16"></a></span>
+<span id="cb22-17"><a href="#cb22-17"></a><span class="co"># 字符串查找并使用子命令输出结果替换匹配项</span></span>
+<span id="cb22-18"><a href="#cb22-18"></a><span class="va">STRING=</span><span class="st">&quot;to be or not to be&quot;</span></span>
+<span id="cb22-19"><a href="#cb22-19"></a><span class="bu">echo</span> <span class="va">${STRING[@]/</span>%be<span class="va">/</span>be on <span class="va">$(</span><span class="fu">date</span> +%Y-%m-%d<span class="va">)}</span>    <span class="co"># to be or not to be on 2012-06-14</span></span></code></pre></div>
+<h1 id="条件判断">条件判断</h1>
+<hr />
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1"></a></span>
+<span id="cb23-2"><a href="#cb23-2"></a><span class="kw">if</span><span class="bu"> [</span> expression<span class="bu"> ]</span>; <span class="kw">then</span></span>
+<span id="cb23-3"><a href="#cb23-3"></a></span>
+<span id="cb23-4"><a href="#cb23-4"></a><span class="co"># code if &#39;expression&#39; is true</span></span>
+<span id="cb23-5"><a href="#cb23-5"></a></span>
+<span id="cb23-6"><a href="#cb23-6"></a><span class="kw">elif</span><span class="bu"> [</span> expression<span class="bu"> ]</span>; <span class="kw">then</span></span>
+<span id="cb23-7"><a href="#cb23-7"></a></span>
+<span id="cb23-8"><a href="#cb23-8"></a><span class="co"># code if &#39;expression&#39; is true</span></span>
+<span id="cb23-9"><a href="#cb23-9"></a></span>
+<span id="cb23-10"><a href="#cb23-10"></a><span class="kw">else</span></span>
+<span id="cb23-11"><a href="#cb23-11"></a></span>
+<span id="cb23-12"><a href="#cb23-12"></a><span class="co"># other conditions</span></span>
+<span id="cb23-13"><a href="#cb23-13"></a></span>
+<span id="cb23-14"><a href="#cb23-14"></a><span class="kw">fi</span></span></code></pre></div>
+<hr />
+<p><a href="http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts">[]和[[]]的区别</a></p>
+<ul>
+<li><code>[</code> 实质上命令 <code>test</code> 的另一种形式，<code>[[</code> 是一种更符合你期望的 <code>test</code> 命令</li>
+<li><code>[</code> 符合 POSIX 标准，<code>[[</code> 不符合 POSIX 标准</li>
+<li>现代 Linux 发行版自带的 shell 环境普遍支持 <code>[[</code> ，推荐优先使用（除非需要考虑兼容古老 shell）</li>
+</ul>
+<hr />
+<p>bash支持的表达式类型</p>
+<ul>
+<li>单个字符串（常量）或者变量</li>
+<li>恒假表达式
+<ul>
+<li>空字符串</li>
+<li>未定义变量名</li>
+</ul></li>
+<li>逻辑运算符
+<ul>
+<li>! 取反</li>
+<li>&amp;&amp; 逻辑与</li>
+<li>|| 逻辑或</li>
+</ul></li>
+<li>使用逻辑运算符构成的条件表达式应使用 <strong>[[ ]]</strong>包围</li>
+</ul>
+<hr />
+<h2 id="小测验">小测验</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1"></a><span class="co"># 以下代码执行完毕后的输出结果是什么？</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a><span class="kw">if [[</span> 0<span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 0<span class="kw">;fi</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="kw">if [[</span> 1<span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 1<span class="kw">;fi</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="kw">if [[</span> true<span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 2<span class="kw">;fi</span></span>
+<span id="cb24-5"><a href="#cb24-5"></a><span class="kw">if [[</span> false<span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 3<span class="kw">;fi</span></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="kw">if [[</span> <span class="st">&#39;&#39;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 4<span class="kw">;fi</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="kw">if [[</span> <span class="st">&#39;   &#39;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 5<span class="kw">;fi</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a><span class="kw">if [[</span> <span class="st">&#39;true&#39;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 6<span class="kw">;fi</span></span>
+<span id="cb24-9"><a href="#cb24-9"></a><span class="kw">if [[</span> <span class="st">&#39;false&#39;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 7<span class="kw">;fi</span></span>
+<span id="cb24-10"><a href="#cb24-10"></a><span class="kw">if [[</span> <span class="st">&#39;$mamashuozhegebianliangbukenengdingyiguo&#39;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 8<span class="kw">;fi</span></span>
+<span id="cb24-11"><a href="#cb24-11"></a><span class="kw">if [[</span> <span class="st">&quot;</span><span class="va">$mamashuozhegebianliangbukenengdingyiguo</span><span class="st">&quot;</span><span class="kw"> ]]</span>;<span class="kw">then</span> <span class="bu">printf</span> <span class="st">&quot;%d&quot;</span> 9<span class="kw">;fi</span></span></code></pre></div>
+<hr />
+<h2 id="section">01235678</h2>
+<hr />
+<p><font color='red'>数值</font>比较运算表达式</p>
+<p><img src="images/chap0x04/numeric-cmp.png" /></p>
+<hr />
+<p><font color='red'>字符串</font>比较表达式</p>
+<p><img src="images/chap0x04/str-cmp.png" /></p>
+<blockquote>
+<p>注意：上面表达式中的双引号不能省略，避免字符串中包含的空格会改变表达式的语义</p>
+</blockquote>
+<hr />
+<p>选择条件分支</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">case</span> <span class="st">&quot;</span><span class="va">$variable</span><span class="st">&quot;</span><span class="kw"> in</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a>    <span class="st">&quot;</span><span class="va">$condition1</span><span class="st">&quot;</span> <span class="kw">)</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>        <span class="ex">command...</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>    <span class="kw">;;</span></span>
+<span id="cb25-5"><a href="#cb25-5"></a>    <span class="st">&quot;</span><span class="va">$condition2</span><span class="st">&quot;</span> <span class="kw">)</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a>        <span class="ex">command...</span></span>
+<span id="cb25-7"><a href="#cb25-7"></a>    <span class="kw">;;</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a><span class="kw">esac</span></span></code></pre></div>
+<hr />
+<p>一个实例</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1"></a><span class="va">mycase=</span>1</span>
+<span id="cb26-2"><a href="#cb26-2"></a><span class="kw">case</span> <span class="va">$mycase</span><span class="kw"> in</span></span>
+<span id="cb26-3"><a href="#cb26-3"></a>    1<span class="kw">)</span> <span class="bu">echo</span> <span class="st">&quot;You selected bash&quot;</span><span class="kw">;;</span></span>
+<span id="cb26-4"><a href="#cb26-4"></a>    <span class="ex">2</span>) <span class="bu">echo</span> <span class="st">&quot;You selected perl&quot;</span><span class="kw">;;</span></span>
+<span id="cb26-5"><a href="#cb26-5"></a>    <span class="ex">3</span>) <span class="bu">echo</span> <span class="st">&quot;You selected phyton&quot;</span><span class="kw">;;</span></span>
+<span id="cb26-6"><a href="#cb26-6"></a>    <span class="ex">4</span>) <span class="bu">echo</span> <span class="st">&quot;You selected c++&quot;</span><span class="kw">;;</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a>    <span class="ex">5</span>) <span class="bu">exit</span></span>
+<span id="cb26-8"><a href="#cb26-8"></a><span class="kw">esac</span></span></code></pre></div>
+<h1 id="循环">循环</h1>
+<hr />
+<p>for循环</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1"></a><span class="co"># basic construct</span></span>
+<span id="cb27-2"><a href="#cb27-2"></a><span class="kw">for</span> <span class="ex">arg</span> in [list]</span>
+<span id="cb27-3"><a href="#cb27-3"></a><span class="kw">do</span></span>
+<span id="cb27-4"><a href="#cb27-4"></a> <span class="bu">command</span>(s)<span class="ex">...</span></span>
+<span id="cb27-5"><a href="#cb27-5"></a><span class="kw">done</span></span>
+<span id="cb27-6"><a href="#cb27-6"></a></span>
+<span id="cb27-7"><a href="#cb27-7"></a><span class="co"># 单行结构</span></span>
+<span id="cb27-8"><a href="#cb27-8"></a><span class="kw">for</span> <span class="ex">arg</span> in [list]<span class="kw">;do</span> <span class="bu">command</span>(s)<span class="ex">...</span><span class="kw">;done</span></span></code></pre></div>
+<hr />
+<p>2个实例</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1"></a><span class="co"># loop on array member</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a><span class="va">NAMES=(</span>Joe Jenny Sara Tony<span class="va">)</span></span>
+<span id="cb28-3"><a href="#cb28-3"></a><span class="kw">for</span> <span class="ex">N</span> in <span class="va">${NAMES[@]}</span> <span class="kw">;</span> <span class="kw">do</span></span>
+<span id="cb28-4"><a href="#cb28-4"></a>  <span class="bu">echo</span> <span class="st">&quot;My name is </span><span class="va">$N</span><span class="st">&quot;</span></span>
+<span id="cb28-5"><a href="#cb28-5"></a><span class="kw">done</span></span>
+<span id="cb28-6"><a href="#cb28-6"></a></span>
+<span id="cb28-7"><a href="#cb28-7"></a><span class="co"># loop on command output results</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a><span class="kw">for</span> <span class="ex">f</span> in <span class="va">$(</span><span class="fu">ps</span> -eo command<span class="va">)</span> <span class="kw">;</span> <span class="kw">do</span></span>
+<span id="cb28-9"><a href="#cb28-9"></a>  <span class="fu">ls</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span></span>
+<span id="cb28-10"><a href="#cb28-10"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<p>while循环</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="#cb29-1"></a><span class="co"># basic construct</span></span>
+<span id="cb29-2"><a href="#cb29-2"></a><span class="kw">while</span><span class="bu"> [</span> condition<span class="bu"> ]</span></span>
+<span id="cb29-3"><a href="#cb29-3"></a><span class="kw">do</span></span>
+<span id="cb29-4"><a href="#cb29-4"></a> <span class="bu">command</span>(s)<span class="ex">...</span></span>
+<span id="cb29-5"><a href="#cb29-5"></a><span class="kw">done</span></span>
+<span id="cb29-6"><a href="#cb29-6"></a></span>
+<span id="cb29-7"><a href="#cb29-7"></a><span class="co"># 模拟 do .. while 循环</span></span>
+<span id="cb29-8"><a href="#cb29-8"></a><span class="kw">while</span><span class="bu"> [</span> :<span class="bu"> ]</span>;<span class="kw">do</span></span>
+<span id="cb29-9"><a href="#cb29-9"></a>  <span class="kw">if</span><span class="bu"> [</span> condition<span class="bu"> ]</span>;<span class="kw">then</span></span>
+<span id="cb29-10"><a href="#cb29-10"></a>    <span class="bu">break</span></span>
+<span id="cb29-11"><a href="#cb29-11"></a>  <span class="kw">fi</span></span>
+<span id="cb29-12"><a href="#cb29-12"></a>  <span class="bu">command</span>(s)<span class="ex">...</span></span>
+<span id="cb29-13"><a href="#cb29-13"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<p>1个实例</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1"></a><span class="va">COUNT=</span>4</span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="kw">while</span><span class="bu"> [</span> <span class="va">$COUNT</span> <span class="ot">-gt</span> 0<span class="bu"> ]</span>; <span class="kw">do</span></span>
+<span id="cb30-3"><a href="#cb30-3"></a>  <span class="bu">echo</span> <span class="st">&quot;Value of count is: </span><span class="va">$COUNT</span><span class="st">&quot;</span></span>
+<span id="cb30-4"><a href="#cb30-4"></a>  <span class="va">COUNT=$(($COUNT</span> - 1<span class="va">))</span></span>
+<span id="cb30-5"><a href="#cb30-5"></a><span class="kw">done</span></span>
+<span id="cb30-6"><a href="#cb30-6"></a></span>
+<span id="cb30-7"><a href="#cb30-7"></a><span class="va">COUNT=</span>4</span>
+<span id="cb30-8"><a href="#cb30-8"></a><span class="kw">while</span><span class="bu"> [</span> :<span class="bu"> ]</span>; <span class="kw">do</span></span>
+<span id="cb30-9"><a href="#cb30-9"></a>  <span class="bu">echo</span> <span class="st">&quot;Value of count is: </span><span class="va">$COUNT</span><span class="st">&quot;</span></span>
+<span id="cb30-10"><a href="#cb30-10"></a>  <span class="va">COUNT=$(($COUNT</span> - 1<span class="va">))</span></span>
+<span id="cb30-11"><a href="#cb30-11"></a>  <span class="kw">if [[</span> <span class="va">$COUNT</span> <span class="ot">-eq</span> 0<span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb30-12"><a href="#cb30-12"></a>     <span class="bu">break</span></span>
+<span id="cb30-13"><a href="#cb30-13"></a>  <span class="kw">fi</span></span>
+<span id="cb30-14"><a href="#cb30-14"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<p>until循环</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1"></a><span class="co"># basic construct</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a><span class="kw">until</span><span class="bu"> [</span> condition<span class="bu"> ]</span></span>
+<span id="cb31-3"><a href="#cb31-3"></a><span class="kw">do</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a> <span class="bu">command</span>(s)<span class="ex">...</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a><span class="kw">done</span></span></code></pre></div>
+<blockquote>
+<p>说明：until条件为假时，执行循环体内代码。为真时，跳过循环体代码段。</p>
+</blockquote>
+<hr />
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1"></a><span class="va">COUNT=</span>1</span>
+<span id="cb32-2"><a href="#cb32-2"></a><span class="kw">until</span><span class="bu"> [</span> <span class="va">$COUNT</span> <span class="ot">-gt</span> 5<span class="bu"> ]</span>; <span class="kw">do</span></span>
+<span id="cb32-3"><a href="#cb32-3"></a>  <span class="bu">echo</span> <span class="st">&quot;Value of count is: </span><span class="va">$COUNT</span><span class="st">&quot;</span></span>
+<span id="cb32-4"><a href="#cb32-4"></a>  <span class="va">COUNT=$(($COUNT</span> + 1<span class="va">))</span></span>
+<span id="cb32-5"><a href="#cb32-5"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<p>循环控制</p>
+<ul>
+<li>break 跳过本层循环体剩余部分代码并返回上一级代码片段</li>
+<li>continue 跳过本次循环执行剩余部分代码，继续执行下一次循环条件表达式计算判断</li>
+</ul>
+<hr />
+<p>break和continue的实例代码</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="#cb33-1"></a><span class="co"># Prints out 0,1,2,3,4</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a></span>
+<span id="cb33-3"><a href="#cb33-3"></a><span class="va">COUNT=</span>0</span>
+<span id="cb33-4"><a href="#cb33-4"></a><span class="kw">while</span><span class="bu"> [</span> <span class="va">$COUNT</span> <span class="ot">-ge</span> 0<span class="bu"> ]</span>; <span class="kw">do</span></span>
+<span id="cb33-5"><a href="#cb33-5"></a>  <span class="bu">echo</span> <span class="st">&quot;Value of COUNT is: </span><span class="va">$COUNT</span><span class="st">&quot;</span></span>
+<span id="cb33-6"><a href="#cb33-6"></a>  <span class="va">COUNT=$((</span>COUNT+1<span class="va">))</span></span>
+<span id="cb33-7"><a href="#cb33-7"></a>  <span class="kw">if</span><span class="bu"> [</span> <span class="va">$COUNT</span> <span class="ot">-ge</span> 5<span class="bu"> ]</span> ; <span class="kw">then</span></span>
+<span id="cb33-8"><a href="#cb33-8"></a>    <span class="bu">break</span></span>
+<span id="cb33-9"><a href="#cb33-9"></a>  <span class="kw">fi</span></span>
+<span id="cb33-10"><a href="#cb33-10"></a><span class="kw">done</span></span>
+<span id="cb33-11"><a href="#cb33-11"></a></span>
+<span id="cb33-12"><a href="#cb33-12"></a><span class="co"># Prints out only odd numbers - 1,3,5,7,9</span></span>
+<span id="cb33-13"><a href="#cb33-13"></a><span class="va">COUNT=</span>0</span>
+<span id="cb33-14"><a href="#cb33-14"></a><span class="kw">while</span><span class="bu"> [</span> <span class="va">$COUNT</span> <span class="ot">-lt</span> 10<span class="bu"> ]</span>; <span class="kw">do</span></span>
+<span id="cb33-15"><a href="#cb33-15"></a>  <span class="va">COUNT=$((</span>COUNT+1<span class="va">))</span></span>
+<span id="cb33-16"><a href="#cb33-16"></a>  <span class="co"># Check if COUNT is even</span></span>
+<span id="cb33-17"><a href="#cb33-17"></a>  <span class="kw">if</span><span class="bu"> [</span> <span class="va">$(($COUNT</span> % 2<span class="va">))</span> <span class="ot">=</span> 0<span class="bu"> ]</span> ; <span class="kw">then</span></span>
+<span id="cb33-18"><a href="#cb33-18"></a>    <span class="bu">continue</span></span>
+<span id="cb33-19"><a href="#cb33-19"></a>  <span class="kw">fi</span></span>
+<span id="cb33-20"><a href="#cb33-20"></a>  <span class="bu">echo</span> <span class="va">$COUNT</span></span>
+<span id="cb33-21"><a href="#cb33-21"></a><span class="kw">done</span></span></code></pre></div>
+<hr />
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="#cb34-1"></a><span class="co"># loop on command output results 健壮性改进版本</span></span>
+<span id="cb34-2"><a href="#cb34-2"></a><span class="kw">set</span> <span class="ex">-e</span></span>
+<span id="cb34-3"><a href="#cb34-3"></a><span class="kw">for</span> <span class="ex">f</span> in <span class="va">$(</span><span class="fu">ps</span> -eo command <span class="op">2&gt;</span>/dev/null<span class="va">)</span> <span class="kw">;</span> <span class="kw">do</span></span>
+<span id="cb34-4"><a href="#cb34-4"></a>  [[ <span class="ex">-e</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span> ]] <span class="kw">||</span> <span class="bu">continue</span></span>
+<span id="cb34-5"><a href="#cb34-5"></a>  <span class="fu">ls</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span></span>
+<span id="cb34-6"><a href="#cb34-6"></a><span class="kw">done</span></span>
+<span id="cb34-7"><a href="#cb34-7"></a></span>
+<span id="cb34-8"><a href="#cb34-8"></a><span class="co"># 下面是改进前的「脆弱」版本，对比执行找不同</span></span>
+<span id="cb34-9"><a href="#cb34-9"></a><span class="kw">set</span> <span class="ex">-e</span></span>
+<span id="cb34-10"><a href="#cb34-10"></a><span class="kw">for</span> <span class="ex">f</span> in <span class="va">$(</span><span class="fu">ps</span> -eo command<span class="va">)</span> <span class="kw">;</span> <span class="kw">do</span></span>
+<span id="cb34-11"><a href="#cb34-11"></a>  <span class="fu">ls</span> <span class="st">&quot;</span><span class="va">$f</span><span class="st">&quot;</span></span>
+<span id="cb34-12"><a href="#cb34-12"></a><span class="kw">done</span></span></code></pre></div>
+<h1 id="编写健壮的-shell-脚本">编写健壮的 shell 脚本</h1>
+<hr />
+<h2 id="fail-fast-避免错误蔓延"><a href="https://dzone.com/articles/fail-fast-principle-in-software-development">Fail-Fast: 避免错误蔓延</a></h2>
+<ul>
+<li>越早期的 Bug 越容易被检测到、发现，从而可以更快被修复
+<ul>
+<li>执行过但没「崩溃」的代码都是「无 BUG」的</li>
+</ul></li>
+<li>避免一连串 Bug 协同后产生的「雪崩效应」</li>
+</ul>
+<hr />
+<h3 id="fail-fast-的典型应用场景">Fail-Fast 的典型应用场景</h3>
+<ul>
+<li>测试驱动开发</li>
+<li>持续集成</li>
+</ul>
+<hr />
+<p><strong>set -e</strong></p>
+<blockquote>
+<p>脚本只要发生错误，就终止执行</p>
+</blockquote>
+<p><strong>set +e</strong></p>
+<blockquote>
+<p>关闭 -e 选项</p>
+</blockquote>
+<hr />
+<p><strong>set -o pipefail</strong></p>
+<ul>
+<li><code>set -e</code> 不能终止管道命令中执行出错的语句
+<ul>
+<li>只要最后一个子命令不失败，管道命令总是会执行成功</li>
+</ul></li>
+<li><code>set -eo pipefail</code> 可以让脚本在更严格的条件下执行</li>
+</ul>
+<hr />
+<h2 id="使用静态分析工具">使用静态分析工具</h2>
+<ul>
+<li>程序静态分析是指在不运行代码的方式下，通过词法分析、语法分析、控制流分析等技术对程序代码进行扫描，验证代码是否满足规范性、安全性、可靠性、可维护性等指标的一种代码分析技术。</li>
+<li>静态分析的一个重要优势是能够在代码中出现大量错误后立刻检测到，因此修复这些错误的成本也不会过高。越早检测到错误，更正错误的成本越低。</li>
+</ul>
+<hr />
+<h3 id="shellcheck---shell-脚本静态分析工具"><a href="https://github.com/koalaman/shellcheck">shellcheck</a> - shell 脚本静态分析工具</h3>
+<figure>
+<img src="images/chap0x04/shellcheck-in-vim.png" alt="" /><figcaption>shellcheck in vim</figcaption>
+</figure>
+<h1 id="函数">函数</h1>
+<hr />
+<blockquote>
+<p>DRY: Don’t Repeat Yourself</p>
+</blockquote>
+<p>函数定义</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1"></a><span class="co"># 基本定义方法，可移植性最好</span></span>
+<span id="cb35-2"><a href="#cb35-2"></a><span class="kw">function</span><span class="fu">_name ()</span> <span class="ex">compound-command</span> [ redirections ]</span>
+<span id="cb35-3"><a href="#cb35-3"></a></span>
+<span id="cb35-4"><a href="#cb35-4"></a><span class="co"># 现代主流shell解释权均支持的语法，可以避免alias机制污染函数名</span></span>
+<span id="cb35-5"><a href="#cb35-5"></a><span class="kw">function</span><span class="fu"> function_name</span> [<span class="kw">()</span>] <span class="ex">compound-command</span> [ redirections ]</span></code></pre></div>
+<blockquote>
+<p><a href="http://unix.stackexchange.com/questions/73750/difference-between-function-foo-and-foo">function关键字是可选的，主要区别在于可移植性</a></p>
+</blockquote>
+<hr />
+<p>函数调用、传参和参数处理</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1"></a><span class="kw">function</span><span class="fu"> function_B</span> <span class="kw">{</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>  <span class="bu">echo</span> <span class="st">&quot;Function B.&quot;</span></span>
+<span id="cb36-3"><a href="#cb36-3"></a><span class="kw">}</span></span>
+<span id="cb36-4"><a href="#cb36-4"></a><span class="kw">function</span><span class="fu"> function_A</span> <span class="kw">{</span></span>
+<span id="cb36-5"><a href="#cb36-5"></a>  <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$1</span><span class="st">&quot;</span></span>
+<span id="cb36-6"><a href="#cb36-6"></a><span class="kw">}</span></span>
+<span id="cb36-7"><a href="#cb36-7"></a><span class="kw">function</span><span class="fu"> adder</span> <span class="kw">{</span></span>
+<span id="cb36-8"><a href="#cb36-8"></a>  <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$(($1</span> + <span class="va">$2))</span><span class="st">&quot;</span></span>
+<span id="cb36-9"><a href="#cb36-9"></a><span class="kw">}</span></span>
+<span id="cb36-10"><a href="#cb36-10"></a></span>
+<span id="cb36-11"><a href="#cb36-11"></a><span class="co"># 调用函数，传参</span></span>
+<span id="cb36-12"><a href="#cb36-12"></a><span class="kw">function</span><span class="ex">_A</span> <span class="st">&quot;Function A.&quot;</span>     <span class="co"># Function A.</span></span>
+<span id="cb36-13"><a href="#cb36-13"></a><span class="kw">function</span><span class="ex">_B</span>                   <span class="co"># Function B.</span></span>
+<span id="cb36-14"><a href="#cb36-14"></a><span class="ex">adder</span> 12 56                  <span class="co"># 68</span></span></code></pre></div>
+<h1 id="课内练习">课内练习</h1>
+<hr />
+<p>求2个数的最大公约数，要求：</p>
+<ul>
+<li>通过命令行参数读取2个整数，对不符合参数调用规范（使用小数、字符、少于2个参数等）的脚本执行要给出明确的错误提示信息，并退出代码执行</li>
+</ul>
+<h1 id="进阶主题">进阶主题</h1>
+<hr />
+<ul>
+<li>特殊变量</li>
+<li>文件读写</li>
+</ul>
+<hr />
+<h2 id="特殊变量">特殊变量</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1"></a><span class="va">$0</span> <span class="co"># 当前脚本的文件名</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="va">$n</span> <span class="co"># 脚本或函数的第N个传入参数</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a><span class="va">$#</span> <span class="co"># 脚本或函数传入参数的个数</span></span>
+<span id="cb37-4"><a href="#cb37-4"></a><span class="va">$@</span> <span class="co"># 脚本或函数传入的所有参数（数组形式）</span></span>
+<span id="cb37-5"><a href="#cb37-5"></a><span class="va">$*</span> <span class="co"># 脚本或函数传入的所有参数（字符串形式）</span></span>
+<span id="cb37-6"><a href="#cb37-6"></a><span class="va">$?</span> <span class="co"># 最近一条命令或函数的退出状态码</span></span>
+<span id="cb37-7"><a href="#cb37-7"></a><span class="va">$$</span> <span class="co"># 当前shell解释器的进程编号，对脚本来说就是当前脚本解释器的进程编号</span></span>
+<span id="cb37-8"><a href="#cb37-8"></a><span class="va">$!</span> <span class="co"># 最近一个进入后台执行的进程的进程编号</span></span></code></pre></div>
+<hr />
+<h2 id="文件读写">文件读写</h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1"></a><span class="co"># 利用I/O重定向机制</span></span>
+<span id="cb38-2"><a href="#cb38-2"></a></span>
+<span id="cb38-3"><a href="#cb38-3"></a><span class="co"># 清空一个文件（文件大小变为0）</span></span>
+<span id="cb38-4"><a href="#cb38-4"></a><span class="op">&gt;</span> <span class="fu">file</span></span>
+<span id="cb38-5"><a href="#cb38-5"></a><span class="co"># 用一段文本内容覆盖一个文件</span></span>
+<span id="cb38-6"><a href="#cb38-6"></a><span class="bu">echo</span> <span class="st">&quot;some string&quot;</span> <span class="op">&gt;</span> file</span>
+<span id="cb38-7"><a href="#cb38-7"></a><span class="co"># 在文件尾部追加内容</span></span>
+<span id="cb38-8"><a href="#cb38-8"></a><span class="bu">echo</span> <span class="st">&quot;some string&quot;</span> <span class="op">&gt;&gt;</span> file</span>
+<span id="cb38-9"><a href="#cb38-9"></a></span>
+<span id="cb38-10"><a href="#cb38-10"></a><span class="co"># 读取文件的第一行并将其赋值给一个变量</span></span>
+<span id="cb38-11"><a href="#cb38-11"></a></span>
+<span id="cb38-12"><a href="#cb38-12"></a><span class="co"># read是bash的内置函数</span></span>
+<span id="cb38-13"><a href="#cb38-13"></a><span class="co"># read命令会从标准输入读取一行，并将其赋值给变量line。-r选项表示read将读取原生内容，所有字符都不会被转义，例如反斜线不会用于转义（只是反斜线）。输入重定向命令&quot;&lt;file&quot;会打开文件并执行读操作，并且会将读取的内容以标准输入的形式提供给read命令。</span></span>
+<span id="cb38-14"><a href="#cb38-14"></a><span class="bu">read</span> -r <span class="va">line</span> <span class="op">&lt;</span> <span class="fu">file</span></span>
+<span id="cb38-15"><a href="#cb38-15"></a><span class="co"># read命令会删除特殊变量IFS所表示的字符。IFS是Internal Field Separator（内部字段分隔符）的缩写，它的值为用于分隔单词和行的字符组成的字符串。IFS的默认值为空格符、制表符和换行符组成的字符串。这意味着前导和尾随的空格符和制表符都会被删除。如果你想保留这些字符，你可以将IFS设置为空字符：</span></span>
+<span id="cb38-16"><a href="#cb38-16"></a><span class="va">IFS=</span> <span class="bu">read</span> -r <span class="va">line</span> <span class="op">&lt;</span> <span class="fu">file</span></span>
+<span id="cb38-17"><a href="#cb38-17"></a><span class="co"># 利用外部程序head</span></span>
+<span id="cb38-18"><a href="#cb38-18"></a><span class="va">line=$(</span><span class="fu">head</span> -1 file<span class="va">)</span></span>
+<span id="cb38-19"><a href="#cb38-19"></a><span class="va">line=</span><span class="kw">`</span><span class="fu">head</span> -1 file<span class="kw">`</span></span>
+<span id="cb38-20"><a href="#cb38-20"></a></span>
+<span id="cb38-21"><a href="#cb38-21"></a><span class="co"># 构造一个「畸形」测试用例</span></span>
+<span id="cb38-22"><a href="#cb38-22"></a><span class="bu">echo</span> -n -e <span class="st">&quot; 123 \x0a456&quot;</span> <span class="op">&gt;</span> file</span>
+<span id="cb38-23"><a href="#cb38-23"></a><span class="co"># 逐行读文件 **有 </span><span class="al">BUG</span><span class="co">**</span></span>
+<span id="cb38-24"><a href="#cb38-24"></a><span class="kw">while</span> <span class="bu">read</span> -r <span class="va">line</span>; <span class="kw">do</span></span>
+<span id="cb38-25"><a href="#cb38-25"></a>      <span class="co"># do something with $line</span></span>
+<span id="cb38-26"><a href="#cb38-26"></a>      <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p</span>
+<span id="cb38-27"><a href="#cb38-27"></a><span class="kw">done</span> <span class="op">&lt;</span> <span class="fu">file</span></span>
+<span id="cb38-28"><a href="#cb38-28"></a><span class="co"># 逐行读文件，防止行两端的空白字符被删除 **依然有 </span><span class="al">BUG</span><span class="co">**</span></span>
+<span id="cb38-29"><a href="#cb38-29"></a><span class="kw">while</span> <span class="va">IFS=</span> <span class="bu">read</span> -r <span class="va">line</span>; <span class="kw">do</span></span>
+<span id="cb38-30"><a href="#cb38-30"></a>      <span class="co"># do something with $line</span></span>
+<span id="cb38-31"><a href="#cb38-31"></a>      <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p</span>
+<span id="cb38-32"><a href="#cb38-32"></a><span class="kw">done</span> <span class="op">&lt;</span> <span class="fu">file</span></span>
+<span id="cb38-33"><a href="#cb38-33"></a><span class="co"># 文件读写的最佳实践</span></span>
+<span id="cb38-34"><a href="#cb38-34"></a><span class="kw">while</span> <span class="va">IFS=</span> <span class="bu">read</span> -r <span class="va">line</span> <span class="kw">|| [[</span> <span class="ot">-n</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span><span class="kw"> ]]</span>; <span class="kw">do</span></span>
+<span id="cb38-35"><a href="#cb38-35"></a>      <span class="co"># do something with $line</span></span>
+<span id="cb38-36"><a href="#cb38-36"></a>      <span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$line</span><span class="st">&quot;</span> <span class="kw">|</span> <span class="ex">xxd</span> -p</span>
+<span id="cb38-37"><a href="#cb38-37"></a><span class="kw">done</span> <span class="op">&lt;</span> <span class="fu">file</span></span></code></pre></div>
+<h1 id="实战例子---校园网账号自动登录的bash脚本实现">实战例子 - 校园网账号自动登录的bash脚本实现</h1>
+<hr />
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1"></a><span class="co">#!/bin/bash</span></span>
+<span id="cb39-2"><a href="#cb39-2"></a><span class="va">urls=(</span><span class="st">&quot;https://www.taobao.com&quot;</span> <span class="st">&quot;http://www.qq.com&quot;</span> <span class="st">&quot;https://www.baidu.com&quot;</span><span class="va">)</span></span>
+<span id="cb39-3"><a href="#cb39-3"></a><span class="va">fbs=(</span><span class="st">&quot;taobao.com&quot;</span> <span class="st">&quot;qq.com&quot;</span> <span class="st">&quot;baidu.com&quot;</span><span class="va">)</span></span>
+<span id="cb39-4"><a href="#cb39-4"></a><span class="va">count=${#urls[@]}</span></span>
+<span id="cb39-5"><a href="#cb39-5"></a><span class="va">err=</span>1</span>
+<span id="cb39-6"><a href="#cb39-6"></a><span class="va">bench=</span><span class="kw">`</span><span class="fu">expr</span> <span class="va">$count</span> - <span class="va">$err</span><span class="kw">`</span></span>
+<span id="cb39-7"><a href="#cb39-7"></a></span>
+<span id="cb39-8"><a href="#cb39-8"></a><span class="co"># login variables</span></span>
+<span id="cb39-9"><a href="#cb39-9"></a><span class="va">uid=</span><span class="st">&quot;[your_uid]&quot;</span></span>
+<span id="cb39-10"><a href="#cb39-10"></a><span class="va">psw=</span><span class="st">&quot;[your_psw_extracted_from_account.cuc.edu.cn_login_post]&quot;</span> <span class="co"># 注意一定要使用URL编码之后的数据</span></span>
+<span id="cb39-11"><a href="#cb39-11"></a></span>
+<span id="cb39-12"><a href="#cb39-12"></a><span class="co"># cookie文件持久化存储路径</span></span>
+<span id="cb39-13"><a href="#cb39-13"></a><span class="va">cookie_file=</span><span class="st">&quot;acuc.txt&quot;</span></span>
+<span id="cb39-14"><a href="#cb39-14"></a></span>
+<span id="cb39-15"><a href="#cb39-15"></a><span class="va">UA=</span><span class="st">&quot;Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.772.0 Safari/535.1&quot;</span></span>
+<span id="cb39-16"><a href="#cb39-16"></a></span>
+<span id="cb39-17"><a href="#cb39-17"></a><span class="co"># 校园网认证首页</span></span>
+<span id="cb39-18"><a href="#cb39-18"></a><span class="va">index_url=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/index.jsp&quot;</span></span>
+<span id="cb39-19"><a href="#cb39-19"></a></span>
+<span id="cb39-20"><a href="#cb39-20"></a><span class="co"># 校园网登录API</span></span>
+<span id="cb39-21"><a href="#cb39-21"></a><span class="va">login_url=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/ws/ws_login.jsp?act=2&amp;userid=</span><span class="va">${uid}</span><span class="st">&amp;passwd=</span><span class="va">${psw}</span><span class="st">&amp;act=2&quot;</span></span>
+<span id="cb39-22"><a href="#cb39-22"></a></span>
+<span id="cb39-23"><a href="#cb39-23"></a><span class="co"># 校园网认证心跳API</span></span>
+<span id="cb39-24"><a href="#cb39-24"></a><span class="va">hb_url_0=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=4&quot;</span> <span class="co"># 认证成功后，只联接校园网，需要通过该API完成联接互联网</span></span>
+<span id="cb39-25"><a href="#cb39-25"></a><span class="va">hb_url_1=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=6&quot;</span></span>
+<span id="cb39-26"><a href="#cb39-26"></a><span class="va">hb_url_2=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=7&quot;</span></span>
+<span id="cb39-27"><a href="#cb39-27"></a></span>
+<span id="cb39-28"><a href="#cb39-28"></a><span class="co"># 校园网注销API</span></span>
+<span id="cb39-29"><a href="#cb39-29"></a><span class="va">logout_url=</span><span class="st">&quot;http://account.cuc.edu.cn/connect/ws/ws_login.jsp?act=3&quot;</span></span>
+<span id="cb39-30"><a href="#cb39-30"></a></span>
+<span id="cb39-31"><a href="#cb39-31"></a><span class="co"># 调试用文件路径</span></span>
+<span id="cb39-32"><a href="#cb39-32"></a><span class="va">log_result=</span><span class="st">&quot;res.html&quot;</span></span>
+<span id="cb39-33"><a href="#cb39-33"></a></span>
+<span id="cb39-34"><a href="#cb39-34"></a><span class="fu">isNetworkConnected()</span> <span class="kw">{</span></span>
+<span id="cb39-35"><a href="#cb39-35"></a>  <span class="va">success=</span>0;</span>
+<span id="cb39-36"><a href="#cb39-36"></a>  <span class="kw">for((</span>i=0;i&lt;<span class="va">$count</span>;i++<span class="kw">))</span>;<span class="kw">do</span></span>
+<span id="cb39-37"><a href="#cb39-37"></a>    <span class="va">url=${urls[$i]}</span>;</span>
+<span id="cb39-38"><a href="#cb39-38"></a>    <span class="va">fb=${fbs[$i]}</span>;</span>
+<span id="cb39-39"><a href="#cb39-39"></a>    <span class="va">res=</span><span class="kw">`</span><span class="ex">curl</span> -s -4 -m 5 <span class="va">$url</span><span class="kw">`</span>;</span>
+<span id="cb39-40"><a href="#cb39-40"></a>    <span class="kw">if [[</span> <span class="va">$res</span> =~ <span class="va">$fb</span><span class="kw"> ]]</span>;<span class="kw">then</span></span>
+<span id="cb39-41"><a href="#cb39-41"></a>      <span class="kw">((</span>success++<span class="kw">))</span>;</span>
+<span id="cb39-42"><a href="#cb39-42"></a>    <span class="kw">fi</span></span>
+<span id="cb39-43"><a href="#cb39-43"></a>  <span class="kw">done</span></span>
+<span id="cb39-44"><a href="#cb39-44"></a></span>
+<span id="cb39-45"><a href="#cb39-45"></a>  <span class="kw">if</span><span class="bu"> [</span> <span class="va">$success</span> <span class="ot">-gt</span> <span class="va">$bench</span><span class="bu"> ]</span>;<span class="kw">then</span></span>
+<span id="cb39-46"><a href="#cb39-46"></a>    <span class="va">connected=</span>1; <span class="co"># connected to internet</span></span>
+<span id="cb39-47"><a href="#cb39-47"></a>  <span class="kw">else</span></span>
+<span id="cb39-48"><a href="#cb39-48"></a>    <span class="va">connected=</span>0; <span class="co"># connection error</span></span>
+<span id="cb39-49"><a href="#cb39-49"></a>  <span class="kw">fi</span></span>
+<span id="cb39-50"><a href="#cb39-50"></a>  <span class="bu">echo</span> <span class="va">$connected</span><span class="kw">;</span></span>
+<span id="cb39-51"><a href="#cb39-51"></a><span class="kw">}</span></span>
+<span id="cb39-52"><a href="#cb39-52"></a></span>
+<span id="cb39-53"><a href="#cb39-53"></a></span>
+<span id="cb39-54"><a href="#cb39-54"></a><span class="fu">keep_connected()</span> <span class="kw">{</span></span>
+<span id="cb39-55"><a href="#cb39-55"></a>  <span class="ex">curl</span> -k -e <span class="st">&quot;</span><span class="va">$index_url</span><span class="st">&quot;</span> -b <span class="st">&quot;</span><span class="va">$cookie_file</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$hb_url_1</span><span class="st">&quot;</span></span>
+<span id="cb39-56"><a href="#cb39-56"></a>  <span class="ex">curl</span> -k -e <span class="st">&quot;</span><span class="va">$index_url</span><span class="st">&quot;</span> -b <span class="st">&quot;</span><span class="va">$cookie_file</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$hb_url_2</span><span class="st">&quot;</span></span>
+<span id="cb39-57"><a href="#cb39-57"></a><span class="kw">}</span></span>
+<span id="cb39-58"><a href="#cb39-58"></a></span>
+<span id="cb39-59"><a href="#cb39-59"></a><span class="fu">log_out()</span> <span class="kw">{</span></span>
+<span id="cb39-60"><a href="#cb39-60"></a>  <span class="ex">curl</span> -k -e <span class="st">&quot;</span><span class="va">$index_url</span><span class="st">&quot;</span> -b <span class="va">$cookie_file</span> <span class="st">&quot;</span><span class="va">$logout_url</span><span class="st">&quot;</span> <span class="co"># 先注销，再联网，避免重复登录</span></span>
+<span id="cb39-61"><a href="#cb39-61"></a><span class="kw">}</span></span>
+<span id="cb39-62"><a href="#cb39-62"></a></span>
+<span id="cb39-63"><a href="#cb39-63"></a><span class="fu">connect_lan()</span> <span class="kw">{</span></span>
+<span id="cb39-64"><a href="#cb39-64"></a>  <span class="co"># 连接校园网</span></span>
+<span id="cb39-65"><a href="#cb39-65"></a>  <span class="ex">curl</span> -k -c <span class="st">&quot;</span><span class="va">$cookie_file</span><span class="st">&quot;</span> -L -e <span class="st">&quot;</span><span class="va">$login_url</span><span class="st">&quot;</span> -A <span class="st">&quot;</span><span class="va">$UA</span><span class="st">&quot;</span> -o <span class="st">&quot;</span><span class="va">$log_result</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$login_url</span><span class="st">&quot;</span></span>
+<span id="cb39-66"><a href="#cb39-66"></a><span class="kw">}</span></span>
+<span id="cb39-67"><a href="#cb39-67"></a></span>
+<span id="cb39-68"><a href="#cb39-68"></a><span class="fu">connect_internet()</span> <span class="kw">{</span></span>
+<span id="cb39-69"><a href="#cb39-69"></a>  <span class="co"># 连接互联网</span></span>
+<span id="cb39-70"><a href="#cb39-70"></a>  <span class="ex">curl</span> -k -e <span class="st">&quot;</span><span class="va">$index_url</span><span class="st">&quot;</span> -b <span class="st">&quot;</span><span class="va">$cookie_file</span><span class="st">&quot;</span> <span class="st">&quot;</span><span class="va">$hb_url_0</span><span class="st">&quot;</span></span>
+<span id="cb39-71"><a href="#cb39-71"></a><span class="kw">}</span></span>
+<span id="cb39-72"><a href="#cb39-72"></a></span>
+<span id="cb39-73"><a href="#cb39-73"></a><span class="va">connected=$(</span><span class="ex">isNetworkConnected</span><span class="va">)</span></span>
+<span id="cb39-74"><a href="#cb39-74"></a></span>
+<span id="cb39-75"><a href="#cb39-75"></a><span class="kw">if</span><span class="bu"> [</span> <span class="va">$connected</span> <span class="ot">-eq</span> <span class="st">&quot;1&quot;</span><span class="bu"> ]</span>;<span class="kw">then</span></span>
+<span id="cb39-76"><a href="#cb39-76"></a>  <span class="bu">echo</span> <span class="st">&quot;we are connected!&quot;</span><span class="kw">;</span></span>
+<span id="cb39-77"><a href="#cb39-77"></a>  <span class="co"># 当前是已联网状态，保持心跳即可</span></span>
+<span id="cb39-78"><a href="#cb39-78"></a>  <span class="ex">keep_connected</span></span>
+<span id="cb39-79"><a href="#cb39-79"></a><span class="kw">else</span></span>
+<span id="cb39-80"><a href="#cb39-80"></a>  <span class="co"># 当前是未联网状态</span></span>
+<span id="cb39-81"><a href="#cb39-81"></a>  <span class="bu">echo</span> <span class="st">&quot;we are disconnected&quot;</span><span class="kw">;</span></span>
+<span id="cb39-82"><a href="#cb39-82"></a>  <span class="ex">log_out</span></span>
+<span id="cb39-83"><a href="#cb39-83"></a>  <span class="ex">connect_lan</span></span>
+<span id="cb39-84"><a href="#cb39-84"></a>  <span class="ex">connect_internet</span></span>
+<span id="cb39-85"><a href="#cb39-85"></a>  <span class="ex">keep_connected</span></span>
+<span id="cb39-86"><a href="#cb39-86"></a><span class="kw">fi</span></span></code></pre></div>
+<h1 id="中英文符号对照表">中英文符号对照表</h1>
+<hr />
+<ul>
+<li><strong>`</strong> backtick/backquote 反引号</li>
+<li><strong>[</strong> square bracket 方括号</li>
+<li><strong>’</strong> single quote 单引号</li>
+<li><strong>"</strong> double quote 双引号</li>
+</ul>
+<hr />
+<ul>
+<li><strong>_</strong> underscore 下划线</li>
+<li><strong>/</strong> slash 斜线（URL、<strong>*NIX</strong> 路径分隔符）</li>
+<li><strong>\</strong> backslash 反斜线（转义符号、<strong>Windows</strong> 路径分隔符）</li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="#cb40-1"></a><span class="co"># 16进制表示的 ascii 码: 7c，英文术语：vertical bar，Shell编程里的“管道操作符”</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a><span class="bu">printf</span> <span class="st">&#39;%s&#39;</span> <span class="st">&#39;|&#39;</span> <span class="kw">|</span> <span class="ex">xxd</span>  </span>
+<span id="cb40-3"><a href="#cb40-3"></a></span>
+<span id="cb40-4"><a href="#cb40-4"></a><span class="co"># ref: https://www.zhihu.com/question/21747929/answer/319675621</span></span>
+<span id="cb40-5"><a href="#cb40-5"></a><span class="bu">printf</span> <span class="st">&#39;%s&#39;</span> <span class="st">&#39;丨&#39;</span> <span class="kw">|</span> <span class="ex">xxd</span> <span class="co"># 16进制表示的 ascii 码: e4b8a8，汉语拼音：gun</span></span></code></pre></div>
+<hr />
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="#cb41-1"></a><span class="co"># ref: https://practicaltypography.com/hyphens-and-dashes.html</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a><span class="co"># 16进制表示的 ascii 码: 2d，英文术语：hyphen，中文术语：连字符，俗称：短杠</span></span>
+<span id="cb41-3"><a href="#cb41-3"></a><span class="bu">printf</span> <span class="st">&#39;%s&#39;</span> <span class="st">&#39;-&#39;</span> <span class="kw">|</span> <span class="ex">xxd</span> </span>
+<span id="cb41-4"><a href="#cb41-4"></a></span>
+<span id="cb41-5"><a href="#cb41-5"></a><span class="co"># 16进制表示的 ascii 码: e28093，英文术语：en dash</span></span>
+<span id="cb41-6"><a href="#cb41-6"></a><span class="bu">printf</span> <span class="st">&#39;%s&#39;</span> <span class="st">&#39;–&#39;</span> <span class="kw">|</span> <span class="ex">xxd</span> </span>
+<span id="cb41-7"><a href="#cb41-7"></a></span>
+<span id="cb41-8"><a href="#cb41-8"></a><span class="co"># 16进制表示的 ascii 码: e28094，这是中文输入法打出来的破折号的一半，英文术语：em dash</span></span>
+<span id="cb41-9"><a href="#cb41-9"></a><span class="bu">printf</span> <span class="st">&#39;%s&#39;</span> <span class="st">&#39;—&#39;</span> <span class="kw">|</span> <span class="ex">xxd</span> </span></code></pre></div>
+<h1 id="推荐阅读">推荐阅读</h1>
+<hr />
+<p><a href="https://mywiki.wooledge.org/BashPitfalls">Bash Pitfalls</a></p>
+<blockquote>
+<p>参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。</p>
+</blockquote>
+<hr />
+<p><a href="https://zhuanlan.zhihu.com/p/47819029">千万别混淆 Bash/Zsh 的四种运行模式</a></p>
+<blockquote>
+<p>Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢 bash 的速度，还会发生明明写了登录配置但是就是没生效的情况</p>
+</blockquote>
+<h1 id="推荐工具">推荐工具</h1>
+<hr />
+<p><a href="https://explainshell.com/"><img src="images/chap0x04/explainshell.png" alt="explainshell.com" /></a></p>
+<hr />
+<h2 id="bash-automated-testing-system"><a href="https://github.com/bats-core/bats-core">Bash Automated Testing System</a></h2>
+<p><a href="https://travis-ci.org/3c1rp4c/TravisBasedOJ"><img src="images/chap0x04/bats-core.png" alt="bats-core / bats-core" /></a></p>
+<blockquote>
+<p>Bats is a <a href="https://testanything.org/">TAP</a>-compliant testing framework for Bash. It provides a simple way to verify that the UNIX programs you write behave as expected.</p>
+</blockquote>
+<hr />
+<h2 id="vscode-remote-配置-bash-集成开发环境">VSCode Remote 配置 Bash 集成开发环境</h2>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=mads-hartmann.bash-ide-vscode">Bash IDE</a>
+<ul>
+<li>跳转到函数定义、查找代码片段引用、自动补全代码、鼠标悬停代码关键词显示帮助文档等</li>
+</ul></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck">ShellCheck</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug">Bash Debug</a></li>
+</ul>
+<h1 id="参考文献">参考文献</h1>
+<hr />
+<ul>
+<li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH Programming - Introduction HOW-TO</a></li>
+<li><a href="http://tldp.org/LDP/abs/html/">Advanced Bash-Scripting Guide</a></li>
+<li><a href="https://google.github.io/styleguide/shell.xml">Shell Style Guide by Google Inc.</a></li>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/index.html">Bash Reference Manual</a></li>
+<li><a href="http://www.bash.academy/">The Bash Academy</a></li>
+</ul>
+<h1 id="延伸学习">延伸学习</h1>
+<hr />
+<ul>
+<li><a href="https://github.com/dylanaraps/pure-bash-bible">技巧汇编：使用纯 Bash 脚本代替外部程序调用</a></li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第四章shell脚本编程基础" class="title-slide slide level1">
+<h1>第四章：shell脚本编程基础</h1>
+
+</section>
+<section id="dont-repeat-yourself" class="slide level2">
+<h2><font color='red'>D</font>on’t <font color='red'>r</font>epeat <font color='red'>y</font>ourself</h2>
+</section>
+</section>
+<section>
+<section id="hello-world" class="title-slide slide level1">
+<h1>Hello World</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://repl.it/@c4pr1c3/LinuxSysAdmin"><img data-src="images/chap0x04/bash-online.png" alt="在线 Bash 解释器和编辑器环境" /></a></p>
+<blockquote>
+<p>扫码或点击图片「零安装、零配置」直接在浏览器里体验 Bash 编程</p>
+</blockquote>
+</section>
+<section id="备用在线-bash-解释器和编辑器环境" class="slide level2">
+<h2>备用在线 Bash 解释器和编辑器环境</h2>
+<ul>
+<li><a href="https://www.tutorialspoint.com/execute_bash_online.php">CodingGround@tutorialspoint.com</a></li>
+<li><a href="https://paiza.io/en/projects/new?language=bash">paiza.io</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>#!/usr/bin/env bash
+
+echo &quot;hello world!&quot;</code></pre>
+</section>
+<section id="详解" class="slide level2">
+<h2>详解</h2>
+<ul>
+<li>注释符号 <strong>#</strong></li>
+<li><a href="https://asciinema.org/a/z1xLUVCLitp02XLIICSfdnPSC">文件起始处的 <code>#!</code> 声明自己是一个<strong>脚本</strong>文件</a></li>
+<li>当前shell脚本默认使用的<strong>解释器</strong></li>
+<li>查看当前正在使用shell解释器</li>
+</ul>
+<pre class="bash"><code>ps | grep $$</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>查看当前shell解释器对应的文件绝对路径</li>
+</ul>
+<pre class="bash"><code>type bash</code></pre>
+<ul>
+<li>查看当前bash的版本号</li>
+</ul>
+<pre class="bash"><code>bash --version</code></pre>
+</section>
+<section id="为什么使用-usrbinenv-bash" class="slide level2">
+<h2><a href="https://stackoverflow.com/questions/16365130/what-is-the-difference-between-usr-bin-env-bash-and-usr-bin-bash">为什么使用 <code>#!/usr/bin/env bash</code></a></h2>
+<p>当我们通过 <code>./target.sh</code> 执行脚本时：</p>
+<ul>
+<li>避免目标系统上的解释器路径和预期不一致
+<ul>
+<li>例如同时存在多个版本的 Bash，通过环境变量设置的优先解释器路径不同于期望的 <code>/bin/bash</code></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>类似的我们可以在 Python 脚本文件行首书写</p>
+<pre class="bash"><code>#!/usr/bin/env python</code></pre>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>例外：如果就是希望指定路径的脚本解释器执行当前脚本，而非环境变量中设置的优先脚本解释器</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>如果我们通过 <code>bash target.sh</code> 或 <code>/bin/bash target.sh</code> 执行脚本则上述设置相当于原本的注释行作用</p>
+</section>
+</section>
+<section>
+<section id="shell-内置帮助" class="title-slide slide level1">
+<h1>Shell 内置帮助</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>help type
+
+help help</code></pre>
+</section>
+</section>
+<section>
+<section id="变量" class="title-slide slide level1">
+<h1>变量</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>PRICE_PER_APPLE=5
+MyFirstLetters=ABC
+greeting=&#39;Hello        world!&#39;</code></pre>
+<ul>
+<li>变量名区分大小写</li>
+<li><strong>=</strong>左右两边不能有空格</li>
+<li>单引号包围的字符串中不对特殊符号做解释执行</li>
+<li>双引号包围的字符串中对特殊符号解释执行</li>
+<li>使用 <strong>\</strong> 转义特殊符号避免被解释执行</li>
+</ul>
+<pre class="bash"><code>PRICE_PER_APPLE=5
+echo &quot;The price of an Apple today is: \$HK $PRICE_PER_APPLE&quot;</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>使用 <strong>${}</strong> 包围变量名避免变量名被解释执行时的二义性</li>
+</ul>
+<pre class="bash"><code>MyFirstLetters=ABC
+echo &quot;The first 10 letters in the alphabet are: ${MyFirstLetters}DEFGHIJ&quot;</code></pre>
+<ul>
+<li>使用双引号 <strong>""</strong> 包围变量名可以保留所有空格字符</li>
+</ul>
+<pre class="bash"><code>greeting=&#39;Hello        world!&#39;
+
+# 此处实际上实现了一个字符串 拼接/连接 操作
+echo $greeting&quot; now with spaces: $greeting&quot;</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>其他程序的输出结果直接赋值给shell变量</li>
+</ul>
+<pre class="bash"><code>FILELIST=`ls`
+FileWithTimeStamp=/tmp/file_$(/bin/date +%Y-%m-%d).txt</code></pre>
+<p>上述代码中的 <strong>``</strong> 符号和 <strong>$()</strong> 都可以用于命令输出结果替换变量赋值结果。</p>
+</section>
+<section class="slide level2">
+
+<p>课堂练习</p>
+<pre class="bash"><code>#!/usr/bin/env bash
+# 代码填空，使用最终输出3个包含correct的语句
+BIRTHDATE=   # 填入一个字符串
+Presents=    # 填入一个整数
+BIRTHDAY=    # 使用命令替换方法赋值
+
+
+# 测试代码 - 勿修改
+
+if [ &quot;$BIRTHDATE&quot; == &quot;Jan 1 2000&quot; ] ; then
+    echo &quot;BIRTHDATE is correct, it is $BIRTHDATE&quot;
+else
+    echo &quot;BIRTHDATE is incorrect - please retry&quot;
+fi
+if [ $Presents == 10 ] ; then
+    echo &quot;correct! I have received $Presents presents&quot;
+else
+    echo &quot;Presents is incorrect - please retry&quot;
+fi
+if [ &quot;$BIRTHDAY&quot; == &quot;Saturday&quot; ] ; then
+    echo &quot;correct! I was born on a $BIRTHDAY&quot;
+else
+    echo &quot;BIRTHDAY is incorrect - please retry&quot;
+fi</code></pre>
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>提示：可以使用以下方法将形如“Jan 1 2000”的日期时间字符串$date1转换出星期几</p>
+</blockquote>
+<pre class="bash"><code>date -d &quot;$date1&quot; +%A</code></pre>
+</section>
+</section>
+<section>
+<section id="脚本调试的方法" class="title-slide slide level1">
+<h1><a href="http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_03.html">脚本调试的方法</a></h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 调试模式运行，逐行执行“命令”并打印“命令”接受的输入参数值
+$ bash -x &lt;script.sh&gt;
+
+# 代码片段临时开启调试模式
+set -x          # activate debugging from here
+w
+set +x          # stop debugging from here
+
+# 写文件
+echo -e &quot;$msg&quot; &gt;&gt; /tmp/debug.log
+
+# 如果打印变量内容包含「不可打印字符」
+# msg=&quot;hello world\x01\x02&quot;
+echo -n -e &quot;$msg&quot; | xxd -p &gt;&gt; /tmp/debug.log</code></pre>
+</section>
+</section>
+<section>
+<section id="给脚本传参" class="title-slide slide level1">
+<h1>给脚本传参</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>参照使用C语言代码编写的命令行可执行程序传参语法规范</li>
+<li>参数与参数之间、脚本文件名与参数之间使用1个或多个空格分隔</li>
+<li><code>$0</code> 指代脚本文件本身</li>
+<li><code>$1</code> 指代命令行上的第1个参数</li>
+<li><code>$2</code> 指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法</li>
+<li><code>$@</code> 指代命令行上的所有参数（参数数组）</li>
+<li><code>$#</code> 指代命令行上的参数个数（参数数组大小）</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>#!/bin/bash
+# 将本段代码复制粘贴保存为一个文件，假设文件名为：test.sh
+echo $3 # --&gt; results with: banana
+
+BIG=$5
+
+echo &quot;A $BIG costs just $6&quot;
+
+# 输出所有参数
+echo &quot;$@&quot;
+
+# 以下代码输出命令行参数的总数
+echo $#</code></pre>
+<p>用以下方法执行该脚本，观察脚本输出结果</p>
+<pre class="bash"><code>bash test.sh apple 5 banana 8 &quot;Fruit Basket&quot; 15</code></pre>
+</section>
+</section>
+<section>
+<section id="数组" class="title-slide slide level1">
+<h1>数组</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://www.tldp.org/LDP/abs/html/bashver4.html">Bash 4.0 开始支持关联数组</a></li>
+<li><code>declare -a</code> 声明的是「索引」数组，<code>declare -A</code> 声明的是「关联」数组。<a href="https://www.gnu.org/software/bash/manual/html_node/Arrays.html">如果同时使用 <code>-a -A</code> ，<code>-A</code> 优先级更高，数组被声明为「关联」数组</a></li>
+<li><a href="https://stackoverflow.com/questions/10806357/associative-arrays-are-local-by-default">Bash 4.2</a> 开始支持 <code>declare -g</code> 方式声明关联数组为「全局」变量，在此之前，关联数组仅限局部变量作用域</li>
+</ul>
+</section>
+<section id="示例" class="slide level2">
+<h2>示例</h2>
+<pre class="bash"><code># 查看当前 Bash 的 declare 支持的参数
+# help declare
+
+# 声明一个「索引」数组
+declare -a indexed_arr
+
+# 声明一个「关联」数组
+declare -A associative_arr
+
+# Bash 数组赋值方法如下
+# 「索引」数组可以跳过数组声明直接赋值的同时即完成了数组初始化
+my_array=(apple banana &quot;Fruit Basket&quot; orange)
+
+associative_arr[&#39;hello&#39;]=&#39;world&#39;
+associative_arr[&#39;well&#39;]=&#39;done&#39;
+
+# bash支持“稀疏”数组：即数组元素不必连续存在，个别索引位置上可以有未初始化的元素
+new_array[2]=apricot
+
+# 数组元素的个数通过 ${#arrayname[@]} 获得
+echo ${#my_array[@]}
+
+# 随机读取数组中的元素，{}是必须有的
+echo ${my_array[2]}
+# echo $my_array[2] 是错误的读取方法
+
+# 遍历数组的方法
+## 「索引」数组
+for ele in &quot;${my_array[@]}&quot;;do
+    echo &quot;$ele&quot;
+done
+
+## 「关联」数组
+for key in &quot;${!associative_arr[@]}&quot;;do
+    echo &quot;$key ${associative_arr[$key]}&quot;
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>课堂练习</p>
+<pre class="bash"><code>#!/bin/bash
+NAMES=( John Eric Jessica )
+
+# 代码填空，使得以下代码避免输出failed关键字
+NUMBERS=()  # 构造包含1到10整数的数组
+STRINGS=()  # 构造分别包含hello和world字符串的数组
+NumberOfNames=0 # 请使用动态计算数组元素个数的方法
+second_name=&#39;&#39;  # 读取NAMES数组的第2个元素值进行赋值
+
+# 测试代码 - 勿修改
+
+T_NUMBERS=$(seq 1 10)
+T_STRINGS=(hello world)
+
+# Test Case 1
+i=0
+for n in ${T_NUMBERS[@]};do
+  if [[ ${n} -ne ${NUMBERS[${i}]} ]];then
+    echo &quot;failed in NUMBERS test&quot;
+  fi
+  i=$((i+1))
+done
+
+# Test Case 2
+i=0
+for n in ${T_STRINGS[@]};do
+  if [[ &quot;${n}&quot; != &quot;${STRINGS[${i}]}&quot; ]];then
+    echo &quot;failed in STRINGS test&quot;
+  fi
+  i=$((i+1))
+done
+
+# Test Case 3
+if [[ $NumberOfNames -ne ${#NAMES[@]} ]];then
+    echo &quot;failed in NumberOfNames test&quot;
+fi
+
+# Test Case 4
+if [[ &quot;${NAMES[1]}&quot; != &quot;${second_name}&quot; ]];then
+  echo &quot;failed in Array Element Access test&quot;
+fi</code></pre>
+</section>
+</section>
+<section>
+<section id="基本算术运算" class="title-slide slide level1">
+<h1>基本算术运算</h1>
+
+</section>
+<section class="slide level2">
+
+<p>使用 <strong>$((expression))</strong> 算术运算符表达式，注意这种方式只支持 <strong><font color='red'>整数</font>运算</strong></p>
+<pre class="bash"><code>A=3
+B=$((100 * A + 5)) # 305</code></pre>
+<ul>
+<li>a + b addition (a plus b)</li>
+<li>a - b substraction (a minus b)</li>
+<li>a * b multiplication (a times b)</li>
+<li>a / b division (integer) (a divided by b)</li>
+<li>a % b modulo (the integer remainder of a divided by b)</li>
+<li>a ** b exponentiation (a to the power of b)</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 进阶算术运算请使用命令行工具 bc
+
+# 计算 4 * arctangent(1) ，计算结果保留 10 位有效数字
+# -l 表示使用标准数学库
+pi=$(echo &quot;scale=10; 4*a(1)&quot; | bc -l)
+
+# 计算 4 * arctangent(1) ，计算结果保留 1000 位有效数字
+# 禁止输出结果因超长而自动折行
+pi=$(BC_LINE_LENGTH=0 bc -l &lt;&lt;&lt; &quot;scale=1000; 4*a(1)&quot;)</code></pre>
+</section>
+</section>
+<section>
+<section id="基本字符串操作" class="title-slide slide level1">
+<h1>基本字符串操作</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 获得字符串长度值
+STRING=&quot;this is a string&quot;
+echo ${#STRING}            # 16
+
+# 注意非拉丁语系字符串长度计算
+M_STRING=&quot;中文&quot;
+export LC_ALL=C.UTF-8
+echo ${#M_STRING}            # 2
+export LC_ALL=C
+echo ${#M_STRING}            # 6
+
+# 字符串截取子串
+STRING=&quot;this is a string&quot;
+POS=1
+LEN=3
+echo ${STRING:$POS:$LEN}   # his
+echo ${STRING:1}           # $STRING contents without leading character
+echo ${STRING:12}          # ring
+
+# 注意非拉丁语系字符串截取
+export LANG=C
+echo -n &quot;${M_STRING:0:1}&quot; | xxd -p # e4
+export LANG=C.UTF-8
+echo -n &quot;${M_STRING:0:1}&quot; | xxd -p # e4b8ad
+
+# 字符串查找并替换第一次匹配到的子串
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]/be/eat}   # to eat or not to be</code></pre>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 字符串查找并替换所有匹配到的子串
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]//be/eat}  # to eat or not to eat
+
+# 字符串查找并删除（替换为空）所有匹配到的子串
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]// not/}        # to be or to be
+
+# 字符串查找并替换匹配到行首的子串
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]/#to be/eat now}    # eat now or not to be
+
+# 字符串查找并替换匹配到行尾的子串
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]/%be/eat}        # to be or not to eat
+
+# 字符串查找并使用子命令输出结果替换匹配项
+STRING=&quot;to be or not to be&quot;
+echo ${STRING[@]/%be/be on $(date +%Y-%m-%d)}    # to be or not to be on 2012-06-14</code></pre>
+</section>
+</section>
+<section>
+<section id="条件判断" class="title-slide slide level1">
+<h1>条件判断</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>
+if [ expression ]; then
+
+# code if &#39;expression&#39; is true
+
+elif [ expression ]; then
+
+# code if &#39;expression&#39; is true
+
+else
+
+# other conditions
+
+fi</code></pre>
+</section>
+<section class="slide level2">
+
+<p><a href="http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts">[]和[[]]的区别</a></p>
+<ul>
+<li><code>[</code> 实质上命令 <code>test</code> 的另一种形式，<code>[[</code> 是一种更符合你期望的 <code>test</code> 命令</li>
+<li><code>[</code> 符合 POSIX 标准，<code>[[</code> 不符合 POSIX 标准</li>
+<li>现代 Linux 发行版自带的 shell 环境普遍支持 <code>[[</code> ，推荐优先使用（除非需要考虑兼容古老 shell）</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>bash支持的表达式类型</p>
+<ul>
+<li>单个字符串（常量）或者变量</li>
+<li>恒假表达式
+<ul>
+<li>空字符串</li>
+<li>未定义变量名</li>
+</ul></li>
+<li>逻辑运算符
+<ul>
+<li>! 取反</li>
+<li>&amp;&amp; 逻辑与</li>
+<li>|| 逻辑或</li>
+</ul></li>
+<li>使用逻辑运算符构成的条件表达式应使用 <strong>[[ ]]</strong>包围</li>
+</ul>
+</section>
+<section id="小测验" class="slide level2">
+<h2>小测验</h2>
+<pre class="bash"><code># 以下代码执行完毕后的输出结果是什么？
+if [[ 0 ]];then printf &quot;%d&quot; 0;fi
+if [[ 1 ]];then printf &quot;%d&quot; 1;fi
+if [[ true ]];then printf &quot;%d&quot; 2;fi
+if [[ false ]];then printf &quot;%d&quot; 3;fi
+if [[ &#39;&#39; ]];then printf &quot;%d&quot; 4;fi
+if [[ &#39;   &#39; ]];then printf &quot;%d&quot; 5;fi
+if [[ &#39;true&#39; ]];then printf &quot;%d&quot; 6;fi
+if [[ &#39;false&#39; ]];then printf &quot;%d&quot; 7;fi
+if [[ &#39;$mamashuozhegebianliangbukenengdingyiguo&#39; ]];then printf &quot;%d&quot; 8;fi
+if [[ &quot;$mamashuozhegebianliangbukenengdingyiguo&quot; ]];then printf &quot;%d&quot; 9;fi</code></pre>
+</section>
+<section id="section" class="slide level2">
+<h2>01235678</h2>
+</section>
+<section class="slide level2">
+
+<p><font color='red'>数值</font>比较运算表达式</p>
+<p><img data-src="images/chap0x04/numeric-cmp.png" /></p>
+</section>
+<section class="slide level2">
+
+<p><font color='red'>字符串</font>比较表达式</p>
+<p><img data-src="images/chap0x04/str-cmp.png" /></p>
+<blockquote>
+<p>注意：上面表达式中的双引号不能省略，避免字符串中包含的空格会改变表达式的语义</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>选择条件分支</p>
+<pre class="bash"><code>case &quot;$variable&quot; in
+    &quot;$condition1&quot; )
+        command...
+    ;;
+    &quot;$condition2&quot; )
+        command...
+    ;;
+esac</code></pre>
+</section>
+<section class="slide level2">
+
+<p>一个实例</p>
+<pre class="bash"><code>mycase=1
+case $mycase in
+    1) echo &quot;You selected bash&quot;;;
+    2) echo &quot;You selected perl&quot;;;
+    3) echo &quot;You selected phyton&quot;;;
+    4) echo &quot;You selected c++&quot;;;
+    5) exit
+esac</code></pre>
+</section>
+</section>
+<section>
+<section id="循环" class="title-slide slide level1">
+<h1>循环</h1>
+
+</section>
+<section class="slide level2">
+
+<p>for循环</p>
+<pre class="bash"><code># basic construct
+for arg in [list]
+do
+ command(s)...
+done
+
+# 单行结构
+for arg in [list];do command(s)...;done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>2个实例</p>
+<pre class="bash"><code># loop on array member
+NAMES=(Joe Jenny Sara Tony)
+for N in ${NAMES[@]} ; do
+  echo &quot;My name is $N&quot;
+done
+
+# loop on command output results
+for f in $(ps -eo command) ; do
+  ls &quot;$f&quot;
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>while循环</p>
+<pre class="bash"><code># basic construct
+while [ condition ]
+do
+ command(s)...
+done
+
+# 模拟 do .. while 循环
+while [ : ];do
+  if [ condition ];then
+    break
+  fi
+  command(s)...
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>1个实例</p>
+<pre class="bash"><code>COUNT=4
+while [ $COUNT -gt 0 ]; do
+  echo &quot;Value of count is: $COUNT&quot;
+  COUNT=$(($COUNT - 1))
+done
+
+COUNT=4
+while [ : ]; do
+  echo &quot;Value of count is: $COUNT&quot;
+  COUNT=$(($COUNT - 1))
+  if [[ $COUNT -eq 0 ]];then
+     break
+  fi
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>until循环</p>
+<pre class="bash"><code># basic construct
+until [ condition ]
+do
+ command(s)...
+done</code></pre>
+<blockquote>
+<p>说明：until条件为假时，执行循环体内代码。为真时，跳过循环体代码段。</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>COUNT=1
+until [ $COUNT -gt 5 ]; do
+  echo &quot;Value of count is: $COUNT&quot;
+  COUNT=$(($COUNT + 1))
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<p>循环控制</p>
+<ul>
+<li>break 跳过本层循环体剩余部分代码并返回上一级代码片段</li>
+<li>continue 跳过本次循环执行剩余部分代码，继续执行下一次循环条件表达式计算判断</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>break和continue的实例代码</p>
+<pre class="bash"><code># Prints out 0,1,2,3,4
+
+COUNT=0
+while [ $COUNT -ge 0 ]; do
+  echo &quot;Value of COUNT is: $COUNT&quot;
+  COUNT=$((COUNT+1))
+  if [ $COUNT -ge 5 ] ; then
+    break
+  fi
+done
+
+# Prints out only odd numbers - 1,3,5,7,9
+COUNT=0
+while [ $COUNT -lt 10 ]; do
+  COUNT=$((COUNT+1))
+  # Check if COUNT is even
+  if [ $(($COUNT % 2)) = 0 ] ; then
+    continue
+  fi
+  echo $COUNT
+done</code></pre>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># loop on command output results 健壮性改进版本
+set -e
+for f in $(ps -eo command 2&gt;/dev/null) ; do
+  [[ -e &quot;$f&quot; ]] || continue
+  ls &quot;$f&quot;
+done
+
+# 下面是改进前的「脆弱」版本，对比执行找不同
+set -e
+for f in $(ps -eo command) ; do
+  ls &quot;$f&quot;
+done</code></pre>
+</section>
+</section>
+<section>
+<section id="编写健壮的-shell-脚本" class="title-slide slide level1">
+<h1>编写健壮的 shell 脚本</h1>
+
+</section>
+<section id="fail-fast-避免错误蔓延" class="slide level2">
+<h2><a href="https://dzone.com/articles/fail-fast-principle-in-software-development">Fail-Fast: 避免错误蔓延</a></h2>
+<ul>
+<li>越早期的 Bug 越容易被检测到、发现，从而可以更快被修复
+<ul>
+<li>执行过但没「崩溃」的代码都是「无 BUG」的</li>
+</ul></li>
+<li>避免一连串 Bug 协同后产生的「雪崩效应」</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="fail-fast-的典型应用场景">Fail-Fast 的典型应用场景</h3>
+<ul>
+<li>测试驱动开发</li>
+<li>持续集成</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p><strong>set -e</strong></p>
+<blockquote>
+<p>脚本只要发生错误，就终止执行</p>
+</blockquote>
+<p><strong>set +e</strong></p>
+<blockquote>
+<p>关闭 -e 选项</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p><strong>set -o pipefail</strong></p>
+<ul>
+<li><code>set -e</code> 不能终止管道命令中执行出错的语句
+<ul>
+<li>只要最后一个子命令不失败，管道命令总是会执行成功</li>
+</ul></li>
+<li><code>set -eo pipefail</code> 可以让脚本在更严格的条件下执行</li>
+</ul>
+</section>
+<section id="使用静态分析工具" class="slide level2">
+<h2>使用静态分析工具</h2>
+<ul>
+<li>程序静态分析是指在不运行代码的方式下，通过词法分析、语法分析、控制流分析等技术对程序代码进行扫描，验证代码是否满足规范性、安全性、可靠性、可维护性等指标的一种代码分析技术。</li>
+<li>静态分析的一个重要优势是能够在代码中出现大量错误后立刻检测到，因此修复这些错误的成本也不会过高。越早检测到错误，更正错误的成本越低。</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="shellcheck---shell-脚本静态分析工具"><a href="https://github.com/koalaman/shellcheck">shellcheck</a> - shell 脚本静态分析工具</h3>
+<figure>
+<img data-src="images/chap0x04/shellcheck-in-vim.png" alt="" /><figcaption>shellcheck in vim</figcaption>
+</figure>
+</section>
+</section>
+<section>
+<section id="函数" class="title-slide slide level1">
+<h1>函数</h1>
+
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>DRY: Don’t Repeat Yourself</p>
+</blockquote>
+<p>函数定义</p>
+<pre class="bash"><code># 基本定义方法，可移植性最好
+function_name () compound-command [ redirections ]
+
+# 现代主流shell解释权均支持的语法，可以避免alias机制污染函数名
+function function_name [()] compound-command [ redirections ]</code></pre>
+<blockquote>
+<p><a href="http://unix.stackexchange.com/questions/73750/difference-between-function-foo-and-foo">function关键字是可选的，主要区别在于可移植性</a></p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>函数调用、传参和参数处理</p>
+<pre class="bash"><code>function function_B {
+  echo &quot;Function B.&quot;
+}
+function function_A {
+  echo &quot;$1&quot;
+}
+function adder {
+  echo &quot;$(($1 + $2))&quot;
+}
+
+# 调用函数，传参
+function_A &quot;Function A.&quot;     # Function A.
+function_B                   # Function B.
+adder 12 56                  # 68</code></pre>
+</section>
+</section>
+<section>
+<section id="课内练习" class="title-slide slide level1">
+<h1>课内练习</h1>
+
+</section>
+<section class="slide level2">
+
+<p>求2个数的最大公约数，要求：</p>
+<ul>
+<li>通过命令行参数读取2个整数，对不符合参数调用规范（使用小数、字符、少于2个参数等）的脚本执行要给出明确的错误提示信息，并退出代码执行</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="进阶主题" class="title-slide slide level1">
+<h1>进阶主题</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>特殊变量</li>
+<li>文件读写</li>
+</ul>
+</section>
+<section id="特殊变量" class="slide level2">
+<h2>特殊变量</h2>
+<pre class="bash"><code>$0 # 当前脚本的文件名
+$n # 脚本或函数的第N个传入参数
+$# # 脚本或函数传入参数的个数
+$@ # 脚本或函数传入的所有参数（数组形式）
+$* # 脚本或函数传入的所有参数（字符串形式）
+$? # 最近一条命令或函数的退出状态码
+$$ # 当前shell解释器的进程编号，对脚本来说就是当前脚本解释器的进程编号
+$! # 最近一个进入后台执行的进程的进程编号</code></pre>
+</section>
+<section id="文件读写" class="slide level2">
+<h2>文件读写</h2>
+<pre class="bash"><code># 利用I/O重定向机制
+
+# 清空一个文件（文件大小变为0）
+&gt; file
+# 用一段文本内容覆盖一个文件
+echo &quot;some string&quot; &gt; file
+# 在文件尾部追加内容
+echo &quot;some string&quot; &gt;&gt; file
+
+# 读取文件的第一行并将其赋值给一个变量
+
+# read是bash的内置函数
+# read命令会从标准输入读取一行，并将其赋值给变量line。-r选项表示read将读取原生内容，所有字符都不会被转义，例如反斜线不会用于转义（只是反斜线）。输入重定向命令&quot;&lt;file&quot;会打开文件并执行读操作，并且会将读取的内容以标准输入的形式提供给read命令。
+read -r line &lt; file
+# read命令会删除特殊变量IFS所表示的字符。IFS是Internal Field Separator（内部字段分隔符）的缩写，它的值为用于分隔单词和行的字符组成的字符串。IFS的默认值为空格符、制表符和换行符组成的字符串。这意味着前导和尾随的空格符和制表符都会被删除。如果你想保留这些字符，你可以将IFS设置为空字符：
+IFS= read -r line &lt; file
+# 利用外部程序head
+line=$(head -1 file)
+line=`head -1 file`
+
+# 构造一个「畸形」测试用例
+echo -n -e &quot; 123 \x0a456&quot; &gt; file
+# 逐行读文件 **有 BUG**
+while read -r line; do
+      # do something with $line
+      echo &quot;$line&quot; | xxd -p
+done &lt; file
+# 逐行读文件，防止行两端的空白字符被删除 **依然有 BUG**
+while IFS= read -r line; do
+      # do something with $line
+      echo &quot;$line&quot; | xxd -p
+done &lt; file
+# 文件读写的最佳实践
+while IFS= read -r line || [[ -n &quot;$line&quot; ]]; do
+      # do something with $line
+      echo &quot;$line&quot; | xxd -p
+done &lt; file</code></pre>
+</section>
+</section>
+<section>
+<section id="实战例子---校园网账号自动登录的bash脚本实现" class="title-slide slide level1">
+<h1>实战例子 - 校园网账号自动登录的bash脚本实现</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>#!/bin/bash
+urls=(&quot;https://www.taobao.com&quot; &quot;http://www.qq.com&quot; &quot;https://www.baidu.com&quot;)
+fbs=(&quot;taobao.com&quot; &quot;qq.com&quot; &quot;baidu.com&quot;)
+count=${#urls[@]}
+err=1
+bench=`expr $count - $err`
+
+# login variables
+uid=&quot;[your_uid]&quot;
+psw=&quot;[your_psw_extracted_from_account.cuc.edu.cn_login_post]&quot; # 注意一定要使用URL编码之后的数据
+
+# cookie文件持久化存储路径
+cookie_file=&quot;acuc.txt&quot;
+
+UA=&quot;Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.772.0 Safari/535.1&quot;
+
+# 校园网认证首页
+index_url=&quot;http://account.cuc.edu.cn/connect/index.jsp&quot;
+
+# 校园网登录API
+login_url=&quot;http://account.cuc.edu.cn/connect/ws/ws_login.jsp?act=2&amp;userid=${uid}&amp;passwd=${psw}&amp;act=2&quot;
+
+# 校园网认证心跳API
+hb_url_0=&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=4&quot; # 认证成功后，只联接校园网，需要通过该API完成联接互联网
+hb_url_1=&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=6&quot;
+hb_url_2=&quot;http://account.cuc.edu.cn/connect/ws/ws_action.jsp?act=7&quot;
+
+# 校园网注销API
+logout_url=&quot;http://account.cuc.edu.cn/connect/ws/ws_login.jsp?act=3&quot;
+
+# 调试用文件路径
+log_result=&quot;res.html&quot;
+
+isNetworkConnected() {
+  success=0;
+  for((i=0;i&lt;$count;i++));do
+    url=${urls[$i]};
+    fb=${fbs[$i]};
+    res=`curl -s -4 -m 5 $url`;
+    if [[ $res =~ $fb ]];then
+      ((success++));
+    fi
+  done
+
+  if [ $success -gt $bench ];then
+    connected=1; # connected to internet
+  else
+    connected=0; # connection error
+  fi
+  echo $connected;
+}
+
+
+keep_connected() {
+  curl -k -e &quot;$index_url&quot; -b &quot;$cookie_file&quot; &quot;$hb_url_1&quot;
+  curl -k -e &quot;$index_url&quot; -b &quot;$cookie_file&quot; &quot;$hb_url_2&quot;
+}
+
+log_out() {
+  curl -k -e &quot;$index_url&quot; -b $cookie_file &quot;$logout_url&quot; # 先注销，再联网，避免重复登录
+}
+
+connect_lan() {
+  # 连接校园网
+  curl -k -c &quot;$cookie_file&quot; -L -e &quot;$login_url&quot; -A &quot;$UA&quot; -o &quot;$log_result&quot; &quot;$login_url&quot;
+}
+
+connect_internet() {
+  # 连接互联网
+  curl -k -e &quot;$index_url&quot; -b &quot;$cookie_file&quot; &quot;$hb_url_0&quot;
+}
+
+connected=$(isNetworkConnected)
+
+if [ $connected -eq &quot;1&quot; ];then
+  echo &quot;we are connected!&quot;;
+  # 当前是已联网状态，保持心跳即可
+  keep_connected
+else
+  # 当前是未联网状态
+  echo &quot;we are disconnected&quot;;
+  log_out
+  connect_lan
+  connect_internet
+  keep_connected
+fi</code></pre>
+</section>
+</section>
+<section>
+<section id="中英文符号对照表" class="title-slide slide level1">
+<h1>中英文符号对照表</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><strong>`</strong> backtick/backquote 反引号</li>
+<li><strong>[</strong> square bracket 方括号</li>
+<li><strong>’</strong> single quote 单引号</li>
+<li><strong>"</strong> double quote 双引号</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><strong>_</strong> underscore 下划线</li>
+<li><strong>/</strong> slash 斜线（URL、<strong>*NIX</strong> 路径分隔符）</li>
+<li><strong>\</strong> backslash 反斜线（转义符号、<strong>Windows</strong> 路径分隔符）</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 16进制表示的 ascii 码: 7c，英文术语：vertical bar，Shell编程里的“管道操作符”
+printf &#39;%s&#39; &#39;|&#39; | xxd  
+
+# ref: https://www.zhihu.com/question/21747929/answer/319675621
+printf &#39;%s&#39; &#39;丨&#39; | xxd # 16进制表示的 ascii 码: e4b8a8，汉语拼音：gun</code></pre>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># ref: https://practicaltypography.com/hyphens-and-dashes.html
+# 16进制表示的 ascii 码: 2d，英文术语：hyphen，中文术语：连字符，俗称：短杠
+printf &#39;%s&#39; &#39;-&#39; | xxd 
+
+# 16进制表示的 ascii 码: e28093，英文术语：en dash
+printf &#39;%s&#39; &#39;–&#39; | xxd 
+
+# 16进制表示的 ascii 码: e28094，这是中文输入法打出来的破折号的一半，英文术语：em dash
+printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
+</section>
+</section>
+<section>
+<section id="推荐阅读" class="title-slide slide level1">
+<h1>推荐阅读</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://mywiki.wooledge.org/BashPitfalls">Bash Pitfalls</a></p>
+<blockquote>
+<p>参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p><a href="https://zhuanlan.zhihu.com/p/47819029">千万别混淆 Bash/Zsh 的四种运行模式</a></p>
+<blockquote>
+<p>Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢 bash 的速度，还会发生明明写了登录配置但是就是没生效的情况</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="推荐工具" class="title-slide slide level1">
+<h1>推荐工具</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://explainshell.com/"><img data-src="images/chap0x04/explainshell.png" alt="explainshell.com" /></a></p>
+</section>
+<section id="bash-automated-testing-system" class="slide level2">
+<h2><a href="https://github.com/bats-core/bats-core">Bash Automated Testing System</a></h2>
+<p><a href="https://travis-ci.org/3c1rp4c/TravisBasedOJ"><img data-src="images/chap0x04/bats-core.png" alt="bats-core / bats-core" /></a></p>
+<blockquote>
+<p>Bats is a <a href="https://testanything.org/">TAP</a>-compliant testing framework for Bash. It provides a simple way to verify that the UNIX programs you write behave as expected.</p>
+</blockquote>
+</section>
+<section id="vscode-remote-配置-bash-集成开发环境" class="slide level2">
+<h2>VSCode Remote 配置 Bash 集成开发环境</h2>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=mads-hartmann.bash-ide-vscode">Bash IDE</a>
+<ul>
+<li>跳转到函数定义、查找代码片段引用、自动补全代码、鼠标悬停代码关键词显示帮助文档等</li>
+</ul></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck">ShellCheck</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug">Bash Debug</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="参考文献" class="title-slide slide level1">
+<h1>参考文献</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH Programming - Introduction HOW-TO</a></li>
+<li><a href="http://tldp.org/LDP/abs/html/">Advanced Bash-Scripting Guide</a></li>
+<li><a href="https://google.github.io/styleguide/shell.xml">Shell Style Guide by Google Inc.</a></li>
+<li><a href="https://www.gnu.org/software/bash/manual/html_node/index.html">Bash Reference Manual</a></li>
+<li><a href="http://www.bash.academy/">The Bash Academy</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="延伸学习" class="title-slide slide level1">
+<h1>延伸学习</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://github.com/dylanaraps/pure-bash-bible">技巧汇编：使用纯 Bash 脚本代替外部程序调用</a></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="番外cloud-init">番外：Cloud-Init</h1>
+<hr />
+<ul>
+<li><code>ansible</code> 的使用对目标运行环境也有依赖要求
+<ul>
+<li>Python 解释器</li>
+<li>SSH 免密登录</li>
+</ul></li>
+<li>以 <code>puppet</code> 为代表的基于 <code>agent</code> 的自动化管理系统方案需要在「基础镜像」中提前安装好对应的 <code>agent</code> 并进行运行时环境相关的必要配置</li>
+</ul>
+<hr />
+<blockquote>
+<p>以上需求可以通过在定制「基础镜像」阶段将上述依赖软件预装在系统中</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>但是，上述做法并不「优雅」。</p>
+</blockquote>
+<hr />
+<p>「基础镜像」应该满足以下特性：</p>
+<ul>
+<li>最大化「可复用」场景：最小化安装系统，只装「最普遍需要」的基础软件</li>
+</ul>
+<hr />
+<p>考虑以下集群服务器管理的常见需求：</p>
+<ul>
+<li>新安装的系统需要预先配置不同用户的不同 SSH 免密登录受信任公钥</li>
+<li>部分新系统需要安装软件A，另一部分新系统需要安装软件B</li>
+</ul>
+<hr />
+<p>以上需求对应的操作过程均要求 <strong>自动化</strong> 。</p>
+<hr />
+<p>这就是 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题。</p>
+<hr />
+<blockquote>
+<p>怎么解决 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题？</p>
+</blockquote>
+<hr />
+<h2 id="cloud-init-usage">Cloud-Init 的作用</h2>
+<blockquote>
+<p>解决 <code>从一到二、到三，乃至万物</code> （从基本系统到可编程、可配置） 的 <strong>自动化</strong> 问题</p>
+</blockquote>
+<h1 id="hello-cloud-init">从「第一个 🌰 」开始体验 cloud-init</h1>
+<hr />
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># 在制作无人值守安装镜像或 PXE 镜像时将 cloud-init 和 openssh-server 预装</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install cloud-init genisoimage</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="fu">mkdir</span> -p ~/workspace/cloud-init <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> ~/workspace/cloud-init </span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">cat</span> <span class="op">&lt;&lt; EOF</span> <span class="op">&gt;</span> <span class="ex">~/workspace/cloud-init/meta-data</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a>instance-id: 1</span>
+<span id="cb1-8"><a href="#cb1-8"></a>local-hostname: cuc-cloud-init</span>
+<span id="cb1-9"><a href="#cb1-9"></a>EOF</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a>cat &lt;&lt; EOF &gt; ~/workspace/cloud-init/user-data</span>
+<span id="cb1-12"><a href="#cb1-12"></a>#cloud-config</span>
+<span id="cb1-13"><a href="#cb1-13"></a>password: mypassword </span>
+<span id="cb1-14"><a href="#cb1-14"></a>chpasswd: { expire: False }</span>
+<span id="cb1-15"><a href="#cb1-15"></a>ssh_pwauth: True</span>
+<span id="cb1-16"><a href="#cb1-16"></a>EOF</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a>genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</span></code></pre></div>
+<hr />
+<ul>
+<li>将虚拟机内的 <code>init-cidata.iso</code> 下载到宿主机系统</li>
+<li>在 Virtualbox 的当前虚拟机设置界面挂载 <code>init-cidata.iso</code></li>
+</ul>
+<p><img src="images/cloud-init/vb-cidata.png" /></p>
+<hr />
+<p>重启 <code>当前虚拟机</code> ，登录进入系统后：</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 系统的主机名变成了上述配置文件示例里的 cuc-cloud-init</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># 查看系统中会新多出一个用户 `ubuntu` </span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">id</span> ubuntu</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co"># 输入上述配置文件示例里设置的口令 `mypassword` </span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="fu">su</span> ubuntu</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># 检查当前用户身份</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="fu">id</span></span></code></pre></div>
+<h1 id="详解上一个">详解上一个🌰</h1>
+<hr />
+<h2 id="user-data">user-data</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1"></a><span class="co">#cloud-config</span></span></code></pre></div>
+<ul>
+<li>标识当前文件是一个 <code>cloud-config</code> 类型文件，这是最常用的一类 <code>User-Data</code></li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb4"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">password</span><span class="kw">:</span><span class="at"> mypassword </span></span></code></pre></div>
+<p><code>Ubuntu</code> 发行版默认创建的用户名为 <code>ubuntu</code>，此处 <code>password</code> 指令等价于先创建新用户 <code>ubuntu</code> ，然后设置口令为 <code>mypassword</code> 。</p>
+<ul>
+<li><a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups">users 配置关键字定义的列表中第一个用户就是系统的默认用户，如果希望保留发行版默认标准用户名则第一个用户应设置为 default</a> 。</li>
+<li>口令格式既可以是明文，也可以是 <code>mkpasswd</code> 创建的「哈希后口令」。</li>
+</ul>
+<hr />
+<h2 id="创建哈希后口令的">创建「哈希后口令」的🌰</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">sudo</span> apt install whois</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="ex">mkpasswd</span> -m help <span class="co"># 获取当前版本支持的哈希算法</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="ex">mkpasswd</span> -m sha-512 mypassword</span></code></pre></div>
+<hr />
+<div class="sourceCode" id="cb6"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">chpasswd</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">expire</span><span class="kw">:</span><span class="at"> </span><span class="ch">False</span><span class="at"> </span><span class="kw">}</span></span></code></pre></div>
+<p><code>chpasswd</code> 用于对系统中 <strong>已有</strong> 用户更改口令或设置口令强制过期策略。支持 <code>expire</code> 和 <code>list</code> 属性。其中 <code>list</code> 关键字支持 <code>username:password</code> 列表形式，既可以是 <code>YAML list</code> 格式，也可以是「一行一键值对」的 <code>多行</code> 字符串。</p>
+<hr />
+<div class="sourceCode" id="cb7"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">ssh_pwauth</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span></code></pre></div>
+<p><code>ssh_pwauth</code> 配置 <code>/etc/ssh/sshd_config</code> 里 <code>PasswordAuthentication</code> 字段值。</p>
+<h1 id="正式入门">正式入门</h1>
+<hr />
+<h2 id="必读官方文档"><a href="https://cloudinit.readthedocs.io/en/latest/index.html">必读：官方文档</a></h2>
+<ul>
+<li>工业级标准（<a href="https://cloudinit.readthedocs.io/en/latest/topics/availability.html">主流 Linux 发行版、公有云服务提供商、私有云平台、裸机安装</a>）</li>
+<li>支持从多种「数据源」加载用户配置，定制从「基础镜像」到「个性化可用系统」的自动化实现</li>
+</ul>
+<hr />
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>支持的发行版</th>
+<th>支持的公有云</th>
+<th>支持的私有云</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ubuntu<br />SLES/openSUSE<br />RHEL/CentOS<br />Fedora<br />Gentoo Linux<br />Debian<br />ArchLinux<br />FreeBSD<br />NetBSD<br />OpenBSD<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+<td>Amazon Web Services<br />Microsoft Azure<br />Google Cloud Platform<br />Oracle Cloud Infrastructure<br />Softlayer<br />Rackspace Public Cloud<br />IBM Cloud<br />Digital Ocean<br />Bigstep<br />Hetzner<br />Joyent<br />CloudSigma<br />Alibaba Cloud<br />OVH<br />OpenNebula<br />Exoscale<br />Scaleway<br />CloudStack<br />AltCloud<br />SmartOS<br />HyperOne<br />Rootbox<br /></td>
+<td>Bare metal installs<br />OpenStack<br />LXD<br />KVM<br />Metal-as-a-Service (MAAS)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+</tr>
+</tbody>
+</table>
+<h1 id="check-cloud-init-version">查看当前已安装 Cloud-Init 版本</h1>
+<hr />
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">cloud-init</span> --version</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co"># /usr/bin/cloud-init 19.4-33-gbb4131a2-0ubuntu1~18.04.1</span></span></code></pre></div>
+<p>根据以上版本信息，推荐阅读<a href="https://cloudinit.readthedocs.io/en/19.4/index.html">官方 v19.4 版文档</a> 。</p>
+<h1 id="数据源"><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html">数据源</a></h1>
+<hr />
+<ul>
+<li>「数据源」指的是 <code>cloud-init</code> 的配置数据来源，通常来自用户（例如 <code>user-data</code>）或来自创建配置驱动器的云（例如 <code>meta-data</code> ）。</li>
+<li>典型的「用户数据」包括「文件」，「yaml」和「Shell 脚本」</li>
+<li>典型的「元数据」包括「服务器名称」，「实例 ID」，「显示名称」和「其他特定于云服务提供商」的详细信息</li>
+</ul>
+<hr />
+<p>实例（Instance）在云计算场景中，一般指「云主机实例」。对于 <code>Virtualbox</code> 来说，每一个本地虚拟机也可以看作是一个「实例」。</p>
+<hr />
+<p>当前系统上执行过 <code>Cloud-Init</code> 之后会将「元数据」保存在 <code>/run/cloud-init/instance-data.json</code> ，如下所示是「第一个 🌰 」对应的「元数据」：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb9-1"><a href="#cb9-1"></a><span class="fu">{</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a> <span class="dt">&quot;base64_encoded_keys&quot;</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a> <span class="dt">&quot;ds&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a>  <span class="dt">&quot;_doc&quot;</span><span class="fu">:</span> <span class="st">&quot;EXPERIMENTAL: The structure and format of content scoped under the &#39;ds&#39; key may change in subsequent releases of cloud-init.&quot;</span><span class="fu">,</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="dt">&quot;meta_data&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>   <span class="dt">&quot;dsmode&quot;</span><span class="fu">:</span> <span class="st">&quot;net&quot;</span><span class="fu">,</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>   <span class="dt">&quot;instance-id&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>   <span class="dt">&quot;local-hostname&quot;</span><span class="fu">:</span> <span class="st">&quot;cuc-cloud-init&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a>  <span class="fu">}</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a> <span class="fu">},</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a> <span class="dt">&quot;sensitive_keys&quot;</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a> <span class="dt">&quot;v1&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a>  <span class="dt">&quot;_beta_keys&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a>   <span class="st">&quot;subplatform&quot;</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a>  <span class="dt">&quot;availability-zone&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a>  <span class="dt">&quot;availability_zone&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb9-18"><a href="#cb9-18"></a>  <span class="dt">&quot;cloud-name&quot;</span><span class="fu">:</span> <span class="st">&quot;unknown&quot;</span><span class="fu">,</span></span>
+<span id="cb9-19"><a href="#cb9-19"></a>  <span class="dt">&quot;cloud_name&quot;</span><span class="fu">:</span> <span class="st">&quot;unknown&quot;</span><span class="fu">,</span></span>
+<span id="cb9-20"><a href="#cb9-20"></a>  <span class="dt">&quot;instance-id&quot;</span><span class="fu">:</span> <span class="st">&quot;1&quot;</span><span class="fu">,</span></span>
+<span id="cb9-21"><a href="#cb9-21"></a>  <span class="dt">&quot;instance_id&quot;</span><span class="fu">:</span> <span class="st">&quot;1&quot;</span><span class="fu">,</span></span>
+<span id="cb9-22"><a href="#cb9-22"></a>  <span class="dt">&quot;local-hostname&quot;</span><span class="fu">:</span> <span class="st">&quot;cuc-cloud-init&quot;</span><span class="fu">,</span></span>
+<span id="cb9-23"><a href="#cb9-23"></a>  <span class="dt">&quot;local_hostname&quot;</span><span class="fu">:</span> <span class="st">&quot;cuc-cloud-init&quot;</span><span class="fu">,</span></span>
+<span id="cb9-24"><a href="#cb9-24"></a>  <span class="dt">&quot;platform&quot;</span><span class="fu">:</span> <span class="st">&quot;nocloud&quot;</span><span class="fu">,</span></span>
+<span id="cb9-25"><a href="#cb9-25"></a>  <span class="dt">&quot;public_ssh_keys&quot;</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb9-26"><a href="#cb9-26"></a>  <span class="dt">&quot;region&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb9-27"><a href="#cb9-27"></a>  <span class="dt">&quot;subplatform&quot;</span><span class="fu">:</span> <span class="st">&quot;config-disk (/dev/sr0)&quot;</span></span>
+<span id="cb9-28"><a href="#cb9-28"></a> <span class="fu">}</span></span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html#known-sources">已知支持数据源类型</a></p>
+<table>
+<thead>
+<tr class="header">
+<th>排</th>
+<th>名</th>
+<th>不</th>
+<th>分</th>
+<th>先后</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Alibaba Cloud (AliYun)</td>
+<td>Alt Cloud</td>
+<td>Azure</td>
+<td>CloudSigma</td>
+<td>CloudStack</td>
+</tr>
+<tr class="even">
+<td>Config Drive</td>
+<td>Digital Ocean</td>
+<td>E24Cloud</td>
+<td>Amazon EC2</td>
+<td>Exoscale</td>
+</tr>
+<tr class="odd">
+<td>Fallback/None</td>
+<td>Google Compute Engine</td>
+<td>MAAS</td>
+<td><strong>NoCloud</strong></td>
+<td>OpenNebula</td>
+</tr>
+<tr class="even">
+<td>OpenStack</td>
+<td>Oracle</td>
+<td>OVF</td>
+<td>Rbx Cloud</td>
+<td>SmartOS Datasource</td>
+</tr>
+<tr class="odd">
+<td>ZStack</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="查看我们在虚拟机里使用的数据源类型">查看我们在虚拟机里使用的数据源类型</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="ex">cloud-id</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># nocloud</span></span></code></pre></div>
+<h1 id="nocloud"><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources/nocloud.html#nocloud">NoCloud</a></h1>
+<hr />
+<p>回顾之前我们创建 iso 镜像文件时使用的命令</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="ex">genisoimage</span> -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</span></code></pre></div>
+<ul>
+<li><code>-volid cidata</code> 指定新创建的 iso 文件的「卷标识」为 <code>cidata</code></li>
+</ul>
+<p><img src="images/cloud-init/nocloud-cidata.png" /></p>
+<hr />
+<p>回顾之前我们创建 iso 镜像文件时使用的命令</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">genisoimage</span> -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</span></code></pre></div>
+<p><img src="images/cloud-init/nocloud-contents.png" /></p>
+<ul>
+<li>iso 镜像文件里的文件名必须是 <code>user-data</code> 和 <code>meta-data</code></li>
+</ul>
+<hr />
+<p>回顾之前的 <code>meta-data</code> 文件内容</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">instance-id</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">local-hostname</span><span class="kw">:</span><span class="at"> cuc-cloud-init</span></span></code></pre></div>
+<p>其中 <code>instance-id: 1</code> 用来告诉 <code>cloud-init</code> 引擎该实例「是否首次启动」。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># 查看该实例启动过一次之后在当前系统内留下的痕迹</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">ls</span> /var/lib/cloud/instances/1/</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co"># boot-finished     datasource  obj.pkl  sem            user-data.txt.i  vendor-data.txt.i</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="co"># cloud-config.txt  handlers    scripts  user-data.txt  vendor-data.txt</span></span></code></pre></div>
+<hr />
+<p>其中 <code>boot-finished</code> 文件记录了该实例定义的启动时间，例如：</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="fu">cat</span> /var/lib/cloud/instances/1/boot-finished</span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="co"># 11.28 - Tue, 14 Apr 2020 07:33:47 +0000 - v. 19.4-33-gbb4131a2-0ubuntu1~18.04.1</span></span></code></pre></div>
+<hr />
+<p>当上述目录结构存在时，只要 <code>init-cidata.iso</code> 内容不变。即使一直挂载在虚拟机的光驱里，每次启动虚拟机系统时，也不会再重新执行一遍光盘里定义的 <code>cloud-init</code> 操作了。</p>
+<hr />
+<p>如果希望重新执行 <code>init-cidata.iso</code> 里定义的操作，需要变更 <code>meta-data</code> 文件里的 <code>instance-id</code> 赋值为 <code>/var/lib/cloud/instances/</code> 下不存在重名子目录的其他值。</p>
+<h1 id="debug-user-data"><a href="https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data">调试 user-data</a></h1>
+<hr />
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="co"># 验证 user-data 文件是否存在语法错误</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="ex">cloud-init</span> devel schema -c user-data --annotate</span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="co"># Valid cloud-config file user-data</span></span></code></pre></div>
+<h1 id="认识模块">认识模块</h1>
+<hr />
+<ul>
+<li><a href="https://cloudinit.readthedocs.io/en/19.4/topics/cli.html#modules">/etc/cloud/cloud.cfg</a> 中定义了当前系统中 <code>Cloud-Init</code> 在「不同阶段」加载了哪些模块。</li>
+</ul>
+<hr />
+<h2 id="boot-stages"><a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">Cloud-Init 主要阶段</a></h2>
+<p>结合 <code>/etc/cloud/cloud.cfg</code> 文件内容来理解不同「启动阶段」：文件中一共定义了 3 个阶段:</p>
+<ul>
+<li>init</li>
+<li>config</li>
+<li>final</li>
+</ul>
+<p>每个阶段可以「完成」哪些操作可以根据包含的「模块」功能知悉。</p>
+<hr />
+<p><code>/etc/cloud/cloud.cfg</code> 🌰</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># ref: https://cloudinit.readthedocs.io/en/19.4/topics/modules.html</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co"># 以下各个阶段定义的「模块」均在以上官方文档中有详细使用说明</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a></span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="co"># The modules that run in the &#39;init&#39; stage</span></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="fu">cloud_init_modules</span><span class="kw">:</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="at"> </span><span class="kw">-</span><span class="at"> migrator</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="at"> </span><span class="kw">-</span><span class="at"> seed_random</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="at"> </span><span class="kw">-</span><span class="at"> bootcmd</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="at"> </span><span class="kw">-</span><span class="at"> write-files</span></span>
+<span id="cb17-10"><a href="#cb17-10"></a><span class="at"> </span><span class="kw">-</span><span class="at"> growpart</span></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="at"> </span><span class="kw">-</span><span class="at"> resizefs</span></span>
+<span id="cb17-12"><a href="#cb17-12"></a><span class="at"> </span><span class="kw">-</span><span class="at"> disk_setup</span></span>
+<span id="cb17-13"><a href="#cb17-13"></a><span class="at"> </span><span class="kw">-</span><span class="at"> mounts</span></span>
+<span id="cb17-14"><a href="#cb17-14"></a><span class="at"> </span><span class="kw">-</span><span class="at"> set_hostname</span></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="at"> </span><span class="kw">-</span><span class="at"> update_hostname</span></span>
+<span id="cb17-16"><a href="#cb17-16"></a><span class="at"> </span><span class="kw">-</span><span class="at"> update_etc_hosts</span></span>
+<span id="cb17-17"><a href="#cb17-17"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ca-certs</span></span>
+<span id="cb17-18"><a href="#cb17-18"></a><span class="at"> </span><span class="kw">-</span><span class="at"> rsyslog</span></span>
+<span id="cb17-19"><a href="#cb17-19"></a><span class="at"> </span><span class="kw">-</span><span class="at"> users-groups</span></span>
+<span id="cb17-20"><a href="#cb17-20"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ssh</span></span>
+<span id="cb17-21"><a href="#cb17-21"></a></span>
+<span id="cb17-22"><a href="#cb17-22"></a><span class="co"># The modules that run in the &#39;config&#39; stage</span></span>
+<span id="cb17-23"><a href="#cb17-23"></a><span class="fu">cloud_config_modules</span><span class="kw">:</span></span>
+<span id="cb17-24"><a href="#cb17-24"></a><span class="co"># Emit the cloud config ready event</span></span>
+<span id="cb17-25"><a href="#cb17-25"></a><span class="co"># this can be used by upstart jobs for &#39;start on cloud-config&#39;.</span></span>
+<span id="cb17-26"><a href="#cb17-26"></a><span class="at"> </span><span class="kw">-</span><span class="at"> emit_upstart</span></span>
+<span id="cb17-27"><a href="#cb17-27"></a><span class="at"> </span><span class="kw">-</span><span class="at"> snap</span></span>
+<span id="cb17-28"><a href="#cb17-28"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ssh-import-id</span></span>
+<span id="cb17-29"><a href="#cb17-29"></a><span class="at"> </span><span class="kw">-</span><span class="at"> locale</span></span>
+<span id="cb17-30"><a href="#cb17-30"></a><span class="at"> </span><span class="kw">-</span><span class="at"> set-passwords</span></span>
+<span id="cb17-31"><a href="#cb17-31"></a><span class="at"> </span><span class="kw">-</span><span class="at"> grub-dpkg</span></span>
+<span id="cb17-32"><a href="#cb17-32"></a><span class="at"> </span><span class="kw">-</span><span class="at"> apt-pipelining</span></span>
+<span id="cb17-33"><a href="#cb17-33"></a><span class="at"> </span><span class="kw">-</span><span class="at"> apt-configure</span></span>
+<span id="cb17-34"><a href="#cb17-34"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ubuntu-advantage</span></span>
+<span id="cb17-35"><a href="#cb17-35"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ntp</span></span>
+<span id="cb17-36"><a href="#cb17-36"></a><span class="at"> </span><span class="kw">-</span><span class="at"> timezone</span></span>
+<span id="cb17-37"><a href="#cb17-37"></a><span class="at"> </span><span class="kw">-</span><span class="at"> disable-ec2-metadata</span></span>
+<span id="cb17-38"><a href="#cb17-38"></a><span class="at"> </span><span class="kw">-</span><span class="at"> runcmd</span></span>
+<span id="cb17-39"><a href="#cb17-39"></a><span class="at"> </span><span class="kw">-</span><span class="at"> byobu</span></span>
+<span id="cb17-40"><a href="#cb17-40"></a></span>
+<span id="cb17-41"><a href="#cb17-41"></a><span class="co"># The modules that run in the &#39;final&#39; stage</span></span>
+<span id="cb17-42"><a href="#cb17-42"></a><span class="fu">cloud_final_modules</span><span class="kw">:</span></span>
+<span id="cb17-43"><a href="#cb17-43"></a><span class="at"> </span><span class="kw">-</span><span class="at"> package-update-upgrade-install</span></span>
+<span id="cb17-44"><a href="#cb17-44"></a><span class="at"> </span><span class="kw">-</span><span class="at"> fan</span></span>
+<span id="cb17-45"><a href="#cb17-45"></a><span class="at"> </span><span class="kw">-</span><span class="at"> landscape</span></span>
+<span id="cb17-46"><a href="#cb17-46"></a><span class="at"> </span><span class="kw">-</span><span class="at"> lxd</span></span>
+<span id="cb17-47"><a href="#cb17-47"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ubuntu-drivers</span></span>
+<span id="cb17-48"><a href="#cb17-48"></a><span class="at"> </span><span class="kw">-</span><span class="at"> puppet</span></span>
+<span id="cb17-49"><a href="#cb17-49"></a><span class="at"> </span><span class="kw">-</span><span class="at"> chef</span></span>
+<span id="cb17-50"><a href="#cb17-50"></a><span class="at"> </span><span class="kw">-</span><span class="at"> mcollective</span></span>
+<span id="cb17-51"><a href="#cb17-51"></a><span class="at"> </span><span class="kw">-</span><span class="at"> salt-minion</span></span>
+<span id="cb17-52"><a href="#cb17-52"></a><span class="at"> </span><span class="kw">-</span><span class="at"> rightscale_userdata</span></span>
+<span id="cb17-53"><a href="#cb17-53"></a><span class="at"> </span><span class="kw">-</span><span class="at"> scripts-vendor</span></span>
+<span id="cb17-54"><a href="#cb17-54"></a><span class="at"> </span><span class="kw">-</span><span class="at"> scripts-per-once</span></span>
+<span id="cb17-55"><a href="#cb17-55"></a><span class="at"> </span><span class="kw">-</span><span class="at"> scripts-per-boot</span></span>
+<span id="cb17-56"><a href="#cb17-56"></a><span class="at"> </span><span class="kw">-</span><span class="at"> scripts-per-instance</span></span>
+<span id="cb17-57"><a href="#cb17-57"></a><span class="at"> </span><span class="kw">-</span><span class="at"> scripts-user</span></span>
+<span id="cb17-58"><a href="#cb17-58"></a><span class="at"> </span><span class="kw">-</span><span class="at"> ssh-authkey-fingerprints</span></span>
+<span id="cb17-59"><a href="#cb17-59"></a><span class="at"> </span><span class="kw">-</span><span class="at"> keys-to-console</span></span>
+<span id="cb17-60"><a href="#cb17-60"></a><span class="at"> </span><span class="kw">-</span><span class="at"> phone-home</span></span>
+<span id="cb17-61"><a href="#cb17-61"></a><span class="at"> </span><span class="kw">-</span><span class="at"> final-message</span></span>
+<span id="cb17-62"><a href="#cb17-62"></a><span class="at"> </span><span class="kw">-</span><span class="at"> power-state-change</span></span></code></pre></div>
+<hr />
+<p>结合 <a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">官方文档里「启动阶段」</a> 一节的描述可知：<code>init</code> 阶段又可以分为：</p>
+<ul>
+<li>Generator</li>
+<li>Local</li>
+<li>Network</li>
+</ul>
+<h1 id="理解模块">理解模块</h1>
+<hr />
+<p>相当于「导入函数」或「导入库」的作用，如果在指定「启动阶段」没有「定义」使用某个「模块」，则在 <code>user-data</code> 中不能调用相应指令。</p>
+<hr />
+<p>再回看「第一个 🌰 」</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb18-1"><a href="#cb18-1"></a><span class="co">#cloud-config</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">password</span><span class="kw">:</span><span class="at"> mypassword </span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">chpasswd</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">expire</span><span class="kw">:</span><span class="at"> </span><span class="ch">False</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="fu">ssh_pwauth</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span></code></pre></div>
+<p>上述 3 个配置指令 <code>password</code>, <code>chpasswd</code>, <code>ssh_pwauth</code> 均定义在 <a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-passwords">set-passwords</a> 模块中。</p>
+<h1 id="理解缺省设置">理解缺省设置</h1>
+<hr />
+<div class="sourceCode" id="cb19"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># The top level settings are used as module</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="co"># and system configuration.</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="co"># A set of users which may be applied and/or used by various modules</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co"># when a &#39;default&#39; entry is found it will reference the &#39;default_user&#39;</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co"># from the distro configuration specified below</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="fu">users</span><span class="kw">:</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="at">   </span><span class="kw">-</span><span class="at"> default</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co"># If this is set, &#39;root&#39; will not be able to ssh in and they</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="co"># will get a message to login instead as the default $user</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="fu">disable_root</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="co"># This will cause the set+update hostname module to not operate (if true)</span></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="fu">preserve_hostname</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span></span>
+<span id="cb19-16"><a href="#cb19-16"></a></span>
+<span id="cb19-17"><a href="#cb19-17"></a><span class="co"># Example datasource config</span></span>
+<span id="cb19-18"><a href="#cb19-18"></a><span class="co"># datasource:</span></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="co">#    Ec2:</span></span>
+<span id="cb19-20"><a href="#cb19-20"></a><span class="co">#      metadata_urls: [ &#39;blah.com&#39; ]</span></span>
+<span id="cb19-21"><a href="#cb19-21"></a><span class="co">#      timeout: 5 # (defaults to 50 seconds)</span></span>
+<span id="cb19-22"><a href="#cb19-22"></a><span class="co">#      max_wait: 10 # (defaults to 120 seconds)</span></span>
+<span id="cb19-23"><a href="#cb19-23"></a></span>
+<span id="cb19-24"><a href="#cb19-24"></a><span class="co"># 此处省略 3 个阶段的模块定义相关指令</span></span>
+<span id="cb19-25"><a href="#cb19-25"></a></span>
+<span id="cb19-26"><a href="#cb19-26"></a><span class="co"># System and/or distro specific settings</span></span>
+<span id="cb19-27"><a href="#cb19-27"></a><span class="co"># (not accessible to handlers/transforms)</span></span>
+<span id="cb19-28"><a href="#cb19-28"></a><span class="fu">system_info</span><span class="kw">:</span></span>
+<span id="cb19-29"><a href="#cb19-29"></a><span class="co">   # This will affect which distro class gets used</span></span>
+<span id="cb19-30"><a href="#cb19-30"></a><span class="at">   </span><span class="fu">distro</span><span class="kw">:</span><span class="at"> ubuntu</span></span>
+<span id="cb19-31"><a href="#cb19-31"></a><span class="co">   # Default user name + that default users groups (if added/used)</span></span>
+<span id="cb19-32"><a href="#cb19-32"></a><span class="at">   </span><span class="fu">default_user</span><span class="kw">:</span></span>
+<span id="cb19-33"><a href="#cb19-33"></a><span class="at">     </span><span class="fu">name</span><span class="kw">:</span><span class="at"> ubuntu</span></span>
+<span id="cb19-34"><a href="#cb19-34"></a><span class="at">     </span><span class="fu">lock_passwd</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb19-35"><a href="#cb19-35"></a><span class="at">     </span><span class="fu">gecos</span><span class="kw">:</span><span class="at"> Ubuntu</span></span>
+<span id="cb19-36"><a href="#cb19-36"></a><span class="at">     </span><span class="fu">groups</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">adm</span><span class="kw">,</span><span class="at"> audio</span><span class="kw">,</span><span class="at"> cdrom</span><span class="kw">,</span><span class="at"> dialout</span><span class="kw">,</span><span class="at"> dip</span><span class="kw">,</span><span class="at"> floppy</span><span class="kw">,</span><span class="at"> lxd</span><span class="kw">,</span><span class="at"> netdev</span><span class="kw">,</span><span class="at"> plugdev</span><span class="kw">,</span><span class="at"> sudo</span><span class="kw">,</span><span class="at"> video</span><span class="kw">]</span></span>
+<span id="cb19-37"><a href="#cb19-37"></a><span class="at">     </span><span class="fu">sudo</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&quot;ALL=(ALL) NOPASSWD:ALL&quot;</span><span class="kw">]</span></span>
+<span id="cb19-38"><a href="#cb19-38"></a><span class="at">     </span><span class="fu">shell</span><span class="kw">:</span><span class="at"> /bin/bash</span></span>
+<span id="cb19-39"><a href="#cb19-39"></a><span class="co">   # Automatically discover the best ntp_client</span></span>
+<span id="cb19-40"><a href="#cb19-40"></a><span class="at">   </span><span class="fu">ntp_client</span><span class="kw">:</span><span class="at"> auto</span></span>
+<span id="cb19-41"><a href="#cb19-41"></a><span class="co">   # Other config here will be given to the distro class and/or path classes</span></span>
+<span id="cb19-42"><a href="#cb19-42"></a><span class="at">   </span><span class="fu">paths</span><span class="kw">:</span></span>
+<span id="cb19-43"><a href="#cb19-43"></a><span class="at">      </span><span class="fu">cloud_dir</span><span class="kw">:</span><span class="at"> /var/lib/cloud/</span></span>
+<span id="cb19-44"><a href="#cb19-44"></a><span class="at">      </span><span class="fu">templates_dir</span><span class="kw">:</span><span class="at"> /etc/cloud/templates/</span></span>
+<span id="cb19-45"><a href="#cb19-45"></a><span class="at">      </span><span class="fu">upstart_dir</span><span class="kw">:</span><span class="at"> /etc/init/</span></span>
+<span id="cb19-46"><a href="#cb19-46"></a><span class="at">   </span><span class="fu">package_mirrors</span><span class="kw">:</span></span>
+<span id="cb19-47"><a href="#cb19-47"></a><span class="at">     </span><span class="kw">-</span><span class="at"> </span><span class="fu">arches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">i386</span><span class="kw">,</span><span class="at"> amd64</span><span class="kw">]</span></span>
+<span id="cb19-48"><a href="#cb19-48"></a><span class="at">       </span><span class="fu">failsafe</span><span class="kw">:</span></span>
+<span id="cb19-49"><a href="#cb19-49"></a><span class="at">         </span><span class="fu">primary</span><span class="kw">:</span><span class="at"> http://archive.ubuntu.com/ubuntu</span></span>
+<span id="cb19-50"><a href="#cb19-50"></a><span class="at">         </span><span class="fu">security</span><span class="kw">:</span><span class="at"> http://security.ubuntu.com/ubuntu</span></span>
+<span id="cb19-51"><a href="#cb19-51"></a><span class="at">       </span><span class="fu">search</span><span class="kw">:</span></span>
+<span id="cb19-52"><a href="#cb19-52"></a><span class="at">         </span><span class="fu">primary</span><span class="kw">:</span></span>
+<span id="cb19-53"><a href="#cb19-53"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(ec2_region)s.ec2.archive.ubuntu.com/ubuntu/</span></span>
+<span id="cb19-54"><a href="#cb19-54"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(availability_zone)s.clouds.archive.ubuntu.com/ubuntu/</span></span>
+<span id="cb19-55"><a href="#cb19-55"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(region)s.clouds.archive.ubuntu.com/ubuntu/</span></span>
+<span id="cb19-56"><a href="#cb19-56"></a><span class="at">         </span><span class="fu">security</span><span class="kw">:</span><span class="at"> </span><span class="kw">[]</span></span>
+<span id="cb19-57"><a href="#cb19-57"></a><span class="at">     </span><span class="kw">-</span><span class="at"> </span><span class="fu">arches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">arm64</span><span class="kw">,</span><span class="at"> armel</span><span class="kw">,</span><span class="at"> armhf</span><span class="kw">]</span></span>
+<span id="cb19-58"><a href="#cb19-58"></a><span class="at">       </span><span class="fu">failsafe</span><span class="kw">:</span></span>
+<span id="cb19-59"><a href="#cb19-59"></a><span class="at">         </span><span class="fu">primary</span><span class="kw">:</span><span class="at"> http://ports.ubuntu.com/ubuntu-ports</span></span>
+<span id="cb19-60"><a href="#cb19-60"></a><span class="at">         </span><span class="fu">security</span><span class="kw">:</span><span class="at"> http://ports.ubuntu.com/ubuntu-ports</span></span>
+<span id="cb19-61"><a href="#cb19-61"></a><span class="at">       </span><span class="fu">search</span><span class="kw">:</span></span>
+<span id="cb19-62"><a href="#cb19-62"></a><span class="at">         </span><span class="fu">primary</span><span class="kw">:</span></span>
+<span id="cb19-63"><a href="#cb19-63"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(ec2_region)s.ec2.ports.ubuntu.com/ubuntu-ports/</span></span>
+<span id="cb19-64"><a href="#cb19-64"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(availability_zone)s.clouds.ports.ubuntu.com/ubuntu-ports/</span></span>
+<span id="cb19-65"><a href="#cb19-65"></a><span class="at">           </span><span class="kw">-</span><span class="at"> http://%(region)s.clouds.ports.ubuntu.com/ubuntu-ports/</span></span>
+<span id="cb19-66"><a href="#cb19-66"></a><span class="at">         </span><span class="fu">security</span><span class="kw">:</span><span class="at"> </span><span class="kw">[]</span></span>
+<span id="cb19-67"><a href="#cb19-67"></a><span class="at">     </span><span class="kw">-</span><span class="at"> </span><span class="fu">arches</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">default</span><span class="kw">]</span></span>
+<span id="cb19-68"><a href="#cb19-68"></a><span class="at">       </span><span class="fu">failsafe</span><span class="kw">:</span></span>
+<span id="cb19-69"><a href="#cb19-69"></a><span class="at">         </span><span class="fu">primary</span><span class="kw">:</span><span class="at"> http://ports.ubuntu.com/ubuntu-ports</span></span>
+<span id="cb19-70"><a href="#cb19-70"></a><span class="at">         </span><span class="fu">security</span><span class="kw">:</span><span class="at"> http://ports.ubuntu.com/ubuntu-ports</span></span>
+<span id="cb19-71"><a href="#cb19-71"></a><span class="at">   </span><span class="fu">ssh_svcname</span><span class="kw">:</span><span class="at"> ssh</span></span></code></pre></div>
+<h1 id="cloud-init-real-example">cloud-init 实战 🌰</h1>
+<hr />
+<h2 id="需求描述">需求描述</h2>
+<ol type="1">
+<li>重置 <a href="https://www.freedesktop.org/software/systemd/man/machine-id.html">machine-id</a></li>
+<li>添加 ssh 免密登录</li>
+<li>安装 python3</li>
+</ol>
+<h1 id="why-reset-machine-id">为什么需要重置 <code>machine-id</code></h1>
+<hr />
+<h2 id="machine-id-1">machine-id</h2>
+<blockquote>
+<p>The <code>/etc/machine-id</code> file contains the unique machine ID of the local system that is set during installation or boot. The machine ID is a single newline-terminated, hexadecimal, 32-character, lowercase ID. When decoded from hexadecimal, this corresponds to a 16-byte/128-bit value. This ID may not be all zeros.</p>
+</blockquote>
+<hr />
+<h2 id="machine-id-2">machine-id</h2>
+<blockquote>
+<p>systemd-machine-id-setup(1) may be used by installer tools to initialize the machine ID at install time, but /etc/machine-id may also be written using any other means.</p>
+</blockquote>
+<hr />
+<h2 id="machine-id-3">machine-id</h2>
+<blockquote>
+<p>For operating system images which are created once and used on multiple machines, for example for containers or in the cloud, <code>/etc/machine-id</code> <strong>should be an empty file</strong> in the generic file system image. <code>An ID will be generated during boot and saved to this file if possible</code>. <strong>Having an empty file</strong> in place is useful because it allows a temporary file to be bind-mounted over the real file, in case the image is used read-only.</p>
+</blockquote>
+<hr />
+<h2 id="为什么我克隆出来的虚拟机总是获得相同-ip-地址">为什么我克隆出来的虚拟机总是获得相同 IP 地址？</h2>
+<p>根据<a href="https://unix.stackexchange.com/a/419322">网友 <code>wickedchicken</code> 在 SO 网站上的回答</a></p>
+<blockquote>
+<p><code>systemd-networkd</code> uses a different method to generate the DUID than <code>dhclient</code>. <code>dhclient</code> <a href="https://manpages.debian.org/jessie/isc-dhcp-client/dhclient.8.en.html">by default uses the link-layer address</a> while systemd-networkd uses <a href="https://www.freedesktop.org/software/systemd/man/networkd.conf.html#DUIDType=">the contents of /etc/machine-id</a>. Since the VMs were cloned, they have the same <code>machine-id</code> and the DHCP server returns the same IP for both.</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>To fix, replace the contents of one or both of /etc/machine-id. This can be anything, but deleting the file and running systemd-machine-id-setup will create a random machine-id in the same way done on machine setup.</p>
+</blockquote>
+<hr />
+<p>另一种解决方案：修改 <code>/etc/netplan/01-netcfg.yaml</code> ，在网卡的 <code>dhcp</code> 配置列表里添加配置参数：<a href="https://netplan.io/reference">dhcp-identifier: mac</a></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb20-1"><a href="#cb20-1"></a><span class="co"># ref: https://netplan.io/examples#integration-with-a-windows-dhcp-server</span></span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="fu">network</span><span class="kw">:</span></span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="at">  </span><span class="fu">version</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="at">  </span><span class="fu">ethernets</span><span class="kw">:</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a><span class="at">    </span><span class="fu">enp0s3</span><span class="kw">:</span></span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="at">      </span><span class="fu">dhcp4</span><span class="kw">:</span><span class="at"> </span><span class="ch">yes</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a><span class="at">    </span><span class="fu">enp8s0</span><span class="kw">:</span></span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="at">      </span><span class="fu">dhcp4</span><span class="kw">:</span><span class="at"> </span><span class="ch">yes</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a><span class="at">      </span><span class="fu">dhcp-identifier</span><span class="kw">:</span><span class="at"> mac</span></span></code></pre></div>
+<hr />
+<h2 id="reboot-after-machine-id-reset">变更 <code>machine-id</code> 之后为什么需要重启</h2>
+<p>以下内容摘自 <code>man dbus-uuidgen</code></p>
+<blockquote>
+<p>If you try to change an existing machine-id on a running system, it will probably result in bad things happening. Don’t try to change this file. Also, don’t make it the same on two different systems; it needs to be different anytime there are two different kernels running.</p>
+</blockquote>
+<hr />
+<p>以下结论摘自 <a href="https://unix.stackexchange.com/a/403054">网友 <code>hvd</code> 在 SO 网站上的回答结论</a> ：</p>
+<blockquote>
+<p><strong>So after doing this, definitely don’t continue using the system without rebooting.</strong></p>
+</blockquote>
+<h1 id="cloud-init-real-example-get-started">cloud-init 实战 🌰 马上开始</h1>
+<hr />
+<ol type="1">
+<li>确保目标系统内已安装 <code>cloud-init</code></li>
+<li>检查 <code>/etc/machine-id</code> 此时的值</li>
+<li>检查 <code>/etc/netplan/</code> 目录下此时的文件</li>
+<li>检查 <code>/etc/netplan/01-netcfg.yaml</code> 文件内容</li>
+<li>检查当前第二块网卡的 IP 地址</li>
+</ol>
+<hr />
+<h2 id="关键配置">关键配置</h2>
+<ul>
+<li><code>user-data</code></li>
+<li><code>meta-data</code></li>
+</ul>
+<hr />
+<h3 id="user-data-real-example"><code>user-data</code> 示例</h3>
+<div class="sourceCode" id="cb21"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb21-1"><a href="#cb21-1"></a><span class="co">#cloud-config</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="fu">users</span><span class="kw">:</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="at">  </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> cuc</span></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="at">    </span><span class="fu">lock_passwd</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="co"> # Disable password login. Default: true</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a><span class="at">    </span><span class="fu">passwd</span><span class="kw">:</span><span class="at"> </span><span class="dv">123456</span><span class="co"> # !!DEMO only!! Hashed password is recommended in Production.</span></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="at">    </span><span class="fu">ssh_authorized_keys</span><span class="kw">:</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="at">      </span><span class="kw">-</span><span class="at"> &lt;ssh-pub-key-1&gt;</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a><span class="at">      </span><span class="kw">-</span><span class="at"> &lt;ssh-pub-key-2&gt;</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a></span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="co"># run the following cmds after system is booted and rootfs is mounted</span></span>
+<span id="cb21-11"><a href="#cb21-11"></a><span class="fu">runcmd</span><span class="kw">:</span></span>
+<span id="cb21-12"><a href="#cb21-12"></a><span class="at">  </span><span class="kw">-</span><span class="at"> echo -n &#39;&#39; &gt; /etc/machine-id</span><span class="co"> # clear but not delete</span></span>
+<span id="cb21-13"><a href="#cb21-13"></a><span class="at">  </span><span class="kw">-</span><span class="at"> /bin/systemd-machine-id-setup</span></span>
+<span id="cb21-14"><a href="#cb21-14"></a></span>
+<span id="cb21-15"><a href="#cb21-15"></a><span class="co"># Install additional packages on first boot</span></span>
+<span id="cb21-16"><a href="#cb21-16"></a><span class="co">#</span></span>
+<span id="cb21-17"><a href="#cb21-17"></a><span class="co"># Default: none</span></span>
+<span id="cb21-18"><a href="#cb21-18"></a><span class="co">#</span></span>
+<span id="cb21-19"><a href="#cb21-19"></a><span class="co"># if packages are specified, this apt_update will be set to true</span></span>
+<span id="cb21-20"><a href="#cb21-20"></a><span class="co">#</span></span>
+<span id="cb21-21"><a href="#cb21-21"></a><span class="co"># packages may be supplied as a single package name or as a list</span></span>
+<span id="cb21-22"><a href="#cb21-22"></a><span class="co"># with the format [&lt;package&gt;, &lt;version&gt;] wherein the specifc</span></span>
+<span id="cb21-23"><a href="#cb21-23"></a><span class="co"># package version will be installed.</span></span>
+<span id="cb21-24"><a href="#cb21-24"></a><span class="fu">packages</span><span class="kw">:</span></span>
+<span id="cb21-25"><a href="#cb21-25"></a><span class="at">  </span><span class="kw">-</span><span class="at"> python3</span><span class="co"> # required by ansible remote </span></span>
+<span id="cb21-26"><a href="#cb21-26"></a></span>
+<span id="cb21-27"><a href="#cb21-27"></a><span class="co">## poweroff or reboot system after finished</span></span>
+<span id="cb21-28"><a href="#cb21-28"></a><span class="co"># default: none</span></span>
+<span id="cb21-29"><a href="#cb21-29"></a><span class="co">#</span></span>
+<span id="cb21-30"><a href="#cb21-30"></a><span class="co"># power_state can be used to make the system shutdown, reboot or</span></span>
+<span id="cb21-31"><a href="#cb21-31"></a><span class="co"># halt after boot is finished.  This same thing can be acheived by</span></span>
+<span id="cb21-32"><a href="#cb21-32"></a><span class="co"># user-data scripts or by runcmd by simply invoking &#39;shutdown&#39;.</span></span>
+<span id="cb21-33"><a href="#cb21-33"></a><span class="co">#</span></span>
+<span id="cb21-34"><a href="#cb21-34"></a><span class="co"># Doing it this way ensures that cloud-init is entirely finished with</span></span>
+<span id="cb21-35"><a href="#cb21-35"></a><span class="co"># modules that would be executed, and avoids any error/log messages</span></span>
+<span id="cb21-36"><a href="#cb21-36"></a><span class="co"># that may go to the console as a result of system services like</span></span>
+<span id="cb21-37"><a href="#cb21-37"></a><span class="co"># syslog being taken down while cloud-init is running.</span></span>
+<span id="cb21-38"><a href="#cb21-38"></a><span class="co">#</span></span>
+<span id="cb21-39"><a href="#cb21-39"></a><span class="co"># If you delay &#39;+5&#39; (5 minutes) and have a timeout of</span></span>
+<span id="cb21-40"><a href="#cb21-40"></a><span class="co"># 120 (2 minutes), then the max time until shutdown will be 7 minutes.</span></span>
+<span id="cb21-41"><a href="#cb21-41"></a><span class="co"># cloud-init will invoke &#39;shutdown +5&#39; after the process finishes, or</span></span>
+<span id="cb21-42"><a href="#cb21-42"></a><span class="co"># when &#39;timeout&#39; seconds have elapsed.</span></span>
+<span id="cb21-43"><a href="#cb21-43"></a><span class="co">#</span></span>
+<span id="cb21-44"><a href="#cb21-44"></a><span class="co"># delay: form accepted by shutdown.  default is &#39;now&#39;. other format</span></span>
+<span id="cb21-45"><a href="#cb21-45"></a><span class="co">#        accepted is +m (m in minutes)</span></span>
+<span id="cb21-46"><a href="#cb21-46"></a><span class="co"># mode: required. must be one of &#39;poweroff&#39;, &#39;halt&#39;, &#39;reboot&#39;</span></span>
+<span id="cb21-47"><a href="#cb21-47"></a><span class="co"># message: provided as the message argument to &#39;shutdown&#39;. default is none.</span></span>
+<span id="cb21-48"><a href="#cb21-48"></a><span class="co"># timeout: the amount of time to give the cloud-init process to finish</span></span>
+<span id="cb21-49"><a href="#cb21-49"></a><span class="co">#          before executing shutdown.</span></span>
+<span id="cb21-50"><a href="#cb21-50"></a><span class="co"># condition: apply state change only if condition is met.</span></span>
+<span id="cb21-51"><a href="#cb21-51"></a><span class="co">#            May be boolean True (always met), or False (never met),</span></span>
+<span id="cb21-52"><a href="#cb21-52"></a><span class="co">#            or a command string or list to be executed.</span></span>
+<span id="cb21-53"><a href="#cb21-53"></a><span class="co">#            command&#39;s exit code indicates:</span></span>
+<span id="cb21-54"><a href="#cb21-54"></a><span class="co">#               0: condition met</span></span>
+<span id="cb21-55"><a href="#cb21-55"></a><span class="co">#               1: condition not met</span></span>
+<span id="cb21-56"><a href="#cb21-56"></a><span class="co">#            other exit codes will result in &#39;not met&#39;, but are reserved</span></span>
+<span id="cb21-57"><a href="#cb21-57"></a><span class="co">#            for future use.</span></span>
+<span id="cb21-58"><a href="#cb21-58"></a><span class="co">#</span></span>
+<span id="cb21-59"><a href="#cb21-59"></a><span class="fu">power_state</span><span class="kw">:</span></span>
+<span id="cb21-60"><a href="#cb21-60"></a><span class="at"> </span><span class="fu">delay</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;now&quot;</span></span>
+<span id="cb21-61"><a href="#cb21-61"></a><span class="at"> </span><span class="fu">mode</span><span class="kw">:</span><span class="at"> reboot</span></span>
+<span id="cb21-62"><a href="#cb21-62"></a><span class="at"> </span><span class="fu">message</span><span class="kw">:</span><span class="at"> Make new machine-id take effect</span></span>
+<span id="cb21-63"><a href="#cb21-63"></a><span class="at"> </span><span class="fu">timeout</span><span class="kw">:</span><span class="at"> </span><span class="dv">10</span></span>
+<span id="cb21-64"><a href="#cb21-64"></a><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span></code></pre></div>
+<hr />
+<h3 id="meta-data-real-example"><code>meta-data</code> 示例</h3>
+<div class="sourceCode" id="cb22"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb22-1"><a href="#cb22-1"></a><span class="fu">instance-id</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">local-hostname</span><span class="kw">:</span><span class="at"> ansible-slave</span></span></code></pre></div>
+<hr />
+<h2 id="实验完成后检查清单">实验完成后检查清单</h2>
+<ol type="1">
+<li>检查 <code>/etc/machine-id</code> 此时的值</li>
+<li>检查 <code>/etc/netplan/</code> 目录下此时的文件</li>
+<li>检查当前第二块网卡的 IP 地址</li>
+</ol>
+<h1 id="more-examples">更复杂的 🌰 们</h1>
+<hr />
+<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/examples.html">官方文档中给出的更多 cloud-config 配置文件示例</a></p>
+</body>
+</html>

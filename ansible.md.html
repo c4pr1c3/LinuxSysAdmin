@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="ansible-index" class="title-slide slide level1">
+<h1>番外：Ansible</h1>
+
+</section>
+<section class="slide level2">
+
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+</section>
+<section id="提纲" class="slide level2">
+<h2>提纲</h2>
+<ul>
+<li>安装</li>
+<li>核心术语</li>
+<li>Hello World</li>
+<li>术语列表</li>
+<li>项目结构</li>
+<li>开发环境配置</li>
+<li>更多实例</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="版本说明" class="title-slide slide level1">
+<h1>版本说明</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>ansible --version
+# ansible 2.9.7
+#   config file = None
+#   configured module search path = [&#39;/home/cuc/.ansible/plugins/modules&#39;, &#39;/usr/share/ansible/plugins/modules&#39;]
+#   ansible python module location = /home/cuc/.pyenv/versions/3.6.8/lib/python3.6/site-packages/ansible
+#   executable location = /home/cuc/.pyenv/versions/3.6.8/bin/ansible
+#   python version = 3.6.8 (default, Apr 10 2020, 17:47:18) [GCC 7.5.0]</code></pre>
+</section>
+</section>
+<section>
+<section id="installation" class="title-slide slide level1">
+<h1><a href="http://docs.ansible.com/ansible/latest/intro_installation.html">安装</a></h1>
+
+</section>
+<section class="slide level2">
+
+<p>Ansible 官方推荐 <code>Red Hat Enterprise Linux (TM)</code>, <code>CentOS</code>, <code>Fedora</code>, <code>Debian</code>, <code>Ubuntu</code> 操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过 Python 的包管理器 <code>pip</code> 进行安装。</p>
+</section>
+<section id="apt-get-issue-1" class="slide level2">
+<h2>apt-get install 方式安装注意事项</h2>
+<pre class="bash"><code># Ubuntu 18.04 默认镜像源里提供的 ansible 版本较旧
+apt policy ansible
+# ansible:
+#   Installed: (none)
+#   Candidate: 2.5.1+dfsg-1ubuntu0.1
+#   Version table:
+#      2.5.1+dfsg-1ubuntu0.1 500
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe i386 Packages
+#         500 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages
+#         500 http://security.ubuntu.com/ubuntu bionic-security/universe i386 Packages
+#      2.5.1+dfsg-1 500
+#         500 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages
+#         500 http://archive.ubuntu.com/ubuntu bionic/universe i386 Packages</code></pre>
+</section>
+<section id="apt-get-issue-2" class="slide level2">
+<h2>apt-get install 方式安装注意事项</h2>
+<pre class="bash"><code>sudo apt update
+sudo apt install software-properties-common
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+apt policy ansible
+# ansible:
+#   Installed: (none)
+#   Candidate: 2.9.9-1ppa~bionic
+#   Version table:
+#      2.9.9-1ppa~bionic 500
+#         500 http://ppa.launchpad.net/ansible/ansible/ubuntu bionic/main amd64 Packages
+#         500 http://ppa.launchpad.net/ansible/ansible/ubuntu bionic/main i386 Packages
+#      2.5.1+dfsg-1ubuntu0.1 500
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe i386 Packages
+#         500 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages
+#         500 http://security.ubuntu.com/ubuntu bionic-security/universe i386 Packages
+#      2.5.1+dfsg-1 500
+#         500 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages
+#         500 http://archive.ubuntu.com/ubuntu bionic/universe i386 Packages
+sudo apt install ansible</code></pre>
+</section>
+<section id="pip-方式安装的-ansible" class="slide level2">
+<h2>pip 方式安装的 ansible</h2>
+<pre class="bash"><code># 当前系统中已通过 pip 安装的 ansible 版本信息
+pip freeze | grep ansible
+# ansible==2.9.7
+
+# 搜索最新版 ansible 候选安装包信息
+pip search ansible
+# ansible (2.9.9)                              - Radically simple IT automation
+#   INSTALLED: 2.9.7
+#   LATEST:    2.9.9
+
+# 升级 pip 方式安装的 ansible
+pip install -U ansible
+
+# 国内安装时临时使用清华 pypi 镜像源
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U ansible</code></pre>
+</section>
+</section>
+<section>
+<section id="required-terms" class="title-slide slide level1">
+<h1>核心术语</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#prerequisites">Ansible 官方安装指南</a> 中的「先决条件」。</p>
+<blockquote>
+<p>You install Ansible on a <strong>control node</strong>, which then uses <strong>SSH (by default)</strong> to communicate with your <strong>managed nodes</strong> (those end devices you want to automate).</p>
+</blockquote>
+<ul>
+<li><strong>控制节点</strong>。安装 <code>ansible</code> 软件的系统。</li>
+<li><strong>被管理节点</strong>。无需安装 <code>ansible</code> 软件，接受 <code>ansible</code> 自动化管理的系统，但需要安装 <code>python</code> 解释器。</li>
+</ul>
+</section>
+<section id="python3-install" class="slide level2">
+<h2>Python3 解释器的安装方式</h2>
+<pre class="bash"><code>apt policy python3
+# python3:
+#   Installed: 3.6.7-1~18.04
+#   Candidate: 3.6.7-1~18.04
+#   Version table:
+#  *** 3.6.7-1~18.04 500
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages
+#         100 /var/lib/dpkg/status
+#      3.6.5-3 500
+#         500 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages
+apt policy python3.6
+# python3.6:
+#   Installed: 3.6.9-1~18.04
+#   Candidate: 3.6.9-1~18.04ubuntu1
+#   Version table:
+#      3.6.9-1~18.04ubuntu1 500
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages
+#         500 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages
+#  *** 3.6.9-1~18.04 100
+#         100 /var/lib/dpkg/status
+#      3.6.5-3 500
+#         500 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages
+apt policy python3.8
+# python3.8:
+#   Installed: (none)
+#   Candidate: 3.8.0-3~18.04
+#   Version table:
+#      3.8.0-3~18.04 500
+#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages</code></pre>
+</section>
+<section id="python-prerequesites" class="slide level2">
+<h2>Ansible 对 Python 版本的要求</h2>
+<ul>
+<li><a href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Ansible 2.5+ 支持的 Python3 最低版本是 3.5</a>
+<ul>
+<li>Ansible 2.5- 对 Python3 的支持是「试验性质」</li>
+</ul></li>
+<li><strong>被管理节点</strong> 上同时支持 Python 2.6+ 和 Python 3.5+ 的解释器</li>
+</ul>
+</section>
+<section id="python-versions" class="slide level2">
+<h2>选择哪个 Python 版本</h2>
+<table>
+<thead>
+<tr class="header">
+<th>版本号</th>
+<th>PEP</th>
+<th>发布日期</th>
+<th>完整支持终止</th>
+<th>安全补丁支持终止</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2.7</td>
+<td><a href="https://www.python.org/dev/peps/pep-0373/">373</a></td>
+<td>2010-07-03</td>
+<td>2020-01-01</td>
+<td>2020-01-01</td>
+</tr>
+<tr class="even">
+<td>3.5</td>
+<td><a href="https://www.python.org/dev/peps/pep-0478/">478</a></td>
+<td>2015-09-13</td>
+<td>2017-08-08</td>
+<td><strong>2020-09-13</strong></td>
+</tr>
+<tr class="odd">
+<td>3.6</td>
+<td><a href="https://www.python.org/dev/peps/pep-0494/">494</a></td>
+<td>2016-12-23</td>
+<td>2018-12-24</td>
+<td><strong>2021-12</strong></td>
+</tr>
+<tr class="even">
+<td>3.7</td>
+<td><a href="https://www.python.org/dev/peps/pep-0537/">537</a></td>
+<td>2018-06-27</td>
+<td><strong>2020-06-27</strong></td>
+<td><strong>2023-06</strong></td>
+</tr>
+<tr class="odd">
+<td>3.8</td>
+<td><a href="https://www.python.org/dev/peps/pep-0569/">569</a></td>
+<td>2019-10-14</td>
+<td><strong>2021-04</strong></td>
+<td><strong>2024-10</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
+<section id="hello-world" class="title-slide slide level1">
+<h1>Hello World</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/ssh-copy-id">将「控制节点」设置为「被管理节点」的信任主机</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="terms-list" class="title-slide slide level1">
+<h1>术语列表</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></li>
+</ul>
+</section>
+<section id="inventory" class="slide level2">
+<h2><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></h2>
+<ul>
+<li>默认全局 <code>清单</code> 文件：<code>/etc/ansible/hosts</code></li>
+<li><strong>最常用</strong>的 <code>清单</code> 文件：<code>-i &lt;path&gt;</code> ，通过命令行参数自行指定 <code>清单</code> 文件路径</li>
+</ul>
+</section>
+<section id="ad-hoc-commands" class="slide level2">
+<h2><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></h2>
+<pre class="bash"><code># 使用 ansible 内置的 ping 模块
+## 在 清单 文件中名为 ubuntu 的主机或主机组定义的所有主机上执行
+ansible ubuntu -i hosts -m ping
+## 在 清单 文件中定义的所有 不重复主机 上执行
+ansible all -i hosts -m ping
+
+# 执行远程主机上的指令
+ansible all -i hosts -a &#39;ip addr&#39;</code></pre>
+</section>
+<section id="playbooks" class="slide level2">
+<h2><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></h2>
+<blockquote>
+<p>Playbooks 是 Ansible 的 配置、部署和编排语言，可以用于定义远程主机强制执行策略或一般性 IT 过程。</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
+<li>核心语言使用的 <a href="http://docs.ansible.com/ansible/latest/YAMLSyntax.html">YAML</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/playbooks_keywords.html">Ansible 官方提供的指令速查词典</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="playbooks_variables"><a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html">在 Playbook 里使用变量</a></h3>
+<pre class="jinja"><code>{# 简单变量 #}
+{{ max_amp_value }}
+
+{# YAML 代码中引用 jinja2 模版变量必须使用双引号 #}
+&quot;{{ base_path }}/22&quot;
+
+{# ansible hostname -m setup #}
+{{ ansible_facts[&#39;devices&#39;][&#39;sda&#39;][&#39;model&#39;] }}</code></pre>
+<p>更多关于模版（Jinja2）的帮助请阅读<a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html">Ansible 官方文档</a> 。</p>
+</section>
+<section class="slide level2">
+
+<p>变量作用域优先级如下，自顶向下优先级依次升高：</p>
+<pre class="bash"><code>role defaults 
+inventory file or script group vars
+inventory group_vars/all
+playbook group_vars/all
+inventory group_vars/*
+playbook group_vars/*
+inventory file or script host vars
+inventory host_vars/*
+playbook host_vars/*
+host facts
+play vars
+play vars_prompt
+play vars_files
+role vars (defined in role/vars/main.yml)
+block vars (only for tasks in block)
+task vars (only for the task)
+role (and include_role) params
+include params
+include_vars
+set_facts / registered vars
+extra vars (always win precedence)</code></pre>
+</section>
+<section id="modules" class="slide level2">
+<h2><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></h2>
+<p>常见运维任务都可以找到 <code>ansible</code> 内置模块的支持</p>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_files_modules.html">文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html">bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_system_modules.html">操作系统级别管理工具：用户/用户组管理、systemd服务管理、时区管理、内核加载模块管理等</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_commands_modules.html">远程命令执行、脚本执行等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_crypto_modules.html">PKI 证书管理</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_database_modules.html">常见数据库管理</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_web_infrastructure_modules.html">常见Web基础设施管理：supervisorctl、htpasswd、apache2_module、letsencrypt等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_source_control_modules.html">常见版本控制工具管理</a></li>
+</ul>
+</section>
+<section id="ansible-vault" class="slide level2">
+<h2><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></h2>
+<p><a href="http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault">使用 Vault 加密敏感数据</a> ，可以对以下路径下的文件加密：</p>
+<ul>
+<li><code>group_vars/</code></li>
+<li><code>host_vars/</code></li>
+</ul>
+<p>也可以对 Ansible 变量加密。</p>
+</section>
+<section class="slide level2">
+
+<ul>
+<li><strong>建议-1</strong> 仅对需要加密的变量进行加密，避免加密扩大化；</li>
+<li><strong>建议-2</strong> 为了便于 <code>grep</code> 等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个 <strong>中间变量</strong> 来隔离 <code>被引用变量</code> 和 <code>加密数据</code>。</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="var-encrypted-examples">变量加密推荐做法实例</h3>
+<pre class="yaml"><code># group_vars/demo/vars.yml
+demo_group_name: &quot;demo&quot;
+demo_users: 
+  alice:
+    group: &quot;vault_group&quot;
+    passwd: &quot;{{ vault_demo_users.alice.passwd }}&quot;
+  bob:
+    group: &quot;vault_group&quot;
+    passwd: &quot;{{ vault_demo_users.bob.passwd }}&quot;
+
+# group_vars/demo/vault.yml
+# 该文件的实际内容使用 ansible-vault 加密存储
+vault_demo_users:
+  alice:
+    passwd: &quot;plz-change-me&quot;
+  bob:
+    passwd: &quot;plz-change-me&quot;</code></pre>
+</section>
+</section>
+<section>
+<section id="项目结构" class="title-slide slide level1">
+<h1>项目结构</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html">Ansible 最佳实践</a></p>
+<p>在官方推荐的 <a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout">目录布局</a> 基础之上，进一步精简一个常用目录组织结构：</p>
+<pre class="yaml"><code>production                # 生产环境服务器清单文件
+staging                   # 模拟环境服务器清单文件
+
+group_vars/
+   group1                 # here we assign variables to particular groups
+   group2                 # &quot;&quot;
+host_vars/
+   hostname1              # if systems need specific variables, put them here
+   hostname2              # &quot;&quot;
+
+site.yml                  # master playbook
+webservers.yml            # playbook for webserver tier
+dbservers.yml             # playbook for dbserver tier
+
+roles/
+    common/               # this hierarchy represents a &quot;role&quot;
+        tasks/            #
+            main.yml      #  &lt;-- tasks file can include smaller files if warranted
+        handlers/         #
+            main.yml      #  &lt;-- handlers file
+        templates/        #  &lt;-- files for use with the template resource
+            ntp.conf.j2   #  &lt;------- templates end in .j2
+        files/            #
+            bar.txt       #  &lt;-- files for use with the copy resource
+            foo.sh        #  &lt;-- script files for use with the script resource
+        vars/             #
+            main.yml      #  &lt;-- variables associated with this role
+        defaults/         #
+            main.yml      #  &lt;-- default lower priority variables for this role
+        meta/             #
+            main.yml      #  &lt;-- role dependencies
+
+    webtier/              # same kind of structure as &quot;common&quot; was above, done for the webtier role
+    monitoring/           # &quot;&quot;
+    fooapp/               # &quot;&quot;</code></pre>
+</section>
+</section>
+<section>
+<section id="开发环境配置" class="title-slide slide level1">
+<h1>开发环境配置</h1>
+
+</section>
+<section id="常见的开发环境配置需求" class="slide level2">
+<h2>常见的「开发环境配置需求」</h2>
+<ul>
+<li>自动补全
+<ul>
+<li>重复输入内容</li>
+<li>语法关键字</li>
+<li>常用代码片段</li>
+</ul></li>
+<li>语法高亮</li>
+<li>语法检查</li>
+<li>调试</li>
+<li>运行</li>
+<li>语法即时帮助</li>
+</ul>
+</section>
+<section id="编辑器" class="slide level2">
+<h2>编辑器</h2>
+<ul>
+<li>vscode
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit">Remote - SSH: Editing Configuration Files</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">（可选）vim</a></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="ansible"><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></h3>
+<p><a href="https://code.visualstudio.com/docs/languages/identifiers">vscode 里全局 settings.json 里设置 files.associations</a></p>
+<pre class="json"><code>&quot;files.associations&quot;: {
+    &quot;**/defaults/**/*&quot;: &quot;ansible&quot;,
+    &quot;**/tasks/**/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/handler/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/*_vars/**/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/roles/**/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/playbooks/**/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/*ansible*/**/*.yml&quot; : &quot;ansible&quot;,
+    &quot;**/vars/**/*.yml&quot;: &quot;ansible&quot;,
+    &quot;**/inventory/*/*&quot;: &quot;ansible&quot;
+}</code></pre>
+<p><a href="https://marketplace.visualstudio.com/items?itemName=haaaad.ansible">以上参考 language-Ansible 的文件关联配置</a></p>
+</section>
+<section class="slide level2">
+
+<h3 id="使用-ssh-进行远程开发"><a href="https://code.visualstudio.com/docs/remote/ssh">使用 SSH 进行远程开发</a></h3>
+<p><img data-src="images/ansible/architecture-ssh.png" /></p>
+</section>
+<section id="语法检查" class="slide level2">
+<h2>语法检查</h2>
+<ul>
+<li>ansible-lint</li>
+<li>yamllint</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="安装">安装</h3>
+<pre class="bash"><code>pip install ansible-lint yamllint</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="小结">小结</h3>
+<ul>
+<li>自动补全
+<ul>
+<li>重复输入内容: <a href="https://stackoverflow.com/questions/51341555/visualcode-shortcut-to-display-autocomplete-list-before-typing-in-macos">vscode 内置功能</a></li>
+<li>语法关键字: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a></li>
+<li>常用代码片段: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展 snippets 功能</a></li>
+</ul></li>
+<li>语法高亮 <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a> + <a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
+<li>语法检查 <code>ansible-lint</code> + <code>yamllint</code></li>
+<li>调试 <a href="https://docs.ansible.com/ansible/latest/modules/debug_module.html">Ansible 内置的 debug 模块，调试打印方式</a></li>
+<li>运行 <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
+<li>语法即时帮助 暂时没有集成解决方案</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="more-playbooks" class="title-slide slide level1">
+<h1>Playbooks 实例</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://github.com/c4pr1c3/AnsibleTutorial">原创实例</a></li>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="参考资料" class="title-slide slide level1">
+<h1>参考资料</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://cheat.readthedocs.io/en/latest/ansible/">Cheatsheet of Ansible</a></li>
+<li><a href="https://gist.github.com/andreicristianpetcu/b892338de279af9dac067891579cad7d">An Ansible summary Jon Warbrick, July 2014, V3.2 (for Ansible 1.7)</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="附录-a" class="title-slide slide level1">
+<h1>附录 A</h1>
+
+</section>
+<section id="yaml-quickstart" class="slide level2">
+<h2>YAML 快速上手</h2>
+<ul>
+<li>（可选）<code>---</code> 定义 YAML 文件开始，<code>...</code> 定义 YAML 文件结束</li>
+<li><code>list</code> 数据结构，使用 `- ` （一个短杠和一个空格）</li>
+<li><code>dict</code> 数据结构，使用 <code>key: value</code> 形式</li>
+<li>续行符
+<ul>
+<li><code>|</code> 包含换行符</li>
+<li><code>&gt;</code> 忽略换行符</li>
+</ul></li>
+<li>尽可能多的使用 <strong>双引号</strong> 包围变量的赋值</li>
+</ul>
+</section>
+<section id="yaml-basic-examples" class="slide level2">
+<h2>YAML 简单例子</h2>
+<pre class="yaml"><code># Employee records
+- martin:
+    name: Martin D&#39;vloper
+    job: Developer
+    skills:
+      - python
+      - perl
+      - pascal
+- tabitha:
+    name: Tabitha Bitumen
+    job: Developer
+    skills:
+      - lisp
+      - fortran
+      - erlang
+
+# 上述例子的等价单行写法如下：
+# 可以将以下内容复制粘贴到 http://www.yamllint.com/ 进行验证
+- martin: {name: Martin D&#39;vloper, job: Developer, skill: [python, perl, pascal]}
+- tabitha: {name: Tabitha Bitumen, job: Developer, skill: [lisp, fortran, erlang]}</code></pre>
+</section>
+<section id="yaml-multiple-lines" class="slide level2">
+<h2>YAML 多行字符串例子</h2>
+<pre class="yaml"><code>include_newlines: |
+            exactly as you see
+            will appear these three
+            lines of poetry
+
+ignore_newlines: &gt;
+            this is really a
+            single line of text
+            despite appearances</code></pre>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第八章的番外索引">第八章的「番外」索引</h1>
+<hr />
+<ul>
+<li><a href="pxe.md">PXE</a></li>
+<li><a href="ansible.md">ansible</a></li>
+<li><a href="cloud-init.md">Cloud-Init</a></li>
+</ul>
+<h1 id="番外与番外的区别与联系">「番外」与「番外」的区别与联系</h1>
+<hr />
+<p>老子《道德经》有云：</p>
+<blockquote>
+<p>道生一，一生二，二生三，三生万物。</p>
+</blockquote>
+<hr />
+<h2 id="零一二三">零一二三</h2>
+<ul>
+<li>零：裸设备，无操作系统</li>
+<li>一：（最小化）安装「操作系统」（预装「最普遍需要」的基础软件）</li>
+<li>二：（最小化）安装「通用基础设施软件」和「基础配置」</li>
+<li>三：安装「专用基础设施软件」</li>
+</ul>
+<hr />
+<h2 id="零一二三及万物的">零一二三及「万物」的 🌰</h2>
+<ul>
+<li>零：新购买的服务器、新创建的虚拟机</li>
+<li>一：Ubuntu, Debian, CentOS + Cloud-Init, libc, sh</li>
+<li>二：Python, OpenSSH Server, Ruby, Puppet, Chef, Docker
+<ul>
+<li>基础配置：SSH 免密登录、创建新用户、SSH 安全加固配置等</li>
+</ul></li>
+<li>三：Apache httpd Server, Nginx, Bind9, ntpd</li>
+<li><a href="https://github.com/awesome-selfhosted/awesome-selfhosted">万物</a>：Wordpress, Drupal, Joomla</li>
+</ul>
+<h1 id="重新认识本课程主线内容">重新认识本课程主线内容</h1>
+<hr />
+<h2 id="零生一">零生一</h2>
+<blockquote>
+<p>从裸机（未安装操作系统的物理主机或虚拟机）到安装好基本系统</p>
+</blockquote>
+<ul>
+<li>第 1 章
+<ul>
+<li>其中「无人值守安装镜像的制作」实验可以完成「从零到一」的 <strong>自动化</strong></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="一生二">一生二</h2>
+<blockquote>
+<p>从基本系统到基本使用</p>
+</blockquote>
+<ul>
+<li>第 2 章 ~ 第 3 章</li>
+</ul>
+<hr />
+<h2 id="二生三">二生三</h2>
+<blockquote>
+<p>从基本使用到可编程、可配置</p>
+</blockquote>
+<ul>
+<li>第 4 章 ~ 第 7 章</li>
+</ul>
+<hr />
+<h2 id="三生万物">三生万物</h2>
+<blockquote>
+<p>从可编程到自动化、智能化</p>
+</blockquote>
+<ul>
+<li>第 8 章</li>
+</ul>
+<h1 id="小结">小结</h1>
+<hr />
+<ul>
+<li><a href="pxe.md">PXE</a> 和 <code>无人值守安装镜像</code> 可以解决 <code>从零到一</code> <strong>自动化</strong> 问题</li>
+<li><a href="ansible.md">ansible</a> 解决 <code>从二到万物</code> <strong>自动化</strong> 问题</li>
+<li><a href="cloud-init.md">Cloud-Init</a> 可以解决 <code>从一到二</code>、<code>从一到三</code> 甚至 <code>从一到万物</code> 的 <strong>自动化</strong> 问题</li>
+</ul>
+</body>
+</html>

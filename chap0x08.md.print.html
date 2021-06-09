@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第八章devops文化运维自动化与持续部署">第八章：DevOps文化、运维自动化与持续部署</h1>
+<hr />
+<h2 id="life-is-short-automate-more">Life is short, automate more</h2>
+<p style="text-align: center">
+<video controls autoplay loop muted src="images/chap0x08/Life is Short, Play More.mp4">
+</video>
+</p>
+<h1 id="我们为什么需要devops">我们为什么需要DevOps？</h1>
+<hr />
+<p><a href="http://coolshell.cn/articles/1174.html">下面是程序员日常工作当中惯用的解释，看看你有没有躺枪？</a></p>
+<ol type="1">
+<li><strong>在我这边的电脑上可以工作啊……</strong></li>
+<li>我重来没有听过这样的事</li>
+<li>昨天还能正常工作呢</li>
+<li>好吧，这算一个BUG</li>
+<li>这怎么可能？</li>
+<li>这应该是机器或是环境的问题</li>
+<li>操作系统更新了吗？</li>
+<li>一定又是用户那边的错</li>
+<li>你的测试数据一定有问题</li>
+<li>我从来没有碰过那边的代码！</li>
+</ol>
+<hr />
+<p><strong>我这边的电脑</strong>有什么魔法？<strong>其他人的电脑</strong>有什么“诅咒”？</p>
+<blockquote>
+<p><img src="images/chap0x08/joke-on-devops.jpeg" /></p>
+</blockquote>
+<hr />
+<p>开发人员的运行环境和运维、测试、用户的运行环境不一致！</p>
+<p>开发人员的运行环境和运维、测试、用户的运行环境不一致！</p>
+<p>开发人员的运行环境和运维、测试、用户的运行环境不一致！</p>
+<hr />
+<p>怎么解决<strong>运行环境不一致</strong>的困局？</p>
+<h1 id="devopsheading">DevOps</h1>
+<hr />
+<ul>
+<li>满足需求和环境多样性、频繁变更带来的<strong>快速响应</strong>能力提升要求是DevOps的发展动力和压力</li>
+<li>提高软件<strong>可靠性</strong>是DevOps的核心目标</li>
+</ul>
+<hr />
+<h2 id="静态视角看devops">静态视角看<strong>DevOps</strong></h2>
+<p><img src="images/chap0x08/Devops.svg.png" /></p>
+<hr />
+<h2 id="devops困境"><strong>DevOps</strong>困境</h2>
+<ul>
+<li>开发：追求变化</li>
+<li>运维：追求稳定</li>
+<li>测试：追求消灭风险</li>
+</ul>
+<p>核心：（不同组织、不同部门、不同角色的）<strong>沟通</strong>问题</p>
+<hr />
+<h2 id="动态过程视角看devops">动态（过程）视角看<strong>DevOps</strong></h2>
+<p><img src="images/chap0x08/Devops-toolchain.svg.png" /></p>
+<p>当Dev和Ops是两个人（部门）的时候，需求分析和产品发布阶段会存在大量沟（chĕ）通（pÍ）时间，角色和人员上的二合一可以直接“跳过”沟（chĕ）通（pÍ）阶段</p>
+<hr />
+<h2 id="awsamazon-web-services的devops价值观"><a href="https://aws.amazon.com/cn/devops/what-is-devops/">AWS（Amazon Web Services）的DevOps价值观</a></h2>
+<p><strong><em>DevOps 集文化理念、实践和工具于一身，可以提高组织高速交付应用程序和服务的能力，与使用传统软件开发和基础设施管理流程相比，能够帮助组织更快地发展和改进产品。这种速度使组织能够更好地服务其客户，并在市场上更高效地参与竞争。</em></strong></p>
+<p><img src="images/chap0x08/DevOps_feedback-diagram.png" /></p>
+<h1 id="为什么要运维自动化">为什么要运维自动化？</h1>
+<hr />
+<p><img src="images/chap0x08/kiss_pipe.gif" /></p>
+<hr />
+<p>假如让你去维护前述已经在“正常工作”的系统，现在需要升级维护其中一个“<strong>老旧</strong>”组件你该怎么下手？</p>
+<hr />
+<p>你以为的并不是你以为的</p>
+<p><img src="images/chap0x08/broke-ops.gif" /></p>
+<hr />
+<p>如果没有自动化运维，你可能在旅途中突然需要这样</p>
+<p><img src="images/chap0x08/hard-opser.jpg" /></p>
+<hr />
+<p>治大国如烹小虾，我们来类比餐厅老板，看如何实现炒菜的自动化</p>
+<ul>
+<li>首先，我要知道我的厨房里到底有些什么东西是可用的，比如备了哪些菜，有那些工具，这些就是<strong><em>配置管理</em></strong>。</li>
+<li>此外，我要让系统帮我去做菜，是炒、是炖还是煮？是加水、加油还是加火，这些都是<strong><em>变更管理</em></strong>的能力。</li>
+<li>最后，系统还需要能够知道我炒的菜目前是一个什么样的情况，有几分熟，温度有没有太高，油是不是太少什么的。这些就是<strong><em>状态管理</em></strong>的能力。</li>
+</ul>
+<h1 id="为什么需要持续集成">为什么需要持续集成？</h1>
+<hr />
+<p><a href="http://coolshell.cn/articles/1174.html">下面是程序员日常工作当中惯用的解释，看看你有没有躺枪？</a></p>
+<ol type="1">
+<li>在我这边的电脑上可以工作啊……</li>
+<li>我重来没有听过这样的事</li>
+<li><strong>昨天还能正常工作呢</strong></li>
+<li>好吧，这算一个BUG</li>
+<li>这怎么可能？</li>
+<li>这应该是机器或是环境的问题</li>
+<li>操作系统更新了吗？</li>
+<li>一定又是用户那边的错</li>
+<li>你的测试数据一定有问题</li>
+<li>我从来没有碰过那边的代码！</li>
+</ol>
+<hr />
+<ul>
+<li>昨天和今天相比发生了哪些“变化”？</li>
+<li>这些变化有没有被及时“测试”过？</li>
+<li>除了<strong>代码</strong>有可能被自己人“变化”了，软件依赖的第三方库、操作系统有没有“悄悄升级”？升级后还能兼容“旧”的代码吗？</li>
+<li>持续集成可以“尽早暴露”软件和系统可能存在的问题，在正式发布和交付之前可以有机会解决这些问题</li>
+</ul>
+<h1 id="devopsjargons">DevOps相关常见术语</h1>
+<hr />
+<ul>
+<li>持续集成（Continuous Integration, CI）</li>
+<li>持续交付（Continuous Delivery, CD）</li>
+<li>持续部署（Continuous Deployment）</li>
+<li>上线与回滚</li>
+<li>灰度发布</li>
+<li>A/B测试</li>
+</ul>
+<hr />
+<h2 id="持续集成">持续集成</h2>
+<p><img src="images/chap0x08/ci-demo.png" /></p>
+<p>持续集成强调开发人员提交了新代码之后，立刻进行构建、（单元）测试。根据测试结果，开发人员可以确定新代码和原有代码能否正确地集成在一起。</p>
+<hr />
+<h2 id="持续交付">持续交付</h2>
+<p><img src="images/chap0x08/cd-demo.png" /></p>
+<hr />
+<p>持续交付在持续集成的基础上，将集成后的代码部署到更贴近真实运行环境的<strong>类生产环境</strong>（<strong><em>production-like environments</em></strong>）中。</p>
+<p>比如，开发人员完成单元测试后，可以把代码部署到连接数据库的<strong>模拟</strong>（<strong><em>Staging</em></strong>）环境中进行更多的测试。如果代码没有问题，可以继续<strong><em><font color='red'>手动</font>部署</em></strong>到生产环境中。</p>
+<hr />
+<h2 id="持续部署">持续部署</h2>
+<p><img src="images/chap0x08/cdeploy-demo.png" /></p>
+<p>持续部署则是在持续交付的基础上，把部署到生产环境的过程<font color='red'>自动</font>化。</p>
+<hr />
+<h3 id="demo-case-1">以本课程的课件项目为例</h3>
+<p><a href="https://github.com/c4pr1c3/LinuxSysAdmin"><img src="images/chap0x08/ci-demo-1.png" /></a></p>
+<hr />
+<h3 id="demo-case-2">以本课程的课件项目为例</h3>
+<p><a href="https://travis-ci.com/github/c4pr1c3/LinuxSysAdmin/builds"><img src="images/chap0x08/ci-demo-2.png" /></a></p>
+<hr />
+<h3 id="demo-case-3">以本课程的课件项目为例</h3>
+<p><a href="https://travis-ci.com/github/c4pr1c3/LinuxSysAdmin/jobs/498022666/config"><img src="images/chap0x08/secret-runtime-config-1.png" /></a></p>
+<hr />
+<h3 id="demo-case-4">以本课程的课件项目为例</h3>
+<ul>
+<li>代码 <strong>手动</strong> 提交 <code>git push to github</code></li>
+<li><strong>自动</strong> 构建 <code>travis-ci build</code></li>
+<li><strong>自动</strong> 交付 <code>travis-ci deploy to github pages</code> + <code>git add &amp;&amp; git push to gitee pages</code></li>
+<li>部署
+<ul>
+<li><strong>自动</strong> 部署 <code>github pages</code></li>
+<li><strong>手动</strong> 部署 <code>gitee pages</code></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="demo-case-5.0">以本课程的课件项目为例的 CI/CD 思考</h3>
+<ul>
+<li><code>开发</code> 和 <code>运维</code> 角色实现 <code>代码</code> 与 <code>运行时配置</code> 独立管理、互不干扰</li>
+</ul>
+<p><img src="images/chap0x08/secret-runtime-config-2.png" /></p>
+<hr />
+<h3 id="demo-case-5.1">以本课程的课件项目为例的 CI/CD 思考</h3>
+<ul>
+<li><a href="https://github.com/c4pr1c3/LinuxSysAdmin/blob/master/render.sh">render.sh</a> 负责定义线上和开发环境 <code>统一构建</code> 规则
+<ul>
+<li><code>构建规则</code> 纳入「版本管理」，实现「变更可追溯」</li>
+</ul></li>
+<li><code>reveal.js</code> 以「Git 子模块」方式被引入 <strong>项目构建依赖</strong>
+<ul>
+<li>为了保证「依赖版本的确定性」，<a href="https://github.com/c4pr1c3/reveal.js">自行 fork</a> 了<a href="https://github.com/hakimel/reveal.js">上游 reveal.js 仓库</a> ，确保依赖代码的变更是经过「测试验证兼容性」的</li>
+</ul></li>
+<li>构建成功之后，自动交付。构建失败，则停止交付和部署。
+<ul>
+<li>github pages / gitee pages</li>
+</ul></li>
+<li>部署方式依赖于交付目标环境提供的部署接口能力</li>
+<li><a href="https://travis-ci.com/github/c4pr1c3/LinuxSysAdmin/builds">CI/CD 过程可审计</a></li>
+<li><code>CI/CD</code> 可重复: <code>Restart build on Travis</code></li>
+</ul>
+<hr />
+<h3 id="demo-case-6">以 <a href="https://github.com/c4pr1c3/vimrc">c4pr1c3/vimrc</a> 为例的 CI/CD 思考</h3>
+<ul>
+<li><a href="https://travis-ci.org/github/c4pr1c3/vimrc/builds">每日定时自动构建：防止代码腐化</a></li>
+</ul>
+<p><img src="images/chap0x08/travis-cron-build.png" /></p>
+<hr />
+<h3 id="demo-case-7">以 <a href="https://github.com/c4pr1c3/vimrc">c4pr1c3/vimrc</a> 为例的 CI/CD 思考</h3>
+<ul>
+<li><a href="https://travis-ci.org/github/c4pr1c3/vimrc/jobs/766852103">构建矩阵：支持一份代码在多种运行环境中构建与测试</a></li>
+</ul>
+<p><img src="images/chap0x08/travis-built-matrix.png" /></p>
+<hr />
+<h2 id="上线与回滚">上线与回滚</h2>
+<ul>
+<li><strong>上线</strong>：这是一种很形象的产品发布过程和结果描述，尤其在互联网、物联网模式流行的今天，客户端-服务器架构是联网软件的主流通信模型。严格来说，本章讨论的<strong>上线</strong>主要指的是服务器软件的<strong>部署</strong>。</li>
+<li><strong>回滚</strong>：软件在<strong>上线</strong>之后可能会遇到一些严重bug并影响到产品基本功能和用户体验，从应急响应角度出发，往往会使用最近一个被证明可用版本的软件（代码）来替代存在bug的软件。如果这个过程发生在产品刚刚上线，则把这个回退到旧版本软件的操作称为<strong>回滚</strong>。</li>
+</ul>
+<hr />
+<h2 id="灰度发布">灰度发布</h2>
+<ul>
+<li>灰度：把黑色定为基本色，每个灰度对象都是0%（白色）到100%（黑色）的中间值，简而言之，灰度就是不饱和的黑色。</li>
+<li>灰度发布：是指在黑与白之间，能够平滑过渡的一种发布方式。
+<ul>
+<li>以互联网产品为例，只要产品没有被放弃还在继续提供服务，就会不停的升级，升级，再升级。</li>
+<li>系统升级总是伴随着风险：新旧版本兼容的风险，用户使用习惯突然改变而造成用户流失的风险，系统down机的风险等等。
+<ul>
+<li>为了避免这些风险，很多产品都采用了<strong>灰度发布</strong>的策略，其主要思想就是：把影响集中到一个点，然后再发散到一个面，出现意外情况后很容易就<strong>回滚</strong>。</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="ab测试">A/B测试</h2>
+<ul>
+<li>A/B测试就是灰度发布的其中一种常用方式，让一部分用户继续用A，一部分用户开始用B，如果用户对B没有什么反对意见，那么逐步扩大范围，把所有用户都迁移到B上面来。</li>
+</ul>
+<hr />
+<ul>
+<li>无论是灰度发布、A/B测试还是正式上线，对于软件的上线和回滚流程来说，以下需求始终存在：
+<ul>
+<li>可以追踪和管理上线软件版本，支持不同版本系统对应代码的平滑切换；</li>
+<li>在产品（包括灰度发布和正式发布）发布之前能够在一个可信可控环境模拟线上生产环境进行测试；
+<ul>
+<li>客户联网环境模拟</li>
+<li>多客户端版本共存环境模拟</li>
+</ul></li>
+<li>开发工程师不能直接接触生产环境的用户机密和隐私数据，但又需要给开发和测试环境提供尽可能“真实”的用户数据用于开发调试和发布前测试；</li>
+</ul></li>
+</ul>
+<h1 id="滚动更新与固定版本linux之争"><a href="https://linuxstory.org/rolling-release-vs-fixed-release-linux/">滚动更新与固定版本Linux之争</a></h1>
+<hr />
+<ul>
+<li>Gentoo Linux 作为最古老的活跃 Linux 发行版本和 Google 的 Chrome OS 的衍生来源版本，它自从 2004 年开始就采用<strong>滚动更新</strong>（<strong><em>Rolling Update</em></strong>）方式，从 2008 年起更是采取每周自动构建一次至今了。
+<ul>
+<li><a href="https://www.kali.org/news/kali-linux-rolling-edition-2016-1/">Kali Linux从2016年1月开始基于Debian使用滚动更新方式维护升级</a></li>
+</ul></li>
+<li>固定发行依然是目前面向企业级产品最主要的发行模型。在固定发行中，包含安全更新和小的调整的发行版本是有计划的。
+<ul>
+<li>Canonical 维护 Ubuntu Linux</li>
+<li>Red Hat 维护 Red Hat Enterprise Linux (RHEL)</li>
+<li>SUSE 维护 SUSE Linux Enterprise Server (SLES)</li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>软件和软件工程本身的复杂性决定了<strong>滚动更新</strong>方式在软件兼容性方面将面临巨大挑战，优点在于可以总是使用上游软件供应商发布的最新版软件</li>
+<li><strong>固定发行</strong>方式的优势就在于可以基于一个相对稳定的代码分支进行<strong><em>小范围</em></strong>的修修补补，使得软件的可测试性更好，理论上将提供更好的稳定性。缺点则是无法总是使用上游软件供应商发布的最新版软件</li>
+</ul>
+<h1 id="主流技术工具链">主流技术工具链</h1>
+<hr />
+<ul>
+<li>git（github/gitlab）</li>
+<li>ansible（puppet、chef、salt等）</li>
+<li>docker（dockerfile/k8s/dockerhub）</li>
+<li>jenkins / travis / Gitlab CI</li>
+<li>openstack（KVM、Xen）</li>
+<li>openvswitch</li>
+<li>tcpreplay + tcpcopy</li>
+</ul>
+<h1 id="git">git</h1>
+<hr />
+<blockquote>
+<p>Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.</p>
+</blockquote>
+<p>解决代码和文档的版本管理、多人协作开发与编辑需求。</p>
+<hr />
+<h2 id="gitlab">GitLab</h2>
+<blockquote>
+<p>Provides Git repository management, code reviews, issue tracking, activity feeds and wikis. GitLab itself is also free software.</p>
+</blockquote>
+<h1 id="ansible"><a href="https://www.ansible.com">ansible</a></h1>
+<hr />
+<blockquote>
+<p>Deploy apps. Manage systems. Crush complexity. Ansible helps you build a strong foundation for DevOps.</p>
+</blockquote>
+<p>提供开发、测试和生产环境的软件定义能力，满足代码运行环境一致性、可审计、自动化等需求。</p>
+<h1 id="ansible-quickstart">分分钟上手Ansible</h1>
+<hr />
+<h2 id="ansible-install">安装Ansible</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># 确认系统版本信息和 ansible 版本信息</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="ex">lsb_release</span> -a</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># No LSB modules are available.</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Distributor ID:   Ubuntu</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Description:  Ubuntu 20.04.2 LTS</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># Release:  20.04</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Codename: focal</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="ex">apt</span> policy ansible</span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co"># ansible:</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#   Installed: (none)</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#   Candidate: 2.9.6+dfsg-1</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#   Version table:</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#      2.9.6+dfsg-1 500</span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#         500 http://cn.archive.ubuntu.com/ubuntu focal/universe amd64 Packages</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="fu">sudo</span> apt-get install ansible</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co"># 验证当前已安装 ansible 版本</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="ex">ansible</span> --version</span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co"># ansible 2.9.6</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#   config file = /etc/ansible/ansible.cfg</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a><span class="co">#   configured module search path = [&#39;/home/cuc/.ansible/plugins/modules&#39;, &#39;/usr/share/ansible/plugins/modules&#39;]</span></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#   ansible python module location = /usr/lib/python3/dist-packages/ansible</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#   executable location = /usr/bin/ansible</span></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="co">#   python version = 3.8.5 (default, Jan 27 2021, 15:41:15) [GCC 9.3.0]</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co"># pip 方式可以安装到最新版本的 ansible（可选）</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="co"># ref: https://pypi.org/project/ansible/</span></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="co"># 根据 https://www.ansible.com/blog/ansible-3.0.0-qa</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="co"># To upgrade to Ansible-3.0 from Ansible-2.10: pip install --upgrade ansible.  </span></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="co"># To upgrade to Ansible-3.0 from Ansible-2.9 or earlier: pip uninstall ansible; pip install ansible. This is due to a limitation in pip.</span></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="co"># 升级安装</span></span>
+<span id="cb1-34"><a href="#cb1-34"></a><span class="fu">sudo</span> apt remove ansible</span>
+<span id="cb1-35"><a href="#cb1-35"></a><span class="co"># 使用国内 pypi 镜像加速下载</span></span>
+<span id="cb1-36"><a href="#cb1-36"></a><span class="ex">pip3</span> install ansible -i https://pypi.tuna.tsinghua.edu.cn/simple</span>
+<span id="cb1-37"><a href="#cb1-37"></a></span>
+<span id="cb1-38"><a href="#cb1-38"></a><span class="co"># 验证 pip 方式安装的 ansible 版本</span></span>
+<span id="cb1-39"><a href="#cb1-39"></a><span class="ex">pip3</span> freeze <span class="kw">|</span> <span class="fu">grep</span> ansible</span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="co"># ansible==3.2.0</span></span>
+<span id="cb1-41"><a href="#cb1-41"></a><span class="co"># ansible-base==2.10.7</span></span>
+<span id="cb1-42"><a href="#cb1-42"></a></span>
+<span id="cb1-43"><a href="#cb1-43"></a><span class="co"># 以下命令只能验证 ansible-base 的版本</span></span>
+<span id="cb1-44"><a href="#cb1-44"></a><span class="co"># ansible 来自于 ansible-base</span></span>
+<span id="cb1-45"><a href="#cb1-45"></a><span class="ex">ansible</span> --version</span>
+<span id="cb1-46"><a href="#cb1-46"></a><span class="co"># ansible 2.10.7</span></span>
+<span id="cb1-47"><a href="#cb1-47"></a><span class="co">#   config file = /etc/ansible/ansible.cfg</span></span>
+<span id="cb1-48"><a href="#cb1-48"></a><span class="co">#   configured module search path = [&#39;/home/cuc/.ansible/plugins/modules&#39;, &#39;/usr/share/ansible/plugins/modules&#39;]</span></span>
+<span id="cb1-49"><a href="#cb1-49"></a><span class="co">#   ansible python module location = /home/cuc/.local/lib/python3.8/site-packages/ansible</span></span>
+<span id="cb1-50"><a href="#cb1-50"></a><span class="co">#   executable location = /home/cuc/.local/bin/ansible</span></span>
+<span id="cb1-51"><a href="#cb1-51"></a><span class="co">#   python version = 3.8.5 (default, Jan 27 2021, 15:41:15) [GCC 9.3.0]</span></span></code></pre></div>
+<hr />
+<h2 id="ansible3-versioning">Ansible 3 开始的新版本命名惯例</h2>
+<ul>
+<li><a href="https://www.ansible.com/blog/thoughts-on-restructuring-the-ansible-project">2019.7.23. 公布 Ansible 项目重构计划</a>：一拆为三
+<ul>
+<li>核心引擎 <a href="https://www.ansible.com/blog/ansible-3.0.0-qa">ansible-base/ansible-core</a>
+<ul>
+<li>2.11 以前命名为 <code>ansible-base</code> , <a href="https://github.com/ansible/ansible/blob/devel/docs/docsite/rst/roadmap/ROADMAP_2_11.rst">2.11 开始重命名为 <code>ansible-core</code></a></li>
+</ul></li>
+<li>核心模块和插件</li>
+<li>第三方（开源社区和商业公司各自独立）维护的模块和插件</li>
+</ul></li>
+<li><a href="https://www.ansible.com/blog/ansible-3.0.0-qa">2021.2.18 Ansible 3.0 发布</a></li>
+</ul>
+<hr />
+<h2 id="ansible-releases-and-maintenance"><a href="https://docs.ansible.com/ansible/devel/reference_appendices/release_and_maintenance.html">Ansible 版本和维护计划</a></h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Ansible 社区发布包</th>
+<th style="text-align: left;">ansible-core</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">使用新的<a href="https://semver.org/">语义化版本命名规则</a></td>
+<td style="text-align: left;">延续“经典 Ansible”命名惯例（2.10, 2.11, …)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">只维护一个最新版</td>
+<td style="text-align: left;">同时维护一个最新版和2个最近的旧版本</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">包含语言、运行时和指定 Collections（<code>all-in-one</code>）</td>
+<td style="text-align: left;">包含语言、运行时和内置插件</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">在 Collections 仓库开发和维护</td>
+<td style="text-align: left;">在 ansible/ansible 仓库开发和维护</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="agentlesspush-vs.-agentpull">agentless+push VS. agent+pull</h2>
+<p><a href="https://wiredcraft.com/blog/getting-started-with-ansible-in-5-minutes/"><img src="images/chap0x08/ansible_push.png" /></a> <a href="https://wiredcraft.com/blog/getting-started-with-ansible-in-5-minutes/"><img src="images/chap0x08/ansible_agentless.png" /></a></p>
+<hr />
+<p><a href="https://www.chef.io/chef/">Chef</a>和<a href="https://puppet.com/">Puppet</a>是DevOps领域的另2款重量级解决方案，这2个方案的共同点是采用了：（被管理主机上安装）代理（agent）软件和拉取（pull）模型。代理软件按照预先配置的策略通过私有传输协议从管理主机上拉取配置变更到本地应用。</p>
+<p>ansible则采用了截然相反的一种工作模型：<strong>agentless</strong>和<strong>push</strong>。并且，ansible使用SSH通道来实现远程管理和命令执行。</p>
+<hr />
+<p><a href="https://en.wikipedia.org/wiki/Idempotence">幂等性 Idempotence</a>: 同一个操作执行两次或更多次不会改变第一次执行的结果。</p>
+<p>ansible的大部分命令、模块和操作都能保证上述<strong>幂等性</strong>。</p>
+<h1 id="ansible-helloworld">体验Ansible</h1>
+<hr />
+<h2 id="体验环境准备">体验环境准备</h2>
+<ul>
+<li>两台Virtualbox虚拟机，采用Host-only方式直连
+<ul>
+<li>安装ansible的虚拟机我们用A表示，没有安装ansible的虚拟机我们用B表示</li>
+<li>假设A的IP：192.168.56.102，B的IP：192.168.56.101</li>
+</ul></li>
+<li>使用第一章的普通用户SSH免密登录配置方法，配置从A到B的普通用户SSH免密登录配置
+<ul>
+<li>假设A和B上都有普通用户cuc，且均具有完整sudo权限</li>
+</ul></li>
+<li>远程被管理主机上需要安装python2/3</li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 配置A-&gt;B的root用户免密SSH登录</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>$ <span class="ex">ssh-copy-id</span> -i ~/.ssh/id_rsa.pub cuc@192.168.56.101</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># SSH登录到B上手工配置A上cuc用户的RSA公钥到B上root用户的/root/.ssh/authorized_keys</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>$ <span class="fu">ssh</span> cuc@192.168.56.101 </span>
+<span id="cb2-6"><a href="#cb2-6"></a>$ <span class="fu">sudo</span> mkdir /root/.ssh</span>
+<span id="cb2-7"><a href="#cb2-7"></a>$ <span class="fu">sudo</span> cp /home/cuc/.ssh/authorized_keys /root/.ssh/authorized_keys</span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co"># 假设B上没有安装过python</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>$ <span class="fu">sudo</span> apt-get update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt-get install -y python-minimal</span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># python 2.x 从 2020.1.1 开始终止维护更新</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co"># 上述 python-minimal 也相应地在部分发行版中被移除，替代品是 python3-minimal</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a>$ <span class="bu">exit</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># 继续在A上执行命令</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a><span class="co"># 验证A-&gt;B的root用户免密SSH登录</span></span>
+<span id="cb2-16"><a href="#cb2-16"></a>$ <span class="fu">ssh</span> root@192.168.56.101</span>
+<span id="cb2-17"><a href="#cb2-17"></a><span class="co"># exit</span></span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co"># 回到A上继续执行命令</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="co"># 创建一个ansible的本地工作目录（可选步骤）</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>$ <span class="fu">mkdir</span> ansible <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> ansible</span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="co"># hosts文件内容参照/etc/ansible/hosts的内容格式</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>$ <span class="bu">echo</span> -e <span class="st">&quot;[web]\n192.168.56.101&quot;</span> <span class="op">&gt;</span> hosts</span>
+<span id="cb2-24"><a href="#cb2-24"></a>$ <span class="ex">ansible</span> all -m ping -u root -i hosts</span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="ex">192.168.56.101</span> <span class="kw">|</span> <span class="ex">SUCCESS</span> =<span class="op">&gt;</span> {</span>
+<span id="cb2-26"><a href="#cb2-26"></a>    <span class="st">&quot;changed&quot;</span>: <span class="fu">false</span>,</span>
+<span id="cb2-27"><a href="#cb2-27"></a>    <span class="st">&quot;ping&quot;</span>: <span class="st">&quot;pong&quot;</span></span>
+<span id="cb2-28"><a href="#cb2-28"></a>}</span></code></pre></div>
+<hr />
+<ul>
+<li>上述操作过程中创建的本地hosts文件，在ansible中有一个术语，叫做<a href="http://docs.ansible.com/ansible/intro_inventory.html">inventory</a>，用来定义可操作的远程主机信息。</li>
+</ul>
+<h1 id="ansible-nginx">用ansible来统一安装配置nginx</h1>
+<hr />
+<h2 id="intro-to-galaxy">Ansible Galaxy</h2>
+<p>ansible使用<a href="http://docs.ansible.com/ansible/playbooks.html">playbooks</a>来定义远程管理“脚本”，playbooks使用YAML语法。</p>
+<p><a href="http://docs.ansible.com/ansible/playbooks_roles.html">role</a>是ansible中用来抽象<strong>可重用</strong>配置脚本的概念。通常一个role中包括<a href="http://docs.ansible.com/ansible/playbooks_variables.html">变量</a>、<a href="http://docs.ansible.com/ansible/playbooks_intro.html#tasks-list">任务</a>和<a href="http://docs.ansible.com/ansible/playbooks_intro.html#handlers-running-operations-on-change">句柄</a>。</p>
+<p><a href="https://docs.ansible.com/ansible/latest/user_guide/collections_using.html">collections</a> 是 <code>Ansible</code> 的一种打包封装格式，可以包含 <code>playbooks</code>, <code>roles</code>, <code>modules</code> 和 <code>plugins</code> 。<code>Ansible core</code> 仓库里的 <code>modules</code> 正在逐渐重构迁移到 <code>collections</code> 。</p>
+<p><a href="https://galaxy.ansible.com/">Ansible Galaxy</a>是ansible官方维护的一个 <code>collections</code> 和 <code>role</code> 分享社区。通过<a href="https://galaxy.ansible.com/search?deprecated=false&amp;keywords=nginx&amp;order_by=-relevance&amp;page=1">在线搜索nginx</a>，我们可以很快发现这个<a href="https://galaxy.ansible.com/nginxinc/nginx_core">nginxinc/nginx_core</a></p>
+<hr />
+<h2 id="galaxy-quickstart-1">Ansible Galaxy 快速体验</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 确保你在当前用户可写的目录中</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>$ <span class="fu">mkdir</span> roles</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># 以下命令会在当前目录的子目录roles下创建一个名为jeqo.nginx的子目录</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>$ <span class="ex">ansible-galaxy</span> collection install nginxinc.nginx_core</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Starting galaxy collection install process</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># Process install dependency map</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># ERROR! Unknown error when attempting to call Galaxy at &#39;https://galaxy.ansible.com/api/&#39;: &lt;urlopen error [Errno -3] Temporary failure in name resolution&gt;</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># 遇到如上网络连接错误时，需要使用第三方域名解析服务查询对应远程主机域名的『正确』IP</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># ansible-galaxy collection install nginxinc.nginx_core</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co"># Starting galaxy collection install process</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co"># Process install dependency map</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co"># Starting collection install process</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co"># Installing &#39;nginxinc.nginx_core:0.3.0&#39; to &#39;/home/cuc/.ansible/collections/ansible_collections/nginxinc/nginx_core&#39;</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co"># Downloading https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz to /home/cuc/.ansible/tmp/ansible-local-12102kn8levp/tmpn8vk89lk</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co"># ERROR! Unexpected Exception, this is probably a bug: &lt;urlopen error [Errno -3] Temporary failure in name resolution&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co"># 继续解决域名解析结果被污染的问题</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co"># wget https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co"># --2021-04-12 01:37:40--  https://galaxy.ansible.com/download/nginxinc-nginx_core-0.3.0.tar.gz</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co"># Resolving galaxy.ansible.com (galaxy.ansible.com)... 172.67.68.251, 104.26.1.234, 104.26.0.234, ...</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co"># Connecting to galaxy.ansible.com (galaxy.ansible.com)|172.67.68.251|:443... connected.</span></span>
+<span id="cb3-23"><a href="#cb3-23"></a><span class="co"># HTTP request sent, awaiting response... 302 Found</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a><span class="co"># Location: https://ansible-galaxy.s3.amazonaws.com/artifact/bd/f9de1f668f868a872bfdc64df23423e53ad7f08195217437c653bfc97aa2e8?response-content-disposition=attachment%3B%20filename%3Dnginxinc-nginx_core-0.3.0.tar.gz&amp;AWSAccessKeyId=AKIAJZZ23S6M5JUH2EOA&amp;Signature=8InBUVhESAvuX5Ee1CxmqPZYUiY%3D&amp;Expires=1618195061 [following]</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="co"># --2021-04-12 01:37:41--  https://ansible-galaxy.s3.amazonaws.com/artifact/bd/f9de1f668f868a872bfdc64df23423e53ad7f08195217437c653bfc97aa2e8?response-content-disposition=attachment%3B%20filename%3Dnginxinc-nginx_core-0.3.0.tar.gz&amp;AWSAccessKeyId=AKIAJZZ23S6M5JUH2EOA&amp;Signature=8InBUVhESAvuX5Ee1CxmqPZYUiY%3D&amp;Expires=1618195061</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="co"># Resolving ansible-galaxy.s3.amazonaws.com (ansible-galaxy.s3.amazonaws.com)... failed: Temporary failure in name resolution.</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a><span class="co"># wget: unable to resolve host address ‘ansible-galaxy.s3.amazonaws.com’</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a></span>
+<span id="cb3-29"><a href="#cb3-29"></a><span class="co"># 经过以上 2 步网络连接错误手动修复，在 /etc/hosts 中一共添加 2 条域名解析记录</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a><span class="co"># 52.217.8.132 ansible-galaxy.s3.amazonaws.com</span></span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="co"># 104.26.1.234 galaxy.ansible.com</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a></span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="co"># 可以进入 ~/.ansible/collections/ansible_collections/nginxinc/nginx_core</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="co"># 查看自动下载好的一个nginx collections（一堆配置文件和ansible脚本）</span></span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="co"># 可以 cd playbooks 查看所有示例 playbooks</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="co"># 由于全是脚本，所以文档解决不了的问题可以直接查看代码</span></span></code></pre></div>
+<hr />
+<h3 id="offline-install-galaxy">离线安装 Ansible Galaxy</h3>
+<p><a href="https://docs.ansible.com/ansible/latest/user_guide/collections_using.html#installing-collections-with-ansible-galaxy"><img src="images/chap0x08/ansible-galaxy.png" /></a></p>
+<hr />
+<h2 id="galaxy-quickstart-2">Ansible Galaxy 快速体验</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># 自行替换其中的 192.168.56.202 为目标主机 IP</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="bu">echo</span> -e <span class="st">&quot;[web]\n192.168.56.202 ansible_user=cuc ansible_become=true ansible_become_method=sudo&quot;</span> <span class="op">&gt;&gt;</span> hosts</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># 把本地的nginx配置“代码”在远程主机上执行起来吧！</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="ex">ansible-playbook</span> deploy-nginx.yml -i hosts -K</span></code></pre></div>
+<hr />
+<p>验证你的第一个ansible-playbook的成果吧！</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">curl</span> http://192.168.56.202</span></code></pre></div>
+<hr />
+<p>⛔️ 不要在生产环境或其他重要环境中<strong>盲目</strong>下载执行别人的代码！！！</p>
+<p>⛔️ 不要在生产环境或其他重要环境中<strong>盲目</strong>下载执行别人的代码！！！</p>
+<p>⛔️ 不要在生产环境或其他重要环境中<strong>盲目</strong>下载执行别人的代码！！！</p>
+<p>⚠️ 我们<strong>所以</strong>选择在一个<strong><em>纯净</em></strong>的虚拟机环境中做上述实验！</p>
+<hr />
+<p><a href="ansible.md.html">番外：Ansible</a></p>
+<h1 id="container-concepts">容器基本概念</h1>
+<hr />
+<h2 id="vm-vs-container-1">虚拟机 VS. 容器</h2>
+<p><a href="https://www.freecodecamp.org/news/demystifying-containers-101-a-deep-dive-into-container-technology-for-beginners-d7b60d8511c1/"><img src="images/chap0x08/DockerVSVM.png" /></a></p>
+<blockquote>
+<p>注意：Docker只是容器技术目前最“火”的一种，Docker不是容器技术的代名词，只是方案之一。</p>
+</blockquote>
+<hr />
+<h2 id="vm-vs-container-2">虚拟机 VS. 容器</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">容器的优势</th>
+<th style="text-align: left;">虚拟机的优势</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">一致的运行时环境</td>
+<td style="text-align: left;">✔️</td>
+<td style="text-align: left;">✔️</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">应用沙盒化</td>
+<td style="text-align: left;">✔️</td>
+<td style="text-align: left;">✔️</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">占用存储空间少</td>
+<td style="text-align: left;">✔️</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">开销低</td>
+<td style="text-align: left;">✔️</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="oci-specs">OCI 标准</h2>
+<ul>
+<li><a href="https://opencontainers.org/">Open Container Initiative (OCI)</a>
+<ul>
+<li>镜像规范 <code>Image Spec</code></li>
+<li>运行时规范 <code>Runtime Spec</code></li>
+</ul></li>
+</ul>
+<p><a href="https://alibaba-cloud.medium.com/open-container-initiative-oci-specifications-375b96658f55"><img src="images/chap0x08/oci-specs.png" /></a></p>
+<hr />
+<h2 id="容器生命周期-镜像容器进程">容器生命周期 镜像&gt;容器&gt;进程</h2>
+<p><a href="https://alibaba-cloud.medium.com/open-container-initiative-oci-specifications-375b96658f55"><img src="images/chap0x08/image-container-process.png" /></a></p>
+<hr />
+<h2 id="container-orchestration-1">编排容器</h2>
+<blockquote>
+<p>容器全生命周期管理方案。</p>
+</blockquote>
+<hr />
+<h2 id="container-orchestration-2">编排容器</h2>
+<ul>
+<li>镜像管理（获取镜像的渠道和方式）</li>
+<li>容器管理</li>
+<li>可用计算资源管理</li>
+<li>外部访问控制管理</li>
+<li>负载均衡</li>
+<li>服务健康状况监测</li>
+<li>（容器）服务间依赖关系管理</li>
+</ul>
+<h1 id="docker"><a href="https://www.docker.com/">docker</a></h1>
+<hr />
+<blockquote>
+<p>Build, Ship, and Run Any App, Anywhere</p>
+</blockquote>
+<p>Docker是一种轻量虚拟化的容器技术，提供类似虚拟机的隔离功能，并使用了一种分层的联合文件系统技术管理镜像，能极大简化环境运维过程。</p>
+<hr />
+<p>Docker容器云则是使用Docker技术打造的一站式容器云服务平台，即CaaS（Containers as a Service）——容器即服务；可以将它简单看作为PaaS（Platform as a Service）的升级版，使用Docker容器技术的CaaS平台功能更强大，使用灵活，部署更方便。</p>
+<hr />
+<p>Docker 可以让你像使用集装箱一样快速的组合成应用，并且可以像运输标准集装箱一样，尽可能的屏蔽代码层面的差异。Docker 会尽可能的缩短从代码测试到产品部署的时间。对于DevOps来说，Docker可以提供软件的一致性、可审计和自动化<strong>交付</strong>能力，主动规避软件对操作系统及其运行环境特定版本或组合依赖性或兼容性可能带来的bug。</p>
+<h1 id="docker-quickstart">分分钟上手Docker</h1>
+<hr />
+<p><a href="https://asciinema.org/a/voYA63mKW6MFOpBHgZhLs3xaP"><img src="https://asciinema.org/a/voYA63mKW6MFOpBHgZhLs3xaP.svg" alt="Docker 配置 Demo on Ubuntu 18.04" /></a></p>
+<hr />
+<h2 id="docker-install">安装Docker</h2>
+<p>以官方文档为准: <a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/">https://docs.docker.com/install/linux/docker-ce/ubuntu/</a> ，以下内容为 <strong>过时</strong> 内容，仅为『证明』：基本安装步骤不会有大的变化，但和『最新版』安装方法一定 <strong>有差别</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="fu">sudo</span> apt-get install apt-transport-https ca-certificates curl software-properties-common</span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co"># 导入Docker官方的GPG Key</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="ex">curl</span> -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="kw">|</span> <span class="fu">sudo</span> apt-key add -</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co"># 添加Docker官方镜像源地址</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="fu">sudo</span> add-apt-repository \</span>
+<span id="cb6-10"><a href="#cb6-10"></a>   <span class="st">&quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="st">   </span><span class="va">$(</span><span class="ex">lsb_release</span> -cs<span class="va">)</span><span class="st"> \</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="st">   stable&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="fu">sudo</span> apt-get update</span>
+<span id="cb6-15"><a href="#cb6-15"></a></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co"># 确认你的镜像源配置是正确的：从Docker官网下载安装最新版docker，避免从Ubuntu官方镜像源下载旧版的docker</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="ex">apt-cache</span> madison docker-ce</span>
+<span id="cb6-18"><a href="#cb6-18"></a></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co"># docker-ce | 17.12.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co"># docker-ce | 17.09.1~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co"># docker-ce | 17.09.0~ce-0~ubuntu | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co">#  ...</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co"># docker-ce | 17.03.1~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co"># docker-ce | 17.03.0~ce-0~ubuntu-xenial | https://download.docker.com/linux/ubuntu xenial/stable amd64 Packages</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="co"># 安装docker </span></span>
+<span id="cb6-27"><a href="#cb6-27"></a>$ <span class="fu">sudo</span> apt-get install -y docker-ce</span>
+<span id="cb6-28"><a href="#cb6-28"></a></span>
+<span id="cb6-29"><a href="#cb6-29"></a><span class="co"># 检查docker守护进程是否已自动启动</span></span>
+<span id="cb6-30"><a href="#cb6-30"></a>$ <span class="fu">sudo</span> systemctl status docker</span>
+<span id="cb6-31"><a href="#cb6-31"></a>● <span class="ex">docker.service</span> - Docker Application Container Engine</span>
+<span id="cb6-32"><a href="#cb6-32"></a>   <span class="ex">Loaded</span>: loaded (/lib/systemd/system/docker.service<span class="kw">;</span> <span class="ex">enabled</span><span class="kw">;</span> <span class="ex">vendor</span> preset: enabled)</span>
+<span id="cb6-33"><a href="#cb6-33"></a>   <span class="ex">Active</span>: active (running) <span class="ex">since</span> Wed 2017-02-15 14:44:43 CST<span class="kw">;</span> <span class="ex">7min</span> ago</span>
+<span id="cb6-34"><a href="#cb6-34"></a>     <span class="ex">Docs</span>: https://docs.docker.com</span>
+<span id="cb6-35"><a href="#cb6-35"></a> <span class="ex">Main</span> PID: 1464 (dockerd)</span>
+<span id="cb6-36"><a href="#cb6-36"></a>    <span class="ex">Tasks</span>: 16</span>
+<span id="cb6-37"><a href="#cb6-37"></a>   <span class="ex">Memory</span>: 50.5M</span>
+<span id="cb6-38"><a href="#cb6-38"></a>      <span class="ex">CPU</span>: 441ms</span>
+<span id="cb6-39"><a href="#cb6-39"></a>   <span class="ex">CGroup</span>: /system.slice/docker.service</span>
+<span id="cb6-40"><a href="#cb6-40"></a>           ├─<span class="ex">1464</span> /usr/bin/dockerd -H fd://</span>
+<span id="cb6-41"><a href="#cb6-41"></a>           └─<span class="ex">1622</span> containerd -l unix:///var/run/docker/libcontainerd/docker-containerd.sock --shim containerd-shim --metrics-interval=0 --sta</span></code></pre></div>
+<hr />
+<h2 id="docker-lifecycle-1">Docker生命周期</h2>
+<p><a href="https://segmentfault.com/a/1190000000751601"><img src="images/chap0x08/docker-lifecycle.png" /></a></p>
+<hr />
+<h2 id="docker-lifecycle-2">Docker生命周期</h2>
+<p><a href="https://www.freecodecamp.org/news/demystifying-containers-101-a-deep-dive-into-container-technology-for-beginners-d7b60d8511c1/"><img src="images/chap0x08/docker-deployment.png" /></a></p>
+<hr />
+<h2 id="对象类概念">对象类概念</h2>
+<ul>
+<li><a href="https://docs.docker.com/engine/getstarted/step_two/">Image</a>: 镜像</li>
+<li>Container: 容器</li>
+<li><a href="https://docs.docker.com/engine/getstarted/step_four/">Dockerfile</a></li>
+<li>Local Docker instance</li>
+<li>Docker registry</li>
+</ul>
+<hr />
+<blockquote>
+<p>An <strong><em>image</em></strong> is a filesystem and parameters to use at runtime. It doesn’t have state and never changes. A <strong><em>container</em></strong> is a running instance of an image.</p>
+</blockquote>
+<p>镜像可以类比 VirtualBox 的基础镜像概念，容器可以类比 VirtualBox 的差分增量镜像。</p>
+<blockquote>
+<p>A <strong><em>Dockerfile</em></strong> is a recipe which describes the files, environment, and commands that make up an image.</p>
+</blockquote>
+<p>Dockerfile可以类比Makefile。</p>
+<hr />
+<p>Local Docker instance可以类比本地的Virtualbox引擎。</p>
+<p>Docker registry相当于git仓库，Docker官方的Docker Hub相当于Github。</p>
+<hr />
+<h2 id="操作类概念">操作类概念</h2>
+<ul>
+<li>类比VS的同名菜单命令（输入是Dockerfile）
+<ul>
+<li>build</li>
+</ul></li>
+<li>类比git的同名子命令
+<ul>
+<li><a href="https://docs.docker.com/engine/getstarted/step_six/">tag</a></li>
+<li>commit</li>
+<li>push</li>
+<li>pull</li>
+</ul></li>
+<li>类比systemd的同名子命令
+<ul>
+<li>run</li>
+<li>stop</li>
+<li>start</li>
+<li>restart</li>
+</ul></li>
+</ul>
+<h1 id="docker-cli">使用命令行控制Docker</h1>
+<hr />
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a>$ <span class="fu">sudo</span> docker version</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="ex">Client</span>:</span>
+<span id="cb7-3"><a href="#cb7-3"></a> <span class="ex">Version</span>:   17.12.0-ce</span>
+<span id="cb7-4"><a href="#cb7-4"></a> <span class="ex">API</span> version:   1.35</span>
+<span id="cb7-5"><a href="#cb7-5"></a> <span class="ex">Go</span> version:    go1.9.2</span>
+<span id="cb7-6"><a href="#cb7-6"></a> <span class="ex">Git</span> commit:    c97c6d6</span>
+<span id="cb7-7"><a href="#cb7-7"></a> <span class="ex">Built</span>: Wed Dec 27 20:11:19 2017</span>
+<span id="cb7-8"><a href="#cb7-8"></a> <span class="ex">OS</span>/Arch:   <span class="ex">linux/amd64</span></span>
+<span id="cb7-9"><a href="#cb7-9"></a></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="ex">Server</span>:</span>
+<span id="cb7-11"><a href="#cb7-11"></a> <span class="ex">Engine</span>:</span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="ex">Version</span>:  17.12.0-ce</span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="ex">API</span> version:  1.35 (minimum version 1.12)</span>
+<span id="cb7-14"><a href="#cb7-14"></a>  <span class="ex">Go</span> version:   go1.9.2</span>
+<span id="cb7-15"><a href="#cb7-15"></a>  <span class="ex">Git</span> commit:   c97c6d6</span>
+<span id="cb7-16"><a href="#cb7-16"></a>  <span class="ex">Built</span>:    Wed Dec 27 20:09:53 2017</span>
+<span id="cb7-17"><a href="#cb7-17"></a>  <span class="ex">OS</span>/Arch:  <span class="ex">linux/amd64</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a>  <span class="ex">Experimental</span>: false</span>
+<span id="cb7-19"><a href="#cb7-19"></a></span>
+<span id="cb7-20"><a href="#cb7-20"></a>$ <span class="fu">sudo</span> docker</span>
+<span id="cb7-21"><a href="#cb7-21"></a></span>
+<span id="cb7-22"><a href="#cb7-22"></a><span class="ex">Usage</span>:  docker COMMAND</span>
+<span id="cb7-23"><a href="#cb7-23"></a></span>
+<span id="cb7-24"><a href="#cb7-24"></a><span class="ex">A</span> self-sufficient runtime for containers</span>
+<span id="cb7-25"><a href="#cb7-25"></a></span>
+<span id="cb7-26"><a href="#cb7-26"></a><span class="ex">Options</span>:</span>
+<span id="cb7-27"><a href="#cb7-27"></a>      <span class="ex">--config</span> string      Location of client config files (default <span class="st">&quot;/home/cuc/.docker&quot;</span>)</span>
+<span id="cb7-28"><a href="#cb7-28"></a>  <span class="ex">-D</span>, --debug              Enable debug mode</span>
+<span id="cb7-29"><a href="#cb7-29"></a>  <span class="ex">-H</span>, --host list          Daemon socket(s) <span class="ex">to</span> connect to</span>
+<span id="cb7-30"><a href="#cb7-30"></a>  <span class="ex">-l</span>, --log-level string   Set the logging level (<span class="st">&quot;debug&quot;</span><span class="kw">|</span><span class="st">&quot;info&quot;</span><span class="kw">|</span><span class="st">&quot;warn&quot;</span><span class="kw">|</span><span class="st">&quot;error&quot;</span><span class="kw">|</span><span class="st">&quot;fatal&quot;</span>) <span class="kw">(</span><span class="ex">default</span> <span class="st">&quot;info&quot;</span><span class="kw">)</span></span>
+<span id="cb7-31"><a href="#cb7-31"></a>      <span class="ex">--tls</span>                Use TLS<span class="kw">;</span> <span class="ex">implied</span> by --tlsverify</span>
+<span id="cb7-32"><a href="#cb7-32"></a>      <span class="ex">--tlscacert</span> string   Trust certs signed only by this CA (default <span class="st">&quot;/home/cuc/.docker/ca.pem&quot;</span>)</span>
+<span id="cb7-33"><a href="#cb7-33"></a>      <span class="ex">--tlscert</span> string     Path to TLS certificate file (default <span class="st">&quot;/home/cuc/.docker/cert.pem&quot;</span>)</span>
+<span id="cb7-34"><a href="#cb7-34"></a>      <span class="ex">--tlskey</span> string      Path to TLS key file (default <span class="st">&quot;/home/cuc/.docker/key.pem&quot;</span>)</span>
+<span id="cb7-35"><a href="#cb7-35"></a>      <span class="ex">--tlsverify</span>          Use TLS and verify the remote</span>
+<span id="cb7-36"><a href="#cb7-36"></a>  <span class="ex">-v</span>, --version            Print version information and quit</span>
+<span id="cb7-37"><a href="#cb7-37"></a></span>
+<span id="cb7-38"><a href="#cb7-38"></a><span class="ex">Management</span> Commands:</span>
+<span id="cb7-39"><a href="#cb7-39"></a>  <span class="ex">config</span>      Manage Docker configs</span>
+<span id="cb7-40"><a href="#cb7-40"></a>  <span class="ex">container</span>   Manage containers</span>
+<span id="cb7-41"><a href="#cb7-41"></a>  <span class="ex">image</span>       Manage images</span>
+<span id="cb7-42"><a href="#cb7-42"></a>  <span class="ex">network</span>     Manage networks</span>
+<span id="cb7-43"><a href="#cb7-43"></a>  <span class="ex">node</span>        Manage Swarm nodes</span>
+<span id="cb7-44"><a href="#cb7-44"></a>  <span class="ex">plugin</span>      Manage plugins</span>
+<span id="cb7-45"><a href="#cb7-45"></a>  <span class="ex">secret</span>      Manage Docker secrets</span>
+<span id="cb7-46"><a href="#cb7-46"></a>  <span class="ex">service</span>     Manage services</span>
+<span id="cb7-47"><a href="#cb7-47"></a>  <span class="ex">stack</span>       Manage Docker stacks</span>
+<span id="cb7-48"><a href="#cb7-48"></a>  <span class="ex">swarm</span>       Manage Swarm</span>
+<span id="cb7-49"><a href="#cb7-49"></a>  <span class="ex">system</span>      Manage Docker</span>
+<span id="cb7-50"><a href="#cb7-50"></a>  <span class="ex">trust</span>       Manage trust on Docker images (experimental)</span>
+<span id="cb7-51"><a href="#cb7-51"></a>  <span class="ex">volume</span>      Manage volumes</span>
+<span id="cb7-52"><a href="#cb7-52"></a></span>
+<span id="cb7-53"><a href="#cb7-53"></a><span class="ex">Commands</span>:</span>
+<span id="cb7-54"><a href="#cb7-54"></a>  <span class="ex">attach</span>      Attach local standard input, output, and error streams to a running container</span>
+<span id="cb7-55"><a href="#cb7-55"></a>  <span class="ex">build</span>       Build an image from a Dockerfile</span>
+<span id="cb7-56"><a href="#cb7-56"></a>  <span class="ex">commit</span>      Create a new image from a container<span class="st">&#39;s changes</span></span>
+<span id="cb7-57"><a href="#cb7-57"></a><span class="st">  cp          Copy files/folders between a container and the local filesystem</span></span>
+<span id="cb7-58"><a href="#cb7-58"></a><span class="st">  create      Create a new container</span></span>
+<span id="cb7-59"><a href="#cb7-59"></a><span class="st">  diff        Inspect changes to files or directories on a container&#39;</span>s filesystem</span>
+<span id="cb7-60"><a href="#cb7-60"></a>  <span class="ex">events</span>      Get real time events from the server</span>
+<span id="cb7-61"><a href="#cb7-61"></a>  <span class="bu">exec</span>        Run a command in a running container</span>
+<span id="cb7-62"><a href="#cb7-62"></a>  <span class="bu">export</span>      <span class="va">Export</span> <span class="va">a</span> <span class="va">container</span><span class="st">&#39;s filesystem as a tar archive</span></span>
+<span id="cb7-63"><a href="#cb7-63"></a><span class="st">  history     Show the history of an image</span></span>
+<span id="cb7-64"><a href="#cb7-64"></a><span class="st">  images      List images</span></span>
+<span id="cb7-65"><a href="#cb7-65"></a><span class="st">  import      Import the contents from a tarball to create a filesystem image</span></span>
+<span id="cb7-66"><a href="#cb7-66"></a><span class="st">  info        Display system-wide information</span></span>
+<span id="cb7-67"><a href="#cb7-67"></a><span class="st">  inspect     Return low-level information on Docker objects</span></span>
+<span id="cb7-68"><a href="#cb7-68"></a><span class="st">  kill        Kill one or more running containers</span></span>
+<span id="cb7-69"><a href="#cb7-69"></a><span class="st">  load        Load an image from a tar archive or STDIN</span></span>
+<span id="cb7-70"><a href="#cb7-70"></a><span class="st">  login       Log in to a Docker registry</span></span>
+<span id="cb7-71"><a href="#cb7-71"></a><span class="st">  logout      Log out from a Docker registry</span></span>
+<span id="cb7-72"><a href="#cb7-72"></a><span class="st">  logs        Fetch the logs of a container</span></span>
+<span id="cb7-73"><a href="#cb7-73"></a><span class="st">  pause       Pause all processes within one or more containers</span></span>
+<span id="cb7-74"><a href="#cb7-74"></a><span class="st">  port        List port mappings or a specific mapping for the container</span></span>
+<span id="cb7-75"><a href="#cb7-75"></a><span class="st">  ps          List containers</span></span>
+<span id="cb7-76"><a href="#cb7-76"></a><span class="st">  pull        Pull an image or a repository from a registry</span></span>
+<span id="cb7-77"><a href="#cb7-77"></a><span class="st">  push        Push an image or a repository to a registry</span></span>
+<span id="cb7-78"><a href="#cb7-78"></a><span class="st">  rename      Rename a container</span></span>
+<span id="cb7-79"><a href="#cb7-79"></a><span class="st">  restart     Restart one or more containers</span></span>
+<span id="cb7-80"><a href="#cb7-80"></a><span class="st">  rm          Remove one or more containers</span></span>
+<span id="cb7-81"><a href="#cb7-81"></a><span class="st">  rmi         Remove one or more images</span></span>
+<span id="cb7-82"><a href="#cb7-82"></a><span class="st">  run         Run a command in a new container</span></span>
+<span id="cb7-83"><a href="#cb7-83"></a><span class="st">  save        Save one or more images to a tar archive (streamed to STDOUT by default)</span></span>
+<span id="cb7-84"><a href="#cb7-84"></a><span class="st">  search      Search the Docker Hub for images</span></span>
+<span id="cb7-85"><a href="#cb7-85"></a><span class="st">  start       Start one or more stopped containers</span></span>
+<span id="cb7-86"><a href="#cb7-86"></a><span class="st">  stats       Display a live stream of container(s) resource usage statistics</span></span>
+<span id="cb7-87"><a href="#cb7-87"></a><span class="st">  stop        Stop one or more running containers</span></span>
+<span id="cb7-88"><a href="#cb7-88"></a><span class="st">  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE</span></span>
+<span id="cb7-89"><a href="#cb7-89"></a><span class="st">  top         Display the running processes of a container</span></span>
+<span id="cb7-90"><a href="#cb7-90"></a><span class="st">  unpause     Unpause all processes within one or more containers</span></span>
+<span id="cb7-91"><a href="#cb7-91"></a><span class="st">  update      Update configuration of one or more containers</span></span>
+<span id="cb7-92"><a href="#cb7-92"></a><span class="st">  version     Show the Docker version information</span></span>
+<span id="cb7-93"><a href="#cb7-93"></a><span class="st">  wait        Block until one or more containers stop, then print their exit codes</span></span>
+<span id="cb7-94"><a href="#cb7-94"></a></span>
+<span id="cb7-95"><a href="#cb7-95"></a><span class="st">Run &#39;</span><span class="va">docker</span> <span class="va">COMMAND</span> --help<span class="st">&#39; for more information on a command.</span></span></code></pre></div>
+<hr />
+<h2 id="命令简单分类整理助记">命令简单分类整理助记</h2>
+<ul>
+<li>容器生命周期管理 — docker [run|start|stop|restart|kill|rm|pause|unpause]</li>
+<li>容器操作运维 — docker [ps|inspect|top|attach|events|logs|wait|export|port|exec]</li>
+<li>容器rootfs命令 — docker [commit|cp|diff]</li>
+<li>镜像仓库 — docker [login|pull|push|search]</li>
+<li>本地镜像管理 — docker [images|rmi|tag|build|history|save|import]</li>
+<li>其他命令 — docker [info|version]</li>
+</ul>
+<hr />
+<h2 id="docker-ecosystem">其他需要了解的Docker功能与特性</h2>
+<ul>
+<li>容器编排方案 <a href="https://kubernetes.io/">Kubernetes/K8s - 容器编排的工业界开源标准</a> | <a href="https://docs.docker.com/engine/swarm/">Docker swarm</a> | <a href="https://docs.docker.com/compose/">docker-compose</a></li>
+<li><a href="https://docs.docker.com/engine/tutorials/networkingcontainers/">Docker虚拟网络的特性与管理</a></li>
+<li><a href="https://docs.docker.com/engine/tutorials/dockervolumes/">镜像、容器以及宿主机数据管理（共享、隔离等）</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-create-a-cluster-of-docker-containers-with-docker-swarm-and-digitalocean-on-ubuntu-16-04">Docker集群管理</a></li>
+<li><a href="https://gigaom.com/report/docker-and-the-current-linux-container-ecosystem/">Docker生态</a></li>
+</ul>
+<h1 id="持续集成与持续部署工具">持续集成与持续部署工具</h1>
+<hr />
+<h2 id="jenkins"><a href="https://jenkins.io">jenkins</a></h2>
+<blockquote>
+<p>Jenkins is a self-contained, open source automation server which can be used to automate all sorts of tasks such as building, testing, and deploying software.</p>
+</blockquote>
+<p>Jenkins 是被广泛应用的持续集成、自动化测试、持续部署的框架，甚至有些项目组顺便将其用来做流程管理的工具。</p>
+<hr />
+<h2 id="travis"><a href="https://travis-ci.org/">travis</a></h2>
+<blockquote>
+<p>Test and Deploy Your Code with Confidence</p>
+</blockquote>
+<p><a href="https://docs.travis-ci.com/user/tutorial/">只支持 GitHub 托管代码</a>的持续集成服务，同时支持<a href="https://docs.travis-ci.com/user/deployment/">持续部署到指定的一些第三方云计算平台</a>。</p>
+<p>对于 GitHub 上的私有仓库代码，需要付费购买<a href="https://travis-ci.com/">travis-ci.com</a>的服务。对于 GitHub 上的开源项目代码，可以免费使用 <a href="https://travis-ci.org/">travis-ci.org</a> ，未来将逐步转向统一由<a href="https://travis-ci.com/">travis-ci.com</a>继续向 GitHub.com 上的开源项目继续提供免费服务。</p>
+<hr />
+<p><a href="https://docs.travis-ci.com/user/deployment/"><img src="images/chap0x08/travis-supported-deploy-providers.png" /></a></p>
+<hr />
+<p>🌰</p>
+<p><a href="https://github.com/c4pr1c3/TravisBasedOJ">基于 Travis 的自动构建系统编写的一个在线自动判题系统</a></p>
+<hr />
+<h3 id="unittestcomparison">🌰 单元测试方案选型</h3>
+<figure>
+<img src="images/chap0x08/test-case-framework-comparison.png" alt="" /><figcaption>2019-01-24 Snapshot</figcaption>
+</figure>
+<hr />
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;"><a href="https://github.com/rylnd/shpec/">shpec</a></th>
+<th style="text-align: center;"><a href="https://github.com/chriscool/sharness">sharness</a></th>
+<th style="text-align: center;"><a href="https://github.com/sstephenson/bats">bats</a></th>
+<th style="text-align: center;"><a href="https://github.com/bats-core/bats-core">bats-core</a></th>
+<th style="text-align: center;"><a href="https://github.com/kward/shunit2">shunit2</a></th>
+<th style="text-align: center;"><a href="https://github.com/lehmannro/assert.sh">assert.sh</a></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">最近一次提交</td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/rylnd/shpec.svg?label=%20" alt="last-commit" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/chriscool/sharness.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/sstephenson/bats.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/bats-core/bats-core.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/kward/shunit2.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/last-commit/lehmannro/assert.sh.svg?label=%20" /></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">点赞数</td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/rylnd/shpec.svg" alt="stars of rylnd/shpec" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/chriscool/sharness.svg" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/sstephenson/bats.svg" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/bats-core/bats-core.svg" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/kward/shunit2.svg" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/stars/lehmannro/assert.sh.svg" /></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">最近一次自动构建</td>
+<td style="text-align: center;"><a href="https://travis-ci.org/rylnd/shpec"><img src="https://travis-ci.org/rylnd/shpec.svg?branch=master" alt="Build Status" /></a></td>
+<td style="text-align: center;"><a href="https://travis-ci.org/chriscool/sharness"><img src="https://travis-ci.org/chriscool/sharness.svg?branch=master" alt="Build Status" /></a></td>
+<td style="text-align: center;"><a href="https://travis-ci.org/sstephenson/bats"><img src="https://travis-ci.org/sstephenson/bats.svg?branch=master" alt="Build Status" /></a></td>
+<td style="text-align: center;"><a href="https://travis-ci.org/bats-core/bats-core"><img src="https://travis-ci.org/bats-core/bats-core.svg?branch=master" alt="Build Status" /></a></td>
+<td style="text-align: center;"><a href="https://travis-ci.org/kward/shunit2"><img src="https://travis-ci.org/kward/shunit2.svg?branch=master" alt="Build Status" /></a></td>
+<td style="text-align: center;"><a href="https://travis-ci.org/lehmannro/assert.sh"><img src="https://travis-ci.org/lehmannro/assert.sh.svg?branch=master" alt="Build Status" /></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">最近一年的提交次数</td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/rylnd/shpec.svg?label=%20" alt="shpec" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/chriscool/sharness.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/sstephenson/bats.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/bats-core/bats-core.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/kward/shunit2.svg?label=%20" /></td>
+<td style="text-align: center;"><img src="https://img.shields.io/github/commit-activity/y/lehmannro/assert.sh.svg?label=%20%20" /></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">travis CI</td>
+<td style="text-align: center;"><a href="https://github.com/rylnd/shpec/blob/master/.travis.yml">.travis.yml</a></td>
+<td style="text-align: center;"><a href="https://github.com/chriscool/sharness/blob/master/.travis.yml">.travis.yml</a></td>
+<td style="text-align: center;"><a href="https://github.com/sstephenson/bats/blob/master/.travis.yml">.travis.yml</a></td>
+<td style="text-align: center;"><a href="https://github.com/bats-core/bats-core/blob/master/.travis.yml">.travis.yml</a></td>
+<td style="text-align: center;"><a href="https://github.com/kward/shunit2/blob/master/.travis.yml">.travis.yml</a></td>
+<td style="text-align: center;"><a href="https://github.com/lehmannro/assert.sh/blob/master/.travis.yml">.travis.yml</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><a href="https://testanything.org/">Test Anything Protocol</a></td>
+<td style="text-align: center;">行为驱动开发（BDD）模式</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">基于 <a href="https://en.wikipedia.org/wiki/XUnit">xUnit</a> 模式</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">特色</td>
+<td style="text-align: center;">架构设计仿照 <a href="https://github.com/rspec/rspec">RSpec</a>, <a href="https://github.com/jasmine/jasmine">Jasmine</a>, <a href="https://github.com/mochajs/mocha">mocha</a></td>
+<td style="text-align: center;">提取自 Git 的脚本自动化框架</td>
+<td style="text-align: center;"><a href="https://github.com/sstephenson/bats/wiki/Projects-Using-Bats">知名成功案例多：大量知名开源项目都在使用该项目</a></td>
+<td style="text-align: center;">基于 <a href="https://github.com/sstephenson/bats/commit/03608115df2071fff4eaaff1605768c275e5f81f">bats 最后一次更新 0360811</a> 的 fork 版</td>
+<td style="text-align: center;">支持的 shell 类型多</td>
+<td style="text-align: center;">代码量小，轻量级测试框架</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="gitlab-ci"><a href="https://docs.gitlab.com/ce/ci/README.html">Gitlab CI</a></h2>
+<p><img src="images/chap0x08/gitlab_cicd_pipeline_infograph.png" /></p>
+<p>GitLab 内置的持续集成和持续部署功能，开源社区版也可以免费使用该功能。</p>
+<hr />
+<h3 id="jenkins-travis-gitlab-ci">jenkins / travis / Gitlab CI</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">jenkins</th>
+<th style="text-align: center;">travis</th>
+<th style="text-align: center;">Gitlab CI</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">CI</td>
+<td style="text-align: center;">支持自定义来源的代码托管仓库</td>
+<td style="text-align: center;">仅限 GitHub.com 上托管的代码</td>
+<td style="text-align: center;">仅限 GitLab.com 和使用 GitLab 自建仓库托管的代码</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">CD</td>
+<td style="text-align: center;">支持自定义部署目标</td>
+<td style="text-align: center;"><a href="https://docs.travis-ci.com/user/deployment/">官方指定第三方平台若干</a></td>
+<td style="text-align: center;">支持自定义部署目标</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">docker</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">自建服务</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<h1 id="openstack"><a href="https://www.openstack.org/">openstack</a></h1>
+<hr />
+<blockquote>
+<p>OpenStack is a cloud operating system that controls large pools of compute, storage, and networking resources throughout a datacenter, all managed through a dashboard that gives administrators control while empowering their users to provision resources through a web interface.</p>
+</blockquote>
+<h1 id="openvswitch"><a href="http://openvswitch.org">openvswitch</a></h1>
+<hr />
+<blockquote>
+<p>Open vSwitch is a production quality, multilayer virtual switch licensed under the open source Apache 2.0 license. It is designed to enable massive network automation through programmatic extension, while still supporting standard management interfaces and protocols (e.g. NetFlow, sFlow, IPFIX, RSPAN, CLI, LACP, 802.1ag). In addition, it is designed to support distribution across multiple physical servers similar to VMware’s vNetwork distributed vswitch or Cisco’s Nexus 1000V.</p>
+</blockquote>
+<h1 id="tcpreplay-tcpcopy"><a href="http://tcpreplay.synfin.net">tcpreplay</a> + tcpcopy</h1>
+<hr />
+<blockquote>
+<p>Tcpreplay is a suite of GPLv3 licensed tools written by Aaron Turner for UNIX (and Win32 under Cygwin) operating systems which gives you the ability to use previously captured traffic in libpcap format to test a variety of network devices. It allows you to classify traffic as client or server, rewrite Layer 2, 3 and 4 headers and finally replay the traffic back onto the network and through other devices such as switches, routers, firewalls, NIDS and IPS’s. Tcpreplay supports both single and dual NIC modes for testing both sniffing and inline devices.</p>
+</blockquote>
+<p>一言以蔽之：满足开发和测试环境模拟生产环境真实流量的需求。</p>
+<hr />
+<h2 id="为什么需要模拟生产环境真实流量">为什么需要模拟生产环境真实流量</h2>
+<ul>
+<li>线下的传统压力测试，难以模拟真实流量，尤其难以模拟正常流量混杂着各色异常流量。所以，线下压得好好的系统，上线后可能某天突然雪崩，说好能支撑 5 倍流量的系统重构，也许流量一翻倍就彻底挂了。</li>
+<li>系统重构或重要变更上线前，可以拷贝线上真实流量，实时模拟线上流量，甚至可以放大真实流量，进行压力测试，以评估系统承载能力。</li>
+<li>反过来也可以这样，如果线上跑着跑着发现有性能瓶颈，但线下环境难以复现，可以把真实流量拷贝到线下重放，直到找到问题。</li>
+</ul>
+<hr />
+<h2 id="tcpreplay-vs.-tcpcopy"><a href="http://elastos.org/redmine/attachments/download/425/TCPCopy_Manual(Chinese).pdf">tcpreplay vs. tcpcopy</a></h2>
+<p>tcpdump+Tcpreplay 或者 wireshark+Tcpreplay 可以用来回放在线流量，这种方案可以解决 TCP 层以下的问题，如防火墙问题，然而，此方案仍有如下缺陷：</p>
+<hr />
+<ol type="1">
+<li>tcpdump 抓在线数据包，必然或多或少影响在线 IO，压力大的时候尤其明显</li>
+<li>tcpdump 自身会丢包，特别是压力大的时候，丢包会很严重，远远超过 TCPCopy</li>
+<li>tcpdump 抓的包需要保存下来，必然使其抓的包有限，一般很少抓几天的数据包</li>
+<li>利用 Tcpreplay 重放，一般需修改数据包的源 IP 地址，这样必然跟在线环境不一样，对内核协议栈的冲击就很不一样</li>
+<li>由于是离线回放，导致 Tcpreplay 回放的时候网络环境可能已经与抓包的时候不同了，Tcpreplay 很难根据不同的环境做相应的调整，从而导致回放的效果与在线会有一定的</li>
+<li>Tcpreplay 相对 TCPCopy，使用更为复杂</li>
+</ol>
+<hr />
+<p><a href="https://github.com/session-replay-tools/tcpcopy">TCPCopy</a>主要用来解决 TCP 层及其以上（如 http 协议）的流量复制问题，用于服务器端的流量回放领域。总体来说，TCPCopy 有如下优点：</p>
+<hr />
+<ol type="1">
+<li>TCPCopy 能够对服务器端进行回放，不仅可以离线回放，还可以实时回放</li>
+<li>TCPCopy 实时复制在线请求包给测试服务器，并不需要大量 IO 操作，因此不影响在线 IO</li>
+<li>实时回放所在的网络环境与当时的在线环境几乎是一样的</li>
+<li>TCPCopy 不会去修改数据包的源 IP 地址</li>
+<li>TCPCopy 实时复制转发过去的数据包，能够更好地继承在线数据包的网络延迟特征</li>
+<li>TCPCopy 使用非常简单</li>
+</ol>
+<h1 id="参考文献">参考文献</h1>
+<hr />
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/DevOps">DevOps from WikiPedia</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/22638204">给 DevOps 初学者的入门指南</a></li>
+<li><a href="http://blog.dataman-inc.com/117-shurenyun-huodong/">运维自动化闭环，从腾讯走出来的实践</a></li>
+<li><a href="http://mp.weixin.qq.com/s?__biz=MzAxMzMxNDIyOA==&amp;mid=206460178&amp;idx=1&amp;sn=54a3382dc4def83d808bc172c012393f&amp;scene=21">当我们在谈论bug时我们谈论的其实是 by 西乔 神秘的程序员们</a></li>
+<li><a href="https://www.zhihu.com/question/46791295">docker为什么适合devops？</a></li>
+<li><a href="http://www.mindtheproduct.com/2016/02/what-the-hell-are-ci-cd-and-devops-a-cheatsheet-for-the-rest-of-us/">The Product Managers’ Guide to Continuous Delivery and DevOps</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04">How To Install and Use Docker on Ubuntu 16.04</a></li>
+</ul>
+<h1 id="番外">番外</h1>
+<hr />
+<ul>
+<li>持续进化的软件
+<ul>
+<li><strong>可重用</strong>
+<ul>
+<li>函数</li>
+<li>对象与类</li>
+<li>lib封装</li>
+</ul></li>
+<li><strong>可分享</strong>
+<ul>
+<li>开源软件</li>
+</ul></li>
+<li><strong>可协作</strong>
+<ul>
+<li>Github</li>
+<li>Ansible Galaxy</li>
+<li>Docker Hub</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<p>Code Defined Software!</p>
+<p>Software Defined Everything!</p>
+</body>
+</html>

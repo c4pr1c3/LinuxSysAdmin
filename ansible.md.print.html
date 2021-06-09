@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="ansible-index">番外：Ansible</h1>
+<hr />
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<hr />
+<h2 id="提纲">提纲</h2>
+<ul>
+<li>安装</li>
+<li>核心术语</li>
+<li>Hello World</li>
+<li>术语列表</li>
+<li>项目结构</li>
+<li>开发环境配置</li>
+<li>更多实例</li>
+</ul>
+<h1 id="版本说明">版本说明</h1>
+<hr />
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">ansible</span> --version</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># ansible 2.9.7</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co">#   config file = None</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co">#   configured module search path = [&#39;/home/cuc/.ansible/plugins/modules&#39;, &#39;/usr/share/ansible/plugins/modules&#39;]</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co">#   ansible python module location = /home/cuc/.pyenv/versions/3.6.8/lib/python3.6/site-packages/ansible</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co">#   executable location = /home/cuc/.pyenv/versions/3.6.8/bin/ansible</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co">#   python version = 3.6.8 (default, Apr 10 2020, 17:47:18) [GCC 7.5.0]</span></span></code></pre></div>
+<h1 id="installation"><a href="http://docs.ansible.com/ansible/latest/intro_installation.html">安装</a></h1>
+<hr />
+<p>Ansible 官方推荐 <code>Red Hat Enterprise Linux (TM)</code>, <code>CentOS</code>, <code>Fedora</code>, <code>Debian</code>, <code>Ubuntu</code> 操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过 Python 的包管理器 <code>pip</code> 进行安装。</p>
+<hr />
+<h2 id="apt-get-issue-1">apt-get install 方式安装注意事项</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># Ubuntu 18.04 默认镜像源里提供的 ansible 版本较旧</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="ex">apt</span> policy ansible</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="co"># ansible:</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#   Installed: (none)</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#   Candidate: 2.5.1+dfsg-1ubuntu0.1</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="co">#   Version table:</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#      2.5.1+dfsg-1ubuntu0.1 500</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe i386 Packages</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co">#         500 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#         500 http://security.ubuntu.com/ubuntu bionic-security/universe i386 Packages</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#      2.5.1+dfsg-1 500</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/universe i386 Packages</span></span></code></pre></div>
+<hr />
+<h2 id="apt-get-issue-2">apt-get install 方式安装注意事项</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">sudo</span> apt install software-properties-common</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">sudo</span> apt-add-repository --yes --update ppa:ansible/ansible</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="ex">apt</span> policy ansible</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># ansible:</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#   Installed: (none)</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#   Candidate: 2.9.9-1ppa~bionic</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#   Version table:</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#      2.9.9-1ppa~bionic 500</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#         500 http://ppa.launchpad.net/ansible/ansible/ubuntu bionic/main amd64 Packages</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#         500 http://ppa.launchpad.net/ansible/ansible/ubuntu bionic/main i386 Packages</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#      2.5.1+dfsg-1ubuntu0.1 500</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages</span></span>
+<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe i386 Packages</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#         500 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#         500 http://security.ubuntu.com/ubuntu bionic-security/universe i386 Packages</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#      2.5.1+dfsg-1 500</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/universe amd64 Packages</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/universe i386 Packages</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="fu">sudo</span> apt install ansible</span></code></pre></div>
+<hr />
+<h2 id="pip-方式安装的-ansible">pip 方式安装的 ansible</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># 当前系统中已通过 pip 安装的 ansible 版本信息</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">pip</span> freeze <span class="kw">|</span> <span class="fu">grep</span> ansible</span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co"># ansible==2.9.7</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="co"># 搜索最新版 ansible 候选安装包信息</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="ex">pip</span> search ansible</span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># ansible (2.9.9)                              - Radically simple IT automation</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#   INSTALLED: 2.9.7</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#   LATEST:    2.9.9</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co"># 升级 pip 方式安装的 ansible</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="ex">pip</span> install -U ansible</span>
+<span id="cb4-13"><a href="#cb4-13"></a></span>
+<span id="cb4-14"><a href="#cb4-14"></a><span class="co"># 国内安装时临时使用清华 pypi 镜像源</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="ex">pip</span> install -i https://pypi.tuna.tsinghua.edu.cn/simple -U ansible</span></code></pre></div>
+<h1 id="required-terms">核心术语</h1>
+<hr />
+<p><a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#prerequisites">Ansible 官方安装指南</a> 中的「先决条件」。</p>
+<blockquote>
+<p>You install Ansible on a <strong>control node</strong>, which then uses <strong>SSH (by default)</strong> to communicate with your <strong>managed nodes</strong> (those end devices you want to automate).</p>
+</blockquote>
+<ul>
+<li><strong>控制节点</strong>。安装 <code>ansible</code> 软件的系统。</li>
+<li><strong>被管理节点</strong>。无需安装 <code>ansible</code> 软件，接受 <code>ansible</code> 自动化管理的系统，但需要安装 <code>python</code> 解释器。</li>
+</ul>
+<hr />
+<h2 id="python3-install">Python3 解释器的安装方式</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">apt</span> policy python3</span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># python3:</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="co">#   Installed: 3.6.7-1~18.04</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#   Candidate: 3.6.7-1~18.04</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co">#   Version table:</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="co">#  *** 3.6.7-1~18.04 500</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co">#         100 /var/lib/dpkg/status</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="co">#      3.6.5-3 500</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="ex">apt</span> policy python3.6</span>
+<span id="cb5-12"><a href="#cb5-12"></a><span class="co"># python3.6:</span></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">#   Installed: 3.6.9-1~18.04</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co">#   Candidate: 3.6.9-1~18.04ubuntu1</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a><span class="co">#   Version table:</span></span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="co">#      3.6.9-1~18.04ubuntu1 500</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages</span></span>
+<span id="cb5-18"><a href="#cb5-18"></a><span class="co">#         500 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages</span></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="co">#  *** 3.6.9-1~18.04 100</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="co">#         100 /var/lib/dpkg/status</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a><span class="co">#      3.6.5-3 500</span></span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic/main amd64 Packages</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a><span class="ex">apt</span> policy python3.8</span>
+<span id="cb5-24"><a href="#cb5-24"></a><span class="co"># python3.8:</span></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">#   Installed: (none)</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="co">#   Candidate: 3.8.0-3~18.04</span></span>
+<span id="cb5-27"><a href="#cb5-27"></a><span class="co">#   Version table:</span></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">#      3.8.0-3~18.04 500</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="co">#         500 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages</span></span></code></pre></div>
+<hr />
+<h2 id="python-prerequesites">Ansible 对 Python 版本的要求</h2>
+<ul>
+<li><a href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Ansible 2.5+ 支持的 Python3 最低版本是 3.5</a>
+<ul>
+<li>Ansible 2.5- 对 Python3 的支持是「试验性质」</li>
+</ul></li>
+<li><strong>被管理节点</strong> 上同时支持 Python 2.6+ 和 Python 3.5+ 的解释器</li>
+</ul>
+<hr />
+<h2 id="python-versions">选择哪个 Python 版本</h2>
+<table>
+<thead>
+<tr class="header">
+<th>版本号</th>
+<th>PEP</th>
+<th>发布日期</th>
+<th>完整支持终止</th>
+<th>安全补丁支持终止</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2.7</td>
+<td><a href="https://www.python.org/dev/peps/pep-0373/">373</a></td>
+<td>2010-07-03</td>
+<td>2020-01-01</td>
+<td>2020-01-01</td>
+</tr>
+<tr class="even">
+<td>3.5</td>
+<td><a href="https://www.python.org/dev/peps/pep-0478/">478</a></td>
+<td>2015-09-13</td>
+<td>2017-08-08</td>
+<td><strong>2020-09-13</strong></td>
+</tr>
+<tr class="odd">
+<td>3.6</td>
+<td><a href="https://www.python.org/dev/peps/pep-0494/">494</a></td>
+<td>2016-12-23</td>
+<td>2018-12-24</td>
+<td><strong>2021-12</strong></td>
+</tr>
+<tr class="even">
+<td>3.7</td>
+<td><a href="https://www.python.org/dev/peps/pep-0537/">537</a></td>
+<td>2018-06-27</td>
+<td><strong>2020-06-27</strong></td>
+<td><strong>2023-06</strong></td>
+</tr>
+<tr class="odd">
+<td>3.8</td>
+<td><a href="https://www.python.org/dev/peps/pep-0569/">569</a></td>
+<td>2019-10-14</td>
+<td><strong>2021-04</strong></td>
+<td><strong>2024-10</strong></td>
+</tr>
+</tbody>
+</table>
+<h1 id="hello-world">Hello World</h1>
+<hr />
+<ul>
+<li><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/ssh-copy-id">将「控制节点」设置为「被管理节点」的信任主机</a></li>
+</ul>
+<h1 id="terms-list">术语列表</h1>
+<hr />
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></li>
+</ul>
+<hr />
+<h2 id="inventory"><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></h2>
+<ul>
+<li>默认全局 <code>清单</code> 文件：<code>/etc/ansible/hosts</code></li>
+<li><strong>最常用</strong>的 <code>清单</code> 文件：<code>-i &lt;path&gt;</code> ，通过命令行参数自行指定 <code>清单</code> 文件路径</li>
+</ul>
+<hr />
+<h2 id="ad-hoc-commands"><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># 使用 ansible 内置的 ping 模块</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">## 在 清单 文件中名为 ubuntu 的主机或主机组定义的所有主机上执行</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="ex">ansible</span> ubuntu -i hosts -m ping</span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">## 在 清单 文件中定义的所有 不重复主机 上执行</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="ex">ansible</span> all -i hosts -m ping</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co"># 执行远程主机上的指令</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="ex">ansible</span> all -i hosts -a <span class="st">&#39;ip addr&#39;</span></span></code></pre></div>
+<hr />
+<h2 id="playbooks"><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></h2>
+<blockquote>
+<p>Playbooks 是 Ansible 的 配置、部署和编排语言，可以用于定义远程主机强制执行策略或一般性 IT 过程。</p>
+</blockquote>
+<ul>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
+<li>核心语言使用的 <a href="http://docs.ansible.com/ansible/latest/YAMLSyntax.html">YAML</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/playbooks_keywords.html">Ansible 官方提供的指令速查词典</a></li>
+</ul>
+<hr />
+<h3 id="playbooks_variables"><a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html">在 Playbook 里使用变量</a></h3>
+<pre class="jinja"><code>{# 简单变量 #}
+{{ max_amp_value }}
+
+{# YAML 代码中引用 jinja2 模版变量必须使用双引号 #}
+&quot;{{ base_path }}/22&quot;
+
+{# ansible hostname -m setup #}
+{{ ansible_facts[&#39;devices&#39;][&#39;sda&#39;][&#39;model&#39;] }}</code></pre>
+<p>更多关于模版（Jinja2）的帮助请阅读<a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html">Ansible 官方文档</a> 。</p>
+<hr />
+<p>变量作用域优先级如下，自顶向下优先级依次升高：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">role</span> defaults </span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">inventory</span> file or script group vars</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="ex">inventory</span> group_vars/all</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="ex">playbook</span> group_vars/all</span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="ex">inventory</span> group_vars/*</span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="ex">playbook</span> group_vars/*</span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="ex">inventory</span> file or script host vars</span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="ex">inventory</span> host_vars/*</span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="ex">playbook</span> host_vars/*</span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="ex">host</span> facts</span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="ex">play</span> vars</span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="ex">play</span> vars_prompt</span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="ex">play</span> vars_files</span>
+<span id="cb8-14"><a href="#cb8-14"></a><span class="ex">role</span> vars (defined in role/vars/main.yml)</span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="ex">block</span> vars (only for tasks in block)</span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="ex">task</span> vars (only for the task)</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="ex">role</span> (and include_role) <span class="ex">params</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="ex">include</span> params</span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="ex">include_vars</span></span>
+<span id="cb8-20"><a href="#cb8-20"></a><span class="ex">set_facts</span> / registered vars</span>
+<span id="cb8-21"><a href="#cb8-21"></a><span class="ex">extra</span> vars (always win precedence)</span></code></pre></div>
+<hr />
+<h2 id="modules"><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></h2>
+<p>常见运维任务都可以找到 <code>ansible</code> 内置模块的支持</p>
+<hr />
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_files_modules.html">文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html">bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_system_modules.html">操作系统级别管理工具：用户/用户组管理、systemd服务管理、时区管理、内核加载模块管理等</a></li>
+</ul>
+<hr />
+<ul>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_commands_modules.html">远程命令执行、脚本执行等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_crypto_modules.html">PKI 证书管理</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_database_modules.html">常见数据库管理</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_web_infrastructure_modules.html">常见Web基础设施管理：supervisorctl、htpasswd、apache2_module、letsencrypt等</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/list_of_source_control_modules.html">常见版本控制工具管理</a></li>
+</ul>
+<hr />
+<h2 id="ansible-vault"><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></h2>
+<p><a href="http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault">使用 Vault 加密敏感数据</a> ，可以对以下路径下的文件加密：</p>
+<ul>
+<li><code>group_vars/</code></li>
+<li><code>host_vars/</code></li>
+</ul>
+<p>也可以对 Ansible 变量加密。</p>
+<hr />
+<ul>
+<li><strong>建议-1</strong> 仅对需要加密的变量进行加密，避免加密扩大化；</li>
+<li><strong>建议-2</strong> 为了便于 <code>grep</code> 等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个 <strong>中间变量</strong> 来隔离 <code>被引用变量</code> 和 <code>加密数据</code>。</li>
+</ul>
+<hr />
+<h3 id="var-encrypted-examples">变量加密推荐做法实例</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># group_vars/demo/vars.yml</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="fu">demo_group_name</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;demo&quot;</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="fu">demo_users</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="at">  </span><span class="fu">alice</span><span class="kw">:</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="at">    </span><span class="fu">group</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;vault_group&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="at">    </span><span class="fu">passwd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;{{ vault_demo_users.alice.passwd }}&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="at">  </span><span class="fu">bob</span><span class="kw">:</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="at">    </span><span class="fu">group</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;vault_group&quot;</span></span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="at">    </span><span class="fu">passwd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;{{ vault_demo_users.bob.passwd }}&quot;</span></span>
+<span id="cb9-10"><a href="#cb9-10"></a></span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="co"># group_vars/demo/vault.yml</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a><span class="co"># 该文件的实际内容使用 ansible-vault 加密存储</span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="fu">vault_demo_users</span><span class="kw">:</span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="at">  </span><span class="fu">alice</span><span class="kw">:</span></span>
+<span id="cb9-15"><a href="#cb9-15"></a><span class="at">    </span><span class="fu">passwd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;plz-change-me&quot;</span></span>
+<span id="cb9-16"><a href="#cb9-16"></a><span class="at">  </span><span class="fu">bob</span><span class="kw">:</span></span>
+<span id="cb9-17"><a href="#cb9-17"></a><span class="at">    </span><span class="fu">passwd</span><span class="kw">:</span><span class="at"> </span><span class="st">&quot;plz-change-me&quot;</span></span></code></pre></div>
+<h1 id="项目结构">项目结构</h1>
+<hr />
+<p><a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html">Ansible 最佳实践</a></p>
+<p>在官方推荐的 <a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout">目录布局</a> 基础之上，进一步精简一个常用目录组织结构：</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1"></a><span class="at">production</span><span class="co">                # 生产环境服务器清单文件</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="at">staging</span><span class="co">                   # 模拟环境服务器清单文件</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="at">group_vars/</span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="at">   group1</span><span class="co">                 # here we assign variables to particular groups</span></span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="at">   group2</span><span class="co">                 # &quot;&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="at">host_vars/</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="at">   hostname1</span><span class="co">              # if systems need specific variables, put them here</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="at">   hostname2</span><span class="co">              # &quot;&quot;</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="at">site.yml</span><span class="co">                  # master playbook</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a><span class="at">webservers.yml</span><span class="co">            # playbook for webserver tier</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="at">dbservers.yml</span><span class="co">             # playbook for dbserver tier</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="at">roles/</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="at">    common/</span><span class="co">               # this hierarchy represents a &quot;role&quot;</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="at">        tasks/</span><span class="co">            #</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="at">            main.yml</span><span class="co">      #  &lt;-- tasks file can include smaller files if warranted</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="at">        handlers/</span><span class="co">         #</span></span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="at">            main.yml</span><span class="co">      #  &lt;-- handlers file</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a><span class="at">        templates/</span><span class="co">        #  &lt;-- files for use with the template resource</span></span>
+<span id="cb10-22"><a href="#cb10-22"></a><span class="at">            ntp.conf.j2</span><span class="co">   #  &lt;------- templates end in .j2</span></span>
+<span id="cb10-23"><a href="#cb10-23"></a><span class="at">        files/</span><span class="co">            #</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a><span class="at">            bar.txt</span><span class="co">       #  &lt;-- files for use with the copy resource</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a><span class="at">            foo.sh</span><span class="co">        #  &lt;-- script files for use with the script resource</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a><span class="at">        vars/</span><span class="co">             #</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a><span class="at">            main.yml</span><span class="co">      #  &lt;-- variables associated with this role</span></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="at">        defaults/</span><span class="co">         #</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a><span class="at">            main.yml</span><span class="co">      #  &lt;-- default lower priority variables for this role</span></span>
+<span id="cb10-30"><a href="#cb10-30"></a><span class="at">        meta/</span><span class="co">             #</span></span>
+<span id="cb10-31"><a href="#cb10-31"></a><span class="at">            main.yml</span><span class="co">      #  &lt;-- role dependencies</span></span>
+<span id="cb10-32"><a href="#cb10-32"></a></span>
+<span id="cb10-33"><a href="#cb10-33"></a><span class="at">    webtier/</span><span class="co">              # same kind of structure as &quot;common&quot; was above, done for the webtier role</span></span>
+<span id="cb10-34"><a href="#cb10-34"></a><span class="at">    monitoring/</span><span class="co">           # &quot;&quot;</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a><span class="at">    fooapp/</span><span class="co">               # &quot;&quot;</span></span></code></pre></div>
+<h1 id="开发环境配置">开发环境配置</h1>
+<hr />
+<h2 id="常见的开发环境配置需求">常见的「开发环境配置需求」</h2>
+<ul>
+<li>自动补全
+<ul>
+<li>重复输入内容</li>
+<li>语法关键字</li>
+<li>常用代码片段</li>
+</ul></li>
+<li>语法高亮</li>
+<li>语法检查</li>
+<li>调试</li>
+<li>运行</li>
+<li>语法即时帮助</li>
+</ul>
+<hr />
+<h2 id="编辑器">编辑器</h2>
+<ul>
+<li>vscode
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit">Remote - SSH: Editing Configuration Files</a></li>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">（可选）vim</a></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="ansible"><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></h3>
+<p><a href="https://code.visualstudio.com/docs/languages/identifiers">vscode 里全局 settings.json 里设置 files.associations</a></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb11-1"><a href="#cb11-1"></a><span class="er">&quot;files.associations&quot;:</span> <span class="fu">{</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a>    <span class="dt">&quot;**/defaults/**/*&quot;</span><span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="dt">&quot;**/tasks/**/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="dt">&quot;**/handler/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>    <span class="dt">&quot;**/*_vars/**/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>    <span class="dt">&quot;**/roles/**/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>    <span class="dt">&quot;**/playbooks/**/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a>    <span class="dt">&quot;**/*ansible*/**/*.yml&quot;</span> <span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-9"><a href="#cb11-9"></a>    <span class="dt">&quot;**/vars/**/*.yml&quot;</span><span class="fu">:</span> <span class="st">&quot;ansible&quot;</span><span class="fu">,</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a>    <span class="dt">&quot;**/inventory/*/*&quot;</span><span class="fu">:</span> <span class="st">&quot;ansible&quot;</span></span>
+<span id="cb11-11"><a href="#cb11-11"></a><span class="fu">}</span></span></code></pre></div>
+<p><a href="https://marketplace.visualstudio.com/items?itemName=haaaad.ansible">以上参考 language-Ansible 的文件关联配置</a></p>
+<hr />
+<h3 id="使用-ssh-进行远程开发"><a href="https://code.visualstudio.com/docs/remote/ssh">使用 SSH 进行远程开发</a></h3>
+<p><img src="images/ansible/architecture-ssh.png" /></p>
+<hr />
+<h2 id="语法检查">语法检查</h2>
+<ul>
+<li>ansible-lint</li>
+<li>yamllint</li>
+</ul>
+<hr />
+<h3 id="安装">安装</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="ex">pip</span> install ansible-lint yamllint</span></code></pre></div>
+<hr />
+<h3 id="小结">小结</h3>
+<ul>
+<li>自动补全
+<ul>
+<li>重复输入内容: <a href="https://stackoverflow.com/questions/51341555/visualcode-shortcut-to-display-autocomplete-list-before-typing-in-macos">vscode 内置功能</a></li>
+<li>语法关键字: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a></li>
+<li>常用代码片段: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展 snippets 功能</a></li>
+</ul></li>
+<li>语法高亮 <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a> + <a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
+<li>语法检查 <code>ansible-lint</code> + <code>yamllint</code></li>
+<li>调试 <a href="https://docs.ansible.com/ansible/latest/modules/debug_module.html">Ansible 内置的 debug 模块，调试打印方式</a></li>
+<li>运行 <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
+<li>语法即时帮助 暂时没有集成解决方案</li>
+</ul>
+<h1 id="more-playbooks">Playbooks 实例</h1>
+<hr />
+<ul>
+<li><a href="https://github.com/c4pr1c3/AnsibleTutorial">原创实例</a></li>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
+</ul>
+<h1 id="参考资料">参考资料</h1>
+<hr />
+<ul>
+<li><a href="http://cheat.readthedocs.io/en/latest/ansible/">Cheatsheet of Ansible</a></li>
+<li><a href="https://gist.github.com/andreicristianpetcu/b892338de279af9dac067891579cad7d">An Ansible summary Jon Warbrick, July 2014, V3.2 (for Ansible 1.7)</a></li>
+</ul>
+<h1 id="附录-a">附录 A</h1>
+<hr />
+<h2 id="yaml-quickstart">YAML 快速上手</h2>
+<ul>
+<li>（可选）<code>---</code> 定义 YAML 文件开始，<code>...</code> 定义 YAML 文件结束</li>
+<li><code>list</code> 数据结构，使用 `- ` （一个短杠和一个空格）</li>
+<li><code>dict</code> 数据结构，使用 <code>key: value</code> 形式</li>
+<li>续行符
+<ul>
+<li><code>|</code> 包含换行符</li>
+<li><code>&gt;</code> 忽略换行符</li>
+</ul></li>
+<li>尽可能多的使用 <strong>双引号</strong> 包围变量的赋值</li>
+</ul>
+<hr />
+<h2 id="yaml-basic-examples">YAML 简单例子</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># Employee records</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a><span class="kw">-</span><span class="at"> </span><span class="fu">martin</span><span class="kw">:</span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Martin D&#39;vloper</span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="at">    </span><span class="fu">job</span><span class="kw">:</span><span class="at"> Developer</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="at">    </span><span class="fu">skills</span><span class="kw">:</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="at">      </span><span class="kw">-</span><span class="at"> python</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="at">      </span><span class="kw">-</span><span class="at"> perl</span></span>
+<span id="cb13-8"><a href="#cb13-8"></a><span class="at">      </span><span class="kw">-</span><span class="at"> pascal</span></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="kw">-</span><span class="at"> </span><span class="fu">tabitha</span><span class="kw">:</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="at">    </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Tabitha Bitumen</span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="at">    </span><span class="fu">job</span><span class="kw">:</span><span class="at"> Developer</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="at">    </span><span class="fu">skills</span><span class="kw">:</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="at">      </span><span class="kw">-</span><span class="at"> lisp</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="at">      </span><span class="kw">-</span><span class="at"> fortran</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="at">      </span><span class="kw">-</span><span class="at"> erlang</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="co"># 上述例子的等价单行写法如下：</span></span>
+<span id="cb13-18"><a href="#cb13-18"></a><span class="co"># 可以将以下内容复制粘贴到 http://www.yamllint.com/ 进行验证</span></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="kw">-</span><span class="at"> </span><span class="fu">martin</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">name</span><span class="kw">:</span><span class="at"> Martin D&#39;vloper</span><span class="kw">,</span><span class="at"> </span><span class="fu">job</span><span class="kw">:</span><span class="at"> Developer</span><span class="kw">,</span><span class="at"> </span><span class="fu">skill</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">python</span><span class="kw">,</span><span class="at"> perl</span><span class="kw">,</span><span class="at"> pascal</span><span class="kw">]}</span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="kw">-</span><span class="at"> </span><span class="fu">tabitha</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="fu">name</span><span class="kw">:</span><span class="at"> Tabitha Bitumen</span><span class="kw">,</span><span class="at"> </span><span class="fu">job</span><span class="kw">:</span><span class="at"> Developer</span><span class="kw">,</span><span class="at"> </span><span class="fu">skill</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">lisp</span><span class="kw">,</span><span class="at"> fortran</span><span class="kw">,</span><span class="at"> erlang</span><span class="kw">]}</span></span></code></pre></div>
+<hr />
+<h2 id="yaml-multiple-lines">YAML 多行字符串例子</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">include_newlines</span><span class="kw">: </span><span class="ch">|</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>            exactly as you see</span>
+<span id="cb14-3"><a href="#cb14-3"></a>            will appear these three</span>
+<span id="cb14-4"><a href="#cb14-4"></a>            lines of poetry</span>
+<span id="cb14-5"><a href="#cb14-5"></a></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="fu">ignore_newlines</span><span class="kw">: </span><span class="ch">&gt;</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a>            this is really a</span>
+<span id="cb14-8"><a href="#cb14-8"></a>            single line of text</span>
+<span id="cb14-9"><a href="#cb14-9"></a>            despite appearances</span></code></pre></div>
+</body>
+</html>

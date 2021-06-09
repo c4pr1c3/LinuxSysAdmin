@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第一章linux基础实验">第一章：Linux基础（实验）</h1>
+<hr />
+<h2 id="gnu-is-not-unix">GNU is NOT Unix</h2>
+<h1 id="软件环境">软件环境</h1>
+<hr />
+<ul>
+<li>Virtualbox</li>
+<li>Ubuntu 20.04 Server 64bit
+<ul>
+<li>备选：Ubuntu 18.04 Server 64bit</li>
+<li>备选：Ubuntu 18.04 Desktop 64bit</li>
+</ul></li>
+<li>课件内容均在 18.04 版本时代制作，同学们在实验时遇到实际情况与课件描述不符之处，应以实际环境为准，切忌唯课件论</li>
+</ul>
+<h1 id="实验问题">实验问题</h1>
+<hr />
+<ul>
+<li>如何配置无人值守安装iso并在Virtualbox中完成自动化安装。</li>
+<li>Virtualbox安装完Ubuntu之后新添加的网卡如何实现系统开机自动启用和自动获取IP？</li>
+<li>如何使用sftp在虚拟机和宿主机之间传输文件？</li>
+</ul>
+<h1 id="实验报告要求">实验报告要求</h1>
+<hr />
+<ul>
+<li>使用 <code>markdown</code> 格式纯文本</li>
+<li>使用 <a href="https://classroom.github.com/classrooms">Github Classroom</a> 管理作业（课堂当日宣讲为准）</li>
+<li>每次作业应 <code>commit</code> 到独立分支并通过 <code>Pull Request</code> 分别提交每一次作业</li>
+<li>实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业</li>
+<li>记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接</li>
+</ul>
+<h1 id="参考文献">参考文献</h1>
+<hr />
+<ul>
+<li><a href="http://askubuntu.com/questions/704035/no-eth0-listed-in-ifconfig-a-only-enp0s3-and-lo">No “eth0” listed in ifconfig -a, only enp0s3 and lo</a></li>
+</ul>
+<h1 id="howto-get-vm-ips">关于查看虚拟机 IP 地址的 FAQ</h1>
+<hr />
+<h2 id="ip-a-1">ip a</h2>
+<p><img src="images/chap0x01/howto-get-ips.png" /></p>
+<hr />
+<h2 id="ip-a-2">ip a</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">接口名称</th>
+<th style="text-align: left;">网卡类型</th>
+<th style="text-align: left;">网卡标识</th>
+<th style="text-align: left;">IP 地址/子网掩码</th>
+<th style="text-align: left;">MAC 地址</th>
+<th style="text-align: left;">物理层正常可用状态</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">回环接口</td>
+<td style="text-align: left;">虚拟网卡</td>
+<td style="text-align: left;">lo</td>
+<td style="text-align: left;">127.0.0.1/8</td>
+<td style="text-align: left;">00:00:00:00:00:00</td>
+<td style="text-align: left;">UNKNOWN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">以太网卡</td>
+<td style="text-align: left;">物理网卡</td>
+<td style="text-align: left;">enp0s3</td>
+<td style="text-align: left;">10.0.2.15/24</td>
+<td style="text-align: left;">08:00:27:d3:eb:c9</td>
+<td style="text-align: left;">UP</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">以太网卡</td>
+<td style="text-align: left;">物理网卡</td>
+<td style="text-align: left;">enp0s8</td>
+<td style="text-align: left;">192.168.56.170/24</td>
+<td style="text-align: left;">08:00:27:ea:0a:94</td>
+<td style="text-align: left;">UP</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="vnic-by-views">不同视角的物理网卡</h2>
+<ul>
+<li>宿主机（<code>Host OS</code>）视角</li>
+</ul>
+<p><img src="images/chap0x01/pnic-by-host.png" /></p>
+<ul>
+<li>虚拟机（客户机系统, <code>Guest OS</code>）视角
+<ul>
+<li>上述 <code>ip a</code> 输出结果里的 <code>enp0s3</code> 和 <code>enp0s8</code></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="vnic-by-views">不同视角的虚拟网卡</h2>
+<ul>
+<li>宿主机（<code>Host OS</code>）视角</li>
+</ul>
+<p><img src="images/chap0x01/vnic-by-host.png" /></p>
+<ul>
+<li>虚拟机（客户机系统, <code>Guest OS</code>）视角
+<ul>
+<li>上述 <code>ip a</code> 输出结果里的 <code>lo</code></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="host-only-网络默认分配-ip-地址范围">Host-only 网络默认分配 IP 地址范围</h2>
+<p><img src="images/chap0x01/host-only-ip-config.png" /></p>
+<hr />
+<h2 id="nat-ip-config">NAT 默认分配 IP 地址</h2>
+<p>10.0.2.15/24</p>
+<hr />
+<h2 id="natnetwork-ip-config">「NAT 网络」默认分配 IP 地址</h2>
+<p><img src="images/chap0x01/natnetwork.png" /></p>
+<hr />
+<h2 id="nat-portfwd">如果你的 Host-only 网络无法正常使用</h2>
+<p><img src="images/chap0x01/nat-portfwd-demo.png" /></p>
+<ul>
+<li>开启 <code>端口转发</code> 后，就可以 <code>ssh cuc@127.0.0.1 -p 2222</code> 登录 Linux
+<ul>
+<li>如果宿主机上 <code>2222</code> 端口已经被占用，请更换为其他可用端口号（建议 1024 以上）</li>
+</ul></li>
+<li><code>NAT</code> 或 <code>NAT 网络</code> 创建的虚拟网卡对应的虚拟机内地址不能在宿主机上直接访问到</li>
+</ul>
+<h1 id="focal-fossa-无人值守安装-iso-制作过程示例">Focal Fossa 无人值守安装 iso 制作过程示例</h1>
+<hr />
+<p>⚠️ 仅适用于基于 <a href="https://github.com/CanonicalLtd/subiquity">subiquity</a> 的 Ubuntu 安装镜像 ⚠️</p>
+<ul>
+<li><a href="https://releases.ubuntu.com/focal/">Ubuntu 20.04 Live Server</a>
+<ul>
+<li>当前已验证 <a href="https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso">20.04.2</a></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="先修但可以跳过的技术基础">先修但可以跳过的技术基础</h2>
+<p><a href="cloud-init.md">Cloud-Init</a></p>
+<hr />
+<h2 id="实现特性">实现特性</h2>
+<ul>
+<li>定制一个普通用户名和默认密码</li>
+<li>定制安装 OpenSSH Server</li>
+</ul>
+<hr />
+<h2 id="实验提醒">实验提醒</h2>
+<ul>
+<li>根据需要 <strong>酌情</strong> 修改指令</li>
+<li>遇到指令执行出错务必 <strong>仔细</strong> 阅读出错信息并在搜索引擎中搜索 <strong>错误关键字</strong></li>
+</ul>
+<hr />
+<h2 id="steps-to-auto-focal-1">主要操作步骤</h2>
+<ul>
+<li>提前下载好<a href="https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso">纯净版 Ubuntu 安装镜像 iso 文件</a></li>
+<li>使用手动安装 Ubuntu 后得到的一个初始「自动配置描述文件」 : <code>/var/log/installer/autoinstall-user-data</code> 对照 <a href="https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c">Ubuntu 20.04 + Autoinstall + VirtualBox</a> 中提供的示例配置文件 <strong>酌情修改</strong>
+<ul>
+<li>也可以 <strong>偷懒跳过</strong> 上述步骤，直接使用我提供的一个 <a href="exp/chap0x01/cd-rom/nocloud/user-data">可用配置文件 user-data</a></li>
+<li><code>meta-data</code> 文件必不可少，但可以是空文件</li>
+</ul></li>
+<li>同手工安装系统步骤，新建可以用于安装 <code>Ubuntu 64位系统</code> 的虚拟机配置</li>
+</ul>
+<hr />
+<h2 id="steps-to-auto-focal-2">主要操作步骤</h2>
+<ul>
+<li>参考 <a href="exp/cloud-init/docker-compose/README.md">番外章节 Cloud-Init 实验目录中的说明文件</a> ，制作包含 <code>user-data</code> 和 <code>meta-data</code> 的 ISO 镜像文件，假设命名为 <code>focal-init.iso</code></li>
+<li>移除上述虚拟机「设置」-「存储」-「控制器：IDE」</li>
+<li>在「控制器：SATA」下新建 2 个虚拟光盘，<strong>按顺序</strong> 先挂载「纯净版 Ubuntu 安装镜像文件」后挂载 <code>focal-init.iso</code></li>
+<li>启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 <code>yes</code> 并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了</li>
+</ul>
+<blockquote>
+<p>Continue with autoinstall? (yes|no)</p>
+</blockquote>
+<h1 id="年以前版本-无人值守安装iso制作过程示例">(2021 年以前版本) 无人值守安装iso制作过程示例</h1>
+<hr />
+<p>⚠️ 仅限 Ubuntu 18.04 和 16.04 ，不适用于 Ubuntu 20.04 及后续更新版本 ⚠️</p>
+<hr />
+<h2 id="focal-legacy">Ubuntu 20.04 Legacy 版</h2>
+<p><a href="http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04.1/release/"><img src="images/chap0x01/ubuntu-server-install-survey.png" /></a></p>
+<hr />
+<h2 id="features-2020">实现特性</h2>
+<ul>
+<li>定制一个普通用户名和默认密码</li>
+<li>定制安装OpenSSH Server</li>
+<li>安装过程禁止自动联网更新软件包</li>
+</ul>
+<hr />
+<h2 id="tips-2020">实验提醒</h2>
+<ul>
+<li>先「有人值守」方式安装好 <strong>一个可用的 Ubuntu 系统环境</strong></li>
+<li>以下操作指令均在上述环境的 <strong>命令行</strong> 中输入完成</li>
+<li>根据需要 <strong>酌情</strong> 修改指令</li>
+<li>遇到指令执行出错务必 <strong>仔细</strong> 阅读出错信息并在搜索引擎中搜索 <strong>错误关键字</strong></li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># 根据实际情况，自行替换其中的参数</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="co"># 在当前用户目录下创建一个用于挂载iso镜像文件的目录</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">mkdir</span> loopdir</span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># 挂载iso镜像文件到该目录</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="fu">mount</span> -o loop ubuntu-16.04.1-server-amd64.iso loopdir</span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># 创建一个工作目录用于克隆光盘内容</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="fu">mkdir</span> cd</span>
+<span id="cb1-10"><a href="#cb1-10"></a> </span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># 同步光盘内容到目标工作目录</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># 一定要注意loopdir后的这个/，cd后面不能有/</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="fu">rsync</span> -av loopdir/ cd</span>
+<span id="cb1-14"><a href="#cb1-14"></a></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="co"># 卸载iso镜像</span></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="fu">umount</span> loopdir</span>
+<span id="cb1-17"><a href="#cb1-17"></a></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co"># 进入目标工作目录</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="bu">cd</span> cd/</span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co"># 编辑Ubuntu安装引导界面增加一个新菜单项入口</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="ex">vim</span> isolinux/txt.cfg</span></code></pre></div>
+<hr />
+<p>添加以下内容到该文件后强制保存退出</p>
+<pre><code>label autoinstall
+  menu label ^Auto Install Ubuntu Server
+  kernel /install/vmlinuz
+  append  file=/cdrom/preseed/ubuntu-server-autoinstall.seed debian-installer/locale=en_US console-setup/layoutcode=us keyboard-configuration/layoutcode=us console-setup/ask_detect=false localechooser/translation/warn-light=true localechooser/translation/warn-severe=true initrd=/install/initrd.gz root=/dev/ram rw quiet</code></pre>
+<hr />
+<ul>
+<li>提前阅读并编辑定制Ubuntu官方提供的示例<a href="https://help.ubuntu.com/lts/installation-guide/example-preseed.txt">preseed.cfg</a>，并将该文件保存到刚才创建的工作目录<code>~/cd/preseed/ubuntu-server-autoinstall.seed</code></li>
+<li>修改isolinux/isolinux.cfg，增加内容<code>timeout 10</code>（可选，否则需要手动按下ENTER启动安装界面）</li>
+</ul>
+<hr />
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 切换到 root 用户身份</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">sudo</span> su -</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># 重新生成md5sum.txt</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="bu">cd</span> <span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/cd&quot;</span> <span class="kw">&amp;&amp;</span> <span class="fu">find</span> . -type f -print0 <span class="kw">|</span> <span class="fu">xargs</span> -0 md5sum <span class="op">&gt;</span> md5sum.txt</span>
+<span id="cb3-6"><a href="#cb3-6"></a></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co"># 封闭改动后的目录到.iso</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="va">IMAGE=</span>custom.iso</span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="va">BUILD=</span><span class="st">&quot;</span><span class="va">$HOME</span><span class="st">/cd/&quot;</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="ex">apt</span> update <span class="kw">&amp;&amp;</span> <span class="ex">apt</span> install -y genisoimage</span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="ex">genisoimage</span> -r -V <span class="st">&quot;Custom Ubuntu Install CD&quot;</span> \</span>
+<span id="cb3-13"><a href="#cb3-13"></a>            -cache-inodes \</span>
+<span id="cb3-14"><a href="#cb3-14"></a>            -J -l -b isolinux/isolinux.bin \</span>
+<span id="cb3-15"><a href="#cb3-15"></a>            -c isolinux/boot.cat -no-emul-boot \</span>
+<span id="cb3-16"><a href="#cb3-16"></a>            -boot-load-size 4 -boot-info-table \</span>
+<span id="cb3-17"><a href="#cb3-17"></a>            -o <span class="va">$IMAGE</span> <span class="va">$BUILD</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co"># 如果目标磁盘之前有数据，则在安装过程中会在分区检测环节出现人机交互对话框需要人工选择</span></span></code></pre></div>
+<hr />
+<p>一个我修改定制好的<a href="exp/chap0x01/cd-rom/preseed/ubuntu-server-autoinstall.seed">ubuntu-server-autoinstall.seed</a>，请自行和官方示例文件进行比对，自行思考理解和掌握：</p>
+<ul>
+<li>我做了哪些修改？
+<ul>
+<li>用什么「工具」能提高「差异」比对的效率？</li>
+</ul></li>
+<li>这些修改的作用是什么？</li>
+</ul>
+<hr />
+<h2 id="tips-2020-1">友情提醒</h2>
+<ul>
+<li>preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 <a href="https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server">ubuntu-18.04.1-live-server-amd64.iso</a></li>
+<li>txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的</li>
+</ul>
+<hr />
+<h2 id="推荐阅读">推荐阅读</h2>
+<ul>
+<li><a href="https://github.com/myspaghetti/macos-virtualbox">在 VirtualBox 中一键安装 macOS</a>
+<ul>
+<li>命令行操作 VirtualBox 的最佳示范应用</li>
+<li>跨平台 Bash 脚本的最佳示范应用（建议学完「第四章」后再看、再学习体会）</li>
+<li>获得 macOS 平台体验机会</li>
+</ul></li>
+</ul>
+</body>
+</html>

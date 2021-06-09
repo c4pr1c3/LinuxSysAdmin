@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第一章linux基础实验" class="title-slide slide level1">
+<h1>第一章：Linux基础（实验）</h1>
+
+</section>
+<section id="gnu-is-not-unix" class="slide level2">
+<h2>GNU is NOT Unix</h2>
+</section>
+</section>
+<section>
+<section id="软件环境" class="title-slide slide level1">
+<h1>软件环境</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Virtualbox</li>
+<li>Ubuntu 20.04 Server 64bit
+<ul>
+<li>备选：Ubuntu 18.04 Server 64bit</li>
+<li>备选：Ubuntu 18.04 Desktop 64bit</li>
+</ul></li>
+<li>课件内容均在 18.04 版本时代制作，同学们在实验时遇到实际情况与课件描述不符之处，应以实际环境为准，切忌唯课件论</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="实验问题" class="title-slide slide level1">
+<h1>实验问题</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>如何配置无人值守安装iso并在Virtualbox中完成自动化安装。</li>
+<li>Virtualbox安装完Ubuntu之后新添加的网卡如何实现系统开机自动启用和自动获取IP？</li>
+<li>如何使用sftp在虚拟机和宿主机之间传输文件？</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="实验报告要求" class="title-slide slide level1">
+<h1>实验报告要求</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>使用 <code>markdown</code> 格式纯文本</li>
+<li>使用 <a href="https://classroom.github.com/classrooms">Github Classroom</a> 管理作业（课堂当日宣讲为准）</li>
+<li>每次作业应 <code>commit</code> 到独立分支并通过 <code>Pull Request</code> 分别提交每一次作业</li>
+<li>实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业</li>
+<li>记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="参考文献" class="title-slide slide level1">
+<h1>参考文献</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="http://askubuntu.com/questions/704035/no-eth0-listed-in-ifconfig-a-only-enp0s3-and-lo">No “eth0” listed in ifconfig -a, only enp0s3 and lo</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="howto-get-vm-ips" class="title-slide slide level1">
+<h1>关于查看虚拟机 IP 地址的 FAQ</h1>
+
+</section>
+<section id="ip-a-1" class="slide level2">
+<h2>ip a</h2>
+<p><img data-src="images/chap0x01/howto-get-ips.png" /></p>
+</section>
+<section id="ip-a-2" class="slide level2">
+<h2>ip a</h2>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">接口名称</th>
+<th style="text-align: left;">网卡类型</th>
+<th style="text-align: left;">网卡标识</th>
+<th style="text-align: left;">IP 地址/子网掩码</th>
+<th style="text-align: left;">MAC 地址</th>
+<th style="text-align: left;">物理层正常可用状态</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">回环接口</td>
+<td style="text-align: left;">虚拟网卡</td>
+<td style="text-align: left;">lo</td>
+<td style="text-align: left;">127.0.0.1/8</td>
+<td style="text-align: left;">00:00:00:00:00:00</td>
+<td style="text-align: left;">UNKNOWN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">以太网卡</td>
+<td style="text-align: left;">物理网卡</td>
+<td style="text-align: left;">enp0s3</td>
+<td style="text-align: left;">10.0.2.15/24</td>
+<td style="text-align: left;">08:00:27:d3:eb:c9</td>
+<td style="text-align: left;">UP</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">以太网卡</td>
+<td style="text-align: left;">物理网卡</td>
+<td style="text-align: left;">enp0s8</td>
+<td style="text-align: left;">192.168.56.170/24</td>
+<td style="text-align: left;">08:00:27:ea:0a:94</td>
+<td style="text-align: left;">UP</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vnic-by-views" class="slide level2">
+<h2>不同视角的物理网卡</h2>
+<ul>
+<li>宿主机（<code>Host OS</code>）视角</li>
+</ul>
+<p><img data-src="images/chap0x01/pnic-by-host.png" /></p>
+<ul>
+<li>虚拟机（客户机系统, <code>Guest OS</code>）视角
+<ul>
+<li>上述 <code>ip a</code> 输出结果里的 <code>enp0s3</code> 和 <code>enp0s8</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="vnic-by-views" class="slide level2">
+<h2>不同视角的虚拟网卡</h2>
+<ul>
+<li>宿主机（<code>Host OS</code>）视角</li>
+</ul>
+<p><img data-src="images/chap0x01/vnic-by-host.png" /></p>
+<ul>
+<li>虚拟机（客户机系统, <code>Guest OS</code>）视角
+<ul>
+<li>上述 <code>ip a</code> 输出结果里的 <code>lo</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="host-only-网络默认分配-ip-地址范围" class="slide level2">
+<h2>Host-only 网络默认分配 IP 地址范围</h2>
+<p><img data-src="images/chap0x01/host-only-ip-config.png" /></p>
+</section>
+<section id="nat-ip-config" class="slide level2">
+<h2>NAT 默认分配 IP 地址</h2>
+<p>10.0.2.15/24</p>
+</section>
+<section id="natnetwork-ip-config" class="slide level2">
+<h2>「NAT 网络」默认分配 IP 地址</h2>
+<p><img data-src="images/chap0x01/natnetwork.png" /></p>
+</section>
+<section id="nat-portfwd" class="slide level2">
+<h2>如果你的 Host-only 网络无法正常使用</h2>
+<p><img data-src="images/chap0x01/nat-portfwd-demo.png" /></p>
+<ul>
+<li>开启 <code>端口转发</code> 后，就可以 <code>ssh cuc@127.0.0.1 -p 2222</code> 登录 Linux
+<ul>
+<li>如果宿主机上 <code>2222</code> 端口已经被占用，请更换为其他可用端口号（建议 1024 以上）</li>
+</ul></li>
+<li><code>NAT</code> 或 <code>NAT 网络</code> 创建的虚拟网卡对应的虚拟机内地址不能在宿主机上直接访问到</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="focal-fossa-无人值守安装-iso-制作过程示例" class="title-slide slide level1">
+<h1>Focal Fossa 无人值守安装 iso 制作过程示例</h1>
+
+</section>
+<section class="slide level2">
+
+<p>⚠️ 仅适用于基于 <a href="https://github.com/CanonicalLtd/subiquity">subiquity</a> 的 Ubuntu 安装镜像 ⚠️</p>
+<ul>
+<li><a href="https://releases.ubuntu.com/focal/">Ubuntu 20.04 Live Server</a>
+<ul>
+<li>当前已验证 <a href="https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso">20.04.2</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="先修但可以跳过的技术基础" class="slide level2">
+<h2>先修但可以跳过的技术基础</h2>
+<p><a href="cloud-init.md">Cloud-Init</a></p>
+</section>
+<section id="实现特性" class="slide level2">
+<h2>实现特性</h2>
+<ul>
+<li>定制一个普通用户名和默认密码</li>
+<li>定制安装 OpenSSH Server</li>
+</ul>
+</section>
+<section id="实验提醒" class="slide level2">
+<h2>实验提醒</h2>
+<ul>
+<li>根据需要 <strong>酌情</strong> 修改指令</li>
+<li>遇到指令执行出错务必 <strong>仔细</strong> 阅读出错信息并在搜索引擎中搜索 <strong>错误关键字</strong></li>
+</ul>
+</section>
+<section id="steps-to-auto-focal-1" class="slide level2">
+<h2>主要操作步骤</h2>
+<ul>
+<li>提前下载好<a href="https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso">纯净版 Ubuntu 安装镜像 iso 文件</a></li>
+<li>使用手动安装 Ubuntu 后得到的一个初始「自动配置描述文件」 : <code>/var/log/installer/autoinstall-user-data</code> 对照 <a href="https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c">Ubuntu 20.04 + Autoinstall + VirtualBox</a> 中提供的示例配置文件 <strong>酌情修改</strong>
+<ul>
+<li>也可以 <strong>偷懒跳过</strong> 上述步骤，直接使用我提供的一个 <a href="exp/chap0x01/cd-rom/nocloud/user-data">可用配置文件 user-data</a></li>
+<li><code>meta-data</code> 文件必不可少，但可以是空文件</li>
+</ul></li>
+<li>同手工安装系统步骤，新建可以用于安装 <code>Ubuntu 64位系统</code> 的虚拟机配置</li>
+</ul>
+</section>
+<section id="steps-to-auto-focal-2" class="slide level2">
+<h2>主要操作步骤</h2>
+<ul>
+<li>参考 <a href="exp/cloud-init/docker-compose/README.md">番外章节 Cloud-Init 实验目录中的说明文件</a> ，制作包含 <code>user-data</code> 和 <code>meta-data</code> 的 ISO 镜像文件，假设命名为 <code>focal-init.iso</code></li>
+<li>移除上述虚拟机「设置」-「存储」-「控制器：IDE」</li>
+<li>在「控制器：SATA」下新建 2 个虚拟光盘，<strong>按顺序</strong> 先挂载「纯净版 Ubuntu 安装镜像文件」后挂载 <code>focal-init.iso</code></li>
+<li>启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 <code>yes</code> 并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了</li>
+</ul>
+<blockquote>
+<p>Continue with autoinstall? (yes|no)</p>
+</blockquote>
+</section>
+</section>
+<section>
+<section id="年以前版本-无人值守安装iso制作过程示例" class="title-slide slide level1">
+<h1>(2021 年以前版本) 无人值守安装iso制作过程示例</h1>
+
+</section>
+<section class="slide level2">
+
+<p>⚠️ 仅限 Ubuntu 18.04 和 16.04 ，不适用于 Ubuntu 20.04 及后续更新版本 ⚠️</p>
+</section>
+<section id="focal-legacy" class="slide level2">
+<h2>Ubuntu 20.04 Legacy 版</h2>
+<p><a href="http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04.1/release/"><img data-src="images/chap0x01/ubuntu-server-install-survey.png" /></a></p>
+</section>
+<section id="features-2020" class="slide level2">
+<h2>实现特性</h2>
+<ul>
+<li>定制一个普通用户名和默认密码</li>
+<li>定制安装OpenSSH Server</li>
+<li>安装过程禁止自动联网更新软件包</li>
+</ul>
+</section>
+<section id="tips-2020" class="slide level2">
+<h2>实验提醒</h2>
+<ul>
+<li>先「有人值守」方式安装好 <strong>一个可用的 Ubuntu 系统环境</strong></li>
+<li>以下操作指令均在上述环境的 <strong>命令行</strong> 中输入完成</li>
+<li>根据需要 <strong>酌情</strong> 修改指令</li>
+<li>遇到指令执行出错务必 <strong>仔细</strong> 阅读出错信息并在搜索引擎中搜索 <strong>错误关键字</strong></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 根据实际情况，自行替换其中的参数
+# 在当前用户目录下创建一个用于挂载iso镜像文件的目录
+mkdir loopdir
+
+# 挂载iso镜像文件到该目录
+mount -o loop ubuntu-16.04.1-server-amd64.iso loopdir
+
+# 创建一个工作目录用于克隆光盘内容
+mkdir cd
+ 
+# 同步光盘内容到目标工作目录
+# 一定要注意loopdir后的这个/，cd后面不能有/
+rsync -av loopdir/ cd
+
+# 卸载iso镜像
+umount loopdir
+
+# 进入目标工作目录
+cd cd/
+
+# 编辑Ubuntu安装引导界面增加一个新菜单项入口
+vim isolinux/txt.cfg</code></pre>
+</section>
+<section class="slide level2">
+
+<p>添加以下内容到该文件后强制保存退出</p>
+<pre><code>label autoinstall
+  menu label ^Auto Install Ubuntu Server
+  kernel /install/vmlinuz
+  append  file=/cdrom/preseed/ubuntu-server-autoinstall.seed debian-installer/locale=en_US console-setup/layoutcode=us keyboard-configuration/layoutcode=us console-setup/ask_detect=false localechooser/translation/warn-light=true localechooser/translation/warn-severe=true initrd=/install/initrd.gz root=/dev/ram rw quiet</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>提前阅读并编辑定制Ubuntu官方提供的示例<a href="https://help.ubuntu.com/lts/installation-guide/example-preseed.txt">preseed.cfg</a>，并将该文件保存到刚才创建的工作目录<code>~/cd/preseed/ubuntu-server-autoinstall.seed</code></li>
+<li>修改isolinux/isolinux.cfg，增加内容<code>timeout 10</code>（可选，否则需要手动按下ENTER启动安装界面）</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code># 切换到 root 用户身份
+sudo su -
+
+# 重新生成md5sum.txt
+cd &quot;$HOME/cd&quot; &amp;&amp; find . -type f -print0 | xargs -0 md5sum &gt; md5sum.txt
+
+# 封闭改动后的目录到.iso
+IMAGE=custom.iso
+BUILD=&quot;$HOME/cd/&quot;
+
+apt update &amp;&amp; apt install -y genisoimage
+genisoimage -r -V &quot;Custom Ubuntu Install CD&quot; \
+            -cache-inodes \
+            -J -l -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat -no-emul-boot \
+            -boot-load-size 4 -boot-info-table \
+            -o $IMAGE $BUILD
+
+# 如果目标磁盘之前有数据，则在安装过程中会在分区检测环节出现人机交互对话框需要人工选择</code></pre>
+</section>
+<section class="slide level2">
+
+<p>一个我修改定制好的<a href="exp/chap0x01/cd-rom/preseed/ubuntu-server-autoinstall.seed">ubuntu-server-autoinstall.seed</a>，请自行和官方示例文件进行比对，自行思考理解和掌握：</p>
+<ul>
+<li>我做了哪些修改？
+<ul>
+<li>用什么「工具」能提高「差异」比对的效率？</li>
+</ul></li>
+<li>这些修改的作用是什么？</li>
+</ul>
+</section>
+<section id="tips-2020-1" class="slide level2">
+<h2>友情提醒</h2>
+<ul>
+<li>preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 <a href="https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server">ubuntu-18.04.1-live-server-amd64.iso</a></li>
+<li>txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的</li>
+</ul>
+</section>
+<section id="推荐阅读" class="slide level2">
+<h2>推荐阅读</h2>
+<ul>
+<li><a href="https://github.com/myspaghetti/macos-virtualbox">在 VirtualBox 中一键安装 macOS</a>
+<ul>
+<li>命令行操作 VirtualBox 的最佳示范应用</li>
+<li>跨平台 Bash 脚本的最佳示范应用（建议学完「第四章」后再看、再学习体会）</li>
+<li>获得 macOS 平台体验机会</li>
+</ul></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>
