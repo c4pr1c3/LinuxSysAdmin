@@ -540,6 +540,50 @@ system_info:
 
 ---
 
+## machine-id {id="machine-id-4"}
+
+> 对于 Debian 及其衍生发行版，例如 Kali ，以上操作步骤均可能失效：无法更新 /etc/machine-id 。
+
+```bash
+# Virtualbox 的多重加载镜像机制克隆出来的虚拟机使用的虚拟磁盘，磁盘 uuid 值是相同的
+sudo blkid /dev/sda1
+# /dev/sda1: UUID="dff30eeb-7332-438d-964c-d5c7f4d357f7" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="f0f6b9b0-01"
+
+ls -l /dev/disk/by-uuid
+# lrwxrwxrwx 1 root root 10 Dec  3 00:32 dff30eeb-7332-438d-964c-d5c7f4d357f7 -> ../../sda1
+
+# /etc/machine-id 的值与磁盘 uuid 值无关
+# 局域网中，【不同主机】的磁盘分区 uuid 值相同无影响，但要避免 machine-id 值重复
+# machine-id 重复的一个最直接影响是对于使用 Net-Plan 方式进行 DHCP 获取 IP 地址的客户端来说，缺省 DHCP 请求策略会导致局域网中出现 IP 地址冲突
+# 除此之外，对于分布式集群系统来说，重复 machine-id 可能会导致一些不确定性错误
+
+# ref-1: https://unix.stackexchange.com/questions/402999/is-it-ok-to-change-etc-machine-id
+# ref-2: https://documentation.suse.com/external-tree/en-us/suma/4.0/suse-manager/administration/tshoot-registerclones.html
+# TL;DR 对于 Debian 及其衍生发行版系统 /etc/machine-id 的值是在系统启动时拷贝自 /var/lib/dbus/machine-id
+sudo rm /var/lib/dbus/machine-id /etc/machine-id
+
+## ref-1 的方法
+sudo dbus-uuidgen --ensure=/etc/machine-id
+# 从 /etc/machine-id 拷贝内容到 /var/lib/dbus/machine-id
+sudo dbus-uuidgen --ensure
+
+## ref-2 的方法
+# 当 /etc/machine-id 内容为空或文件缺失时，创建 /var/lib/dbus/machine-id 并写入 machine-id
+sudo dbus-uuidgen --ensure
+# 从 /var/lib/dbus/machine-id 拷贝内容到 /etc/machine-id
+sudo systemd-machine-id-setup
+
+# 以上 ref-1 和 ref-2 的方法在 Kali 上效果相同
+# 验证 machine-id
+cat /etc/machine-id
+cat /var/lib/dbus/machine-id
+
+# 重启系统，以确保配置变更生效
+sudo reboot
+```
+
+---
+
 ## 为什么我克隆出来的虚拟机总是获得相同 IP 地址？
 
 根据[网友 `wickedchicken` 在 SO 网站上的回答](https://unix.stackexchange.com/a/419322)
