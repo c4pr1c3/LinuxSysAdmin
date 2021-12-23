@@ -140,9 +140,9 @@ sudo apt update && sudo apt install -y dnsmasq
 #                   May 03 02:41:17 cuc-lab systemd[1]: Failed to start dnsmasq - A lightweight DHCP and caching DNS server.
 
 # 检查 53 端口监听占用情况
-sudo lsof -i -P -L -n | grep 53
-# systemd-r   606 systemd-resolve   12u  IPv4  20740      0t0  UDP localhost:53
-# systemd-r   606 systemd-resolve   13u  IPv4  20741      0t0  TCP localhost:53 (LISTEN)
+sudo lsof -i:53 -P -n | grep systemd
+# systemd-r  743 systemd-resolve   12u  IPv4  25641      0t0  UDP 127.0.0.53:53
+# systemd-r  743 systemd-resolve   13u  IPv4  25642      0t0  TCP 127.0.0.53:53 (LISTEN)
 
 # ref: https://unix.stackexchange.com/questions/304050/how-to-avoid-conflicts-between-dnsmasq-and-systemd-resolved/358485
 # 禁用 systemd-resolved 内置的 DNS 解析服务 
@@ -151,7 +151,8 @@ sudo sed -i.bak "s/#DNSStubListener=yes/DNSStubListener=no/g" /etc/systemd/resol
 sudo systemctl restart systemd-resolved
 
 # 再次检查 53 端口监听占用情况
-sudo lsof -i -P -L -n | grep 53
+sudo lsof -i:53 -P -n | grep systemd
+# sudo ss -tunlp -o "sport 53" | grep systemd
 
 # 编辑 /etc/dnsmasq.conf
 # 配置 dnsmasq 只监听在「内部网络」网卡上
