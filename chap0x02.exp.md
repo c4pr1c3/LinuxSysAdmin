@@ -13,6 +13,8 @@ output: revealjs::revealjs_presentation
 ## 软件环境
 
 * 当前课程推荐的 Linux 发行版本
+    * 本地环境（Ubuntu）
+    * 云环境（CentOS）
 * 在[asciinema](https://asciinema.org)注册一个账号，并在本地安装配置好asciinema
 
 ---
@@ -22,45 +24,21 @@ output: revealjs::revealjs_presentation
 * 在自己的github仓库上新建markdown格式纯文本文件附上asciinema的分享URL
 * **提醒** 避免在终端操作录像过程中暴漏**密码、个人隐私**等任何机密数据
 
-# 如果你需要中文 vimtutor {id="vimtutor-in-chinese"}
+# 实验问题
 
 ---
 
-> 强烈建议使用英文原版 vimtutor
-
----
-
-> 除非你真的不想进行英文阅读理解练习
-
----
+* 使用表格方式记录至少 2 个不同 Linux 发行版本上以下信息的获取方法，使用 [asciinema](https://asciinema.org) 录屏方式「分段」记录相关信息的获取过程和结果
+* 【软件包管理】在目标发行版上安装 `tmux` 和 `tshark` ；查看这 2 个软件被安装到哪些路径；卸载 `tshark` ；验证 `tshark` 卸载结果
+* 【文件管理】复制以下 `shell` 代码到终端运行，在目标 Linux 发行版系统中构造测试数据集，然后回答以下问题：
+    * 找到 `/tmp` 目录及其所有子目录下，文件名包含 `666` 的所有文件
+    * 找到 `/tmp` 目录及其所有子目录下，文件内容包含 `666` 的所有文件
 
 ```bash
-# 下载安装简体中文语言包
-sudo apt update && sudo apt install language-pack-zh-hans
-
-# 临时设置 简体中文 环境变量并启动 vimtutor
-LANG=zh_CN.UTF-8 vimtutor
+cd /tmp && for i in $(seq 0 1024);do dir="test-$RANDOM";mkdir "$dir";echo "$RANDOM" > "$dir/$dir-$RANDOM";done
 ```
 
-# vimtutor完成后的自查清单
-
----
-
-* 你了解vim有哪几种工作模式？
-* Normal模式下，从当前行开始，一次向下移动光标10行的操作方法？如何快速移动到文件开始行和结束行？如何快速跳转到文件中的第N行？
-* Normal模式下，如何删除单个字符、单个单词、从当前光标位置一直删除到行尾、单行、当前行开始向下数N行？
-* 如何在vim中快速插入N个空行？如何在vim中快速输入80个-？
-* 如何撤销最近一次编辑操作？如何重做最近一次被撤销的操作？
-* vim中如何实现剪切粘贴单个字符？单个单词？单行？如何实现相似的复制粘贴操作呢？
-
----
-
-* 为了编辑一段文本你能想到哪几种操作方式（按键序列）？
-* 查看当前正在编辑的文件名的方法？查看当前光标所在行的行号的方法？
-* 在文件中进行关键词搜索你会哪些方法？如何设置忽略大小写的情况下进行匹配搜索？如何将匹配的搜索结果进行高亮显示？如何对匹配到的关键词进行批量替换？
-* 在文件中最近编辑过的位置来回快速跳转的方法？
-* 如何把光标定位到各种括号的匹配项？例如：找到(, [, or {对应匹配的),], or }
-* 在不退出vim的情况下执行一个外部程序的方法？
-* 如何使用vim的内置帮助系统来查询一个内置默认快捷键的使用方法？如何在两个不同的分屏窗口中移动光标？
-
+* 【文件压缩与解压缩】练习课件中 [文件压缩与解压缩](https://c4pr1c3.github.io/LinuxSysAdmin/chap0x02.md.html#/12/1) 一节所有提到的压缩与解压缩命令的使用方法
+* 【跟练】 [子进程管理实验](https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54)
+* 【硬件信息获取】目标系统的 CPU、内存大小、硬盘数量与硬盘容量
 

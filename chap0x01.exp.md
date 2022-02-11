@@ -14,20 +14,24 @@ output: revealjs::revealjs_presentation
 
 ---
 
-* Virtualbox
+* [Virtualbox](https://www.virtualbox.org/)
+    * 苹果 M1 用户可以使用任意桌面虚拟化解决方案，例如 [UTM](https://mac.getutm.app/)
 * Ubuntu 20.04 Server 64bit
-    * 备选：Ubuntu 18.04 Server 64bit
-    * 备选：Ubuntu 18.04 Desktop 64bit
-* 课件内容均在 18.04 版本时代制作，同学们在实验时遇到实际情况与课件描述不符之处，应以实际环境为准，切忌唯课件论
+* [阿里云 云起实验室 提供的【零门槛云上实践平台】](https://developer.aliyun.com/adc/) 
+    * [备用场景资源一](https://developer.aliyun.com/adc/scenario/exp/a12055b0e9e84e5692b05ae25d377ec0)
+    * [备用场景资源二](https://developer.aliyun.com/adc/scenario/exp/410e5b6a852f4b4b88bf74bf4c197a57)
+
 
 # 实验问题
 
 ---
 
-* 如何配置无人值守安装iso并在Virtualbox中完成自动化安装。
-* Virtualbox安装完Ubuntu之后新添加的网卡如何实现系统开机自动启用和自动获取IP？
-* 如何使用sftp在虚拟机和宿主机之间传输文件？
-
+* 调查并记录实验环境的如下信息：
+    * 当前 Linux 发行版基本信息
+    * 当前 Linux 内核版本信息
+* Virtualbox 安装完 Ubuntu 之后新添加的网卡如何实现系统开机自动启用和自动获取 IP？
+* 如何使用 `scp` 在「虚拟机和宿主机之间」、「本机和远程 Linux 系统之间」传输文件？
+* 如何配置 SSH 免密登录？
 
 # 实验报告要求
 
@@ -39,249 +43,27 @@ output: revealjs::revealjs_presentation
 * 实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业
 * 记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接
 
-# 参考文献
-
 ---
 
-* [No “eth0” listed in ifconfig -a, only enp0s3 and lo](http://askubuntu.com/questions/704035/no-eth0-listed-in-ifconfig-a-only-enp0s3-and-lo)
-
-
-# 关于查看虚拟机 IP 地址的 FAQ {id="howto-get-vm-ips"}
-
----
-
-## ip a {id="ip-a-1"}
-
-![](images/chap0x01/howto-get-ips.png)
-
----
-
-## ip a {id="ip-a-2"}
-
-| 接口名称 | 网卡类型 | 网卡标识 | IP 地址/子网掩码  | MAC 地址          | 物理层正常可用状态 |
-| :-       | :-       | :-       | :-                | :-                | :-                 |
-| 回环接口 | 虚拟网卡 | lo       | 127.0.0.1/8       | 00:00:00:00:00:00 | UNKNOWN            |
-| 以太网卡 | 物理网卡 | enp0s3   | 10.0.2.15/24      | 08:00:27:d3:eb:c9 | UP                 |
-| 以太网卡 | 物理网卡 | enp0s8   | 192.168.56.170/24 | 08:00:27:ea:0a:94 | UP                 |
-
----
-
-## 不同视角的物理网卡 {id="vnic-by-views"}
-
-* 宿主机（`Host OS`）视角 
-
-![](images/chap0x01/pnic-by-host.png)
-
-* 虚拟机（客户机系统, `Guest OS`）视角
-    * 上述 `ip a` 输出结果里的 `enp0s3` 和 `enp0s8`
-
----
-
-## 不同视角的虚拟网卡 {id="vnic-by-views"}
-
-* 宿主机（`Host OS`）视角
-
-![](images/chap0x01/vnic-by-host.png)
-
-* 虚拟机（客户机系统, `Guest OS`）视角
-    * 上述 `ip a` 输出结果里的 `lo`
-
----
-
-## Host-only 网络默认分配 IP 地址范围
-
-![](images/chap0x01/host-only-ip-config.png)
-
----
-
-## NAT 默认分配 IP 地址 {id="nat-ip-config"}
-
-10.0.2.15/24
-
----
-
-## 「NAT 网络」默认分配 IP 地址 {id="natnetwork-ip-config"}
-
-![](images/chap0x01/natnetwork.png)
-
----
-
-## 如果你的 Host-only 网络无法正常使用 {id="nat-portfwd"}
-
-![](images/chap0x01/nat-portfwd-demo.png)
-
-* 开启 `端口转发` 后，就可以  `ssh cuc@127.0.0.1 -p 2222` 登录 Linux
-    * 如果宿主机上 `2222` 端口已经被占用，请更换为其他可用端口号（建议 1024 以上）
-* `NAT` 或 `NAT 网络` 创建的虚拟网卡对应的虚拟机内地址不能在宿主机上直接访问到
-
-# Focal Fossa 无人值守安装 iso 制作过程示例
-
----
-
-⚠️ 仅适用于基于 [subiquity](https://github.com/CanonicalLtd/subiquity) 的 Ubuntu 安装镜像 ⚠️
-
-* [Ubuntu 20.04 Live Server](https://releases.ubuntu.com/focal/)
-    * 当前已验证 [20.04.2](https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso)
-
----
-
-## 先修但可以跳过的技术基础
-
-[Cloud-Init](cloud-init.md)
-
----
-
-## 实现特性
-
-* 定制一个普通用户名和默认密码
-* 定制安装 OpenSSH Server
-
----
-
-## 实验提醒
-
-* 根据需要 **酌情** 修改指令
-* 遇到指令执行出错务必 **仔细** 阅读出错信息并在搜索引擎中搜索 **错误关键字**
-
----
-
-## 主要操作步骤 {id="steps-to-auto-focal-1"}
-
-* 提前下载好[纯净版 Ubuntu 安装镜像 iso 文件](https://releases.ubuntu.com/focal/ubuntu-20.04.2-live-server-amd64.iso)
-* 使用手动安装 Ubuntu 后得到的一个初始「自动配置描述文件」 :  `/var/log/installer/autoinstall-user-data` 对照 [Ubuntu 20.04 + Autoinstall + VirtualBox](https://gist.github.com/bitsandbooks/6e73ec61a44d9e17e1c21b3b8a0a9d4c) 中提供的示例配置文件 **酌情修改**
-    * 也可以 **偷懒跳过** 上述步骤，直接使用我提供的一个 [可用配置文件 user-data](exp/chap0x01/cd-rom/nocloud/user-data)
-    * `meta-data` 文件必不可少，但可以是空文件
-* 同手工安装系统步骤，新建可以用于安装 `Ubuntu 64位系统` 的虚拟机配置
-
----
-
-## 主要操作步骤 {id="steps-to-auto-focal-2"}
-
-* 参考 [番外章节 Cloud-Init 实验目录中的说明文件](exp/cloud-init/docker-compose/README.md) ，制作包含 `user-data` 和 `meta-data` 的 ISO 镜像文件，假设命名为 `focal-init.iso`
-* 移除上述虚拟机「设置」-「存储」-「控制器：IDE」
-* 在「控制器：SATA」下新建 2 个虚拟光盘，**按顺序** 先挂载「纯净版 Ubuntu 安装镜像文件」后挂载 `focal-init.iso`
-* 启动虚拟机，稍等片刻会看到命令行中出现以下提示信息。此时，需要输入 `yes` 并按下回车键，剩下的就交给「无人值守安装」程序自动完成系统安装和重启进入系统可用状态了
-
-> Continue with autoinstall? (yes|no)
-
-# (2021 年以前版本) 无人值守安装iso制作过程示例 
-
----
-
-⚠️ 仅限 Ubuntu 18.04 和 16.04 ，不适用于 Ubuntu 20.04 及后续更新版本 ⚠️
-
----
-
-## Ubuntu 20.04 Legacy 版 {id="focal-legacy"}
-
-[![](images/chap0x01/ubuntu-server-install-survey.png)](http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04.1/release/)
-
----
-
-## 实现特性 {id="features-2020"}
-
-* 定制一个普通用户名和默认密码
-* 定制安装OpenSSH Server
-* 安装过程禁止自动联网更新软件包
-
----
-
-## 实验提醒 {id="tips-2020"}
-
-* 先「有人值守」方式安装好 **一个可用的 Ubuntu 系统环境**
-* 以下操作指令均在上述环境的 **命令行** 中输入完成
-* 根据需要 **酌情** 修改指令
-* 遇到指令执行出错务必 **仔细** 阅读出错信息并在搜索引擎中搜索 **错误关键字**
-
----
-
-```bash
-# 根据实际情况，自行替换其中的参数
-# 在当前用户目录下创建一个用于挂载iso镜像文件的目录
-mkdir loopdir
-
-# 挂载iso镜像文件到该目录
-mount -o loop ubuntu-16.04.1-server-amd64.iso loopdir
-
-# 创建一个工作目录用于克隆光盘内容
-mkdir cd
- 
-# 同步光盘内容到目标工作目录
-# 一定要注意loopdir后的这个/，cd后面不能有/
-rsync -av loopdir/ cd
-
-# 卸载iso镜像
-umount loopdir
-
-# 进入目标工作目录
-cd cd/
-
-# 编辑Ubuntu安装引导界面增加一个新菜单项入口
-vim isolinux/txt.cfg
-```
-
----
-
-添加以下内容到该文件后强制保存退出
-
-```
-label autoinstall
-  menu label ^Auto Install Ubuntu Server
-  kernel /install/vmlinuz
-  append  file=/cdrom/preseed/ubuntu-server-autoinstall.seed debian-installer/locale=en_US console-setup/layoutcode=us keyboard-configuration/layoutcode=us console-setup/ask_detect=false localechooser/translation/warn-light=true localechooser/translation/warn-severe=true initrd=/install/initrd.gz root=/dev/ram rw quiet
-```
-
----
-
-
-* 提前阅读并编辑定制Ubuntu官方提供的示例[preseed.cfg](https://help.ubuntu.com/lts/installation-guide/example-preseed.txt)，并将该文件保存到刚才创建的工作目录``~/cd/preseed/ubuntu-server-autoinstall.seed``
-* 修改isolinux/isolinux.cfg，增加内容``timeout 10``（可选，否则需要手动按下ENTER启动安装界面）
-
----
-
-```bash
-# 切换到 root 用户身份
-sudo su -
-
-# 重新生成md5sum.txt
-cd "$HOME/cd" && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
-
-# 封闭改动后的目录到.iso
-IMAGE=custom.iso
-BUILD="$HOME/cd/"
-
-apt update && apt install -y genisoimage
-genisoimage -r -V "Custom Ubuntu Install CD" \
-            -cache-inodes \
-            -J -l -b isolinux/isolinux.bin \
-            -c isolinux/boot.cat -no-emul-boot \
-            -boot-load-size 4 -boot-info-table \
-            -o $IMAGE $BUILD
-
-# 如果目标磁盘之前有数据，则在安装过程中会在分区检测环节出现人机交互对话框需要人工选择
-```
-
----
-
-一个我修改定制好的[ubuntu-server-autoinstall.seed](exp/chap0x01/cd-rom/preseed/ubuntu-server-autoinstall.seed)，请自行和官方示例文件进行比对，自行思考理解和掌握：
-
-* 我做了哪些修改？
-    * 用什么「工具」能提高「差异」比对的效率？
-* 这些修改的作用是什么？
-
----
-
-## 友情提醒 {id="tips-2020-1"}
-
-* preseed 的方法一定要用 ubuntu-18.04.1-server-amd64.iso 不能用 [ubuntu-18.04.1-live-server-amd64.iso](https://askubuntu.com/questions/1063393/error-creating-custom-install-of-ubuntu-18-04-live-server)
-* txt.cfg 中我们添加的自动安装菜单选项一定要「置顶」，不能通过修改文件首行 default 参数的取值来实现自动选中菜单开始安装系统的目的
-
----
-
-## 推荐阅读
-
-* [在 VirtualBox 中一键安装 macOS](https://github.com/myspaghetti/macos-virtualbox)
-    * 命令行操作 VirtualBox 的最佳示范应用
-    * 跨平台 Bash 脚本的最佳示范应用（建议学完「第四章」后再看、再学习体会）
-    * 获得 macOS 平台体验机会
+## 评分标准
+
+> 以下规则以单次实验报告满分 10 分为例，其他满分分值需要进行等比例调整。
+
+* 实验报告内容完成度「满分 **7分**」
+    * 部分完成：**5分**
+    * 基本完成: **6分**
+    * 少量瑕疵：**7分**
+* `markdown` 使用规范 「**1分**」
+    * 在 github 上在线渲染结果正确无误 （本条违反，本项直接扣 1 分）
+    * 所有配图均已上传到 `github` 且在文档内使用「相对路径」引用（禁止使用图片「外链」）（仅本条违反，扣 0.5 分。同时第三条违反，扣 1 分）
+    * 代码块正确使用语法高亮标记 （仅有这一条少量违反，本项可以不扣分。超过 5 处代码引用未高亮标记，扣 0.5 分）
+* `git` 使用规范 「**0.5分**」
+    * 在 `PR` 标题中体现了作业序号，例如 `chap0x01`
+    * [推荐的目录结构和分支结构](https://c4pr1c3.github.io/cuc-ns/chap0x01/exp.html)
+    * `见名知意` 的文件命名，**好评** 示例如 `logged_in.png`, `install_complete.png` 。**扣分** 示例：`1.png`, `新建文本文件.md` 。
+* 实验报告结构规范性程度 「**0.5分**」
+    * 在实验报告末总结了遇到的问题与解决方案
+    * 参考文献/资料引用标准规范
+* 按时提交 「满分 **1分**」
+    * 晚提交不超过 1 周 **0.5分**
 

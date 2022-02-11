@@ -57,15 +57,15 @@ output: revealjs::revealjs_presentation
 
 ---
 
-| 英文 |   中文 |
-|------------+--------------------------|
-| Linux Development Community | Linux开发社区 |
-| Linux Distribution | Linux发行版 |
-| Carrier | 电信运营商 |
-| Network Equipment Provider | 网络设备提供商 |
-| OSS(Open-source Software) Community | 开源软件社区 |
-| ISV(Independent Software Vendor) | 独立软件开发商 |
-| Hardware Manufacturer | 硬件制造商 |
+| 英文                                | 中文           |
+| :-                                  | :-             |
+| Linux Development Community         | Linux 开发社区 |
+| Linux Distribution                  | Linux 发行版   |
+| Carrier                             | 电信运营商     |
+| Network Equipment Provider          | 网络设备提供商 |
+| OSS(Open-source Software) Community | 开源软件社区   |
+| ISV(Independent Software Vendor)    | 独立软件开发商 |
+| Hardware Manufacturer               | 硬件制造商     |
 
 ---
 
@@ -242,7 +242,7 @@ output: revealjs::revealjs_presentation
 * Canonical在曼岛登记注册，其雇员分布在世界各地，其主要办事处在伦敦，在波士顿、圣保罗、蒙特利尔、上海、台北和马恩岛也有分公司。
 * 主要产品：Ubuntu家族的Linux发行版
 
-本课程主要以Ubuntu系统为基础实验环境。
+本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS 等其他常用服务器发行版。
 
 # Ubuntu
 
@@ -296,16 +296,6 @@ output: revealjs::revealjs_presentation
 * 基于 [subiquity](https://github.com/CanonicalLtd/subiquity)  - Ubuntu 18.04+ only
 * [Kickstart by RedHat](http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html)
     * [Cobbler](http://cobbler.github.io/)
-
-# 虚拟机环境配置使用FAQ
-
----
-
-* server 版的 Ubuntu 如何从命令行挂载 Virtualbox 的虚拟光驱中镜像？
-* server 版的 Ubuntu 如何安装 Virtualbox 增强功能套件？
-* server 版的 Ubuntu 如何从命令行挂载 Virtualbox 的共享目录？
-
-***自行Google解决上述问题***，OR ***第3章内容学习完成之后来解决***
 
 # 命令行
 

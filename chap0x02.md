@@ -395,6 +395,9 @@ cd ~/cd && find . -type f -print0 | xargs -0 md5sum > md5sum.txt
 * `xargs` 的 `-0` 参数将「标准输入」中的 **NULL** 字符视为「数组分隔符」来「解析」标准输入内容
 * `xargs` 从「标准输入」中每解析出「一个参数」就按照构造好的 `命令+参数` 执行一次指定的命令（此处是 `md5sum [fileN]` ），直到「标准输入」被解析完毕
 
+---
+
+[explainshell.com 对上述复杂命令的可视化解读](https://explainshell.com/explain?cmd=cd+%7E%2Fcd+%26%26+find+.+-type+f+-print0+%7C+xargs+-0+md5sum+%3E+md5sum.txt)
 
 # sed
 
