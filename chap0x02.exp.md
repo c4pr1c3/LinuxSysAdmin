@@ -20,7 +20,6 @@ output: revealjs::revealjs_presentation
 ---
 
 * 确保本地已经完成**asciinema auth**，并在[asciinema](https://asciinema.org)成功关联了本地账号和在线账号
-* 上传本人亲自动手完成的**vimtutor**操作全程录像
 * 在自己的github仓库上新建markdown格式纯文本文件附上asciinema的分享URL
 * **提醒** 避免在终端操作录像过程中暴漏**密码、个人隐私**等任何机密数据
 
