@@ -249,7 +249,7 @@ smbclient -L 192.168.56.182 -U demo
 # SMB1 disabled -- no workgroup available
 
 # 连接指定共享目录
-smbclient //192.168.56.193/demo -U demoUser
+smbclient //192.168.56.193/demo -U cuc
 # 输入密码
 
 # 下载整个文件夹
