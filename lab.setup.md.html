@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="操作系统安装与虚拟机配置基础" class="title-slide slide level1">
+<h1>操作系统安装与虚拟机配置基础</h1>
+
+</section>
+<section id="sec-1.agenda" class="slide level2">
+<h2>课程提纲</h2>
+<pre><code>0.   直接导入 .ova 文件
+I.   安装镜像获取
+II.  虚拟机基本配置
+III. 安装过程 FAQ
+IV.  安装后 FAQ</code></pre>
+</section>
+</section>
+<section>
+<section id="直接导入-.ova-文件" class="title-slide slide level1">
+<h1>0. 直接导入 .ova 文件</h1>
+
+</section>
+<section class="slide level2">
+
+<p>链接: https://pan.baidu.com/s/1gjzqIxxF85fctbCHGKhzOA 提取码: pkue 复制这段内容后打开百度网盘手机App，操作更方便哦</p>
+<p><img data-src="images/lab.setup/pan.baidu.com.png" /></p>
+</section>
+</section>
+<section>
+<section id="i.-安装镜像获取" class="title-slide slide level1">
+<h1>I. 安装镜像获取</h1>
+
+</section>
+<section id="sec-1.1.agenda" class="slide level2">
+<h2>本节提纲</h2>
+<ol type="1">
+<li>安装镜像下载渠道选择</li>
+<li>镜像文件版本选择</li>
+<li>镜像文件完整性校验</li>
+</ol>
+</section>
+<section id="安装镜像下载渠道选择" class="slide level2">
+<h2>1. 安装镜像下载渠道选择</h2>
+<ul>
+<li>优先<a href="https://ubuntu.com/download">选择 <strong>官方</strong> 下载</a></li>
+<li>不要贪图下载速度而随意使用 <strong>第三方</strong> 下载镜像：软件包「投毒」和「后门」风险
+<ul>
+<li><a href="refs/cappos_mirror_ccs_08.pdf">2008 年的一篇信息安全顶会论文</a></li>
+<li><a href="https://www.antiy.com/response/xcodeghost.html">2015 年的Xcode非官方版本恶意代码污染事件</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="镜像文件版本选择" class="slide level2">
+<h2>2. 镜像文件版本选择</h2>
+<p><strong>TL;DR</strong></p>
+<blockquote>
+<p>ubuntu-18.04.4-server-amd64.iso</p>
+</blockquote>
+<p>或</p>
+<blockquote>
+<p>ubuntu-<当前官方最新的 LTS 版本号>-server-amd64.iso</p>
+</blockquote>
+<pre class="ini"><code>&lt;OS_name&gt;-&lt;version-number&gt;-&lt;type&gt;-&lt;cpu_arch&gt;.iso</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="安装前-faq">安装前 FAQ</h3>
+<p>首推 <a href="https://help.ubuntu.com/community/ServerFaq">Ubuntu 官方的 FAQ</a> ，新手关心的服务器版系统安装问题这里都有。</p>
+<p>其次还是 <a href="https://help.ubuntu.com/community/Installation">Ubuntu 官方的 FAQ</a> ，进阶用户关心的诸如双系统共存、U盘安装、升级安装等问题这里都有。</p>
+</section>
+<section class="slide level2">
+
+<h3 id="live-server-版-vs.-server-版"><a href="https://askubuntu.com/questions/1028580/what-is-the-difference-between-ubuntu-18-04-server-and-ubuntu-18-04-live-server">live-server 版 vs. server 版</a></h3>
+<ul>
+<li>基于 preseed 实现「无人值守」安装只能选择非 <code>live-server</code> 版</li>
+<li>当前 Ubuntu 18.04 Server 版的官方下载托管域名 <a href="http://cdimage.ubuntu.com/releases/18.04.4/release/">cdimage.ubuntu.com</a></li>
+<li>当前 Ubuntu 18.04 Live-Server 版和 Desktop 版的官方下载托管域名 <a href="http://releases.ubuntu.com/18.04/">releases.ubuntu.com</a></li>
+<li>历史 Ubuntu 版本的官方下载托管域名 <a href="http://old-releases.ubuntu.com/releases/">old-releases.ubuntu.com</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="live-server-版专属无人值守安装方法">live-server 版专属「无人值守」安装方法</h3>
+<p>详见 <a href="chap0x01.exp.md">第一章 实验指南</a></p>
+</section>
+<section class="slide level2">
+
+<h3 id="使用搜索引擎要仔细">使用搜索引擎要仔细</h3>
+<p><img data-src="images/lab.setup/google.search.buggy.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="善用搜索引擎">善用搜索引擎</h3>
+<p><img data-src="images/lab.setup/google.search.exact.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="bit-vs.-64bit">32bit vs. 64bit</h3>
+<ul>
+<li>优先选择 <code>64bit</code> 操作系统镜像</li>
+<li><a href="https://forums.virtualbox.org/viewtopic.php?f=1&amp;t=62339">我的电脑是 64bit 系统，为什么无法安装 64bit 虚拟机</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="windows-10-的-hyper-v-和-virtualbox-共存">Windows 10 的 Hyper-V 和 Virtualbox 共存</h3>
+<ul>
+<li><a href="https://docs.oracle.com/en/virtualization/virtualbox/6.0/admin/hyperv-support.html">Virualbox 6.0.0 开始新增加入对 Windows 宿主机上 Hyper-V 功能的共生支持</a></li>
+<li><a href="https://forums.virtualbox.org/viewtopic.php?f=6&amp;t=90853">VirtualBox 6.0 and Hyper-V 共存问题的讨论</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="server-版-vs.-desktop-版">server 版 vs. desktop 版</h3>
+<ul>
+<li>一句话概括：默认安装的软件包数量不同</li>
+<li>本课程推荐的实验环境是：默认不安装「图形用户界面」的 <code>server</code> 版</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="amd-vs.-arm">amd vs. arm</h3>
+<ul>
+<li>CPU 指令集类型术语</li>
+<li>电脑、虚拟机均推荐安装 <code>amd</code> 版</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="再次认准虚拟镜像文件名">再次认准虚拟镜像文件名</h3>
+<blockquote>
+<p>ubuntu-18.04.4-server-amd64.iso</p>
+</blockquote>
+<pre class="ini"><code>&lt;OS_name&gt;-&lt;version-number&gt;-&lt;type&gt;-&lt;cpu_arch&gt;.iso</code></pre>
+</section>
+<section id="镜像文件完整性校验" class="slide level2">
+<h2>3. 镜像文件完整性校验</h2>
+<pre class="bash"><code># mac
+shasum -a 256 ubuntu-18.04.4-server-amd64.iso
+# e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b
+
+# mac 上使用 SHA256SUMS 文件进行批量自动校验
+cat SHA256SUMS
+# e2ecdace33c939527cbc9e8d23576381c493b071107207d2040af72595f8990b *ubuntu-18.04.4-server-amd64.iso
+# 8eb3c1866ca3b68e4cd22ec9d7c02f97f4d2b3713447370f3c252a4189116824 *ubuntu-18.04.4-server-arm64.iso
+# 73b8d860e421000a6e35fdefbb0ec859b9385b0974cf8089f5d70a87de72f6b9 *ubuntu-18.04.4-live-server-amd64.iso
+
+shasum -c SHA256SUMS
+# ubuntu-18.04.4-server-amd64.iso: OK
+# ubuntu-18.04.4-server-arm64.iso: OK
+# ubuntu-18.04.4-live-server-amd64.iso: OK
+
+# linux
+sha256sum ubuntu-18.04.4-server-amd64.iso
+
+# windows
+certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
+# e2 ec da ce 33 c9 39 52 7c bc 9e 8d 23 57 63 81 c4 93 b0 71 10 72 07 d2 04 0a f7 25 95 f8 99 0b</code></pre>
+</section>
+</section>
+<section>
+<section id="ii.-虚拟机基本配置" class="title-slide slide level1">
+<h1>II. 虚拟机基本配置</h1>
+
+</section>
+<section id="sec-2.agenda" class="slide level2">
+<h2>本节提纲</h2>
+<ol type="1">
+<li>虚拟机软件选择</li>
+<li>网卡配置</li>
+<li>加载镜像文件</li>
+</ol>
+</section>
+<section id="虚拟机软件选择" class="slide level2">
+<h2>1. 虚拟机软件选择</h2>
+<ul>
+<li>开源、免费、全功能 <a href="https://www.virtualbox.org/wiki/Downloads">Virtualbox</a></li>
+</ul>
+<blockquote>
+<p>不要忘记安装 <strong>VirtualBox Extension Pack</strong></p>
+</blockquote>
+</section>
+<section id="网卡配置" class="slide level2">
+<h2>2. 网卡配置</h2>
+<ul>
+<li>推荐「双网卡」配置: <code>NatNetwork</code> + <code>HostOnly</code></li>
+</ul>
+<p>refs:</p>
+<ul>
+<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></li>
+<li><a href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox 虚拟网络类型差异可视化详解</a></li>
+<li><a href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的 Virtualbox 虚拟网络详解（2014年课件）</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="iii.-安装过程-faq" class="title-slide slide level1">
+<h1>III. 安装过程 FAQ</h1>
+
+</section>
+<section id="sec-3.agenda" class="slide level2">
+<h2>本节提纲</h2>
+<ol type="1">
+<li>安装选项</li>
+<li>分区方式
+<ul>
+<li>存储分区方式选择时，建议安装时勾选「LVM」和不勾选各来一次，得到 2 种分区方式的系统备用</li>
+</ul></li>
+<li>多网卡选择</li>
+<li>自动更新</li>
+</ol>
+</section>
+<section id="图文版安装向导" class="slide level2">
+<h2>图文版安装向导</h2>
+<p><code>ubuntu install 20.04 step by step</code></p>
+<p><img data-src="images/lab.setup/step-by-step-install.png" /></p>
+</section>
+</section>
+<section>
+<section id="iv.-安装后-faq" class="title-slide slide level1">
+<h1>IV. 安装后 FAQ</h1>
+
+</section>
+<section id="sec-4.agenda" class="slide level2">
+<h2>本节提纲</h2>
+<ol type="1">
+<li><code>多重加载</code> 虚拟硬盘文件配置</li>
+<li>使用 <code>快照</code> 功能备份和还原虚拟机状态</li>
+<li>使用 <code>描述</code> 功能备注虚拟机重要配置</li>
+<li><code>net-plan</code> 配置</li>
+<li>网络连通性测试方法</li>
+</ol>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

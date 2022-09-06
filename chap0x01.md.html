@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第一章linux基础" class="title-slide slide level1">
+<h1>第一章：Linux基础</h1>
+
+</section>
+<section id="gnu-is-not-unix" class="slide level2">
+<h2>GNU is NOT Unix</h2>
+</section>
+</section>
+<section>
+<section id="linux考据历史" class="title-slide slide level1">
+<h1>Linux考据历史</h1>
+
+</section>
+<section id="缘起" class="slide level2">
+<h2>缘起</h2>
+<ul>
+<li>Unix操作系统于1970年首次发布，作者是AT&amp;T贝尔实验室大名鼎鼎的C语言之父：Ken Thompson（在Google与他人联合设计了Go语言）和Dennis Ritchie</li>
+<li>1977年，UC Berkeley的Computer Systems Research Group (CSRG)基于Unix第6版开发了Berkeley Software Distribution (BSD)操作系统
+<ul>
+<li>AT&amp;T在90年代起诉UC Berkeley在BSD系统中使用了Unix的商业版权源代码</li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>1983年，Richard Stallman创建了类Unix，与POSIX兼容的操作系统为目标的GNU计划
+<ul>
+<li>项目工作之余编写了GNU General Public License (GPL)</li>
+<li>同年，Unix和C语言之父K&amp;D因“研究发展了通用的操作系统理论，尤其是实现了UNIX操作系统”获得“计算机界的诺贝尔奖”——图灵奖</li>
+</ul></li>
+<li>1987年，一个16位兼容POISX标准的类UNIX系统——MINIX系统发布，源代码公开但禁止修改和重新发布</li>
+</ul>
+</section>
+<section id="起源" class="slide level2">
+<h2>起源</h2>
+<ul>
+<li>1991年，来自芬兰21岁的Linus Torvalds在comp.os.minix新闻组的Usenet首次发布了Linux 0.01版，该系统是在Minix上使用gcc编译器开发编译的面向32位PC硬件架构的操作系统</li>
+<li>由于从0.01版开始，Linux就使用到了一些GNU软件，于是在1992年12月发布的0.99版就使用了GNU GPL</li>
+</ul>
+</section>
+<section id="命名" class="slide level2">
+<h2>命名</h2>
+<ul>
+<li>最开始Linux仅被Torvalds用于指代Linux内核，但该内核总是配合大量GNU软件一起使用</li>
+<li>GNU官方的公告板在1994年Linux被称为“自由UNIX克隆版”</li>
+<li>另一个著名的开源软件项目Debian把它发布的操作系统命名为：Debian GNU/Linux</li>
+<li>1996年，Richard Stallman在其发布的Emacs 19.31版中称呼Linux为Lignux，不过很快这个名称最终被定为：GNU/Linux</li>
+</ul>
+</section>
+<section id="linux内核" class="slide level2">
+<h2><a href="https://www.kernel.org/">Linux内核</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Linux_kernel"><img data-src="images/chap0x01/LinuxKernel.png" /></a></p>
+</section>
+</section>
+<section>
+<section id="linux生态圈" class="title-slide slide level1">
+<h1>Linux生态圈</h1>
+
+</section>
+<section class="slide level2">
+
+<p><img data-src="images/chap0x01/LinuxEcosystem.png" /></p>
+</section>
+<section class="slide level2">
+
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">英文</th>
+<th style="text-align: left;">中文</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Linux Development Community</td>
+<td style="text-align: left;">Linux 开发社区</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Linux Distribution</td>
+<td style="text-align: left;">Linux 发行版</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Carrier</td>
+<td style="text-align: left;">电信运营商</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Network Equipment Provider</td>
+<td style="text-align: left;">网络设备提供商</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">OSS(Open-source Software) Community</td>
+<td style="text-align: left;">开源软件社区</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ISV(Independent Software Vendor)</td>
+<td style="text-align: left;">独立软件开发商</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hardware Manufacturer</td>
+<td style="text-align: left;">硬件制造商</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="linux生态圈---开发社区与git" class="slide level2">
+<h2>Linux生态圈 - 开发社区与Git</h2>
+<ul>
+<li>早期的Linux内核开使用发商业化的版本控制软件BitKeeper进行代码管理，但开源社区对这个选择充满了质疑</li>
+<li>Torvalds本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在2005年花了10天时间开发完成了第一个git版本</li>
+<li>不同于CVS、SVN等集中式版本控制工具，git采用分布式版本管理，不需要服务器端软件</li>
+</ul>
+</section>
+<section id="git与github" class="slide level2">
+<h2>Git与GitHub</h2>
+<ul>
+<li>Git是一款免费、开源的分布式版本控制系统</li>
+<li>GitHub是用Git做版本控制为全球开源软件作者提供免费、集中的代码托管平台
+<ul>
+<li>针对私有闭源软件项目提供收费的代码托管服务</li>
+<li>目前主流的开源项目普遍将代码托管在GitHub上，软件开发过程可以被全世界所有人透明的查看和监管</li>
+</ul></li>
+</ul>
+</section>
+<section id="github" class="slide level2">
+<h2>GitHub</h2>
+<ul>
+<li><a href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
+<li>Google: github awesome xxxx
+<ul>
+<li>github awesome android</li>
+<li>github awesome security</li>
+<li>github awesome javascript</li>
+</ul></li>
+</ul>
+</section>
+<section id="linux-distros-1" class="slide level2">
+<h2>Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
+<ul>
+<li>Linux内核
+<ul>
+<li><a href="https://www.debian.org/">Debian</a>: 非营利性组织运营的开源软件构建发布版本
+<ul>
+<li><a href="http://www.ubuntu-china.cn/about/">Ubuntu</a>：商业公司Canonical基于Debian构建和维护
+<ul>
+<li><a href="https://www.linuxmint.com/about.php">Linux Mint</a>：开源社区维护</li>
+</ul></li>
+</ul></li>
+<li>Fedora
+<ul>
+<li>RHEL: Red Hat Enterprise Linux
+<ul>
+<li><a href="https://blog.centos.org/2020/12/future-is-centos-stream/">CentOS is dead, CentOS Stream <code>is not a replacement</code></a>
+<ul>
+<li>CentOS Stream, founded in 2019, is “a rolling preview of what’s next in RHEL.”</li>
+</ul></li>
+<li><h2 id="oracle-linux">Oracle Linux</h2></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="linux-distros-2" class="slide level2">
+<h2>Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
+<ul>
+<li>Linux内核
+<ul>
+<li><a href="https://www.suse.com/">SUSE</a>
+<ul>
+<li>SLES: SUSE Linux Enterprise Server</li>
+<li><a href="https://zh.opensuse.org/">openSUSE</a></li>
+</ul></li>
+<li>其他发行版
+<ul>
+<li>Arch Linux</li>
+<li>Gentoo</li>
+<li>Slackware</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="linux-distros-3" class="slide level2">
+<h2>Linux生态圈 - <a href="https://en.wikipedia.org/wiki/List_of_Linux_distributions">发行版</a></h2>
+<p><a href="http://tuxradar.com/content/best-distro-2011"><img data-src="images/chap0x01/LinuxPublisherComparison.jpg" /></a></p>
+</section>
+<section id="linux生态圈---lsb" class="slide level2">
+<h2>Linux生态圈 - LSB</h2>
+<ul>
+<li><a href="https://wiki.linuxfoundation.org/lsb/start">Linux Standard Base, LSB</a></li>
+<li>愿景和使命
+<ul>
+<li>当Linux成为一个平台之后，应用软件开发者希望实现<strong>write once</strong> (on one Linux distribution will) <strong>run everywhere</strong> (on other Linux distributions)</li>
+<li>不仅如此，应用软件开发者希望平台的升级更新不要影响到他们已完成代码的可用性和兼容性</li>
+</ul></li>
+</ul>
+</section>
+<section id="linux生态圈---cgl" class="slide level2">
+<h2>Linux生态圈 - CGL</h2>
+<ul>
+<li><a href="https://wiki.linuxfoundation.org/cgl/start">Carrier Grade Linux, CGL</a> ：电信运营商级Linux</li>
+<li>愿景和使命
+<ul>
+<li>调研网络设备提供商和电信运营商的需求并为Linux发行版厂商制定实现规范</li>
+<li>帮助上游厂商在技术上整合实现以满足上述需求标准</li>
+</ul></li>
+</ul>
+</section>
+<section id="linux生态圈---cgl-1" class="slide level2">
+<h2>Linux生态圈 - <a href="https://www.linuxfoundation.org/sites/lfcorp/files/CGL_5.0_Specification.pdf">CGL</a></h2>
+<p>需求类别</p>
+<ul>
+<li>可用性</li>
+<li>集群</li>
+<li>可服务</li>
+<li>性能</li>
+<li>标准化</li>
+<li>硬件</li>
+<li>安全</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="ossopen-source-software-community-开源软件社区" class="title-slide slide level1">
+<h1>OSS(Open-source Software) Community 开源软件社区</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://github.com/open-source">The largest open source community in the world on GitHub</a></li>
+<li><a href="https://opensource.org/licenses">Open Source Licenses</a></li>
+</ul>
+<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img data-src="images/chap0x01/OpenSourceInTheEnterprise.png" /></a></p>
+</section>
+<section id="isvindependent-software-vendor-独立软件开发商" class="slide level2">
+<h2>ISV(Independent Software Vendor) 独立软件开发商</h2>
+<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img data-src="images/chap0x01/OpenSourceISV.png" /></a></p>
+</section>
+<section id="hardware-manufacturer-硬件制造商" class="slide level2">
+<h2>Hardware Manufacturer 硬件制造商</h2>
+<ul>
+<li><a href="https://community.linuxmint.com/hardware">Hardware on LinuxMint</a></li>
+<li><a href="https://certification.ubuntu.com/">Ubuntu 认证硬件</a></li>
+<li><a href="https://wiki.debian.org/Hardware">Hardware on Debian</a></li>
+<li><a href="https://hardware.redhat.com">Hardware on RedHat</a></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="开源与商业化" class="title-slide slide level1">
+<h1>开源与商业化</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>Linux基金会</li>
+<li>OpenStack基金会</li>
+<li>Apache</li>
+<li>Canonical</li>
+</ul>
+</section>
+<section id="linux-foundation" class="slide level2">
+<h2>Linux基金会</h2>
+<ul>
+<li>孵化了<a href="https://www.linuxfoundation.org/projects">大量知名开源项目</a>
+<ul>
+<li>例如：KVM、Xen、nodejs、Open vSwitch等</li>
+</ul></li>
+<li>Linux基金会采用的是<a href="https://www.linuxfoundation.org/about/bylaws">会员制，分为：准会员、银级、金级、白金级四个等级，白金级是最高等级</a>。
+<ul>
+<li><a href="https://www.linuxfoundation.org/members/corporate">白金会员（年费50万美元）：思科、富士通、惠普企业、华为、IBM、英特尔、NEC、甲骨文、高通、三星和微软</a></li>
+<li>黄金会员（年费10万美元）</li>
+<li>银级会员，按员工数量规模浮动5千美元/年 ～ 2万美元/年</li>
+<li>准会员：非盈利组织和政府实体才可加入，无投票权，费用采取审核批准制（免费与否不固定）</li>
+</ul></li>
+</ul>
+</section>
+<section id="openinfra-1" class="slide level2">
+<h2><a href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
+<ul>
+<li>OpenStack由NASA（美国国家航空航天局）和Rackspace合作研发并发起，旨在为公共及私有云的建设与管理提供软件的开源项目</li>
+<li>2020年10月正式升级为：开源基础设施基金会 - OIF (Open Infrastructure Foundation)</li>
+<li>截止2017年2月，共有来自全球180个国家超过6万名独立会员。截止2021年2月，会员数已超过10万人</li>
+</ul>
+</section>
+<section id="openinfra-2" class="slide level2">
+<h2><a href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
+<ul>
+<li><a href="https://www.openstack.org/join/">白金会员</a>：50万美元/年起步，2名全职工程师贡献</li>
+<li>黄金会员：5万 ～20万美元/年，按照企业净收入的0.025%为参考</li>
+<li>企业赞助：创业公司1万美元/年起，其他公司2.5万美元/年起</li>
+<li>其他主要收入方式：认证、培训、商业化服务支持（安装、部署、架构、集成、定制开发等）</li>
+</ul>
+</section>
+<section id="apache" class="slide level2">
+<h2>Apache</h2>
+<ul>
+<li>Apache软件基金会，简称为ASF，它支持的Apache项目与子项目中，所发行的软件产品都需要遵循Apache许可证（Apache License）。</li>
+<li>目前其已经监管了<a href="https://www.apache.org/index.html#projects-list">数百个开源项目</a>，其中的知名项目包括：Apache HTTP Server、Hadoop、Spark、Kafka、Groovy、Struts等。</li>
+<li><a href="https://www.apache.org/foundation/sponsorship.html">会员赞助制</a>，这里是<a href="https://www.apache.org/foundation/thanks.html">赞助商名单致谢清单</a>
+<ul>
+<li>白金：12.5万美元/年</li>
+<li>黄金：5万美元/年</li>
+<li>白银：2.5万美元/年</li>
+<li>青铜：6千美元/年</li>
+</ul></li>
+<li><a href="https://www.apache.org/foundation/contributing.html">任性打赏捐赠</a></li>
+</ul>
+</section>
+<section id="canonical" class="slide level2">
+<h2><a href="https://www.canonical.com/">Canonical</a></h2>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Canonical_(company)">科能软件有限公司（Canonical Ltd.） 是一家私人公司，由南非的企业家马克·沙特尔沃思创建，主要为了促进开源软件项目。</a></li>
+<li>Canonical在曼岛登记注册，其雇员分布在世界各地，其主要办事处在伦敦，在波士顿、圣保罗、蒙特利尔、上海、台北和马恩岛也有分公司。</li>
+<li>主要产品：Ubuntu家族的Linux发行版</li>
+</ul>
+<p>本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS 等其他常用服务器发行版。</p>
+</section>
+</section>
+<section>
+<section id="ubuntu" class="title-slide slide level1">
+<h1>Ubuntu</h1>
+
+</section>
+<section class="slide level2">
+
+<p>不同版本的维护周期规划</p>
+<p><a href="https://ubuntu.com/about/release-cycle"><img data-src="images/chap0x01/UbuntuLTS.png" /></a></p>
+</section>
+</section>
+<section>
+<section id="ubuntu-install" class="title-slide slide level1">
+<h1>Ubuntu安装</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>物理主机安装</li>
+<li>虚拟机安装</li>
+</ul>
+</section>
+<section id="安装前准备" class="slide level2">
+<h2>安装前准备</h2>
+<ul>
+<li>优先选择当前可用最新的长期支持版本（LTS），下载iso文件
+<ul>
+<li>刻盘 / U盘</li>
+</ul></li>
+<li>新手避免直接在物理主机上安装Linux，推荐在虚拟机里安装（直接挂载使用iso文件）</li>
+<li>磁盘容量准备
+<ul>
+<li><a href="https://www.ubuntu.com/download/desktop/install-ubuntu-desktop">桌面版</a>：至少20GB</li>
+<li><a href="https://www.ubuntu.com/download/server/install-ubuntu-server">服务器</a>：至少10GB</li>
+<li>虚拟机安装推荐使用<strong>动态分配</strong>的虚拟硬盘，预分配80GB磁盘空间</li>
+</ul></li>
+<li>优先选择64位系统</li>
+</ul>
+</section>
+<section id="安装中" class="slide level2">
+<h2>安装中</h2>
+<ul>
+<li>推荐在安装时软件包选择界面勾选（使用<strong>空格键</strong>确认勾选，使用<strong>方向键</strong>移动菜单光标）安装<strong>OpenSSH server</strong></li>
+<li><del>
+建议断网安装，避免安装时由于网速慢、联网更新会导致整个安装过程时间较长
+</del></li>
+</ul>
+</section>
+<section id="安装后" class="slide level2">
+<h2>安装后</h2>
+<ul>
+<li>及时备份纯净系统</li>
+</ul>
+</section>
+<section id="安装过程自动化无人值守" class="slide level2">
+<h2>安装过程自动化（无人值守）</h2>
+<ul>
+<li><a href="https://wiki.debian.org/DebianInstaller/Preseed">Preseed by Debian</a>
+<ul>
+<li><a href="https://help.ubuntu.com/community/InstallCDCustomization">基于官方iso格式安装镜像制作无人值守定制安装镜像</a></li>
+<li><a href="https://help.ubuntu.com/lts/installation-guide/amd64/apb.html">Automating the installation using preseeding by Ubuntu</a>
+<ul>
+<li><a href="https://help.ubuntu.com/lts/installation-guide/example-preseed.txt">Ubuntu官方提供的preseed示例文件</a></li>
+</ul></li>
+</ul></li>
+<li>基于 <a href="https://github.com/CanonicalLtd/subiquity">subiquity</a> - Ubuntu 18.04+ only</li>
+<li><a href="http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html">Kickstart by RedHat</a>
+<ul>
+<li><a href="http://cobbler.github.io/">Cobbler</a></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="命令行" class="title-slide slide level1">
+<h1>命令行</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>CLI: <strong>Command</strong> Line Interface
+<ul>
+<li>使用键盘输入命令，屏幕文字输出结果</li>
+</ul></li>
+<li>GUI: Graphics User Interface
+<ul>
+<li>使用键鼠（也包括红外、体感等新型交互传感器技术）输入命令，图文音输出结果</li>
+</ul></li>
+<li>CUI: <strong>Conversational</strong> User Interface
+<ul>
+<li>使用语音输入命令，五感反馈</li>
+<li>AI驱动重新发明CLI</li>
+</ul></li>
+</ul>
+</section>
+<section id="命令行的特点" class="slide level2">
+<h2>命令行的特点</h2>
+<p>图形用户界面让简单的任务更容易完成，而命令行界面使完成复杂的任务成为可能</p>
+<ul>
+<li>全键盘输入：专业工作效率高</li>
+<li>面向自动化：管道、文件、脚本</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="内置帮助系统" class="title-slide slide level1">
+<h1>内置帮助系统</h1>
+
+</section>
+<section class="slide level2">
+
+<pre class="bash"><code>man man
+
+...
+The  table below shows the section numbers of the manual followed by the types of pages they contain.
+       1   Executable programs or shell commands
+       2   System calls (functions provided by the kernel)
+       3   Library calls (functions within program libraries)
+       4   Special files (usually found in /dev)
+       5   File formats and conventions eg /etc/passwd
+       6   Games
+       7   Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)
+       8   System administration commands (usually only for root)
+       9   Kernel routines [Non standard]
+...
+</code></pre>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>使用<strong>h</strong>获取man帮助系统中的内置帮助（快捷键映射定义），学习如何使用man</li>
+<li>使用<strong>q</strong>退出man帮助系统或子页面</li>
+<li>使用<strong>上下</strong>键滚动页面，使用<strong>空格</strong>键向下翻页</li>
+<li>使用<strong>/</strong>键查找关键词（不区分大小写），使用<strong>n</strong>查看下一个匹配结果</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>man的常用命令行参数</p>
+<pre class="bash"><code># 安装开发相关的manual
+sudo apt-get install manpages-dev
+
+# 在所有section中查找主题为printf的手册页
+man -a printf
+
+# 在所有manual的正文中查找printf关键词
+man -k printf
+
+# 直接查看系统调用类帮助文档中主题名为printf的手册页
+man 3 printf</code></pre>
+</section>
+<section id="内置帮助系统---惯例" class="slide level2">
+<h2>内置帮助系统 - 惯例</h2>
+<ul>
+<li>大多数命令行程序都支持 <code>-h</code> 或 <code>--help</code> 参数来获取内置的简洁使用帮助</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="shell" class="title-slide slide level1">
+<h1>Shell</h1>
+
+</section>
+<section id="什么是shell" class="slide level2">
+<h2><a href="https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html">什么是shell</a></h2>
+<ul>
+<li>shell 就是一个执行命令的「宏」处理器：输入的文本和符号被扩展为更「宏大」的表达式</li>
+<li>Unix shell 即是一个「命令解释器」，也是一种「编程语言」</li>
+<li>shell 的运行模式：交互模式、非交互模式
+<ul>
+<li>交互模式：从键盘输入指令解释执行</li>
+<li>非交互模式：从文件读取指令解释执行</li>
+</ul></li>
+<li>shell 同时支持同步或异步执行指令</li>
+</ul>
+</section>
+<section id="shell家族" class="slide level2">
+<h2><a href="https://en.wikipedia.org/wiki/Unix_shell">shell家族</a></h2>
+<p><img data-src="images/chap0x01/unix-shells-large.png" /></p>
+</section>
+<section id="命令行快捷键" class="slide level2">
+<h2><a href="http://billie66.github.io/TLCL/book/chap09.html">命令行快捷键</a></h2>
+<ul>
+<li>自动补全
+<ul>
+<li><strong>TAB</strong></li>
+</ul></li>
+<li>重复输入命令
+<ul>
+<li><strong>上下键</strong></li>
+<li><strong>Ctrl-R</strong></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="文本编辑与查看" class="title-slide slide level1">
+<h1>文本编辑与查看</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>echo</li>
+<li>cat</li>
+<li>less</li>
+<li>vim / vimtutor</li>
+<li>sort</li>
+<li>uniq</li>
+<li>wc</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>问：如何生成一个随机的字符串？</p>
+</section>
+<section class="slide level2">
+
+<p>答：让新手退出Vim。</p>
+</section>
+</section>
+<section>
+<section id="ssh与远程服务器管理" class="title-slide slide level1">
+<h1>SSH与远程服务器管理</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>免密登录
+<ul>
+<li>ssh-copy-id</li>
+<li>~/.ssh/authorized_keys</li>
+</ul></li>
+<li>SSH跳板与堡垒主机</li>
+</ul>
+<pre class="bash"><code># ProxyCommand
+man ssh_config</code></pre>
+<ul>
+<li><a href="https://github.com/c4pr1c3/cuc-courses/raw/master/2014_2/nsLecture0x10.pdf">SSH服务器安全加固</a></li>
+</ul>
+</section>
+<section id="ssh客户端" class="slide level2">
+<h2>SSH客户端</h2>
+<ul>
+<li>Linux / Mac
+<ul>
+<li>ssh</li>
+</ul></li>
+<li>Windows
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux</a></li>
+<li><a href="http://www.putty.org/">putty</a></li>
+<li><a href="https://www.netsarang.com/download/down_xsh.html">xshell</a></li>
+<li><a href="http://mobaxterm.mobatek.net/">MobaXterm</a></li>
+<li><a href="https://gitforwindows.org/">git for windows</a></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="virtualbox虚拟机实验环境建议" class="title-slide slide level1">
+<h1>Virtualbox虚拟机实验环境建议</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>使用双网卡：Host-only + NAT</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="参考文献" class="title-slide slide level1">
+<h1>参考文献</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/History_of_Linux">History of Linux from WikiPedia</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Arch_compared_to_other_distributions_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Arch compared to other distributions</a></li>
+<li><a href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
+<li><a href="https://help.ubuntu.com/lts/installation-guide/">Ubuntu Installation Guide（官方文档）</a></li>
+<li><a href="https://builtvisible.com/the-ubuntu-installation-guide/">How to install Ubuntu - The Ubuntu Installation Guide</a></li>
+<li><a href="http://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu">How do I create an EFI-bootable ISO of a customized version of Ubuntu?</a></li>
+<li><a href="http://askubuntu.com/questions/806820/how-do-i-create-a-completely-unattended-install-of-ubuntu-desktop-16-04-1-lts">How do I create a completely unattended install of Ubuntu Desktop 16.04.1 LTS?</a></li>
+<li><a href="http://billie66.github.io/TLCL/index.html">快乐的Linux命令行</a> | <a href="http://linuxcommand.org/tlcl.php">The Linux Command Line</a></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

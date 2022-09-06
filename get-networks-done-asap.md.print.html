@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="计算机网络先修基础快速入门">《计算机网络》先修基础快速入门</h1>
+<hr />
+<blockquote>
+<p>本课特供无《计算机网络》基础同学</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>本课不能代替《计算机网络》课程</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>本课仅限服务于《Linux系统与网络管理》课程讲授所需的最小化《计算机网络》概念与技术</p>
+</blockquote>
+<h1 id="agenda">课程提纲</h1>
+<hr />
+<pre><code>I.   分层模型
+II.  查表寻址
+III. 应用层协议
+IV.  网络协议实现离不开操作系统
+V.   Virtualbox 虚拟网络实战</code></pre>
+<h1 id="i.-分层模型">I. 分层模型</h1>
+<hr />
+<h2 id="agenda-of-1">本节提纲</h2>
+<ul>
+<li>对等层通信</li>
+<li>下层连通是上层连通的基础和保障</li>
+</ul>
+<hr />
+<h2 id="对等层通信">对等层通信</h2>
+<ul>
+<li>「连通性」是针对分层通信模型里具体哪一层的「连通性」，且需要考虑数据传输方向</li>
+</ul>
+<hr />
+<h3 id="层模型">4/5 层模型</h3>
+<pre><code>| 应用层 | DHCP | DNS | FTP | NFS | Samba | HTTP |
+| 传输层 | TCP  | UDP |
+| 网络层 | IP   | ICMP* |
+| 数据链路层/物理层 | IEEE 802.3 | IEEE 802.11 | IEEE 802.15 |</code></pre>
+<ul>
+<li>IEEE 802.3 以太局域网的物理层和数据链路层标准。</li>
+<li>IEEE 802.11 无线局域网的物理层和数据链路层标准。</li>
+<li>IEEE 802.15 无线个人局域网（包含蓝牙协议）的物理层和数据链路层标准。</li>
+</ul>
+<hr />
+<h3 id="特别的-icmp">特别的 ICMP</h3>
+<blockquote>
+<p>ICMP 是否属于「网络层」此处存在争议，我在本课程中如无特别说明一律将 ICMP 视为网络层连通性诊断工具。</p>
+</blockquote>
+<hr />
+<h3 id="peer-to-peer-faq-1">对等层通信 FAQ</h3>
+<ul>
+<li>本课程涉及到的网络服务配置，无一例外的都是「点对点」 <strong>通信</strong> 模型，即：<code>「客户端」-「服务器」</code> 模型，又称 <code>CS 模型</code> 。</li>
+<li>本课程所指的网络服务配置，如无特别说明，都是主要工作在于配置 <code>「服务器」</code> 。</li>
+<li><code>HTTP</code> 协议使用的 <code>「客户端」</code> 我们通常又称为 <code>浏览器（Browser）</code> 。所以，<code>HTTP</code> 应用的 <strong>软件架构</strong> 模型又称为 <code>BS 架构</code>。</li>
+<li>典型 <code>CS 模型</code> 通信流程：<code>「客户端」</code> 发起 <strong>请求</strong> ，<code>「服务端」</code> 接收并处理 <strong>请求</strong> 后发回 <strong>响应</strong> 。</li>
+</ul>
+<hr />
+<h3 id="peer-to-peer-faq-2">对等层通信 FAQ</h3>
+<ul>
+<li>在一次通信过程中，<code>本地</code> 是相对于 <code>远程</code> 的成对出现概念。例如：
+<ul>
+<li>SSH 远程登录，运行 <code>SSH 客户端</code> 的主机我们称为「本地主机」。<code>SSH 服务器</code> 被称为「远程主机」。</li>
+<li>使用 HTTP 协议的网站应用中的「文件上传」场景，用户选择「本地」文件上传到「远程」 Web 服务器。</li>
+</ul></li>
+<li>每一层的通信 <code>负载（Payload）</code> 都指的是「相对于本层的上一层」协议数据。
+<ul>
+<li><code>HTTP 协议数据</code> 就是通过 TCP 负载层承载的。</li>
+</ul></li>
+<li>站在<code>本地</code> 看通信：「上行」或「出站」就是向 <code>远程</code> <strong><em>发送</em></strong> 数据，「下行」或「入站」就是从 <code>远程</code> <strong><em>接收</em></strong> 数据。</li>
+</ul>
+<hr />
+<h2 id="分组传输">分组传输</h2>
+<ul>
+<li>计算机网络通信的「行为模式」特征：<code>Packet-by-Packet</code></li>
+<li>物理层以上：没有「物理上」的「连接」，只有「逻辑上」的「连接」
+<ul>
+<li>每一层「连接」状态的定义存储在「报文」每一层的约定（协议规范）字段</li>
+</ul></li>
+<li>研究「连接」的核心是搞懂 <code>Packet</code> （报文）分段定义</li>
+</ul>
+<hr />
+<h2 id="报文示例">报文示例</h2>
+<figure>
+<img src="images/get-networks-done-asap/http-scapy.png" alt="" /><figcaption>by scapy</figcaption>
+</figure>
+<hr />
+<figure>
+<img src="images/get-networks-done-asap/http-wireshark.png" alt="" /><figcaption>by wireshark</figcaption>
+</figure>
+<hr />
+<h2 id="下层连通是上层连通的基础和保障">下层连通是上层连通的基础和保障</h2>
+<hr />
+<h3 id="计算机网络连通性故障排查的自底向上原则">计算机网络连通性故障排查的「自底向上」原则</h3>
+<ul>
+<li>物理层不通，啥都不通。</li>
+<li>网络层连通，应用层不一定连通。但网络层不连通，应用层一定也不连通。</li>
+<li>底层自动「寻址」失败时，也会导致应用层连接失败。</li>
+</ul>
+<hr />
+<h3 id="以-ssh-连接失败为例">以 SSH 连接失败为例</h3>
+<ol type="1">
+<li>物理层连通性判定：网卡是否「接入网线」</li>
+<li>链路层连通性判定：<a href="#vb-net-conn-graph"><code>Virtualbox</code> 虚拟网络连通性矩阵</a></li>
+<li>网络层连通性判定：<code>ping</code></li>
+<li>传输层连通性判定：<code>nc</code> / <code>ssh -vv</code></li>
+<li>应用层连通性判定：<code>ssh -vv</code></li>
+</ol>
+<hr />
+<h3 id="计算机网络连通性故障排查的自顶向下原则">计算机网络连通性故障排查的「自顶向下」原则</h3>
+<ul>
+<li>用浏览器访问一下网站，能打开已经能说明 HTTP 连接 OK
+<ul>
+<li>小心「浏览器缓存」误导</li>
+</ul></li>
+<li>SSH 已经可以访问目标 IP 所在主机，说明本地到目标 IP 网络层连通性 OK</li>
+<li><code>ping</code> 一下比弯腰查网线更快捷</li>
+</ul>
+<h1 id="ii.-查表寻址">II. 查表寻址</h1>
+<hr />
+<h2 id="本课程常用查表寻址协议">本课程常用查表寻址协议</h2>
+<ul>
+<li>DHCP</li>
+<li>ARP</li>
+<li>路由</li>
+<li>DNS</li>
+</ul>
+<hr />
+<h2 id="网络通信初始化-dhcp">网络通信初始化 DHCP</h2>
+<ul>
+<li>解决网络中「新成员」加入后的通信身份标识自动分配问题</li>
+<li>如果没有 DHCP ，那么需要「手工」配置通信身份标识</li>
+</ul>
+<hr />
+<h3 id="通信身份标识">通信身份标识</h3>
+<ul>
+<li>链路层：MAC 地址</li>
+<li>网络层：IP</li>
+<li>传输层：协议标识符(TCP/UDP) + 端口号 (1-1024, 1025-65535)</li>
+<li>应用层：主机名、域名</li>
+</ul>
+<hr />
+<h3 id="接网气的-dhcp-12">接「网」气的 DHCP (1/2)</h3>
+<p>DHCP 解决的就是「根据主机提供的 <strong>身份标识</strong> 」自动分配一个在局域网中「不会引起 <strong>身份冲突</strong>」的 IP 地址以及其他常用网络配置信息。</p>
+<hr />
+<h3 id="接网气的-dhcp-22">接「网」气的 DHCP (2/2)</h3>
+<ul>
+<li>身份标识：DHCP 请求标识，由本地系统 DHCP 客户端自行决定，常见于直接使用「接入该网络的网卡」的 MAC 地址。也有例外，如 netplan 在大部分主机上使用主机唯一标识符。</li>
+<li>身份冲突：MAC 地址冲突可能会导致局域网中的流量劫持，IP 地址冲突可能会触发操作系统级别的通信异常处理流程。</li>
+<li>其他 DHCP 常用配置：局域网网关 IP、本地 DNS 服务器 IP、NTP 服务器 IP 等。</li>
+</ul>
+<hr />
+<h2 id="寻址相关协议">寻址相关协议</h2>
+<ul>
+<li>ARP</li>
+<li>路由</li>
+<li>DNS</li>
+</ul>
+<hr />
+<h3 id="arp">ARP</h3>
+<ul>
+<li>根据目标 IP 地址「查找」目标 MAC 地址。</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 推荐命令</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="ex">ip</span> neigh</span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># ping 一下「局域网」内另一台 VM 后再执行以上命令</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co"># 过时命令</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="ex">arp</span> -n</span></code></pre></div>
+<hr />
+<h3 id="路由">路由</h3>
+<ul>
+<li>根据目标 IP 地址「查找」转发「IP」地址。</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># 推荐命令</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="ex">ip</span> route</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># ⚠️  删除虚拟机内默认路由后再执行以上命令 ⚠️</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="fu">sudo</span> ip route delete default</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># 此时还可以 ping 通 www.baidu.com 吗？</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># 把之前的默认网关再重新添加进路由表</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co"># sudo ip route add default via 10.0.2.1</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co"># 过时命令</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="ex">route</span> -n</span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="fu">netstat</span> -rn</span></code></pre></div>
+<hr />
+<h3 id="dns">DNS</h3>
+<ul>
+<li>根据目标「域名」地址「查找」目标「IP」地址。</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># 执行域名解析</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">## 使用本地默认域名解析服务器</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="ex">dig</span> www.baidu.com</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">## 使用指定域名解析服务器 114.114.114.114 忽略 /etc/hosts </span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="ex">dig</span> @1.1.1.1 www.baidu.com</span></code></pre></div>
+<h1 id="iii.-应用层协议">III. 应用层协议</h1>
+<hr />
+<ul>
+<li>HTTP （本课程第 5 章：Web服务器）</li>
+<li>FTP / NFS / Samba （本课程第 6 章：网络资源共享）</li>
+</ul>
+<h1 id="iv.-网络协议实现离不开操作系统">IV. 网络协议实现离不开操作系统</h1>
+<hr />
+<h2 id="lookup-table-1">查找表（1/2）</h2>
+<ul>
+<li>ARP 表：「目标 IP 地址 -&gt; { 本地网卡标识 - 目标 MAC 地址 } 」映射关系表</li>
+<li>交换机的 CAM 表：「目标 MAC 地址 - 交换机端口号」映射关系表</li>
+<li>路由表：「目标 IP 地址段 -&gt; { 本地网卡标识 - 下一跳 IP 地址 - 优先级}」映射关系表</li>
+</ul>
+<hr />
+<h2 id="lookup-table-2">查找表（2/2）</h2>
+<ul>
+<li>DHCP 分配记录：「DHCP 客户端身份标识 -&gt; { 分配 IP 地址 - 租约 }」映射关系表</li>
+<li>DNS：「域名 -&gt; { 地址 [ - 地址类型 - 有效期 ] }」映射关系表
+<ul>
+<li><code>hosts</code> 文件</li>
+<li>应用程序内置缓存，例如浏览器缓存</li>
+<li>dnsmasq / bind9 等配置文件</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="special-ip-address">特殊网络地址</h2>
+<hr />
+<h3 id="section">0.0.0.0</h3>
+<ul>
+<li>服务器配置中，指代「本机上的所有网卡可用 IPv4 地址」。例如虚拟机配置的 2 个虚拟网卡分配得到的 IP 分别是 <code>10.0.2.15</code> 和 <code>192.168.56.101</code> ，则只要满足网络层连通性，这 2 个 IP 地址都可以被用来作为访问时的目的 IP 。</li>
+<li>路由配置中，指代「默认路由」，表示目标 IP 地址为任意 IPv4 地址。</li>
+</ul>
+<hr />
+<h3 id="section-1">127.0.0.1</h3>
+<ul>
+<li>本地「回环（<code>loopback</code>）」地址，常用于单机条件下模拟和调试网络程序时的服务端程序监听地址。</li>
+</ul>
+<hr />
+<h3 id="localhost">localhost</h3>
+<ul>
+<li>主机名，在主流操作系统 <code>hosts</code> 文件中通常默认定义为解析到 <code>127.0.0.1</code> 或 <code>::1</code>，但也可以定义指向其他 IP 地址。</li>
+</ul>
+<h1 id="v.-virtualbox-虚拟网络实战">V. Virtualbox 虚拟网络实战</h1>
+<hr />
+<h2 id="vb-net-conn-graph"><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></h2>
+<p>连通性总结</p>
+<table>
+<thead>
+<tr class="header">
+<th>网卡模式</th>
+<th style="text-align: center;">VM ➡️ Host</th>
+<th style="text-align: center;">VM ⬅️ Host</th>
+<th style="text-align: center;">VM1&lt;–&gt;VM2</th>
+<th style="text-align: center;">VM ➡️ Net/LAN</th>
+<th style="text-align: center;">VM ⬅️ Net/LAN</th>
+<th>典型应用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Host-only</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td>Host 访问 VM 内网络服务</td>
+</tr>
+<tr class="even">
+<td>NAT-网络</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">端口转发</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">端口转发</td>
+<td>VM 上网且需要 VM 组网实验</td>
+</tr>
+<tr class="odd">
+<td>NAT</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">端口转发</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">端口转发</td>
+<td>VM 上网</td>
+</tr>
+<tr class="even">
+<td>Internal</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">❌</td>
+<td style="text-align: center;">❌</td>
+<td>网络安全实验</td>
+</tr>
+<tr class="odd">
+<td>Bridged</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td>借用 Host 物理网卡</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="tcpdump">tcpdump</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># 查看可捕获的网卡名称</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="ex">tcpdump</span> --list-interfaces</span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># 对照系统中网卡信息</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="ex">ip</span> a</span>
+<span id="cb6-6"><a href="#cb6-6"></a></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co"># 开始抓包</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">## -i 指定抓包网卡</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">## -w 抓包结果保存到文件</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="fu">sudo</span> tcpdump -i enp0s8 -w http.pcap</span></code></pre></div>
+<hr />
+<h2 id="wireshark">wireshark</h2>
+<ol type="1">
+<li>查看抓包基本信息</li>
+<li>查看数据包详情</li>
+<li>查看「流」信息</li>
+<li>从数据流中提取「载荷」</li>
+</ol>
+<hr />
+<h3 id="本章参考文献">本章参考文献</h3>
+<ul>
+<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></li>
+<li><a href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox 虚拟网络类型差异可视化详解</a></li>
+<li><a href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的 Virtualbox 虚拟网络详解（2014年课件）</a></li>
+</ul>
+</body>
+</html>

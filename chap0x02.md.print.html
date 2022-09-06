@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第二章linux服务器系统使用基础">第二章：Linux服务器系统使用基础</h1>
+<hr />
+<h2 id="from-gui-to-cli">From GUI to CLI</h2>
+<p><img src="images/chap0x02/sl.gif" /></p>
+<h1 id="软件包管理">软件包管理</h1>
+<hr />
+<h2 id="提纲">提纲</h2>
+<ul>
+<li>sources.list格式</li>
+<li>小心添加第三方软件源</li>
+<li>查找：apt-get update &amp;&amp; apt-cache search、apt-file、google、dpkg -S、aptitude</li>
+<li>安装：软件被装到哪里去了</li>
+<li>升级：区分upgrade与dist-upgrade</li>
+<li>卸载：purge、clean、remove</li>
+<li>源码下载与安装
+<ul>
+<li>README.md / INSTALL</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="ubuntu-16.04-vs-20.04-etcaptsources.list">Ubuntu 16.04 vs 20.04 /etc/apt/sources.list</h2>
+<p><img src="images/chap0x02/vimdiff-16vs20.sources.list.png" /></p>
+<hr />
+<h2 id="sources.list-格式说明">sources.list 格式说明</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">man</span> sources.list</span></code></pre></div>
+<ul>
+<li>xenial 是 Ubuntu 16.04 的<a href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
+<li>focal 是 Ubuntu 20.04 的<a href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
+</ul>
+<hr />
+<h2 id="soft-type-codename-1"><a href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
+<ul>
+<li>Main - Canonical官方支持的免费和开源软件</li>
+<li>Universe - （开源）社区维护的免费和开源软件</li>
+<li>Restricted - 私有设备驱动</li>
+<li>Multiverse - 有版权限制的私有软件</li>
+</ul>
+<p>以下是<a href="https://en.wikipedia.org/wiki/Ubuntu_%28operating_system%29#Package_classification_and_support">Wikipedia的软件包分类和支持分类说明</a></p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">免费软件</th>
+<th style="text-align: left;">非免费软件</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">官方支持</td>
+<td style="text-align: left;">main</td>
+<td style="text-align: left;">restricted</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">官方不支持（社区或第三方支持）</td>
+<td style="text-align: left;">universe</td>
+<td style="text-align: left;">multiverse</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="soft-type-codename-2"><a href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
+<ul>
+<li><a href="https://help.ubuntu.com/community/UbuntuBackports">backports</a>
+<ul>
+<li>官方安全审查小组 <strong>不会</strong> 提供任何 <code>安全审查和安全性承诺保障</code></li>
+<li>向旧版本系统提供较新且兼容旧版系统和所有依赖关系的软件</li>
+</ul></li>
+<li><a href="https://help.ubuntu.com/community/Repositories/Ubuntu#Enabling_Canonical_Partner_Repositories">partner</a>
+<ul>
+<li>非Ubuntu系统的必要组件，是Canonical公司及其合作伙伴向Ubuntu用户提供的附加软件：通常是闭源和商业版权软件</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="举例讲解">举例讲解</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode ini"><code class="sourceCode ini"><span id="cb2-1"><a href="#cb2-1"></a><span class="dt">deb http://cn.archive.ubuntu.com/ubuntu/ xenial multiverse</span></span></code></pre></div>
+<p><strong>apt-get update</strong>的过程是访问一个构造好的URL，该URL使用内置的字符串“拼接”规则构造成</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ini"><code class="sourceCode ini"><span id="cb3-1"><a href="#cb3-1"></a><span class="dt">http://cn.archive.ubuntu.com/ubuntu/dists/xenial/multiverse/binary-amd64/</span></span></code></pre></div>
+<ul>
+<li>其中 <strong>binary-amd64</strong> 是根据当前系统是64位而“换算”得来的，如果是32位系统该位置字符串会被替换为 <strong>binary-i386</strong></li>
+<li>当前发行版版本代号后面有不止一个软件包类型代号时，有几个软件包类型代号就对应会构造出几个实际的软件列表下载地址</li>
+</ul>
+<hr />
+<h2 id="ports.ubuntu.com">ports.ubuntu.com</h2>
+<ul>
+<li><a href="https://www.yuque.com/c4pr1c3/linux/ttkz7y#comment-9934732">无人值守安装时卡住很久？</a>
+<ul>
+<li><a href="https://wiki.ubuntu.com/UbuntuDevelopment/PackageArchive">软件源 http://ports.ubuntu.com 收录的架构为 arm64，armhf，PowerPC，ppc64el 等</a></li>
+<li>软件源 http://cn.archive.ubuntu.com 收录的架构为 amd64 和 i386</li>
+</ul></li>
+<li>Ubuntu 官方支持的技术架构：amd64, armhf, i386</li>
+</ul>
+<hr />
+<h3 id="验证-ports.ubuntu.com-访问">验证 ports.ubuntu.com 访问</h3>
+<p><a href="https://tools.ipip.net/newping.php"><img src="images/chap0x02/ipip.net.ping.test.png" /></a></p>
+<hr />
+<h3 id="解决-ports.ubuntu.com-导致的无人值守安装卡住问题">解决 ports.ubuntu.com 导致的无人值守安装卡住问题</h3>
+<ul>
+<li>删除 <code>ports.ubuntu.com</code> 相关的 2 行配置代码</li>
+<li>搜索 <code>ports.ubuntu.com 中国镜像</code> 进行镜像源地址修改，推荐阿里云、中科大、清华的镜像源</li>
+</ul>
+<hr />
+<p><strong>apt-get update</strong> VS. <strong>apt-get upgrade</strong> VS. <strong>apt-get dist-upgrade</strong></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">man</span> apt-get</span></code></pre></div>
+<ul>
+<li><strong>apt-get update</strong> 使用/etc/apt/sources.list中定义的镜像源地址更新可用软件包列表，更新本地的可用软件包信息数据库文件，并不会“安装”或“更新”任何软件</li>
+<li><strong>apt-get upgrade</strong> 根据本地的可用软件包信息数据库文件内容更新安装当前系统中所有已安装软件的版本</li>
+<li><strong>apt-get dist-upgrade</strong> 在<strong>apt-get upgrade</strong>的基础上可以解决部分软件升级时需要卸载其他软件的自动依赖关系推导和解决问题，通常内核版本升级都需要通过该命令来实现</li>
+</ul>
+<hr />
+<p><strong>apt-get remove</strong> VS. <strong>apt-get purge</strong> VS. <strong>apt-get clean</strong></p>
+<ul>
+<li><strong>apt-get remove</strong> 删除已安装软件包但不删除配置文件</li>
+<li><strong>apt-get purge</strong> 删除已安装软件包和配置文件</li>
+<li><strong>apt-get clean</strong> 删除/var/cache/apt/archives/和/var/cache/apt/archives/partial/目录下除了lock文件之外的所有已下载（软件包）文件</li>
+</ul>
+<hr />
+<p><strong>apt-get autoclean</strong> VS. <strong>apt-get autoremove</strong></p>
+<ul>
+<li><strong>apt-get autoclean</strong> 和<strong>apt-get clean</strong>类似，但更“智能”，主要是为了清除无用缓存保留可能还有用的缓存用的</li>
+<li><strong>apt-get autoremove</strong> 删除所有用于满足其他软件依赖关系而自动安装但现在已经没有软件依赖的软件包</li>
+</ul>
+<hr />
+<h2 id="查找你需要的软件包-如果你知道软件包名">查找你需要的软件包 —— 如果你知道软件包名</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="ex">apt-get</span> install <span class="op">&lt;</span>package_name<span class="op">&gt;</span></span></code></pre></div>
+<hr />
+<h2 id="查找你需要的软件包-如果你知道软件名但不知道软件包名">查找你需要的软件包 —— 如果你知道软件名，但不知道软件包名</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">apt-cache</span> search <span class="op">&lt;</span>software_keyword<span class="op">&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="ex">apt-get</span> install <span class="op">&lt;</span>software_keyword<span class="op">&gt;&lt;</span>TAB<span class="op">&gt;&lt;</span>TAB<span class="op">&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co"># example</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="ex">apt-cache</span> search mysql</span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="ex">apt-cache</span> search apache</span>
+<span id="cb6-7"><a href="#cb6-7"></a></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co"># 利用终端的自动补全机制获得以mysql关键字开头的所有软件包名</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="ex">apt-get</span> install mysql<span class="op">&lt;</span>TAB<span class="op">&gt;&lt;</span>TAB<span class="op">&gt;</span></span></code></pre></div>
+<ul>
+<li>Google Knows!!!</li>
+</ul>
+<hr />
+<p>apt-file - APT package searching utility – command-line interface</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="ex">apt-get</span> install apt-file</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">man</span> apt-file</span></code></pre></div>
+<blockquote>
+<p>apt-file is a command line tool for searching files in packages for the APT package management system.</p>
+</blockquote>
+<hr />
+<p>aptitude - 对<strong>apt-get</strong>进行封装的一个更友好、更易用（主要体现在自动解决软件依赖bug上）包管理工具</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="ex">apt-get</span> install aptitude</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">man</span> aptitude</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a>$ <span class="ex">aptitude</span> show mysql-server</span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">Package</span>: mysql-server</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="ex">State</span>: not installed</span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="ex">Version</span>: 5.7.16-0ubuntu0.16.04.1</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="ex">Priority</span>: optional</span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="ex">Section</span>: database</span>
+<span id="cb9-7"><a href="#cb9-7"></a><span class="ex">Maintainer</span>: Ubuntu Developers <span class="op">&lt;</span>ubuntu-devel-discuss@lists.ubuntu.com<span class="op">&gt;</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a><span class="ex">Architecture</span>: all</span>
+<span id="cb9-9"><a href="#cb9-9"></a><span class="ex">Uncompressed</span> Size: 106 k</span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="ex">Depends</span>: mysql-server-5.7</span>
+<span id="cb9-11"><a href="#cb9-11"></a><span class="ex">Provided</span> by: percona-server-server-5.6 (5.6.22-rel71.0-0ubuntu4), <span class="ex">percona-server-server-5.6</span></span>
+<span id="cb9-12"><a href="#cb9-12"></a>             <span class="kw">(</span><span class="ex">5.6.22-rel71.0-0ubuntu4.1</span><span class="kw">)</span>, <span class="ex">percona-xtradb-cluster-server-5.6</span> (5.6.21-25.8-0ubuntu3),</span>
+<span id="cb9-13"><a href="#cb9-13"></a>             <span class="ex">percona-xtradb-cluster-server-5.6</span> (5.6.21-25.8-0ubuntu3.2)</span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="ex">Description</span>: MySQL database server (metapackage depending on the latest version)</span>
+<span id="cb9-15"><a href="#cb9-15"></a> <span class="ex">This</span> is an empty package that depends on the current <span class="st">&quot;best&quot;</span> version of mysql-server (currently</span>
+<span id="cb9-16"><a href="#cb9-16"></a> <span class="ex">mysql-server-5.7</span>), <span class="fu">as</span> determined by the MySQL maintainers. Install this package if in doubt about which</span>
+<span id="cb9-17"><a href="#cb9-17"></a> <span class="ex">MySQL</span> version you need. That will install the version recommended by the package maintainers.</span>
+<span id="cb9-18"><a href="#cb9-18"></a></span>
+<span id="cb9-19"><a href="#cb9-19"></a> <span class="ex">MySQL</span> is a fast, stable and true multi-user, multi-threaded SQL database server. SQL (Structured Query</span>
+<span id="cb9-20"><a href="#cb9-20"></a> <span class="ex">Language</span>) <span class="ex">is</span> the most popular database query language in the world. The main goals of MySQL are speed,</span>
+<span id="cb9-21"><a href="#cb9-21"></a> <span class="ex">robustness</span> and ease of use.</span>
+<span id="cb9-22"><a href="#cb9-22"></a><span class="ex">Homepage</span>: http://dev.mysql.com/</span>
+<span id="cb9-23"><a href="#cb9-23"></a></span>
+<span id="cb9-24"><a href="#cb9-24"></a>$ <span class="ex">aptitude</span> show aptitude</span>
+<span id="cb9-25"><a href="#cb9-25"></a><span class="ex">Package</span>: aptitude</span>
+<span id="cb9-26"><a href="#cb9-26"></a><span class="ex">State</span>: installed</span>
+<span id="cb9-27"><a href="#cb9-27"></a><span class="ex">Automatically</span> installed: no</span>
+<span id="cb9-28"><a href="#cb9-28"></a><span class="ex">Multi-Arch</span>: foreign</span>
+<span id="cb9-29"><a href="#cb9-29"></a><span class="ex">Version</span>: 0.7.4-2ubuntu2</span>
+<span id="cb9-30"><a href="#cb9-30"></a><span class="ex">Priority</span>: optional</span>
+<span id="cb9-31"><a href="#cb9-31"></a><span class="ex">Section</span>: admin</span>
+<span id="cb9-32"><a href="#cb9-32"></a><span class="ex">Maintainer</span>: Ubuntu Developers <span class="op">&lt;</span>ubuntu-devel-discuss@lists.ubuntu.com<span class="op">&gt;</span></span>
+<span id="cb9-33"><a href="#cb9-33"></a><span class="ex">Architecture</span>: amd64</span>
+<span id="cb9-34"><a href="#cb9-34"></a><span class="ex">Uncompressed</span> Size: 4,205 k</span>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="ex">Depends</span>: aptitude-common (= 0.7.4-2ubuntu2), <span class="ex">libapt-pkg5.0</span> (<span class="op">&gt;</span>= 1.1), <span class="ex">libboost-iostreams1.58.0</span>, libc6 (<span class="op">&gt;</span>=</span>
+<span id="cb9-36"><a href="#cb9-36"></a>         <span class="ex">2.14</span>), <span class="ex">libcwidget3v5</span>, libgcc1 (<span class="op">&gt;</span>= 1:3.0), <span class="ex">libncursesw5</span> (<span class="op">&gt;</span>= 6), <span class="ex">libsigc++-2.0-0v5</span> (<span class="op">&gt;</span>= 2.6.1),</span>
+<span id="cb9-37"><a href="#cb9-37"></a>         <span class="ex">libsqlite3-0</span> (<span class="op">&gt;</span>= 3.6.5), <span class="ex">libstdc++6</span> (<span class="op">&gt;</span>= 5.2), <span class="ex">libtinfo5</span> (<span class="op">&gt;</span>= 6), <span class="ex">libxapian22v5</span></span>
+<span id="cb9-38"><a href="#cb9-38"></a><span class="ex">Recommends</span>: libparse-debianchangelog-perl, sensible-utils</span>
+<span id="cb9-39"><a href="#cb9-39"></a><span class="ex">Suggests</span>: apt-xapian-index, aptitude-doc-en <span class="kw">|</span> <span class="ex">aptitude-doc</span>, debtags, tasksel</span>
+<span id="cb9-40"><a href="#cb9-40"></a><span class="ex">Conflicts</span>: aptitude:i386</span>
+<span id="cb9-41"><a href="#cb9-41"></a><span class="ex">Provides</span>: aptitude:i386 (= 0.7.4-2ubuntu2)</span>
+<span id="cb9-42"><a href="#cb9-42"></a><span class="ex">Provided</span> by: aptitude:i386 (0.7.4-2ubuntu2)</span>
+<span id="cb9-43"><a href="#cb9-43"></a><span class="ex">Description</span>: terminal-based package manager</span>
+<span id="cb9-44"><a href="#cb9-44"></a> <span class="ex">aptitude</span> is a package manager with a number of useful features, including: a mutt-like syntax for matching</span>
+<span id="cb9-45"><a href="#cb9-45"></a> <span class="ex">packages</span> in a flexible manner, dselect-like persistence of user actions, the ability to retrieve and</span>
+<span id="cb9-46"><a href="#cb9-46"></a> <span class="ex">display</span> the Debian changelog of most packages, and a command-line mode similar to that of apt-get.</span>
+<span id="cb9-47"><a href="#cb9-47"></a></span>
+<span id="cb9-48"><a href="#cb9-48"></a> <span class="ex">aptitude</span> is also Y2K-compliant, non-fattening, naturally cleansing, and housebroken.</span>
+<span id="cb9-49"><a href="#cb9-49"></a><span class="ex">Homepage</span>: http://aptitude.alioth.debian.org/</span></code></pre></div>
+<hr />
+<h2 id="aptitude-apt-get-apt">aptitude, apt-get, apt</h2>
+<p>整理自：<a href="https://debian-handbook.info/browse/stable/sect.apt-get.html">The Debian Administrator’s Handbook</a></p>
+<ul>
+<li>CLI: <code>apt-get</code> 诞生最早；<code>apt</code> 稍晚，改进了 <code>apt-get</code> 的一些设计缺陷，更简单易用，推荐优先使用</li>
+<li>GUI: <code>synaptic</code>, <code>aptitude</code>（也有 CLI 接口）</li>
+</ul>
+<hr />
+<h2 id="在安装前如何确认软件包的版本来源">在安装前如何确认软件包的版本、来源</h2>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># apt-cache policy &lt;package-name&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># apt policy &lt;package-name&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="ex">apt-cache</span> policy mysql-server</span>
+<span id="cb10-4"><a href="#cb10-4"></a></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="ex">mysql-server</span>:</span>
+<span id="cb10-6"><a href="#cb10-6"></a>  <span class="ex">Installed</span>: (none)</span>
+<span id="cb10-7"><a href="#cb10-7"></a>  <span class="ex">Candidate</span>: 5.7.21-0ubuntu0.16.04.1</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  <span class="ex">Version</span> table:</span>
+<span id="cb10-9"><a href="#cb10-9"></a>     <span class="ex">5.7.21-0ubuntu0.16.04.1</span> 500</span>
+<span id="cb10-10"><a href="#cb10-10"></a>        <span class="ex">500</span> http://cn.archive.ubuntu.com/ubuntu xenial-updates/main amd64 Packages</span>
+<span id="cb10-11"><a href="#cb10-11"></a>        <span class="ex">500</span> http://cn.archive.ubuntu.com/ubuntu xenial-updates/main i386 Packages</span>
+<span id="cb10-12"><a href="#cb10-12"></a>        <span class="ex">500</span> http://security.ubuntu.com/ubuntu xenial-security/main amd64 Packages</span>
+<span id="cb10-13"><a href="#cb10-13"></a>        <span class="ex">500</span> http://security.ubuntu.com/ubuntu xenial-security/main i386 Packages</span>
+<span id="cb10-14"><a href="#cb10-14"></a>     <span class="ex">5.7.11-0ubuntu6</span> 500</span>
+<span id="cb10-15"><a href="#cb10-15"></a>        <span class="ex">500</span> http://cn.archive.ubuntu.com/ubuntu xenial/main amd64 Packages</span>
+<span id="cb10-16"><a href="#cb10-16"></a>        <span class="ex">500</span> http://cn.archive.ubuntu.com/ubuntu xenial/main i386 Packages</span></code></pre></div>
+<hr />
+<h2 id="安装指定版本的软件">安装指定版本的软件</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># 根据 apt-cache policy 输出结果里当前软件包的所有候选版本号</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="co"># apt install &lt;package&gt;=&lt;version&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="co"># 默认总是安装最新版</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="fu">sudo</span> apt install mysql-server=5.7.11-0ubuntu6</span></code></pre></div>
+<hr />
+<h2 id="软件被装到哪里去了">软件被装到哪里去了</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># 查找apache2软件包依赖哪些独立软件包（名）</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a>$ <span class="ex">apt-cache</span> depends apache2</span>
+<span id="cb12-3"><a href="#cb12-3"></a></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="co"># 查看指定软件包（名）在系统上创建了哪些目录和文件</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a>$ <span class="ex">dpkg</span> -L apache2</span>
+<span id="cb12-6"><a href="#cb12-6"></a></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="co"># 由于apt-get在安装一款软件包时会自动安装相关依赖的软件包</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="co"># 所以，通常还需要查看这些被自动依赖安装的软件包又在系统上创建了哪些目录和文件</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a>$ <span class="ex">dpkg</span> -L apache2-data</span>
+<span id="cb12-10"><a href="#cb12-10"></a>$ <span class="ex">dpkg</span> -L apache2-bin</span></code></pre></div>
+<hr />
+<p>谨慎修改<strong><em>/etc/apt/sources.list</em></strong>和在<strong><em>/etc/apt/sources.list.d/</em></strong>下创建第三方镜像配置文件!!!</p>
+<p>谨慎修改<strong><em>/etc/apt/sources.list</em></strong>和在<strong><em>/etc/apt/sources.list.d/</em></strong>下创建第三方镜像配置文件!!!</p>
+<p>谨慎修改<strong><em>/etc/apt/sources.list</em></strong>和在<strong><em>/etc/apt/sources.list.d/</em></strong>下创建第三方镜像配置文件!!!</p>
+<hr />
+<h2 id="使用第三方镜像源的风险">使用第三方镜像源的风险</h2>
+<ul>
+<li><a href="http://weibo.com/1651460060/A4L8xoRZQ">发行版不匹配、发行版匹配但版本代号不匹配导致大量软件依赖关系出现错乱，无法修复、无法删除、无法安装软件</a>
+<ul>
+<li>最大可能是：只能重装系统解决</li>
+</ul></li>
+<li><a href="http://weibo.com/1651460060/BrdV8lYYK">第三方镜像源的软件篡改留后门、中间人劫持风险</a></li>
+</ul>
+<hr />
+<h2 id="deb软件包管理工具-dpkg">DEB软件包管理工具 —— dpkg</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">man</span> dpkg</span></code></pre></div>
+<pre><code>$ dpkg --help
+Usage: dpkg [&lt;option&gt; ...] &lt;command&gt;
+
+Commands:
+  -i|--install       &lt;.deb file name&gt; ... | -R|--recursive &lt;directory&gt; ...
+  -s|--status &lt;package&gt; ...        Display package status details.
+  -p|--print-avail &lt;package&gt; ...   Display available version details.
+  -L|--listfiles &lt;package&gt; ...     List files &#39;owned&#39; by package(s).
+  -l|--list [&lt;pattern&gt; ...]        List packages concisely.
+  -S|--search &lt;pattern&gt; ...        Find package(s) owning file(s).</code></pre>
+<hr />
+<h2 id="使用源代码方式编译安装">使用源代码方式（编译）安装</h2>
+<ul>
+<li>优先使用包管理器apt-get方式安装软件，避免使用源代码方式（编译）安装
+<ul>
+<li>python软件优先使用pip，ruby软件优先使用gem，php软件优先使用composer，nodejs软件优先使用npm，perl软件优先使用cpanm</li>
+</ul></li>
+<li>推荐使用源代码下载来源
+<ul>
+<li><strong>apt-get source pkg</strong></li>
+<li>软件作者托管在github上的代码</li>
+</ul></li>
+<li>动手操作之前一定要看README、INSTALL等说明文档</li>
+<li>确保本地编译环境满足源代码安装的所有依赖条件</li>
+<li>安装失败一定要仔细核对出错信息、出错日志，在Google中根据错误代码、错误关键字搜索解决方案</li>
+</ul>
+<h1 id="文件管理基本命令">文件管理基本命令</h1>
+<hr />
+<ul>
+<li>ls</li>
+<li>touch</li>
+<li>rm / shred</li>
+<li>ln</li>
+<li>find</li>
+<li>grep</li>
+</ul>
+<hr />
+<h2 id="文件管理">文件管理</h2>
+<ul>
+<li>扩展名查找</li>
+<li>通配符匹配</li>
+<li>按文件大小</li>
+<li>按文件更新时间早于、晚于、在日期之间</li>
+<li>查找到匹配后执行
+<ul>
+<li><code>find ... -execdir xxx {} \</code>;</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="文本内容检索">文本内容检索</h2>
+<ul>
+<li>grep -i</li>
+<li>grep -A</li>
+<li>grep -c</li>
+<li>grep -E</li>
+<li>grep -v</li>
+</ul>
+<h1 id="管道-pipe">管道 Pipe</h1>
+<hr />
+<blockquote>
+<p>回顾「第一章」实验中用到的这个命令里使用的操作符：|</p>
+</blockquote>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1"></a><span class="bu">cd</span> ~/cd <span class="kw">&amp;&amp;</span> <span class="fu">find</span> . -type f -print0 <span class="kw">|</span> <span class="fu">xargs</span> -0 md5sum <span class="op">&gt;</span> md5sum.txt</span></code></pre></div>
+<hr />
+<p>上一页的例子中</p>
+<ul>
+<li><code>-print0</code> 将标准输出中的多条记录使用 <strong>NULL</strong>（<code>\00</code>）字符拼接成一个「长字符串」一次性输出到「标准输出」</li>
+<li>如果不使用 <code>xargs</code> 命令，<code>md5sum</code> 将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5 散列值</li>
+<li><code>xargs</code> 的 <code>-0</code> 参数将「标准输入」中的 <strong>NULL</strong> 字符视为「数组分隔符」来「解析」标准输入内容</li>
+<li><code>xargs</code> 从「标准输入」中每解析出「一个参数」就按照构造好的 <code>命令+参数</code> 执行一次指定的命令（此处是 <code>md5sum [fileN]</code> ），直到「标准输入」被解析完毕</li>
+</ul>
+<hr />
+<p><a href="https://explainshell.com/explain?cmd=cd+%7E%2Fcd+%26%26+find+.+-type+f+-print0+%7C+xargs+-0+md5sum+%3E+md5sum.txt">explainshell.com 对上述复杂命令的可视化解读</a></p>
+<h1 id="sed">sed</h1>
+<hr />
+<p>SED的英文全称是<strong>Stream EDitor</strong>，它是一个简单而强大的文本解析转换工具，在1973-1974年期间由贝尔实验室的<strong><em>Lee E. McMahon</em></strong>开发。</p>
+<p><strong><em>McMahon</em></strong>创建了一个通用的行编辑器，最终变成为了SED。SED的很多语法和特性都借鉴了ed编辑器。设计之初，它就已经支持正则表达式，SED可以从文件中接受类似于管道的输入，也可以接受来自标准输入流的输入。</p>
+<p>SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进行分发，因此，通常它也称作<strong><em>GNU SED</em></strong>。</p>
+<hr />
+<h2 id="sed-典型用途">SED 典型用途</h2>
+<ul>
+<li>文本替换</li>
+<li>选择性的输出文本文件</li>
+<li>从文本文件的某处开始编辑</li>
+<li>无交互式的对文本文件进行编辑等</li>
+</ul>
+<hr />
+<h2 id="sed-quick-reference">SED Quick Reference</h2>
+<hr />
+<ul>
+<li><a href="http://www.ituring.com.cn/article/273760">三十分钟学会SED</a></li>
+<li><a href="https://www.google.com/#newwindow=1&amp;q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE">Google: sed思维导图</a></li>
+<li><a href="http://sed.sourceforge.net/sed1line_zh-CN.html">sed单行常用脚本</a></li>
+</ul>
+<hr />
+<h2 id="学习-sed-的模式">学习 SED 的模式</h2>
+<ul>
+<li>REPL: read–eval–print loop</li>
+</ul>
+<h1 id="正则表达式">正则表达式</h1>
+<hr />
+<blockquote>
+<p>正则表达式是用于匹配字符串中字符组合的 <strong>模式</strong> ，可以用来检查一个串是否 <strong>包含</strong> 有某种子串、将匹配的子串 <strong>替换</strong> 或者从某个串中 <strong>取出</strong> 符合某个条件的子串等。</p>
+</blockquote>
+<hr />
+<h2 id="在线正则表达式调试工具">在线正则表达式调试工具</h2>
+<p><code>regular expression tester</code></p>
+<blockquote>
+<p>不同编程语言对正则表达式的支持存在细微差异</p>
+</blockquote>
+<hr />
+<h2 id="regexp-cli-tools">Linux 命令行工具对正则表达式的支持</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">sed</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="co"># -E, -r, --regexp-extended</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="co">#               use extended regular expressions in the script (for portability use POSIX -E)</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a><span class="fu">awk</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="co"># man awk</span></span>
+<span id="cb16-7"><a href="#cb16-7"></a></span>
+<span id="cb16-8"><a href="#cb16-8"></a><span class="fu">grep</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a><span class="co"># -E, --extended-regexp</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="co">#               Interpret PATTERNS as extended regular expressions (EREs, see below).</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co"># -G, --basic-regexp</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="co">#        Interpret PATTERNS as basic regular expressions (BREs, see below).  This is the default.</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a><span class="co"># -P, --perl-regexp</span></span>
+<span id="cb16-14"><a href="#cb16-14"></a><span class="co">#        Interpret PATTERNS as Perl-compatible regular expressions (PCREs).  This option is experimental when combined</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="co">#        with the -z (--null-data) option, and grep -P may warn of unimplemented features.</span></span></code></pre></div>
+<hr />
+<p><a href="images/chap0x02/davechild_regular-expressions.bw.jpg"><img src="images/chap0x02/davechild_regular-expressions.bw.jpg" /></a></p>
+<h1 id="社区驱动的脱水版帮助手册">社区驱动的「脱水版」帮助手册</h1>
+<hr />
+<p><a href="https://github.com/tldr-pages/tldr">tldr: To Long, Don’t Read</a></p>
+<blockquote>
+<p>跟着「范例」学命令</p>
+</blockquote>
+<hr />
+<p><img src="images/chap0x02/TLDR-example.png" /></p>
+<hr />
+<h2 id="快速安装与上手使用">快速安装与上手使用</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install tldr</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="co"># 从自建 gitee 镜像下载 tldr 所有手册页</span></span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">git</span> clone https://gitee.com/c4pr1c3/tldr ~/.tldr/tldr</span>
+<span id="cb17-4"><a href="#cb17-4"></a></span>
+<span id="cb17-5"><a href="#cb17-5"></a><span class="co"># 如果需要查看中文帮助信息</span></span>
+<span id="cb17-6"><a href="#cb17-6"></a><span class="co"># ⚠️ 警告⚠️ 很多手册页并没有中文翻译版</span></span>
+<span id="cb17-7"><a href="#cb17-7"></a><span class="co"># 以下方法切换默认查询目录后会导致很多命令查询失败</span></span>
+<span id="cb17-8"><a href="#cb17-8"></a><span class="co">## 确保进入正确目录</span></span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="bu">cd</span> <span class="va">$HOME</span>/.tldr/tldr</span>
+<span id="cb17-10"><a href="#cb17-10"></a></span>
+<span id="cb17-11"><a href="#cb17-11"></a><span class="co">## 确认当前目录下不存在 pages.en 目录</span></span>
+<span id="cb17-12"><a href="#cb17-12"></a><span class="fu">ls</span> pages.en</span>
+<span id="cb17-13"><a href="#cb17-13"></a><span class="co"># ls: cannot access &#39;pages.en&#39;: No such file or directory</span></span>
+<span id="cb17-14"><a href="#cb17-14"></a></span>
+<span id="cb17-15"><a href="#cb17-15"></a><span class="co">## 备份默认英文帮助子目录</span></span>
+<span id="cb17-16"><a href="#cb17-16"></a><span class="fu">mv</span> pages pages.en</span>
+<span id="cb17-17"><a href="#cb17-17"></a></span>
+<span id="cb17-18"><a href="#cb17-18"></a><span class="co">## 将中文帮助目录设置为默认查询帮助信息目录</span></span>
+<span id="cb17-19"><a href="#cb17-19"></a><span class="fu">ln</span> -s pages.zh pages</span>
+<span id="cb17-20"><a href="#cb17-20"></a></span>
+<span id="cb17-21"><a href="#cb17-21"></a><span class="co"># 恢复默认英文查询手册页设置</span></span>
+<span id="cb17-22"><a href="#cb17-22"></a><span class="fu">rm</span> pages</span>
+<span id="cb17-23"><a href="#cb17-23"></a><span class="fu">ln</span> -s pages.en pages</span></code></pre></div>
+<h1 id="文本内容查找替换神器之awk">文本内容查找替换神器之AWK</h1>
+<hr />
+<ul>
+<li><a href="http://www.pement.org/awk/awk1line.txt">HANDY ONE-LINE SCRIPTS FOR AWK</a></li>
+</ul>
+<h1 id="其他文本内容处理小工具">其他文本内容处理小工具</h1>
+<hr />
+<ul>
+<li>head / tail
+<ul>
+<li>服务器上监视日志持续变化 <code>tail -F</code></li>
+</ul></li>
+<li>cut
+<ul>
+<li><code>cut -d ":" -f 1,6 /etc/passwd</code></li>
+</ul></li>
+<li>tr
+<ul>
+<li><code>echo "hello world" | tr [:lower:] [:upper:]</code></li>
+<li><code>echo "hello world" | tr -d hello</code></li>
+</ul></li>
+</ul>
+<h1 id="一些文本处理的任务">一些文本处理的任务</h1>
+<hr />
+<h2 id="学会使用搜索引擎">学会使用搜索引擎</h2>
+<ul>
+<li>查找并统计某函数在整个“项目”中被调用次数，并输出在哪些文件、具体那些行中调用到了该函数</li>
+<li>在整个目录中查找某关键词出现在哪些文件的哪些行</li>
+<li>删除C语言编写项目中的所有注释行</li>
+</ul>
+<h1 id="别名机制---alias">别名机制 - alias</h1>
+<hr />
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># 查看当前shell环境中已定义的别名有哪些</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="bu">alias</span></span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="co"># 注意alias不是一个外部命令（文件），而是bash的一个内置函数</span></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="fu">man</span> alias</span>
+<span id="cb18-5"><a href="#cb18-5"></a><span class="co"># 在bash的手册页中去搜索alias</span></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="fu">man</span> bash</span></code></pre></div>
+<h1 id="文件压缩与解压缩"><a href="https://www.cyberciti.biz/howto/question/general/compress-file-unix-linux-cheat-sheet.php">文件压缩与解压缩</a></h1>
+<hr />
+<ul>
+<li>gzip</li>
+<li>bzip2</li>
+<li>zip</li>
+<li><strong><em>tar</em></strong></li>
+<li>7z (p7zip)</li>
+<li>rar (p7zip-rar / unrar-free)
+<ul>
+<li>rar是私有压缩算法格式，Linux平台只支持解压缩</li>
+</ul></li>
+</ul>
+<hr />
+<p><a href="https://www.zhihu.com/question/20523036">Linux 下 zip 文件解压乱码如何解决？</a></p>
+<p><a href="https://asciinema.org/a/d81fdjlf83ecltrpewh4tg4hj" target="_blank"><img src="images/chap0x02/d81fdjlf83ecltrpewh4tg4hj.png" /></a></p>
+<h1 id="进程管理">进程管理</h1>
+<hr />
+<ul>
+<li>ps aux</li>
+<li>pstree</li>
+<li>pidof</li>
+<li>top
+<ul>
+<li>运行时性能分析利器</li>
+</ul></li>
+<li>htop
+<ul>
+<li>改进的交互式系统信息查看器</li>
+</ul></li>
+<li>kill / kill -9 / kill -s N / killall <code>&lt;process_imagename&gt;</code></li>
+</ul>
+<hr />
+<h2 id="子进程管理">子进程管理</h2>
+<ul>
+<li>将进程放到“后台”运行： &amp;</li>
+<li>Bash内置的2个进程管理函数：bg / fg</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1"></a><span class="co"># 执行以下ping命令后终端所有操作被“无视忽略掉”</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">ping</span> www.baidu.com</span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="co"># 直到使用CTRL-C快捷键组合输入，可以终止该ping进程</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="ex">CTRL-C</span></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co"># 我们试着把ping进程放到“后台”执行</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="fu">ping</span> www.baidu.com <span class="kw">&amp;</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a><span class="co"># 此时终端不断被“涌出”的ping输出结果“污染”</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co"># 此时CTRL-C无效</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="ex">CTRL-C</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="co"># 以下“2连击”可以终止该ping进程</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a><span class="bu">fg</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a><span class="ex">CTRL-C</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co"># 我们再试着把ping进程放到“后台”执行，这一次我们把标准错误输出先重定向到标准输出，然后再把标准输出重定向到“黑洞”文件</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a><span class="fu">ping</span> www.baidu.com <span class="op">1&gt;</span>/dev/null <span class="op">2&gt;&amp;1</span> <span class="kw">&amp;</span></span>
+<span id="cb19-15"><a href="#cb19-15"></a><span class="co"># 整个世界都清净了，终端不会再被“涌出”的ping输出结果“污染”</span></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co"># 查看进程会发现ping在“后台”一直运行着</span></span>
+<span id="cb19-17"><a href="#cb19-17"></a><span class="fu">ps</span> aux <span class="kw">|</span> <span class="fu">grep</span> ping</span>
+<span id="cb19-18"><a href="#cb19-18"></a><span class="fu">ping</span> www.cuc.edu.cn <span class="op">1&gt;</span>/dev/null <span class="op">2&gt;&amp;1</span> <span class="kw">&amp;</span></span>
+<span id="cb19-19"><a href="#cb19-19"></a><span class="co"># 杀死所有ping进程</span></span>
+<span id="cb19-20"><a href="#cb19-20"></a><span class="fu">killall</span> ping</span></code></pre></div>
+<hr />
+<h2 id="子进程管理实验live-demo">子进程管理实验Live Demo</h2>
+<ul>
+<li>注意CTRL-Z的作用，被CTRL-Z的进程在<strong><em>ps aux</em></strong>中的进程状态如何显示的</li>
+</ul>
+<p><a href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54" target="_blank"><img src="images/chap0x02/asciinema_demo_1.png" alt="子进程管理Demo"/></a></p>
+<hr />
+<h2 id="关于输出重定向">关于输出重定向</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1"></a><span class="fu">man</span> bash</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="co"># search &quot;Redirecting Standard Output and Standard Error&quot;</span></span></code></pre></div>
+<h1 id="目录管理">目录管理</h1>
+<hr />
+<ul>
+<li>man hier</li>
+<li>ls</li>
+<li>mkdir / mkdir -p</li>
+<li>rm -rf、 rmdir</li>
+<li><code>~</code> / . / .. / -</li>
+<li>/proc</li>
+</ul>
+<h1 id="环境变量">环境变量</h1>
+<hr />
+<ul>
+<li><code>$PATH</code></li>
+<li><code>$HOME</code>、<code>$PWD</code></li>
+<li>/etc/profile</li>
+<li><code>~/.bashrc、~/.profile</code></li>
+</ul>
+<h1 id="网络调试">网络调试</h1>
+<hr />
+<ul>
+<li>ip</li>
+<li>lsof</li>
+<li><del>
+arp
+</del></li>
+<li><del>
+ifconfig
+</del></li>
+<li><del>
+route
+</del></li>
+<li><del>
+netstat
+</del></li>
+</ul>
+<hr />
+<h2 id="网络调试常见第三方工具">网络调试常见第三方工具</h2>
+<ul>
+<li>ethtool</li>
+<li>dstat</li>
+<li>mtr</li>
+<li>traceroute</li>
+<li>tcpdump</li>
+</ul>
+<hr />
+<h2 id="相关重要配置文件">相关重要配置文件</h2>
+<ul>
+<li>/etc/hosts</li>
+<li>/etc/resolv.conf</li>
+<li>/etc/network/interfaces</li>
+<li>/etc/network/if-up.d、if-post-down.d、if-pre-up.d、if-down.d</li>
+</ul>
+<h1 id="提问的智慧---描述你的环境">提问的智慧 - 描述你的环境</h1>
+<hr />
+<p>自己回答以下问题（软件相关）</p>
+<ul>
+<li>操作系统发行版和内核信息</li>
+<li>系统中当前有谁在线</li>
+<li>现在在运行的进程有哪些</li>
+<li>哪些进程在监听哪些端口</li>
+<li>挂载点和文件系统</li>
+<li>已安装应用软件列表、故障或问题发生前最近新安装的软件信息</li>
+<li>系统环境变量、当前用户环境变量</li>
+</ul>
+<hr />
+<p>自己回答以下问题（软件相关进阶问题）</p>
+<ul>
+<li>故障/问题发生前后邻近的系统日志、应用程序日志等</li>
+<li>系统自启动项有哪些，自启动机制分别是什么；系统定时任务有哪些，触发机制分别是什么</li>
+<li>出问题应用程序的当前环境变量设置情况等</li>
+<li>当前系统中哪些应用程序/进程在占用网络带宽？</li>
+</ul>
+<hr />
+<p>自己回答以下问题（软件相关高级问题）</p>
+<p>如果能初步判断出问题的关联应用程序，那么首先建议阅读应用程序官方的bug报告指南，然后尽力去收集：</p>
+<ul>
+<li>疑似出问题应用程序的
+<ul>
+<li>版本信息、编译方式、安装方式等</li>
+<li>已加载第三方模块信息、依赖的第三方lib版本信息</li>
+<li>完整或能复现问题的最小化配置文件</li>
+<li>调试模式的运行、启动日志</li>
+<li>第三方性能分析、调试工具的分析、调试日志</li>
+</ul></li>
+</ul>
+<hr />
+<p>自己回答以下问题（网络相关）</p>
+<ul>
+<li>系统的IP地址、MAC地址信息</li>
+<li>ARP表 / 路由表 / hosts文件配置 / DNS服务器配置 / 代理服务器配置</li>
+<li>防火墙规则表</li>
+</ul>
+<hr />
+<p>自己回答以下问题（硬件相关）</p>
+<ul>
+<li>硬件品牌、型号、购买渠道等</li>
+<li>CPU/内存/硬盘/网卡/外设和主要接口等硬件参数信息（例如是否使用了RAID？）</li>
+<li>联网信息，例如使用的宽带接入方式、上下行带宽、运营商信息等</li>
+</ul>
+<hr />
+<h2 id="提问的智慧---使用自动化的工具描述你的环境">提问的智慧 - 使用自动化的工具描述你的环境</h2>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1"></a><span class="co"># 获得硬件信息</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="ex">report-hw</span></span>
+<span id="cb21-3"><a href="#cb21-3"></a></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="co"># reportbug 需要另行安装</span></span>
+<span id="cb21-5"><a href="#cb21-5"></a></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="ex">reportbug</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a><span class="co"># *** ERROR: &quot;Ubuntu&quot; BTS is currently unsupported. Please use &quot;ubuntu-bug&quot; (from the apport package) for reporting bugs in Ubuntu. You can report bugs to Debian by</span></span>
+<span id="cb21-8"><a href="#cb21-8"></a><span class="co"># specifying &#39;bts debian&#39; in your ~/.reportbugrc or by passing the -B debian option on the commandline (see reportbug(1)).</span></span>
+<span id="cb21-9"><a href="#cb21-9"></a></span>
+<span id="cb21-10"><a href="#cb21-10"></a><span class="ex">reportbug</span> --template --bts debian -S normal vim</span>
+<span id="cb21-11"><a href="#cb21-11"></a></span>
+<span id="cb21-12"><a href="#cb21-12"></a><span class="co"># 将指定软件的相关信息保存到本地而不是直接提交给软件作者</span></span>
+<span id="cb21-13"><a href="#cb21-13"></a><span class="fu">sudo</span> ubuntu-bug openssh-server --save openssh-server.bug</span></code></pre></div>
+<hr />
+<ul>
+<li>目标应用程序官方提供的故障诊断工具运行日志</li>
+<li><a href="https://nicolargo.github.io/glances/">An Eye on your system</a></li>
+</ul>
+<h1 id="参考文献">参考文献</h1>
+<hr />
+<ul>
+<li><a href="https://help.ubuntu.com/community/EnvironmentVariables">EnvironmentVariables from Ubuntu Official Documentation</a></li>
+<li><a href="http://blog.jobbole.com/36375/">在服务器上排除问题的头五分钟</a></li>
+<li><a href="https://news.ycombinator.com/item?id=11909543">My First 10 Minutes on a Server</a></li>
+<li><a href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md">提问的智慧</a></li>
+<li><a href="https://help.ubuntu.com/community/ReportingBugs">ReportingBugs Tutorial by Ubuntu Official Documentation</a></li>
+<li><a href="https://wiki.ubuntu.com/DebuggingProcedures">DebuggingProcedures Tutorial by Ubuntu Official Documentation</a></li>
+</ul>
+</body>
+</html>

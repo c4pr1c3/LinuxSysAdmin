@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="番外pxe" class="title-slide slide level1">
+<h1>番外：PXE</h1>
+
+</section>
+<section class="slide level2">
+
+</section>
+</section>
+<section>
+<section id="pxe-intro" class="title-slide slide level1">
+<h1>从零到一 2.0</h1>
+
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>给「成百上千」台裸机安装操作系统</p>
+</blockquote>
+</section>
+<section id="pxe-基本概念" class="slide level2">
+<h2>PXE 基本概念</h2>
+<p><code>PXE</code> - <strong>P</strong>reboot e<strong>X</strong>ecution <strong>E</strong>nvironment, 预启动执行环境</p>
+<blockquote>
+<p>Intel公司提出的一种使用网络接口启动计算机的机制，能够代替本地数据存储设备（光盘、硬盘、USB设备）进行安装操作系统。</p>
+</blockquote>
+<p>目前，PXE 启动已成为一种<a href="http://www.pix.net/software/pxeboot/archive/pxespec.pdf">固件标准</a>，大部分服务器BIOS都支持PXE启动，特别适合大规模集群批量、自动化、无人值守方式安装操作系统。</p>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>PXE 工作基于「客户端/服务器」的网络模式</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="基于-pxe-安装操作系统的工作过程如下">基于 PXE 安装操作系统的工作过程如下</h3>
+<ul>
+<li>客户端（裸机）设置 BIOS 开启「从网卡启动」</li>
+<li>客户端网卡会发起 DHCP 请求分配 IP 地址</li>
+<li>DHCP 服务器处理返回分配的IP地址外，还返回预设网关、TFTP 服务器地址及引导程序 Bootstrap
+<ul>
+<li>该文件是一种由 PXE 启动规范规定的固定格式的可执行文件，类似于开机启动项的「可执行文件」：并由此支持来自网络的操作系统的启动过程</li>
+<li>Linux 系统为 <code>pxelinux.0</code>，<a href="https://docs.microsoft.com/zh-cn/windows/deployment/configure-a-pxe-server-to-load-windows-pe?ocid=tia-257895000">Windows 使用 PE 系统</a></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>客户端通过 TFTP（<strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）或 MTFTP（<strong>M</strong>ulticast <strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）协议下载 Bootstrap 的配置文件（例如 <code>pxelinux.cfg/default</code>）</li>
+<li>客户端读取收到的配置文件，根据其中内容，再次请求 TFTP 传送内核映像文件和系统启动文件（例如 <code>initrd.gz</code>）</li>
+<li>完成后开始启动内核，内核程序读取 Bootstrap 的配置文件，通过网络获取操作系统自动安装脚本（例如 <code>preseed.cfg</code>），并通过网络服务（NFS / FTP / HTTP）获得系统所需安装文件，按照自动安装脚本的配置进行安装</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="从实例学-pxe-无人值守同时安装多台主机" class="title-slide slide level1">
+<h1>从实例学 PXE + 「无人值守」同时安装多台主机</h1>
+
+</section>
+<section id="network-1" class="slide level2">
+<h2>网络拓扑</h2>
+<p><img data-src="images/pxe/pxe-demo-network-layout.png" /></p>
+</section>
+<section id="network-2" class="slide level2">
+<h2>网络拓扑</h2>
+<ul>
+<li>PXE 服务器和 PXE 客户端在同一个 <strong>局域网</strong></li>
+<li>PXE 服务器上同时配置了（本例中由 <strong>dnsmasq</strong> 提供）
+<ul>
+<li>DHCP Server</li>
+<li>PXE Server</li>
+<li>TFTP Server</li>
+<li>DNS Server（非必需）</li>
+<li>HTTP Server（提供 <code>preseed.cfg</code> 下载，本例子中由 <strong>apache2</strong> 提供）</li>
+</ul></li>
+</ul>
+</section>
+<section id="pxe-configure" class="slide level2">
+<h2>本例所用 PXE 服务器的自动安装配置</h2>
+<p><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/pxe-boot">c4pr1c3/AnsibleTutorial/pxeboot on Github</a></p>
+<ul>
+<li>关键配置
+<ul>
+<li>dnsmasq（TFTP 和 PXE 服务路径、多重启动菜单）</li>
+<li>apache2（preseed.cfg 针对不同发行版系统定制下载 URL）</li>
+<li>txt.cfg（针对不同发行版系统需要定制和调试内核启动参数）</li>
+<li>preseed.cfg（针对不同发行版系统需要定制和调试人机交互选项的配置）</li>
+<li>提供 PXE 客户端访问互联网能力</li>
+</ul></li>
+</ul>
+</section>
+<section id="通信过程抓包分析" class="slide level2">
+<h2>通信过程抓包分析</h2>
+<p><a href="images/pxe/pxe-boot-filtered.pcap">PXE Boot 过程（过滤掉了 TFTP 服务器返回的数据，仅保留「信令」通信过程数据）pcap 文件</a></p>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="images/pxe/pxe-boot-flow-1.png" alt="" /><figcaption>PXE 初始化过程</figcaption>
+</figure>
+</section>
+<section class="slide level2">
+
+<p><img data-src="images/pxe/pxe-boot-flow-2.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="pxe-boot-1">PXE 初始化过程</h3>
+<ul>
+<li>目标主机（包含 PXE 客户端）上电启动</li>
+<li>目标主机的网卡发起 DHCP 请求</li>
+<li>DHCP 服务器响应目标主机的 DHCP 请求：网络配置信息（IP、子网掩码、网关、DNS等）和 TFP 服务器地址、<strong>可启动镜像</strong> 地址（ <code>pxelinux.0</code> ）</li>
+<li>目标主机接收到上述响应信息后，访问 TFTP 服务器下载 <strong>可启动镜像</strong></li>
+<li>TFTP 服务器发送 <strong>可启动镜像</strong> （<code>pxelinux.0</code>），目标主机执行下载的镜像启动系统</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="pxelinux.cfg-search-1">PXE 配置文件下载策略</h3>
+<p>默认情况下，<code>PXE 客户端</code> 在 <code>TFP 服务器</code> 的 <code>pxelinux.cfg</code> 子目录下 <strong>按以下优先级次序</strong> 搜索 <code>镜像启动配置文件</code>：</p>
+<ul>
+<li>查询 <code>PXE 客户端</code> 所在主机的唯一标识 <strong>GUID</strong>
+<ul>
+<li>例如本例子中的 <code>aabd48c4-0eb7-4b00-9ec1-b9d1271425c0</code></li>
+</ul></li>
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 发起 DHCP 请求所使用网卡的 <strong>MAC 地址</strong>
+<ul>
+<li>例如本例子中的 <code>01-08-00-27-b0-e1-4f</code></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="pxelinux.cfg-search-2">PXE 配置文件下载策略</h3>
+<ul>
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 通过 DHCP 响应获得到的 <strong>IP 地址</strong> （转换成 16 进制大写字母表示后，从右向左依次查询匹配）
+<ul>
+<li>例如本例子中依次查询了 <code>AC100062</code>, <code>AC10006</code>, <code>AC1000</code>, <code>AC100</code>, <code>AC10</code>, <code>AC1</code>, <code>AC</code>, <code>A</code></li>
+</ul></li>
+<li>查无上述命名配置文件后，最后查询 <code>default</code></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>IPv4 地址转换成 16 进制大写字母表示</p>
+<pre class="bash"><code>IP=&quot;172.16.0.98&quot;
+printf &#39;%02X&#39; ${IP//./ }; echo
+# AC100062 </code></pre>
+</section>
+<section class="slide level2">
+
+<figure>
+<img data-src="images/pxe/pxe-boot-flow-3.png" alt="" /><figcaption>镜像启动配置文件搜索过程</figcaption>
+</figure>
+</section>
+<section id="pxe-客户端启动过程" class="slide level2">
+<h2>PXE 客户端启动过程</h2>
+<p><img data-src="images/pxe/pxe-boot.gif" /></p>
+</section>
+</section>
+<section>
+<section id="完整-pxe-无人值守安装过程演示" class="title-slide slide level1">
+<h1>完整 PXE + 无人值守安装过程演示</h1>
+
+</section>
+<section class="slide level2">
+
+<p><a href="https://www.bilibili.com/video/av43936728/"><img data-src="images/pxe/cover.jpg" /></a></p>
+</section>
+</section>
+<section>
+<section id="小结" class="title-slide slide level1">
+<h1>小结</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>PXE 首先是提供了裸机 <strong>批量</strong>、<strong>自动化</strong> 加载运行「最小化」系统的能力</li>
+<li>「最小化」系统不仅可以是 Linux，也可以是其他操作系统的「最小化」版本</li>
+<li>基于「最小化」系统内置的「无人值守安装配置」能力（例如 Debian/Ubuntu 使用的 <code>preseed</code> 技术）继续通过 <strong>网络</strong> 在线安装完整操作系统
+<ul>
+<li>在「内网」搭建完整的在线安装系统 <strong>镜像源</strong> 可以大幅度缩短通过互联网在线安装系统的时间</li>
+</ul></li>
+</ul>
+</section>
+<section id="参考资料" class="slide level2">
+<h2>参考资料</h2>
+<ul>
+<li><a href="https://wiki.debian.org/PXEBootInstall">PXEBootInstall: Installing Debian using network booting</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/dnsmasq">dnsmasq on ArchLinux</a></li>
+<li><a href="https://docs.oracle.com/cd/E24628_01/em.121/e27046/appdx_pxeboot.htm#EMLCM12199">Understanding PXE Booting and Kickstart Technology</a></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

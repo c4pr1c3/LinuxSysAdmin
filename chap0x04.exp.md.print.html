@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第四章shell脚本编程基础实验">第四章：shell脚本编程基础（实验）</h1>
+<blockquote>
+<p>Don’t repeat yourself</p>
+</blockquote>
+<hr />
+<ul>
+<li>任务一：用bash编写一个图片批处理脚本，实现以下功能：
+<ul>
+<li>支持命令行参数方式使用不同功能</li>
+<li>支持对指定目录下所有支持格式的图片文件进行批处理</li>
+<li>支持以下常见图片批处理功能的单独使用或组合使用
+<ul>
+<li>支持对jpeg格式图片进行图片质量压缩</li>
+<li>支持对jpeg/png/svg格式图片在保持原始宽高比的前提下压缩分辨率</li>
+<li>支持对图片批量添加自定义文本水印</li>
+<li>支持批量重命名（统一添加文件名前缀或后缀，不影响原始文件扩展名）</li>
+<li>支持将png/svg图片统一转换为jpg格式图片</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>任务二：用bash编写一个文本批处理脚本，对以下附件分别进行批量处理完成相应的数据统计任务：
+<ul>
+<li><a href="exp/chap0x04/worldcupplayerinfo.tsv">2014世界杯运动员数据</a>
+<ul>
+<li>统计不同年龄区间范围（20岁以下、[20-30]、30岁以上）的球员<strong>数量</strong>、<strong>百分比</strong></li>
+<li>统计不同场上位置的球员<strong>数量</strong>、<strong>百分比</strong></li>
+<li>名字最长的球员是谁？名字最短的球员是谁？</li>
+<li>年龄最大的球员是谁？年龄最小的球员是谁？</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>任务二：用bash编写一个文本批处理脚本，对以下附件分别进行批量处理完成相应的数据统计任务：
+<ul>
+<li><a href="exp/chap0x04/web_log.tsv.7z">Web服务器访问日志</a>
+<ul>
+<li>统计访问来源主机TOP 100和分别对应出现的总次数</li>
+<li>统计访问来源主机TOP 100 IP和分别对应出现的总次数</li>
+<li>统计最频繁被访问的URL TOP 100</li>
+<li>统计不同响应状态码的出现次数和对应百分比</li>
+<li>分别统计不同4XX状态码对应的TOP 10 URL和对应出现的总次数</li>
+<li>给定URL输出TOP 100访问来源主机</li>
+</ul></li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="实验报告要求">实验报告要求</h2>
+<ul>
+<li>继承<a href="chap0x01.exp.md.html">第一章：Linux基础（实验）</a>的所有实验报告要求</li>
+<li>上述任务的所有源代码文件必须单独提交并提供详细的<strong>–help</strong>脚本内置帮助信息</li>
+<li>任务二的所有统计数据结果要求写入独立实验报告</li>
+</ul>
+</body>
+</html>

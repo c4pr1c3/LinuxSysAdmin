@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第六章网络资源共享" class="title-slide slide level1">
+<h1>第六章：网络资源共享</h1>
+
+</section>
+<section id="keep-things-shared-and-synchronized" class="slide level2">
+<h2>Keep Things Shared and Synchronized</h2>
+</section>
+</section>
+<section>
+<section id="经典文件共享服务" class="title-slide slide level1">
+<h1>经典文件共享服务</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>FTP</li>
+<li>NFS</li>
+<li>SMB/CIFS</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="ftp" class="title-slide slide level1">
+<h1><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html.en">FTP</a></h1>
+
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>File Transfer Protocol (FTP) is a TCP protocol for downloading files between computers. In the past, it has also been used for uploading but, as that method does not use encryption, user credentials as well as data transferred in the clear and are easily intercepted.</p>
+</blockquote>
+<ul>
+<li>计算机之间<strong>下载</strong>文件之用</li>
+<li>明文数据传输，易被拦截（篡改）</li>
+<li><strong>客户端/服务器</strong>通信模型</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>常见FTP服务器软件</p>
+<ul>
+<li>ftpd</li>
+<li>vsftpd</li>
+<li>proftpd</li>
+<li>pure-ftpd</li>
+</ul>
+<pre class="bash"><code>apt-cache show ftpd vsftpd proftpd-basic pure-ftpd | grep -A 5 Description-en
+
+# ftpd: File Transfer Protocol (FTP) server This is the netkit ftp server. You are recommended to use one of its alternatives, such as vsftpd, proftpd, or pure-ftpd
+
+# vsftpd: lightweight, efficient FTP server written for security This package provides the &quot;Very Secure FTP Daemon&quot;, written from the ground up with security in mind.
+
+# proftpd: Versatile, virtual-hosting FTP daemon - binaries ProFTPD is a powerful modular FTP/SFTP/FTPS server
+
+# pure-ftpd: Secure and efficient FTP server Free, secure, production-quality and standard-conformant FTP server.</code></pre>
+</section>
+<section class="slide level2">
+
+<p>比较&amp;选择？</p>
+<p>Google: ftpd vsftpd proftpd pure-ftpd comparison</p>
+<p>一些可供参考的评价因素：</p>
+<ul>
+<li>功能特性是否满足需求</li>
+<li>性能和可扩展性是否满足需求</li>
+<li>安全性
+<ul>
+<li><a href="https://www.cvedetails.com/product/9804/Ftpd-Ftpd.html?vendor_id=5802">ftpd</a> / <a href="https://www.cvedetails.com/product/3475/Beasts-Vsftpd.html?vendor_id=2041">vsftpd</a> / <a href="https://www.cvedetails.com/product/353/Proftpd-Project-Proftpd.html?vendor_id=204">proftpd</a> / <a href="https://www.cvedetails.com/vendor/2152/Pureftpd.html">pure-ftpd</a></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="w2h-理论指导技术方案选型-12">5W2H 理论指导技术方案选型 (1/2)</h3>
+<ul>
+<li>What 功能特性列表、安全特性列表</li>
+<li>Why 需求优先级列表：功能和需求一次性匹配度（减少二次开发成本）、易用性、易维护性、性能、价格（一次性买断 or 订阅持续付费），孰先孰后？</li>
+<li>Who 项目的发起和维护者是谁？商业公司 or 开源社区 or 个人？</li>
+<li>Where 成功案例都有哪些？是否开源？不适合的场景有哪些？</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="w2h-理论指导技术方案选型-22">5W2H 理论指导技术方案选型 (2/2)</h3>
+<ul>
+<li>When 项目的最近一次更新时间？项目历史？</li>
+<li>How 项目技术栈？是否和当前需求场景使用的主要技术栈集成？</li>
+<li>How Much 性能？开发成本（人力投入、时间投入、授权费用、依赖软硬件采购费用等）</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="ftp-configuration-task" class="title-slide slide level1">
+<h1>FTP服务器配置任务</h1>
+
+</section>
+<section class="slide level2">
+
+<p>请自行根据以下任务需求从以上FTP服务器软件中选择一款满足所有任务要求的FTP服务器进行安装配置实验</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+配置一个提供匿名访问的FTP服务器，匿名访问者可以访问1个目录且仅拥有该目录及其所有子目录的只读访问权限；</li>
+<li><input type="checkbox" disabled="" />
+配置一个支持用户名和密码方式访问的账号，该账号继承匿名访问者所有权限，且拥有对另1个独立目录及其子目录完整读写（包括创建目录、修改文件、删除文件等）权限；<ul>
+<li>该账号仅可用于FTP服务访问，不能用于系统shell登录；</li>
+</ul></li>
+</ul>
+<p><strong><em>to be continued</em></strong> …</p>
+</section>
+<section class="slide level2">
+
+<p><strong><em>resumed</em></strong></p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+FTP用户不能越权访问指定目录之外的任意其他目录和文件；</li>
+<li><input type="checkbox" disabled="" />
+匿名访问权限仅限白名单IP来源用户访问，禁止白名单IP以外的访问；</li>
+<li><input type="checkbox" disabled="" />
+（可选加分任务）使用FTPS服务代替FTP服务，上述所有要求在FTPS服务中同时得到满足；</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="nfs" class="title-slide slide level1">
+<h1><a href="https://help.ubuntu.com/16.04/serverguide/network-file-system.html">NFS</a></h1>
+
+</section>
+<section class="slide level2">
+
+<p>NFS允许系统将其目录和文件共享给网络上的其他系统。通过NFS，用户和应用程序可以像访问本地文件一样访问远程系统上的文件。</p>
+</section>
+<section id="nfs-config-task" class="slide level2">
+<h2>NFS服务器配置任务</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+在1台Linux上配置NFS服务，另1台电脑上配置NFS客户端挂载2个权限不同的共享目录，分别对应只读访问和读写访问权限；</li>
+<li><input type="checkbox" disabled="" />
+实验报告中请记录你在NFS客户端上看到的：<ul>
+<li>共享目录中文件、子目录的属主、权限信息</li>
+<li>你通过NFS客户端在NFS共享目录中新建的目录、创建的文件的属主、权限信息</li>
+<li>上述共享目录中文件、子目录的属主、权限信息和在NFS服务器端上查看到的信息一样吗？无论是否一致，请给出你查到的资料是如何讲解NFS目录中的属主和属主组信息应该如何正确解读</li>
+</ul></li>
+</ul>
+<p><strong><em>to be continued</em></strong> …</p>
+</section>
+<section class="slide level2">
+
+<p><strong><em>resumed</em></strong></p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+（可选任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="smbcifsheading" class="title-slide slide level1">
+<h1>SMB/CIFS</h1>
+
+</section>
+<section id="smbcifs" class="slide level2">
+<h2>SMB/CIFS —— 🌰</h2>
+<p><img data-src="images/chap0x06/smb_demo.png" /></p>
+</section>
+<section id="smb与cifs的关系" class="slide level2">
+<h2><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">SMB与CIFS的关系</a></h2>
+<blockquote>
+<p>The Server Message Block (SMB) Protocol is a network file sharing protocol, and as implemented in Microsoft Windows is known as Microsoft SMB Protocol. The set of message packets that defines a particular version of the protocol is called a dialect. The Common Internet File System (CIFS) Protocol is a dialect of SMB. Both SMB and CIFS are also available on VMS, several versions of Unix, and other operating systems.</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<p>CIFS协议是SMB协议的一个本地化实现（dialect，直译为“方言”)，协议设计的初衷是文件共享，但微软的SMB协议还提供了一些额外功能：</p>
+<ul>
+<li>Dialect negotiation</li>
+<li>Determining other Microsoft SMB Protocol servers on the network, or network browsing</li>
+<li>Printing over a network</li>
+<li>File, directory, and share access authentication</li>
+<li>File and record locking</li>
+<li>File and directory change notification</li>
+<li>Extended file attribute handling</li>
+<li>Unicode support</li>
+<li>Opportunistic locks</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
+<li>按照OSI网络模型，微软SMB协议常被归类到应用层或表示层协议。</li>
+<li>微软SMB数据传输通常使用NetBIOS over TCP/IP (NBT)，但仅仅是为了后向兼容性需要。实际上，这并不是SMB协议唯一的传输层协议选择。</li>
+<li>微软SMB协议采用<strong>客户端-服务器</strong>模式实现，由一系列客户端请求和服务器响应数据构成：
+<ul>
+<li>会话控制报文—和共享服务资源建立和断开连接</li>
+<li>文件访问报文—访问和控制远程服务器上文件和目录</li>
+<li>通用消息报文—发送数据到打印队列、邮件投递接口、命名管道，并提供打印队列状态信息</li>
+</ul></li>
+</ul>
+<p>某些数据报文会分组打包在一次数据传输中以降低响应延迟和提高带宽利用率，这种方法被称为“批处理”。</p>
+</section>
+</section>
+<section>
+<section id="sambaheading" class="title-slide slide level1">
+<h1>Samba</h1>
+
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p><a href="https://help.ubuntu.com/lts/serverguide/samba-introduction.html">为Windows环境提供和整合常用服务</a></p>
+</blockquote>
+<ul>
+<li><strong>文件和打印机共享服务</strong>。SMB协议可以使在网络上共享文件、文件夹、卷和打印机变得容易。</li>
+<li><strong>目录服务</strong>。通过 LDAP(Lightweight Directory Access Protocol，轻量目录访问协议) 和 Microsoft Active Directory® 技术来共享网络计算机和用户的重要信息。</li>
+<li><strong>认证和权限</strong>。建立网络计算机和用户的身份信息，并通过使用文件权限、组策略和 Kerberos 认证服务等原理和技术来确定计算机或用户可以访问的信息。</li>
+</ul>
+</section>
+<section id="安装和配置samba独立共享服务器" class="slide level2">
+<h2><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">安装和配置Samba独立共享服务器</a></h2>
+<ul>
+<li>Linux设置用户名密码方式的共享目录</li>
+</ul>
+<pre class="bash"><code># 安装Samba服务器
+sudo apt-get install samba
+
+# 创建Samba共享专用的用户
+sudo useradd -M -s /sbin/nologin demoUser
+sudo groupadd demoGroup
+sudo usermod -a -G demoGroup demoUser
+sudo passwd demoUser
+# 创建的用户必须有一个同名的Linux用户，密码是独立的
+sudo smbpasswd -a cuc
+
+# 创建测试用共享目录
+sudo mkdir -p /srv/samba/demo
+sudo chown -R demoUser:demoGroup /srv/samba/demo</code></pre>
+</section>
+<section class="slide level2">
+
+<pre class="ini"><code># 在/etc/samba/smb.conf 文件尾部追加以下“共享目录”配置
+[demo]
+        path = /srv/samba/demo/
+        read only = no
+        guest ok = no
+        force create mode = 0660
+        force directory mode = 2770
+        force user = demoUser
+        force group = demoGroup
+# Forced Parameters 可以强制所有连接共享目录的用户创建的文件、目录使用特定的权限位设定、属主用户和属主组（有安全风险）</code></pre>
+</section>
+<section id="smbclient" class="slide level2">
+<h2>smbclient</h2>
+<ul>
+<li>分别查看基于 Windows 和 Linux 搭建 SMB 共享服务包含的共享目录清单</li>
+<li>向远程共享目录上传文件和目录</li>
+<li>从远程共享目录中下载文件和目录</li>
+</ul>
+</section>
+<section id="smbclient-faq" class="slide level2">
+<h2>smbclient 操作速查</h2>
+<pre class="bash"><code>sudo apt-get install smbclient
+
+# 查看远程 SMB 共享服务的共享目录清单
+# Linux 搭建的 SMB 共享服务
+smbclient -L 192.168.56.193 -U demoUser
+# Enter WORKGROUP\demoUser&#39;s password:
+# 
+#   Sharename       Type      Comment
+#   ---------       ----      -------
+#   print$          Disk      Printer Drivers
+#   demo            Disk
+#   IPC$            IPC       IPC Service (cuc-lab server (Samba, Ubuntu))
+# SMB1 disabled -- no workgroup available
+
+# Windows 搭建的 SMB 共享服务
+smbclient -L 192.168.56.182 -U demo
+# Enter WORKGROUP\demo&#39;s password:
+# 
+#   Sharename       Type      Comment
+#   ---------       ----      -------
+#   anon_share      Disk
+#   IPC$            IPC       远程 IPC
+#   smb_share       Disk
+# SMB1 disabled -- no workgroup available
+
+# 连接指定共享目录
+smbclient //192.168.56.193/demo -U cuc
+# 输入密码
+
+# 下载整个文件夹
+tarmode
+recurse
+prompt
+## 下载指定目录 target_dir
+mget target_dir
+## 下载所有目录和文件
+mget *</code></pre>
+</section>
+</section>
+<section>
+<section id="windows-share-faq" class="title-slide slide level1">
+<h1>SMB 共享实验 FAQ</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>无法 ping 通 Windows 主机</li>
+<li>设置使用非当前登录账号作为 SMB 共享用户</li>
+<li>向共享目录写入文件失败</li>
+</ul>
+</section>
+<section id="无法-ping-通-windows-主机" class="slide level2">
+<h2>无法 ping 通 Windows 主机</h2>
+<ul>
+<li>检查「各层」网络连通性</li>
+<li>排查 Windows 防火墙设置</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="windows-fw-config-0">配置 Windows 防火墙策略</h3>
+<ul>
+<li><code>开始菜单</code> –&gt; <code>gpedit.msc</code> –&gt; <code>Windows 设置</code> –&gt; <code>安全设置</code> –&gt; <code>网络列表管理器策略</code> –&gt; <code>无法识别的网络</code>
+<ul>
+<li>位置类型：专用</li>
+<li>用户权限：用户可以更改位置</li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="windows-fw-config-1">配置 Windows 防火墙策略</h3>
+<p><img data-src="images/chap0x06/windows-fw-config-1.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="windows-fw-config-2">配置 Windows 防火墙策略</h3>
+<p><img data-src="images/chap0x06/windows-fw-config-2.png" /></p>
+</section>
+<section id="设置使用非当前登录账号作为-smb-共享用户" class="slide level2">
+<h2>设置使用非当前登录账号作为 SMB 共享用户</h2>
+<pre class="bash"><code># 在 Windows CMD 中输入以下命令完成用户添加与口令设置
+# 添加用户 demo 密码为 pass 用于访问共享文件夹
+net user demo pass /ADD
+
+# 实验完毕 删除用户
+net user demo /DELETE</code></pre>
+</section>
+<section id="向共享目录写入文件失败" class="slide level2">
+<h2>向共享目录写入文件失败</h2>
+<ul>
+<li>目录写入权限设置检查</li>
+<li><code>put</code> 只支持上传 <strong>当前目录下</strong> 文件</li>
+<li>在 SMB 交互式终端中通过 <code>!</code> 命令前缀执行本地 <code>shell</code> 命令</li>
+</ul>
+<pre class="bash"><code>smb: \&gt; ls
+#   .                                   D        0  Thu Apr 22 05:38:17 2021
+#   ..                                  D        0  Thu Apr 22 05:38:17 2021
+#   upload_demo                         A       12  Fri Apr 16 03:16:19 2021
+#   新建文件夹                     D        0  Thu Apr 22 06:57:22 2021
+# 
+#                 33405695 blocks of size 4096. 21963037 blocks available
+smb: \&gt; !ls -la
+# total 52
+# drwxr-xr-x 6 cuc  cuc  4096 Apr 22 23:09 .
+# drwxr-xr-x 3 root root 4096 Feb 20 11:21 ..
+# drwx------ 3 cuc  cuc  4096 Apr 12 01:31 .ansible
+# -rw------- 1 cuc  cuc  2472 Apr 22 07:53 .bash_history
+# -rw-r--r-- 1 cuc  cuc   220 Feb 25  2020 .bash_logout
+# -rw-r--r-- 1 cuc  cuc  3789 Apr 12 06:40 .bashrc
+# drwx------ 2 cuc  cuc  4096 Feb 20 11:43 .cache
+# -rw------- 1 cuc  cuc    39 Apr 22 06:33 .lesshst
+# -rw-r--r-- 1 cuc  cuc   807 Feb 25  2020 .profile
+# drwx------ 2 cuc  cuc  4096 Apr 12 01:31 .ssh
+# -rw-r--r-- 1 cuc  cuc     0 Feb 20 11:44 .sudo_as_admin_successful
+# -rw-rw-r-- 1 cuc  cuc     0 Apr 22 23:09 test
+# -rw-rw-r-- 1 cuc  cuc    12 Apr 22 06:02 upload_demo
+# -rw------- 1 cuc  cuc   867 Apr 22 06:18 .viminfo
+# drwxrwxr-x 3 cuc  cuc  4096 Apr 22 06:57 新建文件夹
+
+smb: \&gt; help lcd
+# HELP lcd:
+#   [directory] change/report the local current working directory</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="目录写入权限设置检查">目录写入权限设置检查</h3>
+<pre class="bash"><code># Linux 宿主机
+ls -ld /srv/samba/demo/
+# drwxr-xr-x 2 demoUser demoGroup 4096 Apr 22 05:35 /srv/samba/demo/
+
+# Windows 宿主机
+</code></pre>
+</section>
+</section>
+<section>
+<section id="windows-rm-intro" class="title-slide slide level1">
+<h1>远程管理 Windows 主机简介</h1>
+
+</section>
+<section id="常见远程管理方式" class="slide level2">
+<h2>常见远程管理方式</h2>
+<ul>
+<li>GUI: Windows 远程桌面</li>
+<li>CLI
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands">Powershell Remote</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview">SSH</a></li>
+</ul></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="windows-rdp">Windows 远程桌面</h3>
+<ul>
+<li><a href="https://support.microsoft.com/zh-cn/windows/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2-5fe128d5-8fb1-7a23-3b8a-41e636865e8c">微软官方文档: 如何使用远程桌面 Windows 10</a></li>
+<li><a href="https://github.com/stascorp/rdpwrap">Windows 10 Home 版开启远程桌面: stascorp/rdpwrap</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<h3 id="sshd-configure-1">CLI - OpenSSH Server</h3>
+<ul>
+<li>安装 Windows 可选功能组件：<code>OpenSSH Server</code></li>
+</ul>
+<p><img data-src="images/chap0x06/install-openssh-server.png" /></p>
+</section>
+<section class="slide level2">
+
+<h3 id="sshd-configure-2">CLI - OpenSSH Server</h3>
+<ul>
+<li>启动并配置 <code>OpenSSH Server</code> 开机自启动</li>
+</ul>
+<pre class="bash"><code># 以下代码需要在「管理员权限」的 PowerShell 中执行
+Start-Service sshd
+# OPTIONAL but recommended:
+Set-Service -Name sshd -StartupType &#39;Automatic&#39;
+# Confirm the firewall rule is configured. It should be created automatically by setup.
+Get-NetFirewallRule -Name *ssh*
+# There should be a firewall rule named &quot;OpenSSH-Server-In-TCP&quot;, which should be enabled
+# If the firewall does not exist, create one
+New-NetFirewallRule -Name sshd -DisplayName &#39;OpenSSH Server (sshd)&#39; -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="sshd-configure-3">CLI - OpenSSH Server</h3>
+<ul>
+<li>配置 OpenSSH 客户端连接后启动的默认 Shell 为 <code>PowerShell</code></li>
+</ul>
+<pre class="bash"><code># 以下代码需要在「管理员权限」的 PowerShell 中执行
+New-ItemProperty -Path &quot;HKLM:\SOFTWARE\OpenSSH&quot; -Name DefaultShell -Value &quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&quot; -PropertyType String -Force</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="sshd-configure-4">CLI - OpenSSH Server</h3>
+<ul>
+<li>配置 SSH 免密登录</li>
+</ul>
+<pre class="bash"><code># 不能使用 ssh-copy-id
+
+# 在「管理员权限」的 powershell 中执行以下命令
+cd $ENV:PROGRAMDATA/ssh
+New-Item -ItemType file administrators_authorized_keys
+
+# 将公钥指纹信息写入上述新创建的 administrators_authorized_keys
+# 请自行替换以下 &lt;&gt; 内的公钥指纹信息
+# 这里的 -encoding ascii 非常重要，因为默认不使用该参数时
+# Out-File 写入的文本是双字节编码且使用了 BOM 文件头
+echo &#39;&lt;content-of-id_rsa.pub&gt;&#39; | Out-File -encoding ascii administrators_authorized_keys
+
+# 检查自己使用的 PowerShell 版本
+# $PSVersionTable
+
+# Name                           Value
+# ----                           -----
+# PSVersion                      5.1.19041.906
+# PSEdition                      Desktop
+# PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}
+# BuildVersion                   10.0.19041.906
+# CLRVersion                     4.0.30319.42000
+# WSManStackVersion              3.0
+# PSRemotingProtocolVersion      2.3
+# SerializationVersion           1.1.0.1
+
+# ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-5.1
+# 5.1 版 Powershell 使用 Out-File 写入文件时所有多字节编码方式均用到了 BOM 头
+
+# ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-7
+# 7.0+ 版 Powershell 提供了 utf8NoBOM 编码方式
+
+# 配置上述 administrators_authorized_keys 正确的属主和访问权限
+$acl = Get-Acl $ENV:PROGRAMDATA\ssh\administrators_authorized_keys
+$acl.SetAccessRuleProtection($true, $false)
+$administratorsRule = New-Object system.security.accesscontrol.filesystemaccessrule(&quot;Administrators&quot;,&quot;FullControl&quot;,&quot;Allow&quot;)
+$systemRule = New-Object system.security.accesscontrol.filesystemaccessrule(&quot;SYSTEM&quot;,&quot;FullControl&quot;,&quot;Allow&quot;)
+$acl.SetAccessRule($administratorsRule)
+$acl.SetAccessRule($systemRule)
+$acl | Set-Acl
+
+# 检查 administrators_authorized_keys 文件的权限设置
+# Access 一项只能且必须只有 
+# Access : NT AUTHORITY\SYSTEM Allow  FullControl
+#          BUILTIN\Administrators Allow  FullControl
+get-acl .\administrators_authorized_keys | fl
+# Path   : Microsoft.PowerShell.Core\FileSystem::C:\ProgramData\ssh\administrators_authorized_keys
+# Owner  : BUILTIN\Administrators
+# Group  : DESKTOP-HQOR9HG\None
+# Access : NT AUTHORITY\SYSTEM Allow  FullControl
+#          BUILTIN\Administrators Allow  FullControl
+# Audit  :
+# Sddl   : O:BAG:S-1-5-21-3489025807-4051503630-1690866609-513D:PAI(A;;FA;;;SY)(A;;FA;;;BA)</code></pre>
+</section>
+<section class="slide level2">
+
+<h3 id="sshd-configure-5">CLI - OpenSSH Server</h3>
+<ul>
+<li>从 Linux 主机获取开启 OpenSSH Server 的 Windows 主机上的文件</li>
+</ul>
+<pre class="bash"><code># 注意 Windows 路径分隔符要使用 / 而不是 \
+scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</code></pre>
+</section>
+</section>
+<section>
+<section id="移动互联时代的文件共享" class="title-slide slide level1">
+<h1>移动互联时代的文件共享</h1>
+
+</section>
+<section id="功能特性" class="slide level2">
+<h2>功能特性</h2>
+<ul>
+<li>多终端平台支持: PC / macOS / iOS / Android / …</li>
+<li>文件变更自动在多终端平台同步</li>
+<li><strong>加分点</strong> 加密和隐私保护</li>
+<li><strong>加分点</strong> 支持数据的物理存储自己管理</li>
+</ul>
+</section>
+<section id="开源解决方案" class="slide level2">
+<h2>开源解决方案</h2>
+<ul>
+<li><a href="https://github.com/awesome-selfhosted/awesome-selfhosted#file-transfersynchronization">自建文件传输/同步解决方案</a>
+<ul>
+<li><a href="https://owncloud.org/">ownCloud</a></li>
+<li><a href="https://www.seafile.com/home/">Seafile</a></li>
+<li><a href="https://syncthing.net/">Syncthing</a></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section>
+<section id="参考文献" class="title-slide slide level1">
+<h1>参考文献</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html">FTP Server from Ubuntu Official Documentation</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-16-04">How To Set Up an NFS Mount on Ubuntu 16.04</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/samba.html.en">Samba from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/community/Samba/SambaClientGuide">Samba/SambaClientGuide from Ubuntu Official Documentation</a></li>
+<li><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">Setting up Samba as a Standalone Server from Samba Official Wiki</a></li>
+<li><a href="https://wiki.samba.org/index.php/Mounting_samba_shares_from_a_unix_client">Mounting samba shares from a unix client from Samba Official Wiki</a></li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">Microsoft SMB Protocol and CIFS Protocol Overview from MSDN</a></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

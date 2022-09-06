@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第七章dhcp与dns服务" class="title-slide slide level1">
+<h1>第七章：DHCP与DNS服务</h1>
+
+</section>
+<section id="just-get-network-works" class="slide level2">
+<h2>Just Get Network Works</h2>
+</section>
+</section>
+<section>
+<section id="动态主机配置协议-dhcp" class="title-slide slide level1">
+<h1><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">动态主机配置协议 (DHCP)</a></h1>
+
+</section>
+<section class="slide level2">
+
+<p>动态主机配置协议 (DHCP) 是一种网络服务，相对于手工为每台网络主机配置，它使网络主机可能自动被服务器指定设置。被配置成 DHCP 客户端的计算机并不能控制其从 DHCP 服务器得到的设置，且该配置对于计算机用户来说是透明的。</p>
+<p>由 DHCP 服务器提供给 DHCP 客户端最常用的设置包括：</p>
+<ul>
+<li>IP地址和子网掩码</li>
+<li>默认网关IP地址</li>
+<li>（本地）DNS解析服务器IP地址</li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>一个 DHCP 服务器也支持配置如下属性，如：</p>
+<ul>
+<li>主机名 / 域名</li>
+<li>NTP时间服务器</li>
+<li>打印服务器</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="dhcp服务器的常见客户端地址配置策略" class="title-slide slide level1">
+<h1>DHCP服务器的常见客户端地址配置策略</h1>
+
+</section>
+<section class="slide level2">
+
+<p><strong>手工分配（基于客户端网卡MAC地址）</strong></p>
+<p>DHCP服务器根据网络中每个联网网卡的物理地址为其提供一个固定的配置，当使用该网卡的客户端发起DHCP请求时可以确保客户端网络地址自动配置的确定性。</p>
+</section>
+<section class="slide level2">
+
+<p><strong>动态分配（基于地址池）</strong></p>
+<p>DHCP服务器从一个地址池（有时又被称为一个地址段或区间）选择一个IP地址，根据服务器配置保留一段时间或租期内有效，或者客户端主动通知服务器该地址已不再被使用。在这种策略之下，客户端按照“先到先得”原则动态获取网络配置信息。当一个DHCP客户端在该网络中离线一段时间，该配置将自动过期并被释放回地址池用于分配给其他DHCP客户端。这种方法获得的地址可被租用或使用一段时间，过期之后客户端需要重新和服务器协商保留该地址的使用权。</p>
+</section>
+<section class="slide level2">
+
+<p><strong>自动分配</strong></p>
+<p>DHCP服务器通常是给客户端分配一个临时地址，但也能设置有效期为永不过期，从而达到客户端既能自动获取IP地址又能永久使用的效果。</p>
+</section>
+<section id="rogue-dhcp" class="slide level2">
+<h2><a href="https://en.wikipedia.org/wiki/Rogue_DHCP">Rogue DHCP</a></h2>
+<p><img data-src="images/chap0x07/rogue-dhcp.png" /></p>
+</section>
+<section id="防御-rogue-dhcp-dhcp-snooping" class="slide level2">
+<h2>防御 <a href="https://en.wikipedia.org/wiki/DHCP_snooping">Rogue DHCP: DHCP snooping</a></h2>
+<p><img data-src="images/chap0x07/dhcp-snooping.png" /></p>
+</section>
+</section>
+<section>
+<section id="dns" class="title-slide slide level1">
+<h1><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS</a></h1>
+
+</section>
+<section class="slide level2">
+
+<p>DNS(域名解析服务)是将IP地址与FQDN(fully qualified domain name，全称域名)相互转换的一种互联网服务。</p>
+</section>
+<section id="bind9服务的主要角色" class="slide level2">
+<h2><strong><em>BIND9</em></strong>服务的主要角色</h2>
+<p>When configured as a caching nameserver BIND9 will find the answer to name queries and remember the answer when the domain is queried again.</p>
+<p>As a primary master server BIND9 reads the data for a zone from a file on it’s host and is authoritative for that zone.</p>
+<p>In a secondary master configuration BIND9 gets the zone data from another nameserver authoritative for the zone.</p>
+</section>
+</section>
+<section>
+<section id="常见dhcp服务器" class="title-slide slide level1">
+<h1>常见DHCP服务器</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>dnsmasq</li>
+<li>isc-dhcp-server</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="dns-common-svrs" class="title-slide slide level1">
+<h1>常见DNS服务器</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>dnsmasq</li>
+<li>isc-dhcp-server</li>
+<li>bind9</li>
+</ul>
+</section>
+</section>
+<section>
+<section id="dnsmasq-example" class="title-slide slide level1">
+<h1>以 dnsmasq 配置为例</h1>
+
+</section>
+<section id="dnsmasq-network-layout-1" class="slide level2">
+<h2>实验网络拓扑配置</h2>
+<ul>
+<li><code>dhcp-server</code>
+<ul>
+<li>网卡1：NAT</li>
+<li>网卡2：Host-only</li>
+<li>网卡3：内部网络</li>
+</ul></li>
+<li><code>dhcp-client</code>
+<ul>
+<li>网卡1：内部网络</li>
+</ul></li>
+</ul>
+</section>
+<section id="dnsmasq-network-layout-2" class="slide level2">
+<h2>实验网络拓扑配置</h2>
+<p><img data-src="images/chap0x07/dnsmasq-exp-network.png" /></p>
+</section>
+<section id="主要操作步骤" class="slide level2">
+<h2>主要操作步骤</h2>
+<pre class="bash"><code># 安装 dnsmasq
+sudo apt update &amp;&amp; sudo apt install -y dnsmasq
+
+# 如果遇到如下错误提示信息
+# Job for dnsmasq.service failed because the control process exited with error code.
+# See &quot;systemctl status dnsmasq.service&quot; and &quot;journalctl -xe&quot; for details.
+# invoke-rc.d: initscript dnsmasq, action &quot;start&quot; failed.
+# ● dnsmasq.service - dnsmasq - A lightweight DHCP and caching DNS server
+#      Loaded: loaded (/lib/systemd/system/dnsmasq.service; enabled; vendor preset: enabled)
+#           Active: failed (Result: exit-code) since Mon 2021-05-03 02:41:17 UTC; 11ms ago
+#               Process: 17812 ExecStartPre=/usr/sbin/dnsmasq --test (code=exited, status=0/SUCCESS)
+#                   Process: 17813 ExecStart=/etc/init.d/dnsmasq systemd-exec (code=exited, status=2)
+# 
+#                   May 03 02:41:16 cuc-lab systemd[1]: Starting dnsmasq - A lightweight DHCP and caching DNS server...
+#                   May 03 02:41:16 cuc-lab dnsmasq[17812]: dnsmasq: syntax check OK.
+#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: dnsmasq: failed to create listening socket for port 53: Address already in use
+#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: failed to create listening socket for port 53: Address already in use
+#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: FAILED to start up
+#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Control process exited, code=exited, status=2/INVALIDARGUMENT
+#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Failed with result &#39;exit-code&#39;.
+#                   May 03 02:41:17 cuc-lab systemd[1]: Failed to start dnsmasq - A lightweight DHCP and caching DNS server.
+
+# 检查 53 端口监听占用情况
+sudo lsof -i:53 -P -n | grep systemd
+# systemd-r  743 systemd-resolve   12u  IPv4  25641      0t0  UDP 127.0.0.53:53
+# systemd-r  743 systemd-resolve   13u  IPv4  25642      0t0  TCP 127.0.0.53:53 (LISTEN)
+
+# ref: https://unix.stackexchange.com/questions/304050/how-to-avoid-conflicts-between-dnsmasq-and-systemd-resolved/358485
+# 禁用 systemd-resolved 内置的 DNS 解析服务 
+sudo sed -i.bak &quot;s/#DNSStubListener=yes/DNSStubListener=no/g&quot; /etc/systemd/resolved.conf
+# 修改上述配置选项后重启 systemd-resolved 服务使得配置生效
+sudo systemctl restart systemd-resolved
+
+# 再次检查 53 端口监听占用情况
+sudo lsof -i:53 -P -n | grep systemd
+# sudo ss -tunlp -o &quot;sport 53&quot; | grep systemd
+
+# 编辑 /etc/dnsmasq.conf
+# 配置 dnsmasq 只监听在「内部网络」网卡上
+# 本实验中对应网卡名称 enp0s9
+# 先将配置代码写入临时文件
+# 建议使用宿主机本地默认域名解析服务器地址，此处 114.114.114.114 仅作为示例
+cat &lt;&lt; EOF &gt; /tmp/dnsmasq.conf
+interface=enp0s9
+server=114.114.114.114 
+dhcp-range=172.16.233.50,172.16.233.150,255.255.255.0,240h
+EOF
+# 然后合并临时文件内容追加到 /etc/dnsmasq.conf
+cat /tmp/dnsmasq.conf | sudo tee -a /etc/dnsmasq.conf
+
+# 手动配置 enp0s9 为固定 IP
+# 先将配置代码写入临时文件
+cat &lt;&lt; EOF &gt; /tmp/01-dhcp.yaml
+network:
+  ethernets:
+    enp0s9:
+      addresses:
+        - 172.16.233.1/24
+  version: 2
+EOF
+# 保存配置文件到指定目录
+sudo cp /tmp/01-dhcp.yaml /etc/netplan/01-dhcp.yaml
+# 使新配置网卡配置生效
+sudo netplan apply
+
+# 启用 dnsmasq 服务
+sudo systemctl start dnsmasq
+
+# 启动 dhcp-client 测试 DHCP 和 DNS 服务是否生效</code></pre>
+</section>
+<section id="主要操作步骤录屏" class="slide level2">
+<h2>主要操作步骤录屏</h2>
+<p><a href="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss"><img data-src="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg" alt="asciicast" /></a></p>
+</section>
+</section>
+<section>
+<section id="参考文献" class="title-slide slide level1">
+<h1>参考文献</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">Dynamic Host Configuration Protocol from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS from Ubuntu Official Documentation</a></li>
+</ul>
+</section>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

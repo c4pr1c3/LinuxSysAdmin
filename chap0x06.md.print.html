@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="第六章网络资源共享">第六章：网络资源共享</h1>
+<hr />
+<h2 id="keep-things-shared-and-synchronized">Keep Things Shared and Synchronized</h2>
+<h1 id="经典文件共享服务">经典文件共享服务</h1>
+<hr />
+<ul>
+<li>FTP</li>
+<li>NFS</li>
+<li>SMB/CIFS</li>
+</ul>
+<h1 id="ftp"><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html.en">FTP</a></h1>
+<hr />
+<blockquote>
+<p>File Transfer Protocol (FTP) is a TCP protocol for downloading files between computers. In the past, it has also been used for uploading but, as that method does not use encryption, user credentials as well as data transferred in the clear and are easily intercepted.</p>
+</blockquote>
+<ul>
+<li>计算机之间<strong>下载</strong>文件之用</li>
+<li>明文数据传输，易被拦截（篡改）</li>
+<li><strong>客户端/服务器</strong>通信模型</li>
+</ul>
+<hr />
+<p>常见FTP服务器软件</p>
+<ul>
+<li>ftpd</li>
+<li>vsftpd</li>
+<li>proftpd</li>
+<li>pure-ftpd</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="ex">apt-cache</span> show ftpd vsftpd proftpd-basic pure-ftpd <span class="kw">|</span> <span class="fu">grep</span> -A 5 Description-en</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># ftpd: File Transfer Protocol (FTP) server This is the netkit ftp server. You are recommended to use one of its alternatives, such as vsftpd, proftpd, or pure-ftpd</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># vsftpd: lightweight, efficient FTP server written for security This package provides the &quot;Very Secure FTP Daemon&quot;, written from the ground up with security in mind.</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># proftpd: Versatile, virtual-hosting FTP daemon - binaries ProFTPD is a powerful modular FTP/SFTP/FTPS server</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># pure-ftpd: Secure and efficient FTP server Free, secure, production-quality and standard-conformant FTP server.</span></span></code></pre></div>
+<hr />
+<p>比较&amp;选择？</p>
+<p>Google: ftpd vsftpd proftpd pure-ftpd comparison</p>
+<p>一些可供参考的评价因素：</p>
+<ul>
+<li>功能特性是否满足需求</li>
+<li>性能和可扩展性是否满足需求</li>
+<li>安全性
+<ul>
+<li><a href="https://www.cvedetails.com/product/9804/Ftpd-Ftpd.html?vendor_id=5802">ftpd</a> / <a href="https://www.cvedetails.com/product/3475/Beasts-Vsftpd.html?vendor_id=2041">vsftpd</a> / <a href="https://www.cvedetails.com/product/353/Proftpd-Project-Proftpd.html?vendor_id=204">proftpd</a> / <a href="https://www.cvedetails.com/vendor/2152/Pureftpd.html">pure-ftpd</a></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="w2h-理论指导技术方案选型-12">5W2H 理论指导技术方案选型 (1/2)</h3>
+<ul>
+<li>What 功能特性列表、安全特性列表</li>
+<li>Why 需求优先级列表：功能和需求一次性匹配度（减少二次开发成本）、易用性、易维护性、性能、价格（一次性买断 or 订阅持续付费），孰先孰后？</li>
+<li>Who 项目的发起和维护者是谁？商业公司 or 开源社区 or 个人？</li>
+<li>Where 成功案例都有哪些？是否开源？不适合的场景有哪些？</li>
+</ul>
+<hr />
+<h3 id="w2h-理论指导技术方案选型-22">5W2H 理论指导技术方案选型 (2/2)</h3>
+<ul>
+<li>When 项目的最近一次更新时间？项目历史？</li>
+<li>How 项目技术栈？是否和当前需求场景使用的主要技术栈集成？</li>
+<li>How Much 性能？开发成本（人力投入、时间投入、授权费用、依赖软硬件采购费用等）</li>
+</ul>
+<h1 id="ftp-configuration-task">FTP服务器配置任务</h1>
+<hr />
+<p>请自行根据以下任务需求从以上FTP服务器软件中选择一款满足所有任务要求的FTP服务器进行安装配置实验</p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+配置一个提供匿名访问的FTP服务器，匿名访问者可以访问1个目录且仅拥有该目录及其所有子目录的只读访问权限；</li>
+<li><input type="checkbox" disabled="" />
+配置一个支持用户名和密码方式访问的账号，该账号继承匿名访问者所有权限，且拥有对另1个独立目录及其子目录完整读写（包括创建目录、修改文件、删除文件等）权限；<ul>
+<li>该账号仅可用于FTP服务访问，不能用于系统shell登录；</li>
+</ul></li>
+</ul>
+<p><strong><em>to be continued</em></strong> …</p>
+<hr />
+<p><strong><em>resumed</em></strong></p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+FTP用户不能越权访问指定目录之外的任意其他目录和文件；</li>
+<li><input type="checkbox" disabled="" />
+匿名访问权限仅限白名单IP来源用户访问，禁止白名单IP以外的访问；</li>
+<li><input type="checkbox" disabled="" />
+（可选加分任务）使用FTPS服务代替FTP服务，上述所有要求在FTPS服务中同时得到满足；</li>
+</ul>
+<h1 id="nfs"><a href="https://help.ubuntu.com/16.04/serverguide/network-file-system.html">NFS</a></h1>
+<hr />
+<p>NFS允许系统将其目录和文件共享给网络上的其他系统。通过NFS，用户和应用程序可以像访问本地文件一样访问远程系统上的文件。</p>
+<hr />
+<h2 id="nfs-config-task">NFS服务器配置任务</h2>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+在1台Linux上配置NFS服务，另1台电脑上配置NFS客户端挂载2个权限不同的共享目录，分别对应只读访问和读写访问权限；</li>
+<li><input type="checkbox" disabled="" />
+实验报告中请记录你在NFS客户端上看到的：<ul>
+<li>共享目录中文件、子目录的属主、权限信息</li>
+<li>你通过NFS客户端在NFS共享目录中新建的目录、创建的文件的属主、权限信息</li>
+<li>上述共享目录中文件、子目录的属主、权限信息和在NFS服务器端上查看到的信息一样吗？无论是否一致，请给出你查到的资料是如何讲解NFS目录中的属主和属主组信息应该如何正确解读</li>
+</ul></li>
+</ul>
+<p><strong><em>to be continued</em></strong> …</p>
+<hr />
+<p><strong><em>resumed</em></strong></p>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" />
+（可选任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？</li>
+</ul>
+<h1 id="smbcifsheading">SMB/CIFS</h1>
+<hr />
+<h2 id="smbcifs">SMB/CIFS —— 🌰</h2>
+<p><img src="images/chap0x06/smb_demo.png" /></p>
+<hr />
+<h2 id="smb与cifs的关系"><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">SMB与CIFS的关系</a></h2>
+<blockquote>
+<p>The Server Message Block (SMB) Protocol is a network file sharing protocol, and as implemented in Microsoft Windows is known as Microsoft SMB Protocol. The set of message packets that defines a particular version of the protocol is called a dialect. The Common Internet File System (CIFS) Protocol is a dialect of SMB. Both SMB and CIFS are also available on VMS, several versions of Unix, and other operating systems.</p>
+</blockquote>
+<hr />
+<p>CIFS协议是SMB协议的一个本地化实现（dialect，直译为“方言”)，协议设计的初衷是文件共享，但微软的SMB协议还提供了一些额外功能：</p>
+<ul>
+<li>Dialect negotiation</li>
+<li>Determining other Microsoft SMB Protocol servers on the network, or network browsing</li>
+<li>Printing over a network</li>
+<li>File, directory, and share access authentication</li>
+<li>File and record locking</li>
+<li>File and directory change notification</li>
+<li>Extended file attribute handling</li>
+<li>Unicode support</li>
+<li>Opportunistic locks</li>
+</ul>
+<hr />
+<ul>
+<li>按照OSI网络模型，微软SMB协议常被归类到应用层或表示层协议。</li>
+<li>微软SMB数据传输通常使用NetBIOS over TCP/IP (NBT)，但仅仅是为了后向兼容性需要。实际上，这并不是SMB协议唯一的传输层协议选择。</li>
+<li>微软SMB协议采用<strong>客户端-服务器</strong>模式实现，由一系列客户端请求和服务器响应数据构成：
+<ul>
+<li>会话控制报文—和共享服务资源建立和断开连接</li>
+<li>文件访问报文—访问和控制远程服务器上文件和目录</li>
+<li>通用消息报文—发送数据到打印队列、邮件投递接口、命名管道，并提供打印队列状态信息</li>
+</ul></li>
+</ul>
+<p>某些数据报文会分组打包在一次数据传输中以降低响应延迟和提高带宽利用率，这种方法被称为“批处理”。</p>
+<h1 id="sambaheading">Samba</h1>
+<hr />
+<blockquote>
+<p><a href="https://help.ubuntu.com/lts/serverguide/samba-introduction.html">为Windows环境提供和整合常用服务</a></p>
+</blockquote>
+<ul>
+<li><strong>文件和打印机共享服务</strong>。SMB协议可以使在网络上共享文件、文件夹、卷和打印机变得容易。</li>
+<li><strong>目录服务</strong>。通过 LDAP(Lightweight Directory Access Protocol，轻量目录访问协议) 和 Microsoft Active Directory® 技术来共享网络计算机和用户的重要信息。</li>
+<li><strong>认证和权限</strong>。建立网络计算机和用户的身份信息，并通过使用文件权限、组策略和 Kerberos 认证服务等原理和技术来确定计算机或用户可以访问的信息。</li>
+</ul>
+<hr />
+<h2 id="安装和配置samba独立共享服务器"><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">安装和配置Samba独立共享服务器</a></h2>
+<ul>
+<li>Linux设置用户名密码方式的共享目录</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 安装Samba服务器</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">sudo</span> apt-get install samba</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># 创建Samba共享专用的用户</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">sudo</span> useradd -M -s /sbin/nologin demoUser</span>
+<span id="cb2-6"><a href="#cb2-6"></a><span class="fu">sudo</span> groupadd demoGroup</span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="fu">sudo</span> usermod -a -G demoGroup demoUser</span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="fu">sudo</span> passwd demoUser</span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># 创建的用户必须有一个同名的Linux用户，密码是独立的</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="fu">sudo</span> smbpasswd -a cuc</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co"># 创建测试用共享目录</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="fu">sudo</span> mkdir -p /srv/samba/demo</span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="fu">sudo</span> chown -R demoUser:demoGroup /srv/samba/demo</span></code></pre></div>
+<hr />
+<div class="sourceCode" id="cb3"><pre class="sourceCode ini"><code class="sourceCode ini"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># 在/etc/samba/smb.conf 文件尾部追加以下“共享目录”配置</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">[demo]</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="dt">        path </span><span class="ot">=</span><span class="st"> /srv/samba/demo/</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="dt">        read only </span><span class="ot">=</span><span class="st"> </span><span class="kw">no</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="dt">        guest ok </span><span class="ot">=</span><span class="st"> </span><span class="kw">no</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="dt">        force create mode </span><span class="ot">=</span><span class="st"> </span><span class="dv">0660</span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="dt">        force directory mode </span><span class="ot">=</span><span class="st"> </span><span class="dv">2770</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="dt">        force user </span><span class="ot">=</span><span class="st"> demoUser</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="dt">        force group </span><span class="ot">=</span><span class="st"> demoGroup</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co"># Forced Parameters 可以强制所有连接共享目录的用户创建的文件、目录使用特定的权限位设定、属主用户和属主组（有安全风险）</span></span></code></pre></div>
+<hr />
+<h2 id="smbclient">smbclient</h2>
+<ul>
+<li>分别查看基于 Windows 和 Linux 搭建 SMB 共享服务包含的共享目录清单</li>
+<li>向远程共享目录上传文件和目录</li>
+<li>从远程共享目录中下载文件和目录</li>
+</ul>
+<hr />
+<h2 id="smbclient-faq">smbclient 操作速查</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">sudo</span> apt-get install smbclient</span>
+<span id="cb4-2"><a href="#cb4-2"></a></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="co"># 查看远程 SMB 共享服务的共享目录清单</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Linux 搭建的 SMB 共享服务</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="ex">smbclient</span> -L 192.168.56.193 -U demoUser</span>
+<span id="cb4-6"><a href="#cb4-6"></a><span class="co"># Enter WORKGROUP\demoUser&#39;s password:</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co"># </span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="co">#   Sharename       Type      Comment</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a><span class="co">#   ---------       ----      -------</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="co">#   print$          Disk      Printer Drivers</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a><span class="co">#   demo            Disk</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a><span class="co">#   IPC$            IPC       IPC Service (cuc-lab server (Samba, Ubuntu))</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a><span class="co"># SMB1 disabled -- no workgroup available</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a></span>
+<span id="cb4-15"><a href="#cb4-15"></a><span class="co"># Windows 搭建的 SMB 共享服务</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a><span class="ex">smbclient</span> -L 192.168.56.182 -U demo</span>
+<span id="cb4-17"><a href="#cb4-17"></a><span class="co"># Enter WORKGROUP\demo&#39;s password:</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co"># </span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="co">#   Sharename       Type      Comment</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a><span class="co">#   ---------       ----      -------</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="co">#   anon_share      Disk</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a><span class="co">#   IPC$            IPC       远程 IPC</span></span>
+<span id="cb4-23"><a href="#cb4-23"></a><span class="co">#   smb_share       Disk</span></span>
+<span id="cb4-24"><a href="#cb4-24"></a><span class="co"># SMB1 disabled -- no workgroup available</span></span>
+<span id="cb4-25"><a href="#cb4-25"></a></span>
+<span id="cb4-26"><a href="#cb4-26"></a><span class="co"># 连接指定共享目录</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a><span class="ex">smbclient</span> //192.168.56.193/demo -U cuc</span>
+<span id="cb4-28"><a href="#cb4-28"></a><span class="co"># 输入密码</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a></span>
+<span id="cb4-30"><a href="#cb4-30"></a><span class="co"># 下载整个文件夹</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a><span class="ex">tarmode</span></span>
+<span id="cb4-32"><a href="#cb4-32"></a><span class="ex">recurse</span></span>
+<span id="cb4-33"><a href="#cb4-33"></a><span class="ex">prompt</span></span>
+<span id="cb4-34"><a href="#cb4-34"></a><span class="co">## 下载指定目录 target_dir</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a><span class="ex">mget</span> target_dir</span>
+<span id="cb4-36"><a href="#cb4-36"></a><span class="co">## 下载所有目录和文件</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a><span class="ex">mget</span> *</span></code></pre></div>
+<h1 id="windows-share-faq">SMB 共享实验 FAQ</h1>
+<hr />
+<ul>
+<li>无法 ping 通 Windows 主机</li>
+<li>设置使用非当前登录账号作为 SMB 共享用户</li>
+<li>向共享目录写入文件失败</li>
+</ul>
+<hr />
+<h2 id="无法-ping-通-windows-主机">无法 ping 通 Windows 主机</h2>
+<ul>
+<li>检查「各层」网络连通性</li>
+<li>排查 Windows 防火墙设置</li>
+</ul>
+<hr />
+<h3 id="windows-fw-config-0">配置 Windows 防火墙策略</h3>
+<ul>
+<li><code>开始菜单</code> –&gt; <code>gpedit.msc</code> –&gt; <code>Windows 设置</code> –&gt; <code>安全设置</code> –&gt; <code>网络列表管理器策略</code> –&gt; <code>无法识别的网络</code>
+<ul>
+<li>位置类型：专用</li>
+<li>用户权限：用户可以更改位置</li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="windows-fw-config-1">配置 Windows 防火墙策略</h3>
+<p><img src="images/chap0x06/windows-fw-config-1.png" /></p>
+<hr />
+<h3 id="windows-fw-config-2">配置 Windows 防火墙策略</h3>
+<p><img src="images/chap0x06/windows-fw-config-2.png" /></p>
+<hr />
+<h2 id="设置使用非当前登录账号作为-smb-共享用户">设置使用非当前登录账号作为 SMB 共享用户</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># 在 Windows CMD 中输入以下命令完成用户添加与口令设置</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># 添加用户 demo 密码为 pass 用于访问共享文件夹</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a><span class="ex">net</span> user demo pass /ADD</span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># 实验完毕 删除用户</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="ex">net</span> user demo /DELETE</span></code></pre></div>
+<hr />
+<h2 id="向共享目录写入文件失败">向共享目录写入文件失败</h2>
+<ul>
+<li>目录写入权限设置检查</li>
+<li><code>put</code> 只支持上传 <strong>当前目录下</strong> 文件</li>
+<li>在 SMB 交互式终端中通过 <code>!</code> 命令前缀执行本地 <code>shell</code> 命令</li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1"></a><span class="ex">smb</span>: <span class="dt">\&gt;</span> ls</span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co">#   .                                   D        0  Thu Apr 22 05:38:17 2021</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="co">#   ..                                  D        0  Thu Apr 22 05:38:17 2021</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="co">#   upload_demo                         A       12  Fri Apr 16 03:16:19 2021</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="co">#   新建文件夹                     D        0  Thu Apr 22 06:57:22 2021</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co"># </span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#                 33405695 blocks of size 4096. 21963037 blocks available</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="ex">smb</span>: <span class="dt">\&gt;</span> !ls -la</span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co"># total 52</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co"># drwxr-xr-x 6 cuc  cuc  4096 Apr 22 23:09 .</span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co"># drwxr-xr-x 3 root root 4096 Feb 20 11:21 ..</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="co"># drwx------ 3 cuc  cuc  4096 Apr 12 01:31 .ansible</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="co"># -rw------- 1 cuc  cuc  2472 Apr 22 07:53 .bash_history</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a><span class="co"># -rw-r--r-- 1 cuc  cuc   220 Feb 25  2020 .bash_logout</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a><span class="co"># -rw-r--r-- 1 cuc  cuc  3789 Apr 12 06:40 .bashrc</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a><span class="co"># drwx------ 2 cuc  cuc  4096 Feb 20 11:43 .cache</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a><span class="co"># -rw------- 1 cuc  cuc    39 Apr 22 06:33 .lesshst</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a><span class="co"># -rw-r--r-- 1 cuc  cuc   807 Feb 25  2020 .profile</span></span>
+<span id="cb6-19"><a href="#cb6-19"></a><span class="co"># drwx------ 2 cuc  cuc  4096 Apr 12 01:31 .ssh</span></span>
+<span id="cb6-20"><a href="#cb6-20"></a><span class="co"># -rw-r--r-- 1 cuc  cuc     0 Feb 20 11:44 .sudo_as_admin_successful</span></span>
+<span id="cb6-21"><a href="#cb6-21"></a><span class="co"># -rw-rw-r-- 1 cuc  cuc     0 Apr 22 23:09 test</span></span>
+<span id="cb6-22"><a href="#cb6-22"></a><span class="co"># -rw-rw-r-- 1 cuc  cuc    12 Apr 22 06:02 upload_demo</span></span>
+<span id="cb6-23"><a href="#cb6-23"></a><span class="co"># -rw------- 1 cuc  cuc   867 Apr 22 06:18 .viminfo</span></span>
+<span id="cb6-24"><a href="#cb6-24"></a><span class="co"># drwxrwxr-x 3 cuc  cuc  4096 Apr 22 06:57 新建文件夹</span></span>
+<span id="cb6-25"><a href="#cb6-25"></a></span>
+<span id="cb6-26"><a href="#cb6-26"></a><span class="ex">smb</span>: <span class="dt">\&gt;</span> help lcd</span>
+<span id="cb6-27"><a href="#cb6-27"></a><span class="co"># HELP lcd:</span></span>
+<span id="cb6-28"><a href="#cb6-28"></a><span class="co">#   [directory] change/report the local current working directory</span></span></code></pre></div>
+<hr />
+<h3 id="目录写入权限设置检查">目录写入权限设置检查</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># Linux 宿主机</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="fu">ls</span> -ld /srv/samba/demo/</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co"># drwxr-xr-x 2 demoUser demoGroup 4096 Apr 22 05:35 /srv/samba/demo/</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co"># Windows 宿主机</span></span></code></pre></div>
+<h1 id="windows-rm-intro">远程管理 Windows 主机简介</h1>
+<hr />
+<h2 id="常见远程管理方式">常见远程管理方式</h2>
+<ul>
+<li>GUI: Windows 远程桌面</li>
+<li>CLI
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands">Powershell Remote</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview">SSH</a></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="windows-rdp">Windows 远程桌面</h3>
+<ul>
+<li><a href="https://support.microsoft.com/zh-cn/windows/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2-5fe128d5-8fb1-7a23-3b8a-41e636865e8c">微软官方文档: 如何使用远程桌面 Windows 10</a></li>
+<li><a href="https://github.com/stascorp/rdpwrap">Windows 10 Home 版开启远程桌面: stascorp/rdpwrap</a></li>
+</ul>
+<hr />
+<h3 id="sshd-configure-1">CLI - OpenSSH Server</h3>
+<ul>
+<li>安装 Windows 可选功能组件：<code>OpenSSH Server</code></li>
+</ul>
+<p><img src="images/chap0x06/install-openssh-server.png" /></p>
+<hr />
+<h3 id="sshd-configure-2">CLI - OpenSSH Server</h3>
+<ul>
+<li>启动并配置 <code>OpenSSH Server</code> 开机自启动</li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># 以下代码需要在「管理员权限」的 PowerShell 中执行</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="ex">Start-Service</span> sshd</span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="co"># OPTIONAL but recommended:</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="ex">Set-Service</span> -Name sshd -StartupType <span class="st">&#39;Automatic&#39;</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co"># Confirm the firewall rule is configured. It should be created automatically by setup.</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="ex">Get-NetFirewallRule</span> -Name *ssh*</span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co"># There should be a firewall rule named &quot;OpenSSH-Server-In-TCP&quot;, which should be enabled</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co"># If the firewall does not exist, create one</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="ex">New-NetFirewallRule</span> -Name sshd -DisplayName <span class="st">&#39;OpenSSH Server (sshd)&#39;</span> -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22</span></code></pre></div>
+<hr />
+<h3 id="sshd-configure-3">CLI - OpenSSH Server</h3>
+<ul>
+<li>配置 OpenSSH 客户端连接后启动的默认 Shell 为 <code>PowerShell</code></li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># 以下代码需要在「管理员权限」的 PowerShell 中执行</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="ex">New-ItemProperty</span> -Path <span class="st">&quot;HKLM:\SOFTWARE\OpenSSH&quot;</span> -Name DefaultShell -Value <span class="st">&quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&quot;</span> -PropertyType String -Force</span></code></pre></div>
+<hr />
+<h3 id="sshd-configure-4">CLI - OpenSSH Server</h3>
+<ul>
+<li>配置 SSH 免密登录</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># 不能使用 ssh-copy-id</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="co"># 在「管理员权限」的 powershell 中执行以下命令</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="bu">cd</span> <span class="va">$ENV</span>:PROGRAMDATA/ssh</span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="ex">New-Item</span> -ItemType file administrators_authorized_keys</span>
+<span id="cb10-6"><a href="#cb10-6"></a></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="co"># 将公钥指纹信息写入上述新创建的 administrators_authorized_keys</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a><span class="co"># 请自行替换以下 &lt;&gt; 内的公钥指纹信息</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a><span class="co"># 这里的 -encoding ascii 非常重要，因为默认不使用该参数时</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="co"># Out-File 写入的文本是双字节编码且使用了 BOM 文件头</span></span>
+<span id="cb10-11"><a href="#cb10-11"></a><span class="bu">echo</span> <span class="st">&#39;&lt;content-of-id_rsa.pub&gt;&#39;</span> <span class="kw">|</span> <span class="ex">Out-File</span> -encoding ascii administrators_authorized_keys</span>
+<span id="cb10-12"><a href="#cb10-12"></a></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="co"># 检查自己使用的 PowerShell 版本</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="co"># $PSVersionTable</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="co"># Name                           Value</span></span>
+<span id="cb10-17"><a href="#cb10-17"></a><span class="co"># ----                           -----</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="co"># PSVersion                      5.1.19041.906</span></span>
+<span id="cb10-19"><a href="#cb10-19"></a><span class="co"># PSEdition                      Desktop</span></span>
+<span id="cb10-20"><a href="#cb10-20"></a><span class="co"># PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}</span></span>
+<span id="cb10-21"><a href="#cb10-21"></a><span class="co"># BuildVersion                   10.0.19041.906</span></span>
+<span id="cb10-22"><a href="#cb10-22"></a><span class="co"># CLRVersion                     4.0.30319.42000</span></span>
+<span id="cb10-23"><a href="#cb10-23"></a><span class="co"># WSManStackVersion              3.0</span></span>
+<span id="cb10-24"><a href="#cb10-24"></a><span class="co"># PSRemotingProtocolVersion      2.3</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a><span class="co"># SerializationVersion           1.1.0.1</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a></span>
+<span id="cb10-27"><a href="#cb10-27"></a><span class="co"># ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-5.1</span></span>
+<span id="cb10-28"><a href="#cb10-28"></a><span class="co"># 5.1 版 Powershell 使用 Out-File 写入文件时所有多字节编码方式均用到了 BOM 头</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a></span>
+<span id="cb10-30"><a href="#cb10-30"></a><span class="co"># ref: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/out-file?view=powershell-7</span></span>
+<span id="cb10-31"><a href="#cb10-31"></a><span class="co"># 7.0+ 版 Powershell 提供了 utf8NoBOM 编码方式</span></span>
+<span id="cb10-32"><a href="#cb10-32"></a></span>
+<span id="cb10-33"><a href="#cb10-33"></a><span class="co"># 配置上述 administrators_authorized_keys 正确的属主和访问权限</span></span>
+<span id="cb10-34"><a href="#cb10-34"></a><span class="va">$acl</span> = <span class="ex">Get-Acl</span> <span class="va">$ENV</span>:PROGRAMDATA\ssh\administrators_authorized_keys</span>
+<span id="cb10-35"><a href="#cb10-35"></a><span class="va">$acl</span><span class="ex">.SetAccessRuleProtection</span>(<span class="va">$true</span>, <span class="va">$false</span>)</span>
+<span id="cb10-36"><a href="#cb10-36"></a><span class="va">$administratorsRule</span> = <span class="ex">New-Object</span> system.security.accesscontrol.filesystemaccessrule(<span class="st">&quot;Administrators&quot;</span>,<span class="st">&quot;FullControl&quot;</span>,<span class="st">&quot;Allow&quot;</span>)</span>
+<span id="cb10-37"><a href="#cb10-37"></a><span class="va">$systemRule</span> = <span class="ex">New-Object</span> system.security.accesscontrol.filesystemaccessrule(<span class="st">&quot;SYSTEM&quot;</span>,<span class="st">&quot;FullControl&quot;</span>,<span class="st">&quot;Allow&quot;</span>)</span>
+<span id="cb10-38"><a href="#cb10-38"></a><span class="va">$acl</span><span class="ex">.SetAccessRule</span>(<span class="va">$administratorsRule</span>)</span>
+<span id="cb10-39"><a href="#cb10-39"></a><span class="va">$acl</span><span class="ex">.SetAccessRule</span>(<span class="va">$systemRule</span>)</span>
+<span id="cb10-40"><a href="#cb10-40"></a><span class="va">$acl</span> <span class="kw">|</span> <span class="ex">Set-Acl</span></span>
+<span id="cb10-41"><a href="#cb10-41"></a></span>
+<span id="cb10-42"><a href="#cb10-42"></a><span class="co"># 检查 administrators_authorized_keys 文件的权限设置</span></span>
+<span id="cb10-43"><a href="#cb10-43"></a><span class="co"># Access 一项只能且必须只有 </span></span>
+<span id="cb10-44"><a href="#cb10-44"></a><span class="co"># Access : NT AUTHORITY\SYSTEM Allow  FullControl</span></span>
+<span id="cb10-45"><a href="#cb10-45"></a><span class="co">#          BUILTIN\Administrators Allow  FullControl</span></span>
+<span id="cb10-46"><a href="#cb10-46"></a><span class="ex">get-acl</span> .\administrators_authorized_keys <span class="kw">|</span> <span class="ex">fl</span></span>
+<span id="cb10-47"><a href="#cb10-47"></a><span class="co"># Path   : Microsoft.PowerShell.Core\FileSystem::C:\ProgramData\ssh\administrators_authorized_keys</span></span>
+<span id="cb10-48"><a href="#cb10-48"></a><span class="co"># Owner  : BUILTIN\Administrators</span></span>
+<span id="cb10-49"><a href="#cb10-49"></a><span class="co"># Group  : DESKTOP-HQOR9HG\None</span></span>
+<span id="cb10-50"><a href="#cb10-50"></a><span class="co"># Access : NT AUTHORITY\SYSTEM Allow  FullControl</span></span>
+<span id="cb10-51"><a href="#cb10-51"></a><span class="co">#          BUILTIN\Administrators Allow  FullControl</span></span>
+<span id="cb10-52"><a href="#cb10-52"></a><span class="co"># Audit  :</span></span>
+<span id="cb10-53"><a href="#cb10-53"></a><span class="co"># Sddl   : O:BAG:S-1-5-21-3489025807-4051503630-1690866609-513D:PAI(A;;FA;;;SY)(A;;FA;;;BA)</span></span></code></pre></div>
+<hr />
+<h3 id="sshd-configure-5">CLI - OpenSSH Server</h3>
+<ul>
+<li>从 Linux 主机获取开启 OpenSSH Server 的 Windows 主机上的文件</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># 注意 Windows 路径分隔符要使用 / 而不是 \</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="fu">scp</span> demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</span></code></pre></div>
+<h1 id="移动互联时代的文件共享">移动互联时代的文件共享</h1>
+<hr />
+<h2 id="功能特性">功能特性</h2>
+<ul>
+<li>多终端平台支持: PC / macOS / iOS / Android / …</li>
+<li>文件变更自动在多终端平台同步</li>
+<li><strong>加分点</strong> 加密和隐私保护</li>
+<li><strong>加分点</strong> 支持数据的物理存储自己管理</li>
+</ul>
+<hr />
+<h2 id="开源解决方案">开源解决方案</h2>
+<ul>
+<li><a href="https://github.com/awesome-selfhosted/awesome-selfhosted#file-transfersynchronization">自建文件传输/同步解决方案</a>
+<ul>
+<li><a href="https://owncloud.org/">ownCloud</a></li>
+<li><a href="https://www.seafile.com/home/">Seafile</a></li>
+<li><a href="https://syncthing.net/">Syncthing</a></li>
+</ul></li>
+</ul>
+<h1 id="参考文献">参考文献</h1>
+<hr />
+<ul>
+<li><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html">FTP Server from Ubuntu Official Documentation</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-16-04">How To Set Up an NFS Mount on Ubuntu 16.04</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/samba.html.en">Samba from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/community/Samba/SambaClientGuide">Samba/SambaClientGuide from Ubuntu Official Documentation</a></li>
+<li><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">Setting up Samba as a Standalone Server from Samba Official Wiki</a></li>
+<li><a href="https://wiki.samba.org/index.php/Mounting_samba_shares_from_a_unix_client">Mounting samba shares from a unix client from Samba Official Wiki</a></li>
+<li><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">Microsoft SMB Protocol and CIFS Protocol Overview from MSDN</a></li>
+</ul>
+</body>
+</html>

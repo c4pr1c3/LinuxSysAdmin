@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="黄玮" />
+  <title>Linux系统与网络管理</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux系统与网络管理</h1>
+<p class="author">黄玮</p>
+</header>
+<h1 id="番外pxe">番外：PXE</h1>
+<hr />
+<h1 id="pxe-intro">从零到一 2.0</h1>
+<hr />
+<blockquote>
+<p>给「成百上千」台裸机安装操作系统</p>
+</blockquote>
+<hr />
+<h2 id="pxe-基本概念">PXE 基本概念</h2>
+<p><code>PXE</code> - <strong>P</strong>reboot e<strong>X</strong>ecution <strong>E</strong>nvironment, 预启动执行环境</p>
+<blockquote>
+<p>Intel公司提出的一种使用网络接口启动计算机的机制，能够代替本地数据存储设备（光盘、硬盘、USB设备）进行安装操作系统。</p>
+</blockquote>
+<p>目前，PXE 启动已成为一种<a href="http://www.pix.net/software/pxeboot/archive/pxespec.pdf">固件标准</a>，大部分服务器BIOS都支持PXE启动，特别适合大规模集群批量、自动化、无人值守方式安装操作系统。</p>
+<hr />
+<ul>
+<li>PXE 工作基于「客户端/服务器」的网络模式</li>
+</ul>
+<hr />
+<h3 id="基于-pxe-安装操作系统的工作过程如下">基于 PXE 安装操作系统的工作过程如下</h3>
+<ul>
+<li>客户端（裸机）设置 BIOS 开启「从网卡启动」</li>
+<li>客户端网卡会发起 DHCP 请求分配 IP 地址</li>
+<li>DHCP 服务器处理返回分配的IP地址外，还返回预设网关、TFTP 服务器地址及引导程序 Bootstrap
+<ul>
+<li>该文件是一种由 PXE 启动规范规定的固定格式的可执行文件，类似于开机启动项的「可执行文件」：并由此支持来自网络的操作系统的启动过程</li>
+<li>Linux 系统为 <code>pxelinux.0</code>，<a href="https://docs.microsoft.com/zh-cn/windows/deployment/configure-a-pxe-server-to-load-windows-pe?ocid=tia-257895000">Windows 使用 PE 系统</a></li>
+</ul></li>
+</ul>
+<hr />
+<ul>
+<li>客户端通过 TFTP（<strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）或 MTFTP（<strong>M</strong>ulticast <strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）协议下载 Bootstrap 的配置文件（例如 <code>pxelinux.cfg/default</code>）</li>
+<li>客户端读取收到的配置文件，根据其中内容，再次请求 TFTP 传送内核映像文件和系统启动文件（例如 <code>initrd.gz</code>）</li>
+<li>完成后开始启动内核，内核程序读取 Bootstrap 的配置文件，通过网络获取操作系统自动安装脚本（例如 <code>preseed.cfg</code>），并通过网络服务（NFS / FTP / HTTP）获得系统所需安装文件，按照自动安装脚本的配置进行安装</li>
+</ul>
+<h1 id="从实例学-pxe-无人值守同时安装多台主机">从实例学 PXE + 「无人值守」同时安装多台主机</h1>
+<hr />
+<h2 id="network-1">网络拓扑</h2>
+<p><img src="images/pxe/pxe-demo-network-layout.png" /></p>
+<hr />
+<h2 id="network-2">网络拓扑</h2>
+<ul>
+<li>PXE 服务器和 PXE 客户端在同一个 <strong>局域网</strong></li>
+<li>PXE 服务器上同时配置了（本例中由 <strong>dnsmasq</strong> 提供）
+<ul>
+<li>DHCP Server</li>
+<li>PXE Server</li>
+<li>TFTP Server</li>
+<li>DNS Server（非必需）</li>
+<li>HTTP Server（提供 <code>preseed.cfg</code> 下载，本例子中由 <strong>apache2</strong> 提供）</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="pxe-configure">本例所用 PXE 服务器的自动安装配置</h2>
+<p><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/pxe-boot">c4pr1c3/AnsibleTutorial/pxeboot on Github</a></p>
+<ul>
+<li>关键配置
+<ul>
+<li>dnsmasq（TFTP 和 PXE 服务路径、多重启动菜单）</li>
+<li>apache2（preseed.cfg 针对不同发行版系统定制下载 URL）</li>
+<li>txt.cfg（针对不同发行版系统需要定制和调试内核启动参数）</li>
+<li>preseed.cfg（针对不同发行版系统需要定制和调试人机交互选项的配置）</li>
+<li>提供 PXE 客户端访问互联网能力</li>
+</ul></li>
+</ul>
+<hr />
+<h2 id="通信过程抓包分析">通信过程抓包分析</h2>
+<p><a href="images/pxe/pxe-boot-filtered.pcap">PXE Boot 过程（过滤掉了 TFTP 服务器返回的数据，仅保留「信令」通信过程数据）pcap 文件</a></p>
+<hr />
+<figure>
+<img src="images/pxe/pxe-boot-flow-1.png" alt="" /><figcaption>PXE 初始化过程</figcaption>
+</figure>
+<hr />
+<p><img src="images/pxe/pxe-boot-flow-2.png" /></p>
+<hr />
+<h3 id="pxe-boot-1">PXE 初始化过程</h3>
+<ul>
+<li>目标主机（包含 PXE 客户端）上电启动</li>
+<li>目标主机的网卡发起 DHCP 请求</li>
+<li>DHCP 服务器响应目标主机的 DHCP 请求：网络配置信息（IP、子网掩码、网关、DNS等）和 TFP 服务器地址、<strong>可启动镜像</strong> 地址（ <code>pxelinux.0</code> ）</li>
+<li>目标主机接收到上述响应信息后，访问 TFTP 服务器下载 <strong>可启动镜像</strong></li>
+<li>TFTP 服务器发送 <strong>可启动镜像</strong> （<code>pxelinux.0</code>），目标主机执行下载的镜像启动系统</li>
+</ul>
+<hr />
+<h3 id="pxelinux.cfg-search-1">PXE 配置文件下载策略</h3>
+<p>默认情况下，<code>PXE 客户端</code> 在 <code>TFP 服务器</code> 的 <code>pxelinux.cfg</code> 子目录下 <strong>按以下优先级次序</strong> 搜索 <code>镜像启动配置文件</code>：</p>
+<ul>
+<li>查询 <code>PXE 客户端</code> 所在主机的唯一标识 <strong>GUID</strong>
+<ul>
+<li>例如本例子中的 <code>aabd48c4-0eb7-4b00-9ec1-b9d1271425c0</code></li>
+</ul></li>
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 发起 DHCP 请求所使用网卡的 <strong>MAC 地址</strong>
+<ul>
+<li>例如本例子中的 <code>01-08-00-27-b0-e1-4f</code></li>
+</ul></li>
+</ul>
+<hr />
+<h3 id="pxelinux.cfg-search-2">PXE 配置文件下载策略</h3>
+<ul>
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 通过 DHCP 响应获得到的 <strong>IP 地址</strong> （转换成 16 进制大写字母表示后，从右向左依次查询匹配）
+<ul>
+<li>例如本例子中依次查询了 <code>AC100062</code>, <code>AC10006</code>, <code>AC1000</code>, <code>AC100</code>, <code>AC10</code>, <code>AC1</code>, <code>AC</code>, <code>A</code></li>
+</ul></li>
+<li>查无上述命名配置文件后，最后查询 <code>default</code></li>
+</ul>
+<hr />
+<p>IPv4 地址转换成 16 进制大写字母表示</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="va">IP=</span><span class="st">&quot;172.16.0.98&quot;</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="bu">printf</span> <span class="st">&#39;%02X&#39;</span> <span class="va">${IP//</span>.<span class="va">/</span> <span class="va">}</span><span class="kw">;</span> <span class="bu">echo</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># AC100062 </span></span></code></pre></div>
+<hr />
+<figure>
+<img src="images/pxe/pxe-boot-flow-3.png" alt="" /><figcaption>镜像启动配置文件搜索过程</figcaption>
+</figure>
+<hr />
+<h2 id="pxe-客户端启动过程">PXE 客户端启动过程</h2>
+<p><img src="images/pxe/pxe-boot.gif" /></p>
+<h1 id="完整-pxe-无人值守安装过程演示">完整 PXE + 无人值守安装过程演示</h1>
+<hr />
+<p><a href="https://www.bilibili.com/video/av43936728/"><img src="images/pxe/cover.jpg" /></a></p>
+<h1 id="小结">小结</h1>
+<hr />
+<ul>
+<li>PXE 首先是提供了裸机 <strong>批量</strong>、<strong>自动化</strong> 加载运行「最小化」系统的能力</li>
+<li>「最小化」系统不仅可以是 Linux，也可以是其他操作系统的「最小化」版本</li>
+<li>基于「最小化」系统内置的「无人值守安装配置」能力（例如 Debian/Ubuntu 使用的 <code>preseed</code> 技术）继续通过 <strong>网络</strong> 在线安装完整操作系统
+<ul>
+<li>在「内网」搭建完整的在线安装系统 <strong>镜像源</strong> 可以大幅度缩短通过互联网在线安装系统的时间</li>
+</ul></li>
+</ul>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://wiki.debian.org/PXEBootInstall">PXEBootInstall: Installing Debian using network booting</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/dnsmasq">dnsmasq on ArchLinux</a></li>
+<li><a href="https://docs.oracle.com/cd/E24628_01/em.121/e27046/appdx_pxeboot.htm#EMLCM12199">Understanding PXE Booting and Kickstart Technology</a></li>
+</ul>
+</body>
+</html>
