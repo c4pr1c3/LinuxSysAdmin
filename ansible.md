@@ -472,6 +472,7 @@ pip install ansible-lint yamllint
 
 * [原创实例](https://github.com/c4pr1c3/AnsibleTutorial)
 * [Ansible 官方提供的一些示例 Playbooks](https://github.com/ansible/ansible-examples)
+* [Working with Ansible Playbooks – Tips & Tricks with Examples](https://spacelift.io/blog/ansible-playbooks)
 
 # 参考资料
 
