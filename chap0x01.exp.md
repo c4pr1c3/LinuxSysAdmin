@@ -16,7 +16,7 @@ output: revealjs::revealjs_presentation
 
 * [Virtualbox](https://www.virtualbox.org/)
     * 苹果 M1 用户可以使用任意桌面虚拟化解决方案，例如 [UTM](https://mac.getutm.app/)
-* Ubuntu 20.04 Server 64bit
+* Ubuntu 22.04 Server 64bit
 * [阿里云 云起实验室 提供的【零门槛云上实践平台】](https://developer.aliyun.com/adc/) 
     * [备用场景资源一](https://developer.aliyun.com/adc/scenario/exp/a12055b0e9e84e5692b05ae25d377ec0)
     * [备用场景资源二](https://developer.aliyun.com/adc/scenario/exp/410e5b6a852f4b4b88bf74bf4c197a57)
@@ -38,14 +38,14 @@ output: revealjs::revealjs_presentation
 ---
 
 * 使用 `markdown` 格式纯文本
-* 使用 [Github Classroom](https://classroom.github.com/classrooms) 管理作业（课堂当日宣讲为准）
-* 每次作业应 `commit` 到独立分支并通过 `Pull Request` 分别提交每一次作业
+* 使用 [校内 GitLab](https://git.cuc.edu.cn/) 管理作业（课堂当日宣讲为准）
+* 每次作业应 `commit` 到独立分支并通过 `Merge Request` 分别提交每一次作业
 * 实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业
 * 记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接
 
 ---
 
-## 评分标准(1/3) {id="checkpoints-1"}
+## 评分标准(1/4) {id="checkpoints-1"}
 
 > 以下规则以单次实验报告满分 10 分为例，其他满分分值需要进行等比例调整。
 
@@ -56,7 +56,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 评分标准(2/3) {id="checkpoints-2"}
+## 评分标准(2/4) {id="checkpoints-2"}
 
 * `markdown` 使用规范 「**1分**」
     * 在 github 上在线渲染结果正确无误 （本条违反，本项直接扣 1 分）
@@ -65,7 +65,7 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## 评分标准(3/3) {id="checkpoints-3"}
+## 评分标准(3/4) {id="checkpoints-3"}
 
 * `git` 使用规范 「**0.5分**」
     * 在 `PR` 标题中体现了作业序号，例如 `chap0x01`
@@ -76,4 +76,10 @@ output: revealjs::revealjs_presentation
     * 参考文献/资料引用标准规范
 * 按时提交 「满分 **1分**」
     * 晚提交不超过 1 周 **0.5分**
+
+---
+
+## 评分标准(4/4) {id="checkpoints-4"}
+
+未体现 **自己亲自动手完成** 的实验报告直接按照 0 分处理。体现自己亲自动手完成的实验报告的典型方式如：截图中包含体现自己个人特征的实验环境指纹，包括但不限于：Linux 系统的命令行提示符、自定义的 `shell 提示符` 包含自己的网名；操作截图中多次出现自己独一无二的桌面壁纸的不同局部、录制完整的自己动手操作视频并进行后期剪辑、添加水印、上传到视频网站自己的账号下
 
