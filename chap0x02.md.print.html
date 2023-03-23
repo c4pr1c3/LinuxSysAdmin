@@ -483,13 +483,13 @@ Commands:
 <h2 id="快速安装与上手使用">快速安装与上手使用</h2>
 <div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install tldr</span>
 <span id="cb17-2"><a href="#cb17-2"></a><span class="co"># 从自建 gitee 镜像下载 tldr 所有手册页</span></span>
-<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">git</span> clone https://gitee.com/c4pr1c3/tldr ~/.tldr/tldr</span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">git</span> clone https://gitee.com/c4pr1c3/tldr ~/.tldr/cache</span>
 <span id="cb17-4"><a href="#cb17-4"></a></span>
 <span id="cb17-5"><a href="#cb17-5"></a><span class="co"># 如果需要查看中文帮助信息</span></span>
 <span id="cb17-6"><a href="#cb17-6"></a><span class="co"># ⚠️ 警告⚠️ 很多手册页并没有中文翻译版</span></span>
 <span id="cb17-7"><a href="#cb17-7"></a><span class="co"># 以下方法切换默认查询目录后会导致很多命令查询失败</span></span>
 <span id="cb17-8"><a href="#cb17-8"></a><span class="co">## 确保进入正确目录</span></span>
-<span id="cb17-9"><a href="#cb17-9"></a><span class="bu">cd</span> <span class="va">$HOME</span>/.tldr/tldr</span>
+<span id="cb17-9"><a href="#cb17-9"></a><span class="bu">cd</span> <span class="va">$HOME</span>/.tldr/cache</span>
 <span id="cb17-10"><a href="#cb17-10"></a></span>
 <span id="cb17-11"><a href="#cb17-11"></a><span class="co">## 确认当前目录下不存在 pages.en 目录</span></span>
 <span id="cb17-12"><a href="#cb17-12"></a><span class="fu">ls</span> pages.en</span>

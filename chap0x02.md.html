@@ -539,13 +539,13 @@ grep
 <h2>快速安装与上手使用</h2>
 <pre class="bash"><code>sudo apt update &amp;&amp; sudo apt install tldr
 # 从自建 gitee 镜像下载 tldr 所有手册页
-git clone https://gitee.com/c4pr1c3/tldr ~/.tldr/tldr
+git clone https://gitee.com/c4pr1c3/tldr ~/.tldr/cache
 
 # 如果需要查看中文帮助信息
 # ⚠️ 警告⚠️ 很多手册页并没有中文翻译版
 # 以下方法切换默认查询目录后会导致很多命令查询失败
 ## 确保进入正确目录
-cd $HOME/.tldr/tldr
+cd $HOME/.tldr/cache
 
 ## 确认当前目录下不存在 pages.en 目录
 ls pages.en
