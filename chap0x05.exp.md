@@ -12,7 +12,7 @@ output: revealjs::revealjs_presentation
 
 * [Nginx](http://nginx.org/)
 * [VeryNginx](https://github.com/alexazhou/VeryNginx)
-    * 也可以使用其他 `WAF` 或 `API Gateway` 之类的解决方案代替
+    * 也可以使用其他 `WAF` 或 `API Gateway` 之类的解决方案代替，对应实验检查点中基于 `VeryNginx` 的效果要求需要逐一平替实现
 * [Wordpress](https://wordpress.org/)
     * [WordPress 4.7](https://wordpress.org/wordpress-4.7.zip) | [备用下载地址](https://github.com/WordPress/WordPress/archive/4.7.zip)
 * [Damn Vulnerable Web Application (DVWA)](http://www.dvwa.co.uk/)
