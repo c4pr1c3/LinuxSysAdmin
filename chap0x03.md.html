@@ -848,6 +848,51 @@ network:
 </section>
 </section>
 <section>
+<section id="不同发行版的不同网络管理方案流派" class="title-slide slide level1">
+<h1>不同发行版的不同网络管理方案流派</h1>
+
+</section>
+<section id="网络管理方案流派" class="slide level2">
+<h2>网络管理方案流派</h2>
+<ol type="1">
+<li>ifconfig/route</li>
+<li>iproute2</li>
+<li>NetworkManager</li>
+<li>systemd-networkd</li>
+<li>netplan</li>
+</ol>
+</section>
+<section id="以-debian-系发行版为例" class="slide level2">
+<h2>以 Debian 系发行版为例</h2>
+<table>
+<colgroup>
+<col style="width: 48%" />
+<col style="width: 22%" />
+<col style="width: 29%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Linux 发行版</th>
+<th style="text-align: left;">桌面版</th>
+<th style="text-align: left;">服务器版</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ubuntu 22.04</td>
+<td style="text-align: left;">NetworkManager（默认）<br>netplan 或 systemd-networkd（可选）</td>
+<td style="text-align: left;">netplan（默认）<br>NetworkManager 或 systemd-networkd（可选）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Debian 11</td>
+<td style="text-align: left;">NetworkManager（默认）<br>ifupdown、iproute2 或 systemd-networkd（可选）</td>
+<td style="text-align: left;">ifupdown（默认）<br>iproute2、NetworkManager 或 systemd-networkd（可选）</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section>
 <section id="本章完成后的自查清单" class="title-slide slide level1">
 <h1>本章完成后的自查清单</h1>
 

@@ -695,6 +695,28 @@ network:
 | netstat -g | ip maddr |
 | route	| ip r (ip route) |
 
+
+# 不同发行版的不同网络管理方案流派
+
+---
+
+## 网络管理方案流派
+
+1. ifconfig/route
+2. iproute2
+3. NetworkManager
+4. systemd-networkd
+5. netplan
+
+---
+
+## 以 Debian 系发行版为例
+
+| Linux 发行版 | 桌面版 | 服务器版 |
+| :------------ | :----- | :------- |
+| Ubuntu 22.04  | NetworkManager（默认）<br>netplan 或 systemd-networkd（可选） | netplan（默认）<br>NetworkManager 或 systemd-networkd（可选） |
+| Debian 11     | NetworkManager（默认）<br>ifupdown、iproute2 或 systemd-networkd（可选） | ifupdown（默认）<br>iproute2、NetworkManager 或 systemd-networkd（可选） |
+
 # 本章完成后的自查清单
 
 ---
