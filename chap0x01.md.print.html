@@ -88,38 +88,28 @@
 <h1 id="第一章linux基础">第一章：Linux基础</h1>
 <hr />
 <h2 id="gnu-is-not-unix">GNU is NOT Unix</h2>
-<h1 id="linux考据历史">Linux考据历史</h1>
+<blockquote>
+<p>GNU is a recursive acronym for “GNU’s Not Unix!”, chosen because GNU’s design is Unix-like, but differs from Unix by being free software and containing no Unix code.</p>
+</blockquote>
+<h1 id="linux-与-unix-的渊源">Linux 与 Unix 的渊源</h1>
 <hr />
-<h2 id="缘起">缘起</h2>
+<h2 id="里程碑事件---unix">里程碑事件 - Unix</h2>
 <ul>
-<li>Unix操作系统于1970年首次发布，作者是AT&amp;T贝尔实验室大名鼎鼎的C语言之父：Ken Thompson（在Google与他人联合设计了Go语言）和Dennis Ritchie</li>
-<li>1977年，UC Berkeley的Computer Systems Research Group (CSRG)基于Unix第6版开发了Berkeley Software Distribution (BSD)操作系统
-<ul>
-<li>AT&amp;T在90年代起诉UC Berkeley在BSD系统中使用了Unix的商业版权源代码</li>
-</ul></li>
+<li>1969 年，Ken Thompson(K&amp;T) 和 Dennis Ritchie(D&amp;R) 在贝尔实验室开发了 Unix 操作系统，它是一个多任务、多用户的分时系统，具有高度的可移植性和灵活性。</li>
+<li>1971-1972年，D&amp;R 发明了 C 语言，并用它重写了 Unix 的大部分源代码，使得 Unix 可以在不同的硬件平台上运行。</li>
+<li>1973年，Unix 的第四版发布，这是第一个广泛传播的版本，它被许多学术和研究机构使用和修改，产生了许多不同的 Unix 变体，如 BSD、Solaris、HP-UX、AIX 等。</li>
 </ul>
 <hr />
+<h2 id="里程碑事件---gnu">里程碑事件 - GNU</h2>
 <ul>
-<li>1983年，Richard Stallman创建了类Unix，与POSIX兼容的操作系统为目标的GNU计划
-<ul>
-<li>项目工作之余编写了GNU General Public License (GPL)</li>
-<li>同年，Unix和C语言之父K&amp;D因“研究发展了通用的操作系统理论，尤其是实现了UNIX操作系统”获得“计算机界的诺贝尔奖”——图灵奖</li>
-</ul></li>
-<li>1987年，一个16位兼容POISX标准的类UNIX系统——MINIX系统发布，源代码公开但禁止修改和重新发布</li>
+<li>1983年，Richard Stallman 发起了 GNU 项目，旨在创建一个完全自由和开源的类 Unix 操作系统，他开发了许多 Unix 的实用程序和工具，如 GCC、Emacs、Bash 等，并制定了 GNU 通用公共许可证（GPL）。</li>
 </ul>
 <hr />
-<h2 id="起源">起源</h2>
+<h2 id="里程碑事件---linux">里程碑事件 - Linux</h2>
 <ul>
-<li>1991年，来自芬兰21岁的Linus Torvalds在comp.os.minix新闻组的Usenet首次发布了Linux 0.01版，该系统是在Minix上使用gcc编译器开发编译的面向32位PC硬件架构的操作系统</li>
-<li>由于从0.01版开始，Linux就使用到了一些GNU软件，于是在1992年12月发布的0.99版就使用了GNU GPL</li>
-</ul>
-<hr />
-<h2 id="命名">命名</h2>
-<ul>
-<li>最开始Linux仅被Torvalds用于指代Linux内核，但该内核总是配合大量GNU软件一起使用</li>
-<li>GNU官方的公告板在1994年Linux被称为“自由UNIX克隆版”</li>
-<li>另一个著名的开源软件项目Debian把它发布的操作系统命名为：Debian GNU/Linux</li>
-<li>1996年，Richard Stallman在其发布的Emacs 19.31版中称呼Linux为Lignux，不过很快这个名称最终被定为：GNU/Linux</li>
+<li>1991年，Linus Torvalds 在芬兰赫尔辛基大学学习时，为了个人兴趣，编写了一个与 Unix 兼容的操作系统内核，他称之为 Linux，并公开了源代码，邀请其他人一起完善。</li>
+<li>1992年，Linux 内核与 GNU 的软件结合，形成了一个完整的自由和开源的操作系统，这就是我们今天所说的 Linux 系统。</li>
+<li>1994年，Linux 内核 1.0 正式版发布，标志着 Linux 系统的成熟，从此 Linux 系统开始在各个领域广泛应用，如服务器、桌面、嵌入式、移动等。</li>
 </ul>
 <hr />
 <h2 id="linux内核"><a href="https://www.kernel.org/">Linux内核</a></h2>
@@ -167,20 +157,20 @@
 </tbody>
 </table>
 <hr />
-<h2 id="linux生态圈---开发社区与git">Linux生态圈 - 开发社区与Git</h2>
+<h2 id="linux-生态圈---开发社区与-git">Linux 生态圈 - 开发社区与 Git</h2>
 <ul>
-<li>早期的Linux内核开使用发商业化的版本控制软件BitKeeper进行代码管理，但开源社区对这个选择充满了质疑</li>
-<li>Torvalds本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在2005年花了10天时间开发完成了第一个git版本</li>
-<li>不同于CVS、SVN等集中式版本控制工具，git采用分布式版本管理，不需要服务器端软件</li>
+<li>早期的 Linux 内核开使用发商业化的版本控制软件 BitKeeper 进行代码管理，但开源社区对这个选择充满了质疑</li>
+<li>Linus 本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在 2005 年花了 10 天时间开发完成了第一个 Git 版本</li>
+<li>不同于 CVS、SVN 等集中式版本控制工具，Git 采用 <strong>分布式</strong> 版本管理，不需要服务器端软件</li>
 </ul>
 <hr />
-<h2 id="git与github">Git与GitHub</h2>
+<h2 id="git-与-github">Git 与 GitHub</h2>
 <ul>
-<li>Git是一款免费、开源的分布式版本控制系统</li>
-<li>GitHub是用Git做版本控制为全球开源软件作者提供免费、集中的代码托管平台
+<li>Git 是一款免费、开源的分布式版本控制系统</li>
+<li>GitHub 是用 Git 做版本控制为全球开源软件作者提供集中的代码托管平台
 <ul>
 <li>针对私有闭源软件项目提供收费的代码托管服务</li>
-<li>目前主流的开源项目普遍将代码托管在GitHub上，软件开发过程可以被全世界所有人透明的查看和监管</li>
+<li>目前主流的开源项目普遍将代码托管在 GitHub 上，软件开发过程可以被全世界所有人透明的查看和监管</li>
 </ul></li>
 </ul>
 <hr />
@@ -197,7 +187,7 @@
 <hr />
 <h2 id="linux-distros-1">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
 <ul>
-<li>Linux内核
+<li>基于 Linux 内核构建完整操作系统
 <ul>
 <li><a href="https://www.debian.org/">Debian</a>: 非营利性组织运营的开源软件构建发布版本
 <ul>
@@ -221,7 +211,7 @@
 </ul>
 <h2 id="linux-distros-2">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
 <ul>
-<li>Linux内核
+<li>基于 Linux 内核构建完整操作系统
 <ul>
 <li><a href="https://www.suse.com/">SUSE</a>
 <ul>
@@ -240,12 +230,15 @@
 <h2 id="linux-distros-3">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/List_of_Linux_distributions">发行版</a></h2>
 <p><a href="http://tuxradar.com/content/best-distro-2011"><img src="images/chap0x01/LinuxPublisherComparison.jpg" /></a></p>
 <hr />
+<h3 id="内核gnu-与-发行版">内核、GNU 与 发行版</h3>
+<p><img src="images/chap0x01/linux-gnu-distro.png" /></p>
+<hr />
 <h2 id="linux生态圈---lsb">Linux生态圈 - LSB</h2>
 <ul>
 <li><a href="https://wiki.linuxfoundation.org/lsb/start">Linux Standard Base, LSB</a></li>
 <li>愿景和使命
 <ul>
-<li>当Linux成为一个平台之后，应用软件开发者希望实现<strong>write once</strong> (on one Linux distribution will) <strong>run everywhere</strong> (on other Linux distributions)</li>
+<li>当Linux成为一个平台之后，应用软件开发者希望实现 <strong>write once</strong> (on one Linux distribution will) <strong>run everywhere</strong> (on other Linux distributions)</li>
 <li>不仅如此，应用软件开发者希望平台的升级更新不要影响到他们已完成代码的可用性和兼容性</li>
 </ul></li>
 </ul>
@@ -271,7 +264,7 @@
 <li>硬件</li>
 <li>安全</li>
 </ul>
-<h1 id="ossopen-source-software-community-开源软件社区">OSS(Open-source Software) Community 开源软件社区</h1>
+<h1 id="oss-open-source-software-community-开源软件社区">OSS (Open-source Software) Community 开源软件社区</h1>
 <hr />
 <ul>
 <li><a href="https://github.com/open-source">The largest open source community in the world on GitHub</a></li>
@@ -346,13 +339,17 @@
 <ul>
 <li><a href="https://en.wikipedia.org/wiki/Canonical_(company)">科能软件有限公司（Canonical Ltd.） 是一家私人公司，由南非的企业家马克·沙特尔沃思创建，主要为了促进开源软件项目。</a></li>
 <li>Canonical在曼岛登记注册，其雇员分布在世界各地，其主要办事处在伦敦，在波士顿、圣保罗、蒙特利尔、上海、台北和马恩岛也有分公司。</li>
+<li>订阅制增值服务：<a href="https://ubuntu.com/pro">Ubuntu Pro</a></li>
 <li>主要产品：Ubuntu家族的Linux发行版</li>
 </ul>
 <p>本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS 等其他常用服务器发行版。</p>
 <h1 id="ubuntu">Ubuntu</h1>
 <hr />
-<p>不同版本的维护周期规划</p>
+<h2 id="不同版本的维护周期规划">不同版本的维护周期规划</h2>
 <p><a href="https://ubuntu.com/about/release-cycle"><img src="images/chap0x01/UbuntuLTS.png" /></a></p>
+<hr />
+<h2 id="长期支持版本">长期支持版本</h2>
+<p><a href="https://ubuntu.com/about/release-cycle"><img src="images/chap0x01/UbuntuLTS-ESM.png" /></a></p>
 <h1 id="ubuntu-install">Ubuntu安装</h1>
 <hr />
 <ul>
@@ -388,6 +385,10 @@
 <ul>
 <li>及时备份纯净系统</li>
 </ul>
+<p>对于使用虚拟机软件安装的虚拟机系统，建议使用虚拟机自带的虚拟机导出功能或直接备份虚拟硬盘文件。</p>
+<hr />
+<h3 id="virtualbox-专属的基础镜像制作">Virtualbox 专属的基础镜像制作</h3>
+<p>关键词：<code>介质管理</code> - <code>虚拟硬盘</code> - <code>多重加载</code></p>
 <hr />
 <h2 id="安装过程自动化无人值守">安装过程自动化（无人值守）</h2>
 <ul>
@@ -517,20 +518,20 @@
 <h1 id="ssh与远程服务器管理">SSH与远程服务器管理</h1>
 <hr />
 <ul>
-<li>免密登录
+<li>免密登录 <strong><em>目的</em></strong>
 <ul>
-<li>ssh-copy-id</li>
-<li>~/.ssh/authorized_keys</li>
+<li>ssh-copy-id <strong><em>手段</em></strong></li>
+<li>$HOME/.ssh/authorized_keys <strong><em>手段</em></strong></li>
 </ul></li>
-<li>SSH跳板与堡垒主机</li>
+<li>SSH 跳板与堡垒主机</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># ProxyCommand</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="fu">man</span> ssh_config</span></code></pre></div>
 <ul>
-<li><a href="https://github.com/c4pr1c3/cuc-courses/raw/master/2014_2/nsLecture0x10.pdf">SSH服务器安全加固</a></li>
+<li><code>SSH服务器安全加固</code></li>
 </ul>
 <hr />
-<h2 id="ssh客户端">SSH客户端</h2>
+<h2 id="ssh-客户端">SSH 客户端</h2>
 <ul>
 <li>Linux / Mac
 <ul>
@@ -542,7 +543,7 @@
 <li><a href="http://www.putty.org/">putty</a></li>
 <li><a href="https://www.netsarang.com/download/down_xsh.html">xshell</a></li>
 <li><a href="http://mobaxterm.mobatek.net/">MobaXterm</a></li>
-<li><a href="https://gitforwindows.org/">git for windows</a></li>
+<li><a href="https://gitforwindows.org/">git bash</a></li>
 </ul></li>
 </ul>
 <h1 id="virtualbox虚拟机实验环境建议">Virtualbox虚拟机实验环境建议</h1>
