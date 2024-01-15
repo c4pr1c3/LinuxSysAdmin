@@ -10,38 +10,31 @@ output: revealjs::revealjs_presentation
 
 ## GNU is NOT Unix
 
-# Linux考据历史
+> GNU is a recursive acronym for "GNU's Not Unix!", chosen because GNU's design is Unix-like, but differs from Unix by being free software and containing no Unix code.
+
+# Linux 与 Unix 的渊源
 
 ---
 
-## 缘起
+## 里程碑事件 - Unix
 
-* Unix操作系统于1970年首次发布，作者是AT&T贝尔实验室大名鼎鼎的C语言之父：Ken Thompson（在Google与他人联合设计了Go语言）和Dennis Ritchie
-* 1977年，UC Berkeley的Computer Systems Research Group (CSRG)基于Unix第6版开发了Berkeley Software Distribution (BSD)操作系统
-    * AT&T在90年代起诉UC Berkeley在BSD系统中使用了Unix的商业版权源代码
-
----
-
-* 1983年，Richard Stallman创建了类Unix，与POSIX兼容的操作系统为目标的GNU计划
-    * 项目工作之余编写了GNU General Public License (GPL)
-    * 同年，Unix和C语言之父K&D因“研究发展了通用的操作系统理论，尤其是实现了UNIX操作系统”获得“计算机界的诺贝尔奖”——图灵奖
-* 1987年，一个16位兼容POISX标准的类UNIX系统——MINIX系统发布，源代码公开但禁止修改和重新发布
+* 1969 年，Ken Thompson(K&T) 和 Dennis Ritchie(D&R) 在贝尔实验室开发了 Unix 操作系统，它是一个多任务、多用户的分时系统，具有高度的可移植性和灵活性。
+* 1971-1972年，D&R 发明了 C 语言，并用它重写了 Unix 的大部分源代码，使得 Unix 可以在不同的硬件平台上运行。
+* 1973年，Unix 的第四版发布，这是第一个广泛传播的版本，它被许多学术和研究机构使用和修改，产生了许多不同的 Unix 变体，如 BSD、Solaris、HP-UX、AIX 等。
 
 ---
 
-## 起源
+## 里程碑事件 - GNU
 
-* 1991年，来自芬兰21岁的Linus Torvalds在comp.os.minix新闻组的Usenet首次发布了Linux 0.01版，该系统是在Minix上使用gcc编译器开发编译的面向32位PC硬件架构的操作系统
-* 由于从0.01版开始，Linux就使用到了一些GNU软件，于是在1992年12月发布的0.99版就使用了GNU GPL
+* 1983年，Richard Stallman 发起了 GNU 项目，旨在创建一个完全自由和开源的类 Unix 操作系统，他开发了许多 Unix 的实用程序和工具，如 GCC、Emacs、Bash 等，并制定了 GNU 通用公共许可证（GPL）。
 
 ---
 
-## 命名
+## 里程碑事件 - Linux
 
-* 最开始Linux仅被Torvalds用于指代Linux内核，但该内核总是配合大量GNU软件一起使用
-* GNU官方的公告板在1994年Linux被称为“自由UNIX克隆版”
-* 另一个著名的开源软件项目Debian把它发布的操作系统命名为：Debian GNU/Linux
-* 1996年，Richard Stallman在其发布的Emacs 19.31版中称呼Linux为Lignux，不过很快这个名称最终被定为：GNU/Linux
+* 1991年，Linus Torvalds 在芬兰赫尔辛基大学学习时，为了个人兴趣，编写了一个与 Unix 兼容的操作系统内核，他称之为 Linux，并公开了源代码，邀请其他人一起完善。
+* 1992年，Linux 内核与 GNU 的软件结合，形成了一个完整的自由和开源的操作系统，这就是我们今天所说的 Linux 系统。
+* 1994年，Linux 内核 1.0 正式版发布，标志着 Linux 系统的成熟，从此 Linux 系统开始在各个领域广泛应用，如服务器、桌面、嵌入式、移动等。
 
 --- 
 
@@ -69,21 +62,21 @@ output: revealjs::revealjs_presentation
 
 ---
 
-## Linux生态圈 - 开发社区与Git
+## Linux 生态圈 - 开发社区与 Git
 
-* 早期的Linux内核开使用发商业化的版本控制软件BitKeeper进行代码管理，但开源社区对这个选择充满了质疑
-* Torvalds本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在2005年花了10天时间开发完成了第一个git版本
-* 不同于CVS、SVN等集中式版本控制工具，git采用分布式版本管理，不需要服务器端软件
+* 早期的 Linux 内核开使用发商业化的版本控制软件 BitKeeper 进行代码管理，但开源社区对这个选择充满了质疑
+* Linus 本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在 2005 年花了 10 天时间开发完成了第一个 Git 版本
+* 不同于 CVS、SVN 等集中式版本控制工具，Git 采用 **分布式** 版本管理，不需要服务器端软件
 
 
 ---
 
-## Git与GitHub
+## Git 与 GitHub
 
-* Git是一款免费、开源的分布式版本控制系统
-* GitHub是用Git做版本控制为全球开源软件作者提供免费、集中的代码托管平台
+* Git 是一款免费、开源的分布式版本控制系统
+* GitHub 是用 Git 做版本控制为全球开源软件作者提供集中的代码托管平台
     * 针对私有闭源软件项目提供收费的代码托管服务
-    * 目前主流的开源项目普遍将代码托管在GitHub上，软件开发过程可以被全世界所有人透明的查看和监管
+    * 目前主流的开源项目普遍将代码托管在 GitHub 上，软件开发过程可以被全世界所有人透明的查看和监管
 
 ---
 
@@ -99,7 +92,7 @@ output: revealjs::revealjs_presentation
 
 ## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions) {id="linux-distros-1"}
 
-* Linux内核
+* 基于 Linux 内核构建完整操作系统
     * [Debian](https://www.debian.org/): 非营利性组织运营的开源软件构建发布版本
         * [Ubuntu](http://www.ubuntu-china.cn/about/)：商业公司Canonical基于Debian构建和维护
             * [Linux Mint](https://www.linuxmint.com/about.php)：开源社区维护
@@ -112,7 +105,7 @@ output: revealjs::revealjs_presentation
 
 ## Linux生态圈 - [发行版](https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions) {id="linux-distros-2"}
 
-* Linux内核
+* 基于 Linux 内核构建完整操作系统
     * [SUSE](https://www.suse.com/)
         * SLES: SUSE Linux Enterprise Server
         * [openSUSE](https://zh.opensuse.org/)
@@ -127,13 +120,20 @@ output: revealjs::revealjs_presentation
 
 <a href="http://tuxradar.com/content/best-distro-2011">![](images/chap0x01/LinuxPublisherComparison.jpg)</a>
 
+
+---
+
+### 内核、GNU 与 发行版
+
+![](images/chap0x01/linux-gnu-distro.png)
+
 ---
 
 ## Linux生态圈 - LSB
 
 * [Linux Standard Base, LSB](https://wiki.linuxfoundation.org/lsb/start)
 * 愿景和使命
-    * 当Linux成为一个平台之后，应用软件开发者希望实现**write once** (on one Linux distribution will) **run everywhere** (on other Linux distributions) 
+    * 当Linux成为一个平台之后，应用软件开发者希望实现 **write once** (on one Linux distribution will) **run everywhere** (on other Linux distributions) 
     * 不仅如此，应用软件开发者希望平台的升级更新不要影响到他们已完成代码的可用性和兼容性
 
 ---
@@ -159,7 +159,7 @@ output: revealjs::revealjs_presentation
 * 硬件
 * 安全
 
-# OSS(Open-source Software) Community 开源软件社区
+# OSS (Open-source Software) Community 开源软件社区
 
 ---
 
@@ -240,6 +240,7 @@ output: revealjs::revealjs_presentation
 
 * [科能软件有限公司（Canonical Ltd.） 是一家私人公司，由南非的企业家马克·沙特尔沃思创建，主要为了促进开源软件项目。](https://en.wikipedia.org/wiki/Canonical_\(company\))
 * Canonical在曼岛登记注册，其雇员分布在世界各地，其主要办事处在伦敦，在波士顿、圣保罗、蒙特利尔、上海、台北和马恩岛也有分公司。
+* 订阅制增值服务：[Ubuntu Pro](https://ubuntu.com/pro)
 * 主要产品：Ubuntu家族的Linux发行版
 
 本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS 等其他常用服务器发行版。
@@ -248,9 +249,15 @@ output: revealjs::revealjs_presentation
 
 ---
 
-不同版本的维护周期规划
+## 不同版本的维护周期规划
 
 [![](images/chap0x01/UbuntuLTS.png)](https://ubuntu.com/about/release-cycle)
+
+---
+
+## 长期支持版本
+
+[![](images/chap0x01/UbuntuLTS-ESM.png)](https://ubuntu.com/about/release-cycle)
 
 # Ubuntu安装 {id="ubuntu-install"}
 
@@ -284,6 +291,14 @@ output: revealjs::revealjs_presentation
 ## 安装后
 
 * 及时备份纯净系统
+
+对于使用虚拟机软件安装的虚拟机系统，建议使用虚拟机自带的虚拟机导出功能或直接备份虚拟硬盘文件。
+
+---
+
+### Virtualbox 专属的基础镜像制作
+
+关键词：`介质管理` - `虚拟硬盘` - `多重加载`
 
 ---
 
@@ -424,21 +439,21 @@ man 3 printf
 
 ---
 
-* 免密登录
-    * ssh-copy-id
-    * ~/.ssh/authorized_keys
-* SSH跳板与堡垒主机
+* 免密登录 ***目的***
+    * ssh-copy-id ***手段***
+    * $HOME/.ssh/authorized_keys ***手段***
+* SSH 跳板与堡垒主机
 
 ```bash
 # ProxyCommand
 man ssh_config
 ```
 
-* [SSH服务器安全加固](https://github.com/c4pr1c3/cuc-courses/raw/master/2014_2/nsLecture0x10.pdf)
+* `SSH服务器安全加固`
 
 ---
 
-## SSH客户端
+## SSH 客户端
 
 * Linux / Mac
     * ssh
@@ -447,7 +462,7 @@ man ssh_config
     * [putty](http://www.putty.org/)
     * [xshell](https://www.netsarang.com/download/down_xsh.html)
     * [MobaXterm](http://mobaxterm.mobatek.net/)
-    * [git for windows](https://gitforwindows.org/)
+    * [git bash](https://gitforwindows.org/)
 
 # Virtualbox虚拟机实验环境建议
 
