@@ -13,21 +13,13 @@ output: revealjs::revealjs_presentation
 ## 软件环境
 
 * 当前课程推荐的 Linux 发行版本
-    * 本地环境（Ubuntu）
-    * 云环境（CentOS）
-* 在[asciinema](https://asciinema.org)注册一个账号，并在本地安装配置好asciinema
+    * 服务器环境（Ubuntu）
 
----
-
-* 确保本地已经完成**asciinema auth**，并在[asciinema](https://asciinema.org)成功关联了本地账号和在线账号
-* 在自己的git仓库上新建markdown格式纯文本文件附上asciinema的分享URL
-* **提醒** 避免在终端操作录像过程中暴漏**密码、个人隐私**等任何机密数据
 
 # 实验问题
 
 ---
 
-* 使用表格方式记录至少 2 个不同 Linux 发行版本上以下信息的获取方法，使用 [asciinema](https://asciinema.org) 录屏方式「分段」记录相关信息的获取过程和结果
 * 【软件包管理】在目标发行版上安装 `tmux` 和 `tshark` ；查看这 2 个软件被安装到哪些路径；卸载 `tshark` ；验证 `tshark` 卸载结果
 
 ---
