@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -57,16 +66,20 @@
 <li><a href="http://nginx.org/">Nginx</a></li>
 <li><a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>
 <ul>
-<li>也可以使用其他 <code>WAF</code> 或 <code>API Gateway</code> 之类的解决方案代替，对应实验检查点中基于 <code>VeryNginx</code> 的效果要求需要逐一平替实现</li>
+<li>也可以使用其他 <code>WAF</code> 或 <code>API Gateway</code>
+之类的解决方案代替，对应实验检查点中基于 <code>VeryNginx</code>
+的效果要求需要逐一平替实现</li>
 </ul></li>
 <li><a href="https://wordpress.org/">Wordpress</a>
 <ul>
-<li><a href="https://wordpress.org/wordpress-4.7.zip">WordPress 4.7</a> | <a href="https://github.com/WordPress/WordPress/archive/4.7.zip">备用下载地址</a></li>
+<li><a href="https://wordpress.org/wordpress-4.7.zip">WordPress 4.7</a>
+| <a
+href="https://github.com/WordPress/WordPress/archive/4.7.zip">备用下载地址</a></li>
 </ul></li>
-<li><a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application (DVWA)</a></li>
+<li><a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application
+(DVWA)</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="实验检查点" class="title-slide slide level1">
 <h1>实验检查点</h1>
@@ -75,29 +88,44 @@
 <section id="基本要求" class="slide level2">
 <h2>基本要求</h2>
 <ul>
-<li>在一台主机（虚拟机）上同时配置<a href="http://nginx.org/">Nginx</a>和<a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>
+<li>在一台主机（虚拟机）上同时配置<a
+href="http://nginx.org/">Nginx</a>和<a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>
 <ul>
 <li>VeryNginx作为本次实验的Web App的反向代理服务器和WAF</li>
 <li>PHP-FPM进程的反向代理配置在nginx服务器上，VeryNginx服务器不直接配置Web站点服务</li>
 </ul></li>
-<li>使用<a href="https://wordpress.org/">Wordpress</a>搭建的站点对外提供访问的地址为： http://wp.sec.cuc.edu.cn</li>
-<li>使用<a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application (DVWA)</a>搭建的站点对外提供访问的地址为： http://dvwa.sec.cuc.edu.cn</li>
+<li>使用<a
+href="https://wordpress.org/">Wordpress</a>搭建的站点对外提供访问的地址为：
+http://wp.sec.cuc.edu.cn</li>
+<li>使用<a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application
+(DVWA)</a>搭建的站点对外提供访问的地址为：
+http://dvwa.sec.cuc.edu.cn</li>
 </ul>
 </section>
 <section id="安全加固要求" class="slide level2">
 <h2>安全加固要求</h2>
 <ul>
 <li>使用IP地址方式均无法访问上述任意站点，并向访客展示自定义的<strong>友好错误提示信息页面-1</strong></li>
-<li><a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application (DVWA)</a>只允许白名单上的访客来源IP，其他来源的IP访问均向访客展示自定义的<strong>友好错误提示信息页面-2</strong></li>
-<li>在不升级Wordpress版本的情况下，通过定制<a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的访问控制策略规则，<strong>热</strong>修复<a href="https://www.exploit-db.com/exploits/41497/">WordPress &lt; 4.7.1 - Username Enumeration</a></li>
-<li>通过配置<a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的Filter规则实现对<a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application (DVWA)</a>的SQL注入实验在低安全等级条件下进行防护</li>
+<li><a href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application
+(DVWA)</a>只允许白名单上的访客来源IP，其他来源的IP访问均向访客展示自定义的<strong>友好错误提示信息页面-2</strong></li>
+<li>在不升级Wordpress版本的情况下，通过定制<a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的访问控制策略规则，<strong>热</strong>修复<a
+href="https://www.exploit-db.com/exploits/41497/">WordPress &lt; 4.7.1 -
+Username Enumeration</a></li>
+<li>通过配置<a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的Filter规则实现对<a
+href="http://www.dvwa.co.uk/">Damn Vulnerable Web Application
+(DVWA)</a>的SQL注入实验在低安全等级条件下进行防护</li>
 </ul>
 </section>
 <section id="verynginx配置要求" class="slide level2">
 <h2>VeryNginx配置要求</h2>
 <ul>
-<li><a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的Web管理页面仅允许白名单上的访客来源IP，其他来源的IP访问均向访客展示自定义的<strong>友好错误提示信息页面-3</strong></li>
-<li>通过定制<a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的访问控制策略规则实现：
+<li><a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的Web管理页面仅允许白名单上的访客来源IP，其他来源的IP访问均向访客展示自定义的<strong>友好错误提示信息页面-3</strong></li>
+<li>通过定制<a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a>的访问控制策略规则实现：
 <ul>
 <li>限制DVWA站点的单IP访问速率为每秒请求数 &lt; 50</li>
 <li>限制Wordpress站点的单IP访问速率为每秒请求数 &lt; 20</li>
@@ -105,8 +133,7 @@
 <li>禁止curl访问</li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="附录" class="title-slide slide level1">
 <h1>附录</h1>
@@ -114,7 +141,8 @@
 </section>
 <section class="slide level2">
 
-<p><a href="https://www.exploit-db.com/exploits/41497/">WordPress &lt; 4.7.1 - Username Enumeration</a></p>
+<p><a href="https://www.exploit-db.com/exploits/41497/">WordPress &lt;
+4.7.1 - Username Enumeration</a></p>
 <pre class="php"><code>#!usr/bin/php
 &lt;?php
  
@@ -138,8 +166,7 @@ foreach($json as $users){
     echo &quot;\n&quot;;
 }echo &quot;*-----------------------------*&quot;;} 
 else{echo &quot;[*] No user&quot;;}</code></pre>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -151,12 +178,43 @@ else{echo &quot;[*] No user&quot;;}</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

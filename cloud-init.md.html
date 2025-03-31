@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -59,7 +68,9 @@
 <li>Python 解释器</li>
 <li>SSH 免密登录</li>
 </ul></li>
-<li>以 <code>puppet</code> 为代表的基于 <code>agent</code> 的自动化管理系统方案需要在「基础镜像」中提前安装好对应的 <code>agent</code> 并进行运行时环境相关的必要配置</li>
+<li>以 <code>puppet</code> 为代表的基于 <code>agent</code>
+的自动化管理系统方案需要在「基础镜像」中提前安装好对应的
+<code>agent</code> 并进行运行时环境相关的必要配置</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -95,21 +106,23 @@
 </section>
 <section class="slide level2">
 
-<p>这就是 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题。</p>
+<p>这就是 <code>从一到二、到三，乃至万物</code> 的
+<strong>自动化</strong> 问题。</p>
 </section>
 <section class="slide level2">
 
 <blockquote>
-<p>怎么解决 <code>从一到二、到三，乃至万物</code> 的 <strong>自动化</strong> 问题？</p>
+<p>怎么解决 <code>从一到二、到三，乃至万物</code> 的
+<strong>自动化</strong> 问题？</p>
 </blockquote>
 </section>
 <section id="cloud-init-usage" class="slide level2">
 <h2>Cloud-Init 的作用</h2>
 <blockquote>
-<p>解决 <code>从一到二、到三，乃至万物</code> （从基本系统到可编程、可配置） 的 <strong>自动化</strong> 问题</p>
+<p>解决 <code>从一到二、到三，乃至万物</code>
+（从基本系统到可编程、可配置） 的 <strong>自动化</strong> 问题</p>
 </blockquote>
-</section>
-</section>
+</section></section>
 <section>
 <section id="hello-cloud-init" class="title-slide slide level1">
 <h1>从「第一个 🌰 」开始体验 cloud-init</h1>
@@ -140,7 +153,8 @@ genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-d
 
 <ul>
 <li>将虚拟机内的 <code>init-cidata.iso</code> 下载到宿主机系统</li>
-<li>在 Virtualbox 的当前虚拟机设置界面挂载 <code>init-cidata.iso</code></li>
+<li>在 Virtualbox 的当前虚拟机设置界面挂载
+<code>init-cidata.iso</code></li>
 </ul>
 <p><img data-src="images/cloud-init/vb-cidata.png" /></p>
 </section>
@@ -157,8 +171,7 @@ su ubuntu
 
 # 检查当前用户身份
 id</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="详解上一个" class="title-slide slide level1">
 <h1>详解上一个🌰</h1>
@@ -168,16 +181,23 @@ id</code></pre>
 <h2>user-data</h2>
 <pre class="yaml"><code>#cloud-config</code></pre>
 <ul>
-<li>标识当前文件是一个 <code>cloud-config</code> 类型文件，这是最常用的一类 <code>User-Data</code></li>
+<li>标识当前文件是一个 <code>cloud-config</code>
+类型文件，这是最常用的一类 <code>User-Data</code></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <pre class="yaml"><code>password: mypassword </code></pre>
-<p><code>Ubuntu</code> 发行版默认创建的用户名为 <code>ubuntu</code>，此处 <code>password</code> 指令等价于先创建新用户 <code>ubuntu</code> ，然后设置口令为 <code>mypassword</code> 。</p>
+<p><code>Ubuntu</code> 发行版默认创建的用户名为
+<code>ubuntu</code>，此处 <code>password</code> 指令等价于先创建新用户
+<code>ubuntu</code> ，然后设置口令为 <code>mypassword</code> 。</p>
 <ul>
-<li><a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups">users 配置关键字定义的列表中第一个用户就是系统的默认用户，如果希望保留发行版默认标准用户名则第一个用户应设置为 default</a> 。</li>
-<li>口令格式既可以是明文，也可以是 <code>mkpasswd</code> 创建的「哈希后口令」。</li>
+<li><a
+href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#users-and-groups">users
+配置关键字定义的列表中第一个用户就是系统的默认用户，如果希望保留发行版默认标准用户名则第一个用户应设置为
+default</a> 。</li>
+<li>口令格式既可以是明文，也可以是 <code>mkpasswd</code>
+创建的「哈希后口令」。</li>
 </ul>
 </section>
 <section id="创建哈希后口令的" class="slide level2">
@@ -189,23 +209,30 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <section class="slide level2">
 
 <pre class="yaml"><code>chpasswd: { expire: False }</code></pre>
-<p><code>chpasswd</code> 用于对系统中 <strong>已有</strong> 用户更改口令或设置口令强制过期策略。支持 <code>expire</code> 和 <code>list</code> 属性。其中 <code>list</code> 关键字支持 <code>username:password</code> 列表形式，既可以是 <code>YAML list</code> 格式，也可以是「一行一键值对」的 <code>多行</code> 字符串。</p>
+<p><code>chpasswd</code> 用于对系统中 <strong>已有</strong>
+用户更改口令或设置口令强制过期策略。支持 <code>expire</code> 和
+<code>list</code> 属性。其中 <code>list</code> 关键字支持
+<code>username:password</code> 列表形式，既可以是 <code>YAML list</code>
+格式，也可以是「一行一键值对」的 <code>多行</code> 字符串。</p>
 </section>
 <section class="slide level2">
 
 <pre class="yaml"><code>ssh_pwauth: True</code></pre>
-<p><code>ssh_pwauth</code> 配置 <code>/etc/ssh/sshd_config</code> 里 <code>PasswordAuthentication</code> 字段值。</p>
-</section>
-</section>
+<p><code>ssh_pwauth</code> 配置 <code>/etc/ssh/sshd_config</code> 里
+<code>PasswordAuthentication</code> 字段值。</p>
+</section></section>
 <section>
 <section id="正式入门" class="title-slide slide level1">
 <h1>正式入门</h1>
 
 </section>
 <section id="必读官方文档" class="slide level2">
-<h2><a href="https://cloudinit.readthedocs.io/en/latest/index.html">必读：官方文档</a></h2>
+<h2><a
+href="https://cloudinit.readthedocs.io/en/latest/index.html">必读：官方文档</a></h2>
 <ul>
-<li>工业级标准（<a href="https://cloudinit.readthedocs.io/en/latest/topics/availability.html">主流 Linux 发行版、公有云服务提供商、私有云平台、裸机安装</a>）</li>
+<li>工业级标准（<a
+href="https://cloudinit.readthedocs.io/en/latest/topics/availability.html">主流
+Linux 发行版、公有云服务提供商、私有云平台、裸机安装</a>）</li>
 <li>支持从多种「数据源」加载用户配置，定制从「基础镜像」到「个性化可用系统」的自动化实现</li>
 </ul>
 </section>
@@ -218,22 +245,28 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <col style="width: 33%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>支持的发行版</th>
 <th>支持的公有云</th>
 <th>支持的私有云</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td>Ubuntu<br />SLES/openSUSE<br />RHEL/CentOS<br />Fedora<br />Gentoo Linux<br />Debian<br />ArchLinux<br />FreeBSD<br />NetBSD<br />OpenBSD<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
-<td>Amazon Web Services<br />Microsoft Azure<br />Google Cloud Platform<br />Oracle Cloud Infrastructure<br />Softlayer<br />Rackspace Public Cloud<br />IBM Cloud<br />Digital Ocean<br />Bigstep<br />Hetzner<br />Joyent<br />CloudSigma<br />Alibaba Cloud<br />OVH<br />OpenNebula<br />Exoscale<br />Scaleway<br />CloudStack<br />AltCloud<br />SmartOS<br />HyperOne<br />Rootbox<br /></td>
-<td>Bare metal installs<br />OpenStack<br />LXD<br />KVM<br />Metal-as-a-Service (MAAS)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+<tr>
+<td>Ubuntu<br />SLES/openSUSE<br />RHEL/CentOS<br />Fedora<br />Gentoo
+Linux<br />Debian<br />ArchLinux<br />FreeBSD<br />NetBSD<br />OpenBSD<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
+<td>Amazon Web Services<br />Microsoft Azure<br />Google Cloud
+Platform<br />Oracle Cloud Infrastructure<br />Softlayer<br />Rackspace
+Public Cloud<br />IBM Cloud<br />Digital
+Ocean<br />Bigstep<br />Hetzner<br />Joyent<br />CloudSigma<br />Alibaba
+Cloud<br />OVH<br />OpenNebula<br />Exoscale<br />Scaleway<br />CloudStack<br />AltCloud<br />SmartOS<br />HyperOne<br />Rootbox<br /></td>
+<td>Bare metal
+installs<br />OpenStack<br />LXD<br />KVM<br />Metal-as-a-Service
+(MAAS)<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /></td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
+</section></section>
 <section>
 <section id="check-cloud-init-version" class="title-slide slide level1">
 <h1>查看当前已安装 Cloud-Init 版本</h1>
@@ -243,29 +276,39 @@ mkpasswd -m sha-512 mypassword</code></pre>
 
 <pre class="bash"><code>cloud-init --version
 # /usr/bin/cloud-init 19.4-33-gbb4131a2-0ubuntu1~18.04.1</code></pre>
-<p>根据以上版本信息，推荐阅读<a href="https://cloudinit.readthedocs.io/en/19.4/index.html">官方 v19.4 版文档</a> 。</p>
-</section>
-</section>
+<p>根据以上版本信息，推荐阅读<a
+href="https://cloudinit.readthedocs.io/en/19.4/index.html">官方 v19.4
+版文档</a> 。</p>
+</section></section>
 <section>
 <section id="数据源" class="title-slide slide level1">
-<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html">数据源</a></h1>
+<h1><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html">数据源</a></h1>
 
 </section>
 <section class="slide level2">
 
 <ul>
-<li>「数据源」指的是 <code>cloud-init</code> 的配置数据来源，通常来自用户（例如 <code>user-data</code>）或来自创建配置驱动器的云（例如 <code>meta-data</code> ）。</li>
+<li>「数据源」指的是 <code>cloud-init</code>
+的配置数据来源，通常来自用户（例如
+<code>user-data</code>）或来自创建配置驱动器的云（例如
+<code>meta-data</code> ）。</li>
 <li>典型的「用户数据」包括「文件」，「yaml」和「Shell 脚本」</li>
-<li>典型的「元数据」包括「服务器名称」，「实例 ID」，「显示名称」和「其他特定于云服务提供商」的详细信息</li>
+<li>典型的「元数据」包括「服务器名称」，「实例
+ID」，「显示名称」和「其他特定于云服务提供商」的详细信息</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p>实例（Instance）在云计算场景中，一般指「云主机实例」。对于 <code>Virtualbox</code> 来说，每一个本地虚拟机也可以看作是一个「实例」。</p>
+<p>实例（Instance）在云计算场景中，一般指「云主机实例」。对于
+<code>Virtualbox</code>
+来说，每一个本地虚拟机也可以看作是一个「实例」。</p>
 </section>
 <section class="slide level2">
 
-<p>当前系统上执行过 <code>Cloud-Init</code> 之后会将「元数据」保存在 <code>/run/cloud-init/instance-data.json</code> ，如下所示是「第一个 🌰 」对应的「元数据」：</p>
+<p>当前系统上执行过 <code>Cloud-Init</code> 之后会将「元数据」保存在
+<code>/run/cloud-init/instance-data.json</code> ，如下所示是「第一个 🌰
+」对应的「元数据」：</p>
 <pre class="json"><code>{
  &quot;base64_encoded_keys&quot;: [],
  &quot;ds&quot;: {
@@ -298,10 +341,18 @@ mkpasswd -m sha-512 mypassword</code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html#known-sources">已知支持数据源类型</a></p>
+<p><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources.html#known-sources">已知支持数据源类型</a></p>
 <table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>排</th>
 <th>名</th>
 <th>不</th>
@@ -310,35 +361,35 @@ mkpasswd -m sha-512 mypassword</code></pre>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Alibaba Cloud (AliYun)</td>
 <td>Alt Cloud</td>
 <td>Azure</td>
 <td>CloudSigma</td>
 <td>CloudStack</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Config Drive</td>
 <td>Digital Ocean</td>
 <td>E24Cloud</td>
 <td>Amazon EC2</td>
 <td>Exoscale</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Fallback/None</td>
 <td>Google Compute Engine</td>
 <td>MAAS</td>
 <td><strong>NoCloud</strong></td>
 <td>OpenNebula</td>
 </tr>
-<tr class="even">
+<tr>
 <td>OpenStack</td>
 <td>Oracle</td>
 <td>OVF</td>
 <td>Rbx Cloud</td>
 <td>SmartOS Datasource</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>ZStack</td>
 <td></td>
 <td></td>
@@ -352,11 +403,11 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <h2>查看我们在虚拟机里使用的数据源类型</h2>
 <pre class="bash"><code>cloud-id
 # nocloud</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="nocloud" class="title-slide slide level1">
-<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources/nocloud.html#nocloud">NoCloud</a></h1>
+<h1><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/datasources/nocloud.html#nocloud">NoCloud</a></h1>
 
 </section>
 <section class="slide level2">
@@ -364,7 +415,8 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <p>回顾之前我们创建 iso 镜像文件时使用的命令</p>
 <pre class="bash"><code>genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</code></pre>
 <ul>
-<li><code>-volid cidata</code> 指定新创建的 iso 文件的「卷标识」为 <code>cidata</code></li>
+<li><code>-volid cidata</code> 指定新创建的 iso 文件的「卷标识」为
+<code>cidata</code></li>
 </ul>
 <p><img data-src="images/cloud-init/nocloud-cidata.png" /></p>
 </section>
@@ -374,7 +426,8 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <pre class="bash"><code>genisoimage -output init-cidata.iso -volid cidata -joliet -rock user-data meta-data</code></pre>
 <p><img data-src="images/cloud-init/nocloud-contents.png" /></p>
 <ul>
-<li>iso 镜像文件里的文件名必须是 <code>user-data</code> 和 <code>meta-data</code></li>
+<li>iso 镜像文件里的文件名必须是 <code>user-data</code> 和
+<code>meta-data</code></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -382,7 +435,8 @@ mkpasswd -m sha-512 mypassword</code></pre>
 <p>回顾之前的 <code>meta-data</code> 文件内容</p>
 <pre class="yaml"><code>instance-id: 1
 local-hostname: cuc-cloud-init</code></pre>
-<p>其中 <code>instance-id: 1</code> 用来告诉 <code>cloud-init</code> 引擎该实例「是否首次启动」。</p>
+<p>其中 <code>instance-id: 1</code> 用来告诉 <code>cloud-init</code>
+引擎该实例「是否首次启动」。</p>
 <pre class="bash"><code># 查看该实例启动过一次之后在当前系统内留下的痕迹
 ls /var/lib/cloud/instances/1/
 # boot-finished     datasource  obj.pkl  sem            user-data.txt.i  vendor-data.txt.i
@@ -390,22 +444,28 @@ ls /var/lib/cloud/instances/1/
 </section>
 <section class="slide level2">
 
-<p>其中 <code>boot-finished</code> 文件记录了该实例定义的启动时间，例如：</p>
+<p>其中 <code>boot-finished</code>
+文件记录了该实例定义的启动时间，例如：</p>
 <pre class="bash"><code>cat /var/lib/cloud/instances/1/boot-finished
 # 11.28 - Tue, 14 Apr 2020 07:33:47 +0000 - v. 19.4-33-gbb4131a2-0ubuntu1~18.04.1</code></pre>
 </section>
 <section class="slide level2">
 
-<p>当上述目录结构存在时，只要 <code>init-cidata.iso</code> 内容不变。即使一直挂载在虚拟机的光驱里，每次启动虚拟机系统时，也不会再重新执行一遍光盘里定义的 <code>cloud-init</code> 操作了。</p>
+<p>当上述目录结构存在时，只要 <code>init-cidata.iso</code>
+内容不变。即使一直挂载在虚拟机的光驱里，每次启动虚拟机系统时，也不会再重新执行一遍光盘里定义的
+<code>cloud-init</code> 操作了。</p>
 </section>
 <section class="slide level2">
 
-<p>如果希望重新执行 <code>init-cidata.iso</code> 里定义的操作，需要变更 <code>meta-data</code> 文件里的 <code>instance-id</code> 赋值为 <code>/var/lib/cloud/instances/</code> 下不存在重名子目录的其他值。</p>
-</section>
-</section>
+<p>如果希望重新执行 <code>init-cidata.iso</code> 里定义的操作，需要变更
+<code>meta-data</code> 文件里的 <code>instance-id</code> 赋值为
+<code>/var/lib/cloud/instances/</code> 下不存在重名子目录的其他值。</p>
+</section></section>
 <section>
 <section id="debug-user-data" class="title-slide slide level1">
-<h1><a href="https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data">调试 user-data</a></h1>
+<h1><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/faq.html#how-can-i-debug-my-user-data">调试
+user-data</a></h1>
 
 </section>
 <section class="slide level2">
@@ -413,8 +473,7 @@ ls /var/lib/cloud/instances/1/
 <pre class="bash"><code># 验证 user-data 文件是否存在语法错误
 cloud-init devel schema -c user-data --annotate
 # Valid cloud-config file user-data</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="认识模块" class="title-slide slide level1">
 <h1>认识模块</h1>
@@ -423,12 +482,18 @@ cloud-init devel schema -c user-data --annotate
 <section class="slide level2">
 
 <ul>
-<li><a href="https://cloudinit.readthedocs.io/en/19.4/topics/cli.html#modules">/etc/cloud/cloud.cfg</a> 中定义了当前系统中 <code>Cloud-Init</code> 在「不同阶段」加载了哪些模块。</li>
+<li><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/cli.html#modules">/etc/cloud/cloud.cfg</a>
+中定义了当前系统中 <code>Cloud-Init</code>
+在「不同阶段」加载了哪些模块。</li>
 </ul>
 </section>
 <section id="boot-stages" class="slide level2">
-<h2><a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">Cloud-Init 主要阶段</a></h2>
-<p>结合 <code>/etc/cloud/cloud.cfg</code> 文件内容来理解不同「启动阶段」：文件中一共定义了 3 个阶段:</p>
+<h2><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">Cloud-Init
+主要阶段</a></h2>
+<p>结合 <code>/etc/cloud/cloud.cfg</code>
+文件内容来理解不同「启动阶段」：文件中一共定义了 3 个阶段:</p>
 <ul>
 <li>init</li>
 <li>config</li>
@@ -504,14 +569,15 @@ cloud_final_modules:
 </section>
 <section class="slide level2">
 
-<p>结合 <a href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">官方文档里「启动阶段」</a> 一节的描述可知：<code>init</code> 阶段又可以分为：</p>
+<p>结合 <a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/boot.html">官方文档里「启动阶段」</a>
+一节的描述可知：<code>init</code> 阶段又可以分为：</p>
 <ul>
 <li>Generator</li>
 <li>Local</li>
 <li>Network</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="理解模块" class="title-slide slide level1">
 <h1>理解模块</h1>
@@ -519,7 +585,8 @@ cloud_final_modules:
 </section>
 <section class="slide level2">
 
-<p>相当于「导入函数」或「导入库」的作用，如果在指定「启动阶段」没有「定义」使用某个「模块」，则在 <code>user-data</code> 中不能调用相应指令。</p>
+<p>相当于「导入函数」或「导入库」的作用，如果在指定「启动阶段」没有「定义」使用某个「模块」，则在
+<code>user-data</code> 中不能调用相应指令。</p>
 </section>
 <section class="slide level2">
 
@@ -528,9 +595,11 @@ cloud_final_modules:
 password: mypassword 
 chpasswd: { expire: False }
 ssh_pwauth: True</code></pre>
-<p>上述 3 个配置指令 <code>password</code>, <code>chpasswd</code>, <code>ssh_pwauth</code> 均定义在 <a href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-passwords">set-passwords</a> 模块中。</p>
-</section>
-</section>
+<p>上述 3 个配置指令 <code>password</code>, <code>chpasswd</code>,
+<code>ssh_pwauth</code> 均定义在 <a
+href="https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-passwords">set-passwords</a>
+模块中。</p>
+</section></section>
 <section>
 <section id="理解缺省设置" class="title-slide slide level1">
 <h1>理解缺省设置</h1>
@@ -609,8 +678,7 @@ system_info:
          primary: http://ports.ubuntu.com/ubuntu-ports
          security: http://ports.ubuntu.com/ubuntu-ports
    ssh_svcname: ssh</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="cloud-init-real-example" class="title-slide slide level1">
 <h1>cloud-init 实战 🌰</h1>
@@ -619,12 +687,12 @@ system_info:
 <section id="需求描述" class="slide level2">
 <h2>需求描述</h2>
 <ol type="1">
-<li>重置 <a href="https://www.freedesktop.org/software/systemd/man/machine-id.html">machine-id</a></li>
+<li>重置 <a
+href="https://www.freedesktop.org/software/systemd/man/machine-id.html">machine-id</a></li>
 <li>添加 ssh 免密登录</li>
 <li>安装 python3</li>
 </ol>
-</section>
-</section>
+</section></section>
 <section>
 <section id="why-reset-machine-id" class="title-slide slide level1">
 <h1>为什么需要重置 <code>machine-id</code></h1>
@@ -633,25 +701,39 @@ system_info:
 <section id="machine-id-1" class="slide level2">
 <h2>machine-id</h2>
 <blockquote>
-<p>The <code>/etc/machine-id</code> file contains the unique machine ID of the local system that is set during installation or boot. The machine ID is a single newline-terminated, hexadecimal, 32-character, lowercase ID. When decoded from hexadecimal, this corresponds to a 16-byte/128-bit value. This ID may not be all zeros.</p>
+<p>The <code>/etc/machine-id</code> file contains the unique machine ID
+of the local system that is set during installation or boot. The machine
+ID is a single newline-terminated, hexadecimal, 32-character, lowercase
+ID. When decoded from hexadecimal, this corresponds to a 16-byte/128-bit
+value. This ID may not be all zeros.</p>
 </blockquote>
 </section>
 <section id="machine-id-2" class="slide level2">
 <h2>machine-id</h2>
 <blockquote>
-<p>systemd-machine-id-setup(1) may be used by installer tools to initialize the machine ID at install time, but /etc/machine-id may also be written using any other means.</p>
+<p>systemd-machine-id-setup(1) may be used by installer tools to
+initialize the machine ID at install time, but /etc/machine-id may also
+be written using any other means.</p>
 </blockquote>
 </section>
 <section id="machine-id-3" class="slide level2">
 <h2>machine-id</h2>
 <blockquote>
-<p>For operating system images which are created once and used on multiple machines, for example for containers or in the cloud, <code>/etc/machine-id</code> <strong>should be an empty file</strong> in the generic file system image. <code>An ID will be generated during boot and saved to this file if possible</code>. <strong>Having an empty file</strong> in place is useful because it allows a temporary file to be bind-mounted over the real file, in case the image is used read-only.</p>
+<p>For operating system images which are created once and used on
+multiple machines, for example for containers or in the cloud,
+<code>/etc/machine-id</code> <strong>should be an empty file</strong> in
+the generic file system image.
+<code>An ID will be generated during boot and saved to this file if possible</code>.
+<strong>Having an empty file</strong> in place is useful because it
+allows a temporary file to be bind-mounted over the real file, in case
+the image is used read-only.</p>
 </blockquote>
 </section>
 <section id="machine-id-4" class="slide level2">
 <h2>machine-id</h2>
 <blockquote>
-<p>对于 Debian 及其衍生发行版，例如 Kali ，以上操作步骤均可能失效：无法更新 /etc/machine-id 。</p>
+<p>对于 Debian 及其衍生发行版，例如 Kali
+，以上操作步骤均可能失效：无法更新 /etc/machine-id 。</p>
 </blockquote>
 <pre class="bash"><code># Virtualbox 的多重加载镜像机制克隆出来的虚拟机使用的虚拟磁盘，磁盘 uuid 值是相同的
 sudo blkid /dev/sda1
@@ -689,22 +771,36 @@ cat /var/lib/dbus/machine-id
 # 重启系统，以确保配置变更生效
 sudo reboot</code></pre>
 </section>
-<section id="为什么我克隆出来的虚拟机总是获得相同-ip-地址" class="slide level2">
+<section id="为什么我克隆出来的虚拟机总是获得相同-ip-地址"
+class="slide level2">
 <h2>为什么我克隆出来的虚拟机总是获得相同 IP 地址？</h2>
-<p>根据<a href="https://unix.stackexchange.com/a/419322">网友 <code>wickedchicken</code> 在 SO 网站上的回答</a></p>
+<p>根据<a href="https://unix.stackexchange.com/a/419322">网友
+<code>wickedchicken</code> 在 SO 网站上的回答</a></p>
 <blockquote>
-<p><code>systemd-networkd</code> uses a different method to generate the DUID than <code>dhclient</code>. <code>dhclient</code> <a href="https://manpages.debian.org/jessie/isc-dhcp-client/dhclient.8.en.html">by default uses the link-layer address</a> while systemd-networkd uses <a href="https://www.freedesktop.org/software/systemd/man/networkd.conf.html#DUIDType=">the contents of /etc/machine-id</a>. Since the VMs were cloned, they have the same <code>machine-id</code> and the DHCP server returns the same IP for both.</p>
+<p><code>systemd-networkd</code> uses a different method to generate the
+DUID than <code>dhclient</code>. <code>dhclient</code> <a
+href="https://manpages.debian.org/jessie/isc-dhcp-client/dhclient.8.en.html">by
+default uses the link-layer address</a> while systemd-networkd uses <a
+href="https://www.freedesktop.org/software/systemd/man/networkd.conf.html#DUIDType=">the
+contents of /etc/machine-id</a>. Since the VMs were cloned, they have
+the same <code>machine-id</code> and the DHCP server returns the same IP
+for both.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
 <blockquote>
-<p>To fix, replace the contents of one or both of /etc/machine-id. This can be anything, but deleting the file and running systemd-machine-id-setup will create a random machine-id in the same way done on machine setup.</p>
+<p>To fix, replace the contents of one or both of /etc/machine-id. This
+can be anything, but deleting the file and running
+systemd-machine-id-setup will create a random machine-id in the same way
+done on machine setup.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
-<p>另一种解决方案：修改 <code>/etc/netplan/01-netcfg.yaml</code> ，在网卡的 <code>dhcp</code> 配置列表里添加配置参数：<a href="https://netplan.io/reference">dhcp-identifier: mac</a></p>
+<p>另一种解决方案：修改 <code>/etc/netplan/01-netcfg.yaml</code>
+，在网卡的 <code>dhcp</code> 配置列表里添加配置参数：<a
+href="https://netplan.io/reference">dhcp-identifier: mac</a></p>
 <pre class="yaml"><code># ref: https://netplan.io/examples#integration-with-a-windows-dhcp-server
 network:
   version: 2
@@ -719,19 +815,24 @@ network:
 <h2>变更 <code>machine-id</code> 之后为什么需要重启</h2>
 <p>以下内容摘自 <code>man dbus-uuidgen</code></p>
 <blockquote>
-<p>If you try to change an existing machine-id on a running system, it will probably result in bad things happening. Don’t try to change this file. Also, don’t make it the same on two different systems; it needs to be different anytime there are two different kernels running.</p>
+<p>If you try to change an existing machine-id on a running system, it
+will probably result in bad things happening. Don’t try to change this
+file. Also, don’t make it the same on two different systems; it needs to
+be different anytime there are two different kernels running.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
-<p>以下结论摘自 <a href="https://unix.stackexchange.com/a/403054">网友 <code>hvd</code> 在 SO 网站上的回答结论</a> ：</p>
+<p>以下结论摘自 <a href="https://unix.stackexchange.com/a/403054">网友
+<code>hvd</code> 在 SO 网站上的回答结论</a> ：</p>
 <blockquote>
-<p><strong>So after doing this, definitely don’t continue using the system without rebooting.</strong></p>
+<p><strong>So after doing this, definitely don’t continue using the
+system without rebooting.</strong></p>
 </blockquote>
-</section>
-</section>
+</section></section>
 <section>
-<section id="cloud-init-real-example-get-started" class="title-slide slide level1">
+<section id="cloud-init-real-example-get-started"
+class="title-slide slide level1">
 <h1>cloud-init 实战 🌰 马上开始</h1>
 
 </section>
@@ -833,8 +934,7 @@ local-hostname: ansible-slave</code></pre>
 <li>检查 <code>/etc/netplan/</code> 目录下此时的文件</li>
 <li>检查当前第二块网卡的 IP 地址</li>
 </ol>
-</section>
-</section>
+</section></section>
 <section>
 <section id="more-examples" class="title-slide slide level1">
 <h1>更复杂的 🌰 们</h1>
@@ -842,9 +942,10 @@ local-hostname: ansible-slave</code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://cloudinit.readthedocs.io/en/19.4/topics/examples.html">官方文档中给出的更多 cloud-config 配置文件示例</a></p>
-</section>
-</section>
+<p><a
+href="https://cloudinit.readthedocs.io/en/19.4/topics/examples.html">官方文档中给出的更多
+cloud-config 配置文件示例</a></p>
+</section></section>
     </div>
   </div>
 
@@ -856,12 +957,43 @@ local-hostname: ansible-slave</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

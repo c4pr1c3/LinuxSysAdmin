@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -46,15 +55,17 @@
   <p class="author">黄玮</p>
 </section>
 
-<section id="第六章shell脚本编程练习进阶实验" class="title-slide slide level1">
+<section>
+<section id="第六章shell脚本编程练习进阶实验"
+class="title-slide slide level1">
 <h1>第六章：shell脚本编程练习进阶（实验）</h1>
 
 </section>
 <section class="slide level6">
 
 <p>FTP、NFS、DHCP、DNS、Samba服务器的自动安装与自动配置</p>
-</section>
-
+</section></section>
+<section>
 <section id="软件环境建议" class="title-slide slide level1">
 <h1>软件环境建议</h1>
 
@@ -93,8 +104,8 @@
 ns A &lt;自行填写DNS服务器的IP地址&gt;
 wp.sec.cuc.edu.cn A &lt;自行填写第5章实验中配置的WEB服务器的IP地址&gt;
 dvwa.sec.cuc.edu.cn CNAME wp.sec.cuc.edu.cn</code></pre>
-</section>
-
+</section></section>
+<section>
 <section id="shell脚本编程基本要求" class="title-slide slide level1">
 <h1>shell脚本编程基本要求</h1>
 
@@ -113,7 +124,8 @@ dvwa.sec.cuc.edu.cn CNAME wp.sec.cuc.edu.cn</code></pre>
 <section class="slide level6">
 
 <ul>
-<li>脚本在执行过程中，如果需要在目标主机上创建目录、创建临时文件、执行网络下载等操作需要判断执行是否成功，并进行必要的异常处理（例如：apt-get update失败，则退出脚本执行，并将友好错误信息打印在控制台上。临时目录不存在，则自动创建该临时目录）</li>
+<li>脚本在执行过程中，如果需要在目标主机上创建目录、创建临时文件、执行网络下载等操作需要判断执行是否成功，并进行必要的异常处理（例如：apt-get
+update失败，则退出脚本执行，并将友好错误信息打印在控制台上。临时目录不存在，则自动创建该临时目录）</li>
 <li>所有服务的配置文件、临时目录需设置正确的目录和文件归属和权限位，禁止使用<strong><em>777</em></strong>这种偷懒的权限位设置</li>
 <li>减少不必要的安装过程中的人机交互输入，尽可能全部通过脚本的方式完成选项设置和交互式问题输入等</li>
 </ul>
@@ -129,8 +141,8 @@ dvwa.sec.cuc.edu.cn CNAME wp.sec.cuc.edu.cn</code></pre>
 <li>目标服务器上用于临时存储安装脚本、配置文件的临时目录路径</li>
 </ul></li>
 </ul>
-</section>
-
+</section></section>
+<section>
 <section id="其他要求" class="title-slide slide level1">
 <h1>其他要求</h1>
 
@@ -145,7 +157,7 @@ dvwa.sec.cuc.edu.cn CNAME wp.sec.cuc.edu.cn</code></pre>
 <li>对于在目标系统上已完成配置的服务，允许用本地的配置文件去覆盖远程已有的配置文件，但在执行<strong><em>覆盖</em></strong>操作之前应对远程已有的配置文件进行<strong><em>妥善</em></strong>备份</li>
 </ul></li>
 </ul>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -157,12 +169,43 @@ dvwa.sec.cuc.edu.cn CNAME wp.sec.cuc.edu.cn</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

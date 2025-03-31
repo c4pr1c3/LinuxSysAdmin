@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,16 +62,20 @@
 </section>
 <section id="just-get-network-works" class="slide level2">
 <h2>Just Get Network Works</h2>
-</section>
-</section>
+</section></section>
 <section>
 <section id="动态主机配置协议-dhcp" class="title-slide slide level1">
-<h1><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">动态主机配置协议 (DHCP)</a></h1>
+<h1><a
+href="https://help.ubuntu.com/lts/serverguide/dhcp.html">动态主机配置协议
+(DHCP)</a></h1>
 
 </section>
 <section class="slide level2">
 
-<p>动态主机配置协议 (DHCP) 是一种网络服务，相对于手工为每台网络主机配置，它使网络主机可能自动被服务器指定设置。被配置成 DHCP 客户端的计算机并不能控制其从 DHCP 服务器得到的设置，且该配置对于计算机用户来说是透明的。</p>
+<p>动态主机配置协议 (DHCP)
+是一种网络服务，相对于手工为每台网络主机配置，它使网络主机可能自动被服务器指定设置。被配置成
+DHCP 客户端的计算机并不能控制其从 DHCP
+服务器得到的设置，且该配置对于计算机用户来说是透明的。</p>
 <p>由 DHCP 服务器提供给 DHCP 客户端最常用的设置包括：</p>
 <ul>
 <li>IP地址和子网掩码</li>
@@ -78,10 +91,10 @@
 <li>NTP时间服务器</li>
 <li>打印服务器</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="dhcp服务器的常见客户端地址配置策略" class="title-slide slide level1">
+<section id="dhcp服务器的常见客户端地址配置策略"
+class="title-slide slide level1">
 <h1>DHCP服务器的常见客户端地址配置策略</h1>
 
 </section>
@@ -101,30 +114,36 @@
 <p>DHCP服务器通常是给客户端分配一个临时地址，但也能设置有效期为永不过期，从而达到客户端既能自动获取IP地址又能永久使用的效果。</p>
 </section>
 <section id="rogue-dhcp" class="slide level2">
-<h2><a href="https://en.wikipedia.org/wiki/Rogue_DHCP">Rogue DHCP</a></h2>
+<h2><a href="https://en.wikipedia.org/wiki/Rogue_DHCP">Rogue
+DHCP</a></h2>
 <p><img data-src="images/chap0x07/rogue-dhcp.png" /></p>
 </section>
 <section id="防御-rogue-dhcp-dhcp-snooping" class="slide level2">
-<h2>防御 <a href="https://en.wikipedia.org/wiki/DHCP_snooping">Rogue DHCP: DHCP snooping</a></h2>
+<h2>防御 <a href="https://en.wikipedia.org/wiki/DHCP_snooping">Rogue
+DHCP: DHCP snooping</a></h2>
 <p><img data-src="images/chap0x07/dhcp-snooping.png" /></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="dns" class="title-slide slide level1">
-<h1><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS</a></h1>
+<h1><a
+href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS</a></h1>
 
 </section>
 <section class="slide level2">
 
-<p>DNS(域名解析服务)是将IP地址与FQDN(fully qualified domain name，全称域名)相互转换的一种互联网服务。</p>
+<p>DNS(域名解析服务)是将IP地址与FQDN(fully qualified domain
+name，全称域名)相互转换的一种互联网服务。</p>
 </section>
 <section id="bind9服务的主要角色" class="slide level2">
 <h2><strong><em>BIND9</em></strong>服务的主要角色</h2>
-<p>When configured as a caching nameserver BIND9 will find the answer to name queries and remember the answer when the domain is queried again.</p>
-<p>As a primary master server BIND9 reads the data for a zone from a file on it’s host and is authoritative for that zone.</p>
-<p>In a secondary master configuration BIND9 gets the zone data from another nameserver authoritative for the zone.</p>
-</section>
-</section>
+<p>When configured as a caching nameserver BIND9 will find the answer to
+name queries and remember the answer when the domain is queried
+again.</p>
+<p>As a primary master server BIND9 reads the data for a zone from a
+file on it’s host and is authoritative for that zone.</p>
+<p>In a secondary master configuration BIND9 gets the zone data from
+another nameserver authoritative for the zone.</p>
+</section></section>
 <section>
 <section id="常见dhcp服务器" class="title-slide slide level1">
 <h1>常见DHCP服务器</h1>
@@ -136,8 +155,7 @@
 <li>dnsmasq</li>
 <li>isc-dhcp-server</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="dns-common-svrs" class="title-slide slide level1">
 <h1>常见DNS服务器</h1>
@@ -150,8 +168,7 @@
 <li>isc-dhcp-server</li>
 <li>bind9</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="dnsmasq-example" class="title-slide slide level1">
 <h1>以 dnsmasq 配置为例</h1>
@@ -250,9 +267,10 @@ sudo systemctl start dnsmasq
 </section>
 <section id="主要操作步骤录屏" class="slide level2">
 <h2>主要操作步骤录屏</h2>
-<p><a href="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss"><img data-src="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg" alt="asciicast" /></a></p>
-</section>
-</section>
+<p><a href="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss"><img
+data-src="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg"
+alt="asciicast" /></a></p>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -261,11 +279,12 @@ sudo systemctl start dnsmasq
 <section class="slide level2">
 
 <ul>
-<li><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">Dynamic Host Configuration Protocol from Ubuntu Official Documentation</a></li>
-<li><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">Dynamic
+Host Configuration Protocol from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS from
+Ubuntu Official Documentation</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -277,12 +296,43 @@ sudo systemctl start dnsmasq
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

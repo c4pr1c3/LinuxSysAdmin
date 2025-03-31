@@ -7,16 +7,167 @@
   <meta name="author" content="黄玮" />
   <title>Linux系统与网络管理</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -25,31 +176,45 @@
 </header>
 <h1 id="第三章实验">第三章：（实验）</h1>
 <hr />
-<p>课件中的实验任务请自主在有 root 权限的 Linux 主机环境中完成。</p>
-<h1 id="在线实验环境任务清单">在线实验环境任务清单</h1>
+<h2 id="实验报告任务清单">实验报告任务清单</h2>
+<ul>
+<li>在 <code>本地虚拟机</code> 中完成课件 <a
+href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x03.md.html#/16">本章完成后的自查清单</a>
+所有实验任务，实验操作记录在实验报告中。</li>
+<li>完整实验操作过程通过 <a href="https://asciinema.org">asciinema</a>
+进行录像并上传，在实验报告中引用 asciinema 在线可访问链接。</li>
+<li>对于 <code>asciinema</code> 已进行操作的实验任务，实验报告中需提供
+<code>asciinema</code>
+在线可访问链接；一个任务对应一个在线链接；相应的实验操作可以在实验报告中简要描述。</li>
+<li>对于 <code>asciinema</code>
+不方便呈现的操作步骤，可以通过图文并茂的方式进行描述说明。</li>
+</ul>
+<h2 id="在线实验环境任务清单">在线实验环境任务清单</h2>
+<p><strong>无需写入实验报告</strong> ，只需在
+<code>共享课程服务器</code>
+完成实验任务即可，相应操作记录作为平时成绩计算的日志依据。</p>
 <hr />
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-自主探索课件中的实验任务哪些需要 root 权限才能完成</li>
-<li><input type="checkbox" disabled="" />
-自主探索课件中的实验任务哪些无需 root 权限也能完成</li>
+<li><label><input type="checkbox" />自主探索课件中的实验任务哪些需要
+root 权限才能完成</label></li>
+<li><label><input type="checkbox" />自主探索课件中的实验任务哪些无需
+root 权限也能完成</label></li>
 </ul>
 <hr />
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-网络故障排查初步<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-查看网络接口状况和网络基本信息 ip a, ip link</li>
-<li><input type="checkbox" disabled="" />
-查看局域网基本信息 ip neigh</li>
-<li><input type="checkbox" disabled="" />
-查看路由表和默认路由 ip r</li>
-<li><input type="checkbox" disabled="" />
-检查网络层连通性 ping</li>
-<li><input type="checkbox" disabled="" />
-检查从源到目的的路由链路信息 mtr, tracepath</li>
-<li><input type="checkbox" disabled="" />
-检查域名解析故障 resolvectl, dig</li>
+<li><label><input type="checkbox" />网络故障排查初步</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />查看网络接口状况和网络基本信息 ip a,
+ip link</label></li>
+<li><label><input type="checkbox" />查看局域网基本信息 ip
+neigh</label></li>
+<li><label><input type="checkbox" />查看路由表和默认路由 ip
+r</label></li>
+<li><label><input type="checkbox" />检查网络层连通性 ping</label></li>
+<li><label><input type="checkbox" />检查从源到目的的路由链路信息 mtr,
+tracepath</label></li>
+<li><label><input type="checkbox" />检查域名解析故障 resolvectl,
+dig</label></li>
 </ul></li>
 </ul>
 </body>

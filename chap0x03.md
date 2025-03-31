@@ -576,7 +576,6 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}
 
 * [Systemd 入门教程：命令篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html)
 * [Systemd 入门教程：实战篇 by 阮一峰的网络日志](http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html)
-    * 参照第2章作业的要求，完整实验操作过程通过[asciinema](https://asciinema.org)进行录像并上传，文档通过github上传
 
 # [NetPlan](https://netplan.io/)
 

@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -75,7 +84,8 @@
 <ul>
 <li>任务二：用bash编写一个文本批处理脚本，对以下附件分别进行批量处理完成相应的数据统计任务：
 <ul>
-<li><a href="exp/chap0x04/worldcupplayerinfo.tsv">2014世界杯运动员数据</a>
+<li><a
+href="exp/chap0x04/worldcupplayerinfo.tsv">2014世界杯运动员数据</a>
 <ul>
 <li>统计不同年龄区间范围（20岁以下、[20-30]、30岁以上）的球员<strong>数量</strong>、<strong>百分比</strong></li>
 <li>统计不同场上位置的球员<strong>数量</strong>、<strong>百分比</strong></li>
@@ -107,7 +117,8 @@
 <h2 id="其他任务要求">其他任务要求</h2>
 <ul>
 <li>上述任务的所有源代码文件必须单独提交并提供详细的<strong>–help</strong>脚本内置帮助信息</li>
-<li>任务二的所有统计数据结果要求写入独立日志文件，并在 <code>Gitlab CI/CD</code> 中展示统计结果</li>
+<li>任务二的所有统计数据结果要求写入独立日志文件，并在
+<code>Gitlab CI/CD</code> 中展示统计结果</li>
 </ul>
 </section>
     </div>
@@ -121,12 +132,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

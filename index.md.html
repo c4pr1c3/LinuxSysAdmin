@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -49,14 +58,23 @@
 <section id="幻灯片列表" class="slide level2">
 <h2>幻灯片列表</h2>
 <ul>
-<li><a href="chap0x01.md.html">第一章：Linux基础</a> | <a href="chap0x01.exp.md.html">第一章：Linux基础（实验）</a> | <a href="lab.setup.md.html">本章补丁视频-1：操作系统安装与虚拟机配置基础</a> | <a href="get-networks-done-asap.md.html">本章补丁视频-2：《计算机网络》先修基础快速入门</a></li>
-<li><a href="chap0x02.md.html">第二章：Linux服务器系统使用基础</a> | <a href="chap0x02.exp.md.html">第二章：Linux服务器系统使用基础（实验）</a></li>
+<li><a href="chap0x01.md.html">第一章：Linux基础</a> | <a
+href="chap0x01.exp.md.html">第一章：Linux基础（实验）</a> | <a
+href="lab.setup.md.html">本章补丁视频-1：操作系统安装与虚拟机配置基础</a>
+| <a
+href="get-networks-done-asap.md.html">本章补丁视频-2：《计算机网络》先修基础快速入门</a></li>
+<li><a href="chap0x02.md.html">第二章：Linux服务器系统使用基础</a> | <a
+href="chap0x02.exp.md.html">第二章：Linux服务器系统使用基础（实验）</a></li>
 <li><a href="chap0x03.md.html">第三章：Linux服务器系统管理基础</a></li>
-<li><a href="chap0x04.md.html">第四章：shell脚本编程基础</a> | <a href="chap0x04.exp.md.html">第四章：shell脚本编程基础（实验）</a></li>
-<li><a href="chap0x05.md.html">第五章：Web服务器</a> | <a href="chap0x05.exp.md.html">第五章：Web服务器（实验）</a></li>
-<li><a href="chap0x06.md.html">第六章：网络资源共享</a> | <a href="chap0x06.exp.md.html">第六章：shell脚本编程练习进阶（实验）</a></li>
+<li><a href="chap0x04.md.html">第四章：shell脚本编程基础</a> | <a
+href="chap0x04.exp.md.html">第四章：shell脚本编程基础（实验）</a></li>
+<li><a href="chap0x05.md.html">第五章：Web服务器</a> | <a
+href="chap0x05.exp.md.html">第五章：Web服务器（实验）</a></li>
+<li><a href="chap0x06.md.html">第六章：网络资源共享</a> | <a
+href="chap0x06.exp.md.html">第六章：shell脚本编程练习进阶（实验）</a></li>
 <li><a href="chap0x07.md.html">第七章：DHCP与DNS服务</a></li>
-<li><a href="chap0x08.md.html">第八章：DevOps文化、运维自动化与持续部署</a></li>
+<li><a
+href="chap0x08.md.html">第八章：DevOps文化、运维自动化与持续部署</a></li>
 </ul>
 </section>
 <section id="打印版课件列表" class="slide level2">
@@ -86,7 +104,8 @@
 <section id="其他配套材料" class="slide level2">
 <h2>其他配套材料</h2>
 <ul>
-<li><a href="https://space.bilibili.com/388851616/channel/detail?cid=103824">本课程配套录播课程</a></li>
+<li><a
+href="https://space.bilibili.com/388851616/channel/detail?cid=103824">本课程配套录播课程</a></li>
 </ul>
 </section>
     </div>
@@ -100,12 +119,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

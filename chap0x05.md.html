@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,15 +62,18 @@
 </section>
 <section class="slide level2">
 
-<p><a href="https://en.wikipedia.org/wiki/Cyberspace">The term “Cyberspace” started to become a de facto synonym for the Internet, and later the <strong><em>World Wide Web</em></strong></a></p>
+<p><a href="https://en.wikipedia.org/wiki/Cyberspace">The term
+“Cyberspace” started to become a de facto synonym for the Internet, and
+later the <strong><em>World Wide Web</em></strong></a></p>
 <ul>
-<li>英国科学家Tim Berners-Lee在1989年发明了“万维网”（World Wide Web, 简称WWW或Web）
+<li>英国科学家Tim Berners-Lee在1989年发明了“万维网”（World Wide Web,
+简称WWW或Web）
 <ul>
-<li>Web是一个信息空间，文档和其他Web资源使用URL(Uniform Resource Locator)标识并用超链接相互之间连接在一起，通过互联网访问到。</li>
+<li>Web是一个信息空间，文档和其他Web资源使用URL(Uniform Resource
+Locator)标识并用超链接相互之间连接在一起，通过互联网访问到。</li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="www的技术内核" class="title-slide slide level1">
 <h1>WWW的技术内核</h1>
@@ -75,8 +87,7 @@
 <li>HTML: HyperText Markup Language</li>
 <li>HTTP: HyperText Transfer Protocol</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="rfc" class="title-slide slide level1">
 <h1>RFC</h1>
@@ -87,31 +98,39 @@
 <ul>
 <li>Request for Comments</li>
 <li>IETF（互联网工程任务组）发布的互联网相关备忘录</li>
-<li><a href="https://datatracker.ietf.org/doc/rfc1796/?include_text=1">Not All RFCs are Standards <strong><em>RFC 1796</em></strong></a></li>
+<li><a
+href="https://datatracker.ietf.org/doc/rfc1796/?include_text=1">Not All
+RFCs are Standards <strong><em>RFC 1796</em></strong></a></li>
 </ul>
 <blockquote>
-<p>In fact, each RFC has a status, relative to its relation with the Internet standardization process: <strong>Informational</strong>, <strong>Experimental</strong>, or <strong>Standards Track</strong> (<code>Proposed Standard</code>, <code>Draft Standard</code>, <code>Internet Standard</code>), or <strong>Historic</strong>.</p>
+<p>In fact, each RFC has a status, relative to its relation with the
+Internet standardization process: <strong>Informational</strong>,
+<strong>Experimental</strong>, or <strong>Standards Track</strong>
+(<code>Proposed Standard</code>, <code>Draft Standard</code>,
+<code>Internet Standard</code>), or <strong>Historic</strong>.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/chap0x05/rfc-1630.png" alt="" /><figcaption>RFC 1630</figcaption>
+<img data-src="images/chap0x05/rfc-1630.png" alt="RFC 1630" />
+<figcaption aria-hidden="true">RFC 1630</figcaption>
 </figure>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/chap0x05/rfc-1738.png" alt="" /><figcaption>RFC 1738</figcaption>
+<img data-src="images/chap0x05/rfc-1738.png" alt="RFC 1738" />
+<figcaption aria-hidden="true">RFC 1738</figcaption>
 </figure>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/chap0x05/rfc-2396.png" alt="" /><figcaption>RFC 2396</figcaption>
+<img data-src="images/chap0x05/rfc-2396.png" alt="RFC 2396" />
+<figcaption aria-hidden="true">RFC 2396</figcaption>
 </figure>
-</section>
-</section>
+</section></section>
 <section>
 <section id="协议族" class="title-slide slide level1">
 <h1>协议族</h1>
@@ -120,42 +139,69 @@
 <section class="slide level2">
 
 <ul>
-<li><p><a href="https://datatracker.ietf.org/doc/rfc1630/"><strong>Universal</strong> Resource <strong>Identifiers</strong> in WWW A Unifying Syntax for the Expression of Names and Addresses of Objects on the Network as used in the World-Wide Web <strong><em>RFC 1630</em></strong></a></p></li>
-<li><p><a href="https://datatracker.ietf.org/doc/rfc2396/"><strong>Uniform</strong> Resource Identifiers (URI): Generic Syntax <strong><em>RFC 2396</em></strong></a></p></li>
-<li><p><a href="https://datatracker.ietf.org/doc/rfc1738/"><strong>Uniform</strong> Resource <strong>Locators</strong> (URL) <strong><em>RFC 1738</em></strong></a></p></li>
-<li><p><a href="https://www.w3.org/TR/html4/">HTML 4.01 Specification W3C Recommendation 24 December 1999</a></p></li>
+<li><p><a
+href="https://datatracker.ietf.org/doc/rfc1630/"><strong>Universal</strong>
+Resource <strong>Identifiers</strong> in WWW A Unifying Syntax for the
+Expression of Names and Addresses of Objects on the Network as used in
+the World-Wide Web <strong><em>RFC 1630</em></strong></a></p></li>
+<li><p><a
+href="https://datatracker.ietf.org/doc/rfc2396/"><strong>Uniform</strong>
+Resource Identifiers (URI): Generic Syntax <strong><em>RFC
+2396</em></strong></a></p></li>
+<li><p><a
+href="https://datatracker.ietf.org/doc/rfc1738/"><strong>Uniform</strong>
+Resource <strong>Locators</strong> (URL) <strong><em>RFC
+1738</em></strong></a></p></li>
+<li><p><a href="https://www.w3.org/TR/html4/">HTML 4.01 Specification
+W3C Recommendation 24 December 1999</a></p></li>
 <li><p><a href="https://www.w3.org/TR/html5/">HTML5 by W3C</a></p></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://datatracker.ietf.org/doc/rfc1945/">Hypertext Transfer Protocol – HTTP/1.0 <strong><em>RFC 1945</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc2616/">Hypertext Transfer Protocol – HTTP/1.1 <strong><em>RFC 2616</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc7540/">Hypertext Transfer Protocol Version 2 (HTTP/2) <strong><em>RFC 7540</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc1945/">Hypertext
+Transfer Protocol – HTTP/1.0 <strong><em>RFC 1945</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc2616/">Hypertext
+Transfer Protocol – HTTP/1.1 <strong><em>RFC 2616</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc7540/">Hypertext
+Transfer Protocol Version 2 (HTTP/2) <strong><em>RFC
+7540</em></strong></a></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://datatracker.ietf.org/doc/rfc2617">HTTP Authentication: Basic and Digest Access Authentication <strong><em>RFC 2617</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc2145">Use and Interpretation of HTTP Version Numbers <strong><em>RFC 2145</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc6265">HTTP State Management Mechanism <strong><em>RFC 6265</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc2069">An Extension to HTTP : Digest Access Authentication <strong><em>RFC 2069</em></strong></a></li>
-<li><a href="https://datatracker.ietf.org/doc/rfc6455/">The WebSocket Protocol <strong><em>RFC 6455</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc2617">HTTP
+Authentication: Basic and Digest Access Authentication <strong><em>RFC
+2617</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc2145">Use and
+Interpretation of HTTP Version Numbers <strong><em>RFC
+2145</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc6265">HTTP State
+Management Mechanism <strong><em>RFC 6265</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc2069">An Extension to
+HTTP : Digest Access Authentication <strong><em>RFC
+2069</em></strong></a></li>
+<li><a href="https://datatracker.ietf.org/doc/rfc6455/">The WebSocket
+Protocol <strong><em>RFC 6455</em></strong></a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="关于uri-url-urn-iri等等标识符" class="title-slide slide level1">
-<h1><a href="https://www.w3.org/TR/2001/NOTE-uri-clarification-20010921/">关于URI / URL / URN / IRI等等标识符</a></h1>
+<section id="关于uri-url-urn-iri等等标识符"
+class="title-slide slide level1">
+<h1><a
+href="https://www.w3.org/TR/2001/NOTE-uri-clarification-20010921/">关于URI
+/ URL / URN / IRI等等标识符</a></h1>
 
 </section>
 <section class="slide level2">
 
 <p>传统观点</p>
 <ul>
-<li>90年代中期以前，人们认为URI的类型应该至少包括2类：资源地址（URL）和资源名称（URN, Uniform Resource Names）。彼时，URI就被分为2类：URL和URN。后来，有人又建议URI还可以标识元数据而不仅是资源本身。比如，提出了统一资源<strong><em>引用</em></strong>URC（<strong><em>citation</em></strong>）。因此，URI被认为应该进行命名空间划分：URL、URN和其他子命名空间。
+<li>90年代中期以前，人们认为URI的类型应该至少包括2类：资源地址（URL）和资源名称（URN,
+Uniform Resource
+Names）。彼时，URI就被分为2类：URL和URN。后来，有人又建议URI还可以标识元数据而不仅是资源本身。比如，提出了统一资源<strong><em>引用</em></strong>URC（<strong><em>citation</em></strong>）。因此，URI被认为应该进行命名空间划分：URL、URN和其他子命名空间。
 <ul>
 <li>例如：<strong>http:</strong>是一个URL协议标识符，<strong>isbn:</strong>是一个URN协议标识符</li>
 </ul></li>
@@ -170,20 +216,23 @@
 </section>
 <section class="slide level2">
 
-<p>IRI (International Resource Identifier)：URI语法的扩展，用来支持非ASCII字符集，例如UTF-8就是最为广泛支持的字符编码集合。</p>
-</section>
-</section>
+<p>IRI (International Resource
+Identifier)：URI语法的扩展，用来支持非ASCII字符集，例如UTF-8就是最为广泛支持的字符编码集合。</p>
+</section></section>
 <section>
 <section id="认识-url" class="title-slide slide level1">
-<h1>认识 <a href="https://datatracker.ietf.org/doc/rfc1738/">URL</a></h1>
+<h1>认识 <a
+href="https://datatracker.ietf.org/doc/rfc1738/">URL</a></h1>
 
 </section>
 <section class="slide level2">
 
 <blockquote>
-<p>This document was written by the URI working group of the Internet Engineering Task Force.</p>
+<p>This document was written by the URI working group of the Internet
+Engineering Task Force.</p>
 </blockquote>
-<p>完整定义详见「RFC 1738」 <code>5. BNF for specific URL schemes</code> 。</p>
+<p>完整定义详见「RFC 1738」 <code>5. BNF for specific URL schemes</code>
+。</p>
 </section>
 <section id="url-的一般形式" class="slide level2">
 <h2>URL 的一般形式</h2>
@@ -226,13 +275,15 @@ xchar          = unreserved | reserved | escape</code></pre>
 <pre><code>http://&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?&lt;searchpart&gt;</code></pre>
 <ul>
 <li>scheme - http</li>
-<li>schemepart - <code>//&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?&lt;searchpart&gt;</code></li>
+<li>schemepart -
+<code>//&lt;host&gt;:&lt;port&gt;/&lt;path&gt;?&lt;searchpart&gt;</code></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li>host - 网络主机的 FQDN（Fully Qualified Domain Name） 或 IP 地址</li>
+<li>host - 网络主机的 FQDN（Fully Qualified Domain Name） 或 IP
+地址</li>
 <li>port - 端口号如果省略，则左边冒号必须一并省掉</li>
 </ul>
 </section>
@@ -240,12 +291,15 @@ xchar          = unreserved | reserved | escape</code></pre>
 
 <h3 id="大小写敏感">大小写敏感?</h3>
 <ul>
-<li>scheme - <a href="https://datatracker.ietf.org/doc/rfc2396/?include_text=1">不区分大小写</a></li>
+<li>scheme - <a
+href="https://datatracker.ietf.org/doc/rfc2396/?include_text=1">不区分大小写</a></li>
 <li>host - 不区分大小写</li>
 <li>path - HTTP 服务器实现相关</li>
 </ul>
 <blockquote>
-<p>For resiliency, programs interpreting URI should treat upper case letters as equivalent to lower case in scheme names (e.g., allow “HTTP” as well as “http”).</p>
+<p>For resiliency, programs interpreting URI should treat upper case
+letters as equivalent to lower case in scheme names (e.g., allow “HTTP”
+as well as “http”).</p>
 </blockquote>
 </section>
 <section class="slide level2">
@@ -263,8 +317,7 @@ xchar          = unreserved | reserved | escape</code></pre>
 <li>https://c4pr1c3.git<font color='blue'>hub</font>.io/<font color='blue'>L</font>inux<font color='blue'>S</font>ys<font color='blue'>A</font>dmin/</li>
 <li>https://c4pr1c3.git<font color='red'>ee</font>.io/<font color='red'>l</font>inux<font color='red'>s</font>ys<font color='red'>a</font>dmin/</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="web技术架构" class="title-slide slide level1">
 <h1>Web技术架构</h1>
@@ -273,14 +326,15 @@ xchar          = unreserved | reserved | escape</code></pre>
 <section class="slide level2">
 
 <p>用户视角的基本Web技术架构</p>
-<p><a href="http://teaching.shu.ac.uk/aces/rh1/de/web_based_systems_architectures_1_tutorial.htm"><img data-src="images/chap0x05/user-web-arch.gif" /></a></p>
+<p><a href="http://teaching.shu.ac.uk/aces/rh1/de/web_based_systems_architectures_1_tutorial.htm"><img
+data-src="images/chap0x05/user-web-arch.gif" /></a></p>
 </section>
 <section class="slide level2">
 
 <p>组件视角的基本Web技术架构</p>
-<p><a href="https://msdn.microsoft.com/en-us/library/ee658099.aspx"><img data-src="images/chap0x05/ms-web-arch.png" /></a></p>
-</section>
-</section>
+<p><a href="https://msdn.microsoft.com/en-us/library/ee658099.aspx"><img
+data-src="images/chap0x05/ms-web-arch.png" /></a></p>
+</section></section>
 <section>
 <section id="服务器" class="title-slide slide level1">
 <h1>服务器</h1>
@@ -289,39 +343,61 @@ xchar          = unreserved | reserved | escape</code></pre>
 <section class="slide level2">
 
 <p>NetCraft在2020年3月根据全球257,194,796个站点、1,263,025,546台服务器的信息统计结果绘制更新以下Web服务器市场占有率统计图</p>
-<p><a href="https://news.netcraft.com/archives/category/web-server-survey"><img data-src="images/chap0x05/web-svr-share-netcraft.png" /></a></p>
+<p><a href="https://news.netcraft.com/archives/category/web-server-survey"><img
+data-src="images/chap0x05/web-svr-share-netcraft.png" /></a></p>
 </section>
 <section class="slide level2">
 
-<p><a href="http://www.alexa.com/">Alexa排名</a>全球前1000万网站使用WEB服务器统计</p>
-<p><a href="https://w3techs.com/technologies/cross/web_server/ranking"><img data-src="images/chap0x05/top1000w-web-svr-share.png" /></a></p>
+<p><a
+href="http://www.alexa.com/">Alexa排名</a>全球前1000万网站使用WEB服务器统计</p>
+<p><a href="https://w3techs.com/technologies/cross/web_server/ranking"><img
+data-src="images/chap0x05/top1000w-web-svr-share.png" /></a></p>
 </section>
 <section class="slide level2">
 
 <p>据w3techs在2020年3月27日的统计数据表明：</p>
 <ul>
-<li>在全球Top 1K 的网站中，有 62.4% 的网站在使用 Nginx（其中 20.3% 是用的<a href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
-<li>在全球Top 10K 的网站中，有 68.3%的网站在使用 Nginx（其中 28.2% 是用的<a href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
-<li>在全球Top 100K 的网站中，有 62.5% 的网站在使用 Nginx（其中 26.9% 是用的<a href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
-<li>在全球Top 10M 网站中，有 45.6% 的网站在使用 Nginx（其中 26.9% 是用的<a href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
+<li>在全球Top 1K 的网站中，有 62.4% 的网站在使用 Nginx（其中 20.3%
+是用的<a
+href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
+<li>在全球Top 10K 的网站中，有 68.3%的网站在使用 Nginx（其中 28.2%
+是用的<a
+href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
+<li>在全球Top 100K 的网站中，有 62.5% 的网站在使用 Nginx（其中 26.9%
+是用的<a
+href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
+<li>在全球Top 10M 网站中，有 45.6% 的网站在使用 Nginx（其中 26.9%
+是用的<a
+href="https://blog.cloudflare.com/end-of-the-road-for-cloudflare-nginx/">cloudflare-nginx</a>）</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/chap0x05/cloudflare-nginx.png" alt="" /><figcaption><a href="https://w3techs.com/technologies/details/ws-cloudflare"></a></figcaption>
+<img data-src="images/chap0x05/cloudflare-nginx.png" alt="" />
+<figcaption aria-hidden="true"><a
+href="https://w3techs.com/technologies/details/ws-cloudflare"></a></figcaption>
 </figure>
 </section>
 <section class="slide level2">
 
-<p><a href="https://www.cloudflare.com/zh-cn/network/china/">Cloudflare</a> 是一家以全球「内容分发网络」（CDN）起家的公司，目前可以提供包括内容交付优化、Web 应用程序防火墙、分布式拒绝服务（DDoS）缓解、SSL 等多种互联网「安全增值」服务。根据 <a href="https://www.nginx.com/success-stories/cloudflare-boosts-performance-stability-millions-websites-with-nginx/">nginx.com 上的一篇文章</a> 我们可以进一步了解到 <code>nginx</code> 在 <code>Cloudflare</code> 旗下 <code>CDN</code> 产品的广泛应用。</p>
+<p><a
+href="https://www.cloudflare.com/zh-cn/network/china/">Cloudflare</a>
+是一家以全球「内容分发网络」（CDN）起家的公司，目前可以提供包括内容交付优化、Web
+应用程序防火墙、分布式拒绝服务（DDoS）缓解、SSL
+等多种互联网「安全增值」服务。根据 <a
+href="https://www.nginx.com/success-stories/cloudflare-boosts-performance-stability-millions-websites-with-nginx/">nginx.com
+上的一篇文章</a> 我们可以进一步了解到 <code>nginx</code> 在
+<code>Cloudflare</code> 旗下 <code>CDN</code> 产品的广泛应用。</p>
 </section>
 <section class="slide level2">
 
 <p>其他视角探索WEB服务器的市场占有率</p>
 <ul>
-<li><a href="https://www.shodan.io/search?query=HTTP">使用Shodan探索HTTP服务类型的服务器返回结果</a></li>
-<li><a href="https://www.zoomeye.org/search?q=+service%3Ahttp">使用ZoomEye探索HTTP服务类型的服务器返回结果</a></li>
+<li><a
+href="https://www.shodan.io/search?query=HTTP">使用Shodan探索HTTP服务类型的服务器返回结果</a></li>
+<li><a
+href="https://www.zoomeye.org/search?q=+service%3Ahttp">使用ZoomEye探索HTTP服务类型的服务器返回结果</a></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -336,8 +412,7 @@ xchar          = unreserved | reserved | escape</code></pre>
 <li><a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="nginx" class="title-slide slide level1">
 <h1><a href="http://nginx.org/en/">nginx</a></h1>
@@ -354,12 +429,15 @@ xchar          = unreserved | reserved | escape</code></pre>
 <p>商业版支持<a href="https://www.nginx.com/">nginx plus</a></p>
 </section>
 <section id="nginx-衍生版代表-openresty" class="slide level2">
-<h2>nginx 衍生版代表 <a href="https://github.com/openresty/openresty">OpenResty</a></h2>
+<h2>nginx 衍生版代表 <a
+href="https://github.com/openresty/openresty">OpenResty</a></h2>
 <ul>
 <li>OpenResty ™ 是一个基于 Nginx 与 Lua 的高性能 Web 平台</li>
 <li>其内部集成了大量精良的 Lua 库、第三方模块以及大多数的依赖项
 <ul>
-<li>Web 开发人员和系统工程师可以使用 Lua 脚本语言调动 Nginx 支持的各种 C 以及 Lua 模块，快速构造出足以胜任 10K 乃至 1000K 以上单机并发连接的高性能 Web 应用系统。</li>
+<li>Web 开发人员和系统工程师可以使用 Lua 脚本语言调动 Nginx 支持的各种 C
+以及 Lua 模块，快速构造出足以胜任 10K 乃至 1000K
+以上单机并发连接的高性能 Web 应用系统。</li>
 </ul></li>
 <li>OpenResty 的目标是让你的Web服务直接跑在 Nginx 服务内部
 <ul>
@@ -368,12 +446,14 @@ xchar          = unreserved | reserved | escape</code></pre>
 </ul>
 </section>
 <section id="nginx-衍生版代表-kong" class="slide level2">
-<h2>nginx 衍生版代表 <a href="https://github.com/Mashape/kong">Kong</a></h2>
+<h2>nginx 衍生版代表 <a
+href="https://github.com/Mashape/kong">Kong</a></h2>
 <p>基于OpenResty构建的API网关和微服务管理系统</p>
 <p><img data-src="images/chap0x05/kong-arch.png" /></p>
 </section>
 <section id="nginx-衍生版代表-tengine" class="slide level2">
-<h2>nginx 衍生版代表 <a href="http://tengine.taobao.org/">Tengine</a></h2>
+<h2>nginx 衍生版代表 <a
+href="http://tengine.taobao.org/">Tengine</a></h2>
 <p>Tengine是由淘宝网发起的Web服务器项目。它在Nginx的基础上，针对大访问量网站的需求，添加了很多高级功能和特性。Tengine的性能和稳定性已经在大型的网站如淘宝网，天猫商城等得到了很好的检验。它的最终目标是打造一个高效、稳定、安全、易用的Web平台。</p>
 <p>从2011年12月开始，Tengine成为一个开源项目，Tengine团队在积极地开发和维护着它。Tengine团队的核心成员来自于淘宝、搜狗等互联网企业。</p>
 <blockquote>
@@ -381,12 +461,13 @@ xchar          = unreserved | reserved | escape</code></pre>
 </blockquote>
 </section>
 <section id="nginx-衍生版代表-verynginx" class="slide level2">
-<h2>nginx 衍生版代表 <a href="https://github.com/alexazhou/VeryNginx">VeryNginx</a></h2>
+<h2>nginx 衍生版代表 <a
+href="https://github.com/alexazhou/VeryNginx">VeryNginx</a></h2>
 <p>VeryNginx基于lua_nginx_module(openrestry)开发，实现了高级的WEB防火墙、访问统计和其他的一些功能。集成在Nginx中运行，扩展了Nginx本身的功能，并提供了友好的Web交互界面。</p>
-</section>
-</section>
+</section></section>
 <section>
-<section id="应用程序服务器支持服务器端脚本运行" class="title-slide slide level1">
+<section id="应用程序服务器支持服务器端脚本运行"
+class="title-slide slide level1">
 <h1>应用程序服务器（支持服务器端脚本运行）</h1>
 
 </section>
@@ -400,15 +481,15 @@ xchar          = unreserved | reserved | escape</code></pre>
 <li>nodejs（已内置）</li>
 <li>python
 <ul>
-<li>uwsgi兼容Web服务器 / wsgi兼容WEB服务器 / fastcgi兼容WEB服务器 / Apache的mod_python</li>
+<li>uwsgi兼容Web服务器 / wsgi兼容WEB服务器 / fastcgi兼容WEB服务器 /
+Apache的mod_python</li>
 </ul></li>
 <li>ruby
 <ul>
 <li>unicorn / Phusion Passenger</li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="cgi-fastcgi" class="title-slide slide level1">
 <h1>CGI / FastCGI</h1>
@@ -434,9 +515,11 @@ xchar          = unreserved | reserved | escape</code></pre>
 <section class="slide level2">
 
 <ul>
-<li>FastCGI：是CGI的一种改进方案，FastCGI像是一个常驻(long-lived)型的CGI， 它可以一直执行，在请求到达时不会花费时间去fork一个进程来处理(这是CGI最为人诟病的fork-and-execute模式)。
+<li>FastCGI：是CGI的一种改进方案，FastCGI像是一个常驻(long-lived)型的CGI，
+它可以一直执行，在请求到达时不会花费时间去fork一个进程来处理(这是CGI最为人诟病的fork-and-execute模式)。
 <ul>
-<li>PHP-FPM（FastCGI Process Manager）：FastCGI协议的PHP版本实现，不需要和Web服务器在同一台物理主机上。</li>
+<li>PHP-FPM（FastCGI Process
+Manager）：FastCGI协议的PHP版本实现，不需要和Web服务器在同一台物理主机上。</li>
 </ul></li>
 </ul>
 </section>
@@ -454,13 +537,18 @@ xchar          = unreserved | reserved | escape</code></pre>
 </section>
 <section class="slide level2">
 
-<p>⚠️ <a href="http://php.net/manual/zh/install.fpm.configuration.php">避免php-fpm进程被远程任意访问到</a></p>
-<p><a href="https://github.com/adoy/PHP-FastCGI-Client">adoy/PHP-FastCGI-Client: This PHP class handles the communication with a FastCGI (FCGI) application using the FastCGI protocol.</a></p>
-</section>
-</section>
+<p>⚠️ <a
+href="http://php.net/manual/zh/install.fpm.configuration.php">避免php-fpm进程被远程任意访问到</a></p>
+<p><a
+href="https://github.com/adoy/PHP-FastCGI-Client">adoy/PHP-FastCGI-Client:
+This PHP class handles the communication with a FastCGI (FCGI)
+application using the FastCGI protocol.</a></p>
+</section></section>
 <section>
 <section id="apache-mod_php" class="title-slide slide level1">
-<h1><a href="https://2bits.com/articles/apache-fcgid-acceptable-performance-and-better-resource-utilization.html">Apache mod_php</a></h1>
+<h1><a
+href="https://2bits.com/articles/apache-fcgid-acceptable-performance-and-better-resource-utilization.html">Apache
+mod_php</a></h1>
 
 </section>
 <section class="slide level2">
@@ -482,18 +570,19 @@ xchar          = unreserved | reserved | escape</code></pre>
 </ul></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="以nginxphp-fpm为例搭建一个web站点" class="title-slide slide level1">
+<section id="以nginxphp-fpm为例搭建一个web站点"
+class="title-slide slide level1">
 <h1>以nginx+php-fpm为例搭建一个Web站点</h1>
 
 </section>
 <section class="slide level2">
 
-<p><a href="https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-18-04">How To Install WordPress with LEMP on Ubuntu 18.04</a></p>
-</section>
-</section>
+<p><a
+href="https://www.digitalocean.com/community/tutorials/how-to-install-wordpress-with-lemp-on-ubuntu-18-04">How
+To Install WordPress with LEMP on Ubuntu 18.04</a></p>
+</section></section>
 <section>
 <section id="客户端" class="title-slide slide level1">
 <h1>客户端</h1>
@@ -508,22 +597,43 @@ xchar          = unreserved | reserved | escape</code></pre>
 </ul></li>
 <li>CLI
 <ul>
-<li><a href="https://curl.haxx.se/">curl</a> 、<a href="https://www.gnu.org/software/wget/">wget</a> 、<a href="https://httpie.org/">httpie</a> 等</li>
+<li><a href="https://curl.haxx.se/">curl</a> 、<a
+href="https://www.gnu.org/software/wget/">wget</a> 、<a
+href="https://httpie.org/">httpie</a> 等</li>
 </ul></li>
 </ul>
 </section>
 <section id="what-is-curl" class="slide level2">
 <h2>cURL是什么</h2>
 <p>以下摘自cURL的man手册页说明：</p>
-<p>curl is a tool to transfer data from or to a server, using one of the supported protocols (DICT, <strong><em>FILE</em></strong>, FTP, FTPS, GOPHER, <strong>HTTP</strong>, <strong>HTTPS</strong>, IMAP, IMAPS, LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET and TFTP). The command is designed to work without user interaction.</p>
-<p>curl offers a busload of useful tricks like proxy support, user authentication, FTP upload, HTTP post, SSL connections, cookies, file transfer resume, Metalink, and more. As you will see below, the number of features will make your head spin!</p>
+<p>curl is a tool to transfer data from or to a server, using one of the
+supported protocols (DICT, <strong><em>FILE</em></strong>, FTP, FTPS,
+GOPHER, <strong>HTTP</strong>, <strong>HTTPS</strong>, IMAP, IMAPS,
+LDAP, LDAPS, POP3, POP3S, RTMP, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS,
+TELNET and TFTP). The command is designed to work without user
+interaction.</p>
+<p>curl offers a busload of useful tricks like proxy support, user
+authentication, FTP upload, HTTP post, SSL connections, cookies, file
+transfer resume, Metalink, and more. As you will see below, the number
+of features will make your head spin!</p>
 </section>
 <section id="http是什么" class="slide level2">
 <h2>HTTP是什么</h2>
-<p>以下摘自<a href="http://tools.ietf.org/rfc/rfc2616.txt">RFC 2616</a>:</p>
-<p>The Hypertext Transfer Protocol (HTTP) is an <strong>application-level</strong> protocol for <strong><em>distributed</em></strong>, <strong><em>collaborative</em></strong>, <strong><em>hypermedia</em></strong> information systems. It is a generic, <strong>stateless</strong>, protocol which can be used for many tasks beyond its use for hypertext, such as <strong><em>name servers</em></strong> and <strong><em>distributed object management systems</em></strong>, through <strong><em>extension of its request methods, error codes and headers</em></strong> [47]. A feature of HTTP is the typing and negotiation of data representation, allowing systems to be built independently of the data being transferred.</p>
-</section>
-</section>
+<p>以下摘自<a href="http://tools.ietf.org/rfc/rfc2616.txt">RFC
+2616</a>:</p>
+<p>The Hypertext Transfer Protocol (HTTP) is an
+<strong>application-level</strong> protocol for
+<strong><em>distributed</em></strong>,
+<strong><em>collaborative</em></strong>,
+<strong><em>hypermedia</em></strong> information systems. It is a
+generic, <strong>stateless</strong>, protocol which can be used for many
+tasks beyond its use for hypertext, such as <strong><em>name
+servers</em></strong> and <strong><em>distributed object management
+systems</em></strong>, through <strong><em>extension of its request
+methods, error codes and headers</em></strong> [47]. A feature of HTTP
+is the typing and negotiation of data representation, allowing systems
+to be built independently of the data being transferred.</p>
+</section></section>
 <section>
 <section id="http-in-action" class="title-slide slide level1">
 <h1>HTTP in Action</h1>
@@ -566,9 +676,9 @@ curl -vv -H &#39;Accept-Encoding: gzip, deflate&#39; https://www.baidu.com -o ba
 # 使用自定义HTTP Request Header + POST表单数据
 # TODO-1 请模拟学校教务处网站的登录表单完成命令行登录学校教务处任务
 # TODO-2 模拟登录自己搭建的wordpress站点并使用curl发表一篇blog</code></pre>
-<p>注意到上面所有服务器设置的时间均使用到了一个关键词<a href="http://baike.baidu.com/item/%E4%B8%96%E7%95%8C%E6%97%B6/692237"><strong>GMT</strong></a>，简单来说这是为了解决全球不同地区的时区差异问题而进行的一项关于时间的标准化设置。</p>
-</section>
-</section>
+<p>注意到上面所有服务器设置的时间均使用到了一个关键词<a
+href="http://baike.baidu.com/item/%E4%B8%96%E7%95%8C%E6%97%B6/692237"><strong>GMT</strong></a>，简单来说这是为了解决全球不同地区的时区差异问题而进行的一项关于时间的标准化设置。</p>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -577,27 +687,44 @@ curl -vv -H &#39;Accept-Encoding: gzip, deflate&#39; https://www.baidu.com -o ba
 <section class="slide level2">
 
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/World_Wide_Web">World Wide Web from Wikipedia</a></li>
-<li><a href="http://www.aosabook.org/en/distsys.html">Scalable Web Architecture and Distributed Systems</a></li>
-<li><a href="http://www.mit.edu/~yandros/doc/specs/fcgi-spec.html">FastCGI Specification</a></li>
-<li><a href="http://www.nongnu.org/fastcgi/">FastCGI — The Forgotten Treasure</a></li>
-<li><a href="https://www.digitalocean.com/community/tutorials/understanding-and-implementing-fastcgi-proxying-in-nginx">Understanding and Implementing FastCGI Proxying in Nginx</a></li>
-<li><a href="http://www.cnblogs.com/skynet/p/4173450.html">Nginx + CGI/FastCGI + C/Cpp</a></li>
-<li><a href="http://www.php-internals.com/book/?p=chapt02/02-02-03-fastcgi">FastCGI on 深入理解PHP内核</a></li>
-<li><a href="https://www.slideshare.net/jacques_thekit/modphp-vs-fastcgi-vs-fpm-vs-cli">mod_php vs FastCGI vs FPM vs CLI</a></li>
-<li><a href="https://httpoxy.org/">A CGI application vulnerability for PHP, Go, Python and others</a></li>
+<li><a href="https://en.wikipedia.org/wiki/World_Wide_Web">World Wide
+Web from Wikipedia</a></li>
+<li><a href="http://www.aosabook.org/en/distsys.html">Scalable Web
+Architecture and Distributed Systems</a></li>
+<li><a
+href="http://www.mit.edu/~yandros/doc/specs/fcgi-spec.html">FastCGI
+Specification</a></li>
+<li><a href="http://www.nongnu.org/fastcgi/">FastCGI — The Forgotten
+Treasure</a></li>
+<li><a
+href="https://www.digitalocean.com/community/tutorials/understanding-and-implementing-fastcgi-proxying-in-nginx">Understanding
+and Implementing FastCGI Proxying in Nginx</a></li>
+<li><a href="http://www.cnblogs.com/skynet/p/4173450.html">Nginx +
+CGI/FastCGI + C/Cpp</a></li>
+<li><a
+href="http://www.php-internals.com/book/?p=chapt02/02-02-03-fastcgi">FastCGI
+on 深入理解PHP内核</a></li>
+<li><a
+href="https://www.slideshare.net/jacques_thekit/modphp-vs-fastcgi-vs-fpm-vs-cli">mod_php
+vs FastCGI vs FPM vs CLI</a></li>
+<li><a href="https://httpoxy.org/">A CGI application vulnerability for
+PHP, Go, Python and others</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://curl.haxx.se/docs/httpscripting.html">The Art Of Scripting HTTP Requests Using Curl</a></li>
-<li><a href="http://net.tutsplus.com/tutorials/php/techniques-and-resources-for-mastering-curl/">Techniques for Mastering cUR</a></li>
-<li><a href="http://curl.haxx.se/docs/vulnerabilities.html">curl and libcurl Vulnerabilities Table Overview</a></li>
-<li><a href="https://www.digitalocean.com/community/tools/nginx">Nginx 图形化配置文件生成工具</a></li>
+<li><a href="http://curl.haxx.se/docs/httpscripting.html">The Art Of
+Scripting HTTP Requests Using Curl</a></li>
+<li><a
+href="http://net.tutsplus.com/tutorials/php/techniques-and-resources-for-mastering-curl/">Techniques
+for Mastering cUR</a></li>
+<li><a href="http://curl.haxx.se/docs/vulnerabilities.html">curl and
+libcurl Vulnerabilities Table Overview</a></li>
+<li><a href="https://www.digitalocean.com/community/tools/nginx">Nginx
+图形化配置文件生成工具</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -609,12 +736,43 @@ curl -vv -H &#39;Accept-Encoding: gzip, deflate&#39; https://www.baidu.com -o ba
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

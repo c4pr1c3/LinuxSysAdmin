@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -62,8 +71,7 @@
 <li>服务器环境（Ubuntu）</li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="实验问题" class="title-slide slide level1">
 <h1>实验问题</h1>
@@ -72,16 +80,21 @@
 <section class="slide level2">
 
 <ul>
-<li>【软件包管理】在目标发行版上安装 <code>tmux</code> 和 <code>tshark</code> ；查看这 2 个软件被安装到哪些路径；卸载 <code>tshark</code> ；验证 <code>tshark</code> 卸载结果</li>
+<li>【软件包管理】在目标发行版上安装 <code>tmux</code> 和
+<code>tshark</code> ；查看这 2 个软件被安装到哪些路径；卸载
+<code>tshark</code> ；验证 <code>tshark</code> 卸载结果</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li>【文件管理】复制以下 <code>shell</code> 代码到终端运行，在目标 Linux 发行版系统中构造测试数据集，然后回答以下问题：
+<li>【文件管理】复制以下 <code>shell</code> 代码到终端运行，在目标 Linux
+发行版系统中构造测试数据集，然后回答以下问题：
 <ul>
-<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件名包含 <code>666</code> 的所有文件</li>
-<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件内容包含 <code>666</code> 的所有文件</li>
+<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件名包含
+<code>666</code> 的所有文件</li>
+<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件内容包含
+<code>666</code> 的所有文件</li>
 </ul></li>
 </ul>
 <pre class="bash"><code>cd /tmp &amp;&amp; for i in $(seq 0 1024);do dir=&quot;test-$RANDOM&quot;;mkdir &quot;$dir&quot;;echo &quot;$RANDOM&quot; &gt; &quot;$dir/$dir-$RANDOM&quot;;done</code></pre>
@@ -89,12 +102,14 @@
 <section class="slide level2">
 
 <ul>
-<li>【文件压缩与解压缩】练习课件中 <a href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x02.md.html#/12/1">文件压缩与解压缩</a> 一节所有提到的压缩与解压缩命令的使用方法</li>
-<li>【跟练】 <a href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54">子进程管理实验</a></li>
+<li>【文件压缩与解压缩】练习课件中 <a
+href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x02.md.html#/12/1">文件压缩与解压缩</a>
+一节所有提到的压缩与解压缩命令的使用方法</li>
+<li>【跟练】 <a
+href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54">子进程管理实验</a></li>
 <li>【硬件信息获取】目标系统的 CPU、内存大小、硬盘数量与硬盘容量</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="在线实验环境任务清单" class="title-slide slide level1">
 <h1>在线实验环境任务清单</h1>
@@ -103,33 +118,34 @@
 <section class="slide level2">
 
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-掌握 scp 的使用场景和使用方法</li>
-<li><input type="checkbox" disabled="" />
-掌握常用文件压缩与解压缩工具的使用方法 tar, 7zip<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-解压缩文件: .rar, .7z, .gz, .tar.gz, .tar, .bz</li>
-<li><input type="checkbox" disabled="" />
-压缩文件与目录: .tar.gz, .7z</li>
+<li><label><input type="checkbox" />掌握 scp
+的使用场景和使用方法</label></li>
+<li><label><input
+type="checkbox" />掌握常用文件压缩与解压缩工具的使用方法 tar,
+7zip</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />解压缩文件: .rar, .7z, .gz, .tar.gz,
+.tar, .bz</label></li>
+<li><label><input type="checkbox" />压缩文件与目录: .tar.gz,
+.7z</label></li>
 </ul></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-掌握按文件名查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件创建时间查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件大小查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件名找到文件后检索文件内容是否包含指定文本的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握将查找到的文件计算 SHA-256 并将计算结果写入一个指定文本文件的方法</li>
+<li><label><input
+type="checkbox" />掌握按文件名查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件创建时间查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件大小查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件名找到文件后检索文件内容是否包含指定文本的方法</label></li>
+<li><label><input type="checkbox" />掌握将查找到的文件计算 SHA-256
+并将计算结果写入一个指定文本文件的方法</label></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -141,12 +157,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

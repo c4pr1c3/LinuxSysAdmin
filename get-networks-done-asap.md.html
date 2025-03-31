@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -47,7 +56,8 @@
 </section>
 
 <section>
-<section id="计算机网络先修基础快速入门" class="title-slide slide level1">
+<section id="计算机网络先修基础快速入门"
+class="title-slide slide level1">
 <h1>《计算机网络》先修基础快速入门</h1>
 
 </section>
@@ -68,8 +78,7 @@
 <blockquote>
 <p>本课仅限服务于《Linux系统与网络管理》课程讲授所需的最小化《计算机网络》概念与技术</p>
 </blockquote>
-</section>
-</section>
+</section></section>
 <section>
 <section id="agenda" class="title-slide slide level1">
 <h1>课程提纲</h1>
@@ -82,8 +91,7 @@ II.  查表寻址
 III. 应用层协议
 IV.  网络协议实现离不开操作系统
 V.   Virtualbox 虚拟网络实战</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="i.-分层模型" class="title-slide slide level1">
 <h1>I. 分层模型</h1>
@@ -112,40 +120,58 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 <ul>
 <li>IEEE 802.3 以太局域网的物理层和数据链路层标准。</li>
 <li>IEEE 802.11 无线局域网的物理层和数据链路层标准。</li>
-<li>IEEE 802.15 无线个人局域网（包含蓝牙协议）的物理层和数据链路层标准。</li>
+<li>IEEE 802.15
+无线个人局域网（包含蓝牙协议）的物理层和数据链路层标准。</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <h3 id="特别的-icmp">特别的 ICMP</h3>
 <blockquote>
-<p>ICMP 是否属于「网络层」此处存在争议，我在本课程中如无特别说明一律将 ICMP 视为网络层连通性诊断工具。</p>
+<p>ICMP 是否属于「网络层」此处存在争议，我在本课程中如无特别说明一律将
+ICMP 视为网络层连通性诊断工具。</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
 <h3 id="peer-to-peer-faq-1">对等层通信 FAQ</h3>
 <ul>
-<li>本课程涉及到的网络服务配置，无一例外的都是「点对点」 <strong>通信</strong> 模型，即：<code>「客户端」-「服务器」</code> 模型，又称 <code>CS 模型</code> 。</li>
-<li>本课程所指的网络服务配置，如无特别说明，都是主要工作在于配置 <code>「服务器」</code> 。</li>
-<li><code>HTTP</code> 协议使用的 <code>「客户端」</code> 我们通常又称为 <code>浏览器（Browser）</code> 。所以，<code>HTTP</code> 应用的 <strong>软件架构</strong> 模型又称为 <code>BS 架构</code>。</li>
-<li>典型 <code>CS 模型</code> 通信流程：<code>「客户端」</code> 发起 <strong>请求</strong> ，<code>「服务端」</code> 接收并处理 <strong>请求</strong> 后发回 <strong>响应</strong> 。</li>
+<li>本课程涉及到的网络服务配置，无一例外的都是「点对点」
+<strong>通信</strong> 模型，即：<code>「客户端」-「服务器」</code>
+模型，又称 <code>CS 模型</code> 。</li>
+<li>本课程所指的网络服务配置，如无特别说明，都是主要工作在于配置
+<code>「服务器」</code> 。</li>
+<li><code>HTTP</code> 协议使用的 <code>「客户端」</code> 我们通常又称为
+<code>浏览器（Browser）</code> 。所以，<code>HTTP</code> 应用的
+<strong>软件架构</strong> 模型又称为 <code>BS 架构</code>。</li>
+<li>典型 <code>CS 模型</code> 通信流程：<code>「客户端」</code> 发起
+<strong>请求</strong> ，<code>「服务端」</code> 接收并处理
+<strong>请求</strong> 后发回 <strong>响应</strong> 。</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <h3 id="peer-to-peer-faq-2">对等层通信 FAQ</h3>
 <ul>
-<li>在一次通信过程中，<code>本地</code> 是相对于 <code>远程</code> 的成对出现概念。例如：
+<li>在一次通信过程中，<code>本地</code> 是相对于 <code>远程</code>
+的成对出现概念。例如：
 <ul>
-<li>SSH 远程登录，运行 <code>SSH 客户端</code> 的主机我们称为「本地主机」。<code>SSH 服务器</code> 被称为「远程主机」。</li>
-<li>使用 HTTP 协议的网站应用中的「文件上传」场景，用户选择「本地」文件上传到「远程」 Web 服务器。</li>
+<li>SSH 远程登录，运行 <code>SSH 客户端</code>
+的主机我们称为「本地主机」。<code>SSH 服务器</code>
+被称为「远程主机」。</li>
+<li>使用 HTTP
+协议的网站应用中的「文件上传」场景，用户选择「本地」文件上传到「远程」
+Web 服务器。</li>
 </ul></li>
-<li>每一层的通信 <code>负载（Payload）</code> 都指的是「相对于本层的上一层」协议数据。
+<li>每一层的通信 <code>负载（Payload）</code>
+都指的是「相对于本层的上一层」协议数据。
 <ul>
 <li><code>HTTP 协议数据</code> 就是通过 TCP 负载层承载的。</li>
 </ul></li>
-<li>站在<code>本地</code> 看通信：「上行」或「出站」就是向 <code>远程</code> <strong><em>发送</em></strong> 数据，「下行」或「入站」就是从 <code>远程</code> <strong><em>接收</em></strong> 数据。</li>
+<li>站在<code>本地</code> 看通信：「上行」或「出站」就是向
+<code>远程</code> <strong><em>发送</em></strong>
+数据，「下行」或「入站」就是从 <code>远程</code>
+<strong><em>接收</em></strong> 数据。</li>
 </ul>
 </section>
 <section id="分组传输" class="slide level2">
@@ -162,13 +188,17 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 <section id="报文示例" class="slide level2">
 <h2>报文示例</h2>
 <figure>
-<img data-src="images/get-networks-done-asap/http-scapy.png" alt="" /><figcaption>by scapy</figcaption>
+<img data-src="images/get-networks-done-asap/http-scapy.png"
+alt="by scapy" />
+<figcaption aria-hidden="true">by scapy</figcaption>
 </figure>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/get-networks-done-asap/http-wireshark.png" alt="" /><figcaption>by wireshark</figcaption>
+<img data-src="images/get-networks-done-asap/http-wireshark.png"
+alt="by wireshark" />
+<figcaption aria-hidden="true">by wireshark</figcaption>
 </figure>
 </section>
 <section id="下层连通是上层连通的基础和保障" class="slide level2">
@@ -176,7 +206,8 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 </section>
 <section class="slide level2">
 
-<h3 id="计算机网络连通性故障排查的自底向上原则">计算机网络连通性故障排查的「自底向上」原则</h3>
+<h3
+id="计算机网络连通性故障排查的自底向上原则">计算机网络连通性故障排查的「自底向上」原则</h3>
 <ul>
 <li>物理层不通，啥都不通。</li>
 <li>网络层连通，应用层不一定连通。但网络层不连通，应用层一定也不连通。</li>
@@ -188,7 +219,9 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 <h3 id="以-ssh-连接失败为例">以 SSH 连接失败为例</h3>
 <ol type="1">
 <li>物理层连通性判定：网卡是否「接入网线」</li>
-<li>链路层连通性判定：<a href="#/vb-net-conn-graph"><code>Virtualbox</code> 虚拟网络连通性矩阵</a></li>
+<li>链路层连通性判定：<a
+href="#/vb-net-conn-graph"><code>Virtualbox</code>
+虚拟网络连通性矩阵</a></li>
 <li>网络层连通性判定：<code>ping</code></li>
 <li>传输层连通性判定：<code>nc</code> / <code>ssh -vv</code></li>
 <li>应用层连通性判定：<code>ssh -vv</code></li>
@@ -196,17 +229,18 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 </section>
 <section class="slide level2">
 
-<h3 id="计算机网络连通性故障排查的自顶向下原则">计算机网络连通性故障排查的「自顶向下」原则</h3>
+<h3
+id="计算机网络连通性故障排查的自顶向下原则">计算机网络连通性故障排查的「自顶向下」原则</h3>
 <ul>
 <li>用浏览器访问一下网站，能打开已经能说明 HTTP 连接 OK
 <ul>
 <li>小心「浏览器缓存」误导</li>
 </ul></li>
-<li>SSH 已经可以访问目标 IP 所在主机，说明本地到目标 IP 网络层连通性 OK</li>
+<li>SSH 已经可以访问目标 IP 所在主机，说明本地到目标 IP 网络层连通性
+OK</li>
 <li><code>ping</code> 一下比弯腰查网线更快捷</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="ii.-查表寻址" class="title-slide slide level1">
 <h1>II. 查表寻址</h1>
@@ -241,15 +275,21 @@ V.   Virtualbox 虚拟网络实战</code></pre>
 <section class="slide level2">
 
 <h3 id="接网气的-dhcp-12">接「网」气的 DHCP (1/2)</h3>
-<p>DHCP 解决的就是「根据主机提供的 <strong>身份标识</strong> 」自动分配一个在局域网中「不会引起 <strong>身份冲突</strong>」的 IP 地址以及其他常用网络配置信息。</p>
+<p>DHCP 解决的就是「根据主机提供的 <strong>身份标识</strong>
+」自动分配一个在局域网中「不会引起 <strong>身份冲突</strong>」的 IP
+地址以及其他常用网络配置信息。</p>
 </section>
 <section class="slide level2">
 
 <h3 id="接网气的-dhcp-22">接「网」气的 DHCP (2/2)</h3>
 <ul>
-<li>身份标识：DHCP 请求标识，由本地系统 DHCP 客户端自行决定，常见于直接使用「接入该网络的网卡」的 MAC 地址。也有例外，如 netplan 在大部分主机上使用主机唯一标识符。</li>
-<li>身份冲突：MAC 地址冲突可能会导致局域网中的流量劫持，IP 地址冲突可能会触发操作系统级别的通信异常处理流程。</li>
-<li>其他 DHCP 常用配置：局域网网关 IP、本地 DNS 服务器 IP、NTP 服务器 IP 等。</li>
+<li>身份标识：DHCP 请求标识，由本地系统 DHCP
+客户端自行决定，常见于直接使用「接入该网络的网卡」的 MAC
+地址。也有例外，如 netplan 在大部分主机上使用主机唯一标识符。</li>
+<li>身份冲突：MAC 地址冲突可能会导致局域网中的流量劫持，IP
+地址冲突可能会触发操作系统级别的通信异常处理流程。</li>
+<li>其他 DHCP 常用配置：局域网网关 IP、本地 DNS 服务器 IP、NTP 服务器 IP
+等。</li>
 </ul>
 </section>
 <section id="寻址相关协议" class="slide level2">
@@ -305,8 +345,7 @@ dig www.baidu.com
 ## 使用指定域名解析服务器 114.114.114.114 忽略 /etc/hosts 
 dig @1.1.1.1 www.baidu.com
 </code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="iii.-应用层协议" class="title-slide slide level1">
 <h1>III. 应用层协议</h1>
@@ -318,25 +357,28 @@ dig @1.1.1.1 www.baidu.com
 <li>HTTP （本课程第 5 章：Web服务器）</li>
 <li>FTP / NFS / Samba （本课程第 6 章：网络资源共享）</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="iv.-网络协议实现离不开操作系统" class="title-slide slide level1">
+<section id="iv.-网络协议实现离不开操作系统"
+class="title-slide slide level1">
 <h1>IV. 网络协议实现离不开操作系统</h1>
 
 </section>
 <section id="lookup-table-1" class="slide level2">
 <h2>查找表（1/2）</h2>
 <ul>
-<li>ARP 表：「目标 IP 地址 -&gt; { 本地网卡标识 - 目标 MAC 地址 } 」映射关系表</li>
+<li>ARP 表：「目标 IP 地址 -&gt; { 本地网卡标识 - 目标 MAC 地址 }
+」映射关系表</li>
 <li>交换机的 CAM 表：「目标 MAC 地址 - 交换机端口号」映射关系表</li>
-<li>路由表：「目标 IP 地址段 -&gt; { 本地网卡标识 - 下一跳 IP 地址 - 优先级}」映射关系表</li>
+<li>路由表：「目标 IP 地址段 -&gt; { 本地网卡标识 - 下一跳 IP 地址 -
+优先级}」映射关系表</li>
 </ul>
 </section>
 <section id="lookup-table-2" class="slide level2">
 <h2>查找表（2/2）</h2>
 <ul>
-<li>DHCP 分配记录：「DHCP 客户端身份标识 -&gt; { 分配 IP 地址 - 租约 }」映射关系表</li>
+<li>DHCP 分配记录：「DHCP 客户端身份标识 -&gt; { 分配 IP 地址 - 租约
+}」映射关系表</li>
 <li>DNS：「域名 -&gt; { 地址 [ - 地址类型 - 有效期 ] }」映射关系表
 <ul>
 <li><code>hosts</code> 文件</li>
@@ -352,8 +394,13 @@ dig @1.1.1.1 www.baidu.com
 
 <h3 id="section">0.0.0.0</h3>
 <ul>
-<li>服务器配置中，指代「本机上的所有网卡可用 IPv4 地址」。例如虚拟机配置的 2 个虚拟网卡分配得到的 IP 分别是 <code>10.0.2.15</code> 和 <code>192.168.56.101</code> ，则只要满足网络层连通性，这 2 个 IP 地址都可以被用来作为访问时的目的 IP 。</li>
-<li>路由配置中，指代「默认路由」，表示目标 IP 地址为任意 IPv4 地址。</li>
+<li>服务器配置中，指代「本机上的所有网卡可用 IPv4
+地址」。例如虚拟机配置的 2 个虚拟网卡分配得到的 IP 分别是
+<code>10.0.2.15</code> 和 <code>192.168.56.101</code>
+，则只要满足网络层连通性，这 2 个 IP 地址都可以被用来作为访问时的目的 IP
+。</li>
+<li>路由配置中，指代「默认路由」，表示目标 IP 地址为任意 IPv4
+地址。</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -367,21 +414,33 @@ dig @1.1.1.1 www.baidu.com
 
 <h3 id="localhost">localhost</h3>
 <ul>
-<li>主机名，在主流操作系统 <code>hosts</code> 文件中通常默认定义为解析到 <code>127.0.0.1</code> 或 <code>::1</code>，但也可以定义指向其他 IP 地址。</li>
+<li>主机名，在主流操作系统 <code>hosts</code> 文件中通常默认定义为解析到
+<code>127.0.0.1</code> 或 <code>::1</code>，但也可以定义指向其他 IP
+地址。</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="v.-virtualbox-虚拟网络实战" class="title-slide slide level1">
+<section id="v.-virtualbox-虚拟网络实战"
+class="title-slide slide level1">
 <h1>V. Virtualbox 虚拟网络实战</h1>
 
 </section>
 <section id="vb-net-conn-graph" class="slide level2">
-<h2><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></h2>
+<h2><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox
+官网的虚拟网络配置详解文档</a></h2>
 <p>连通性总结</p>
-<table>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 9%" />
+</colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>网卡模式</th>
 <th style="text-align: center;">VM ➡️ Host</th>
 <th style="text-align: center;">VM ⬅️ Host</th>
@@ -392,7 +451,7 @@ dig @1.1.1.1 www.baidu.com
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>Host-only</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
@@ -401,7 +460,7 @@ dig @1.1.1.1 www.baidu.com
 <td style="text-align: center;">❌</td>
 <td>Host 访问 VM 内网络服务</td>
 </tr>
-<tr class="even">
+<tr>
 <td>NAT-网络</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">端口转发</td>
@@ -410,7 +469,7 @@ dig @1.1.1.1 www.baidu.com
 <td style="text-align: center;">端口转发</td>
 <td>VM 上网且需要 VM 组网实验</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>NAT</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">端口转发</td>
@@ -419,7 +478,7 @@ dig @1.1.1.1 www.baidu.com
 <td style="text-align: center;">端口转发</td>
 <td>VM 上网</td>
 </tr>
-<tr class="even">
+<tr>
 <td>Internal</td>
 <td style="text-align: center;">❌</td>
 <td style="text-align: center;">❌</td>
@@ -428,7 +487,7 @@ dig @1.1.1.1 www.baidu.com
 <td style="text-align: center;">❌</td>
 <td>网络安全实验</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>Bridged</td>
 <td style="text-align: center;">✅</td>
 <td style="text-align: center;">✅</td>
@@ -466,12 +525,16 @@ sudo tcpdump -i enp0s8 -w http.pcap</code></pre>
 
 <h3 id="本章参考文献">本章参考文献</h3>
 <ul>
-<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></li>
-<li><a href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox 虚拟网络类型差异可视化详解</a></li>
-<li><a href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的 Virtualbox 虚拟网络详解（2014年课件）</a></li>
+<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox
+官网的虚拟网络配置详解文档</a></li>
+<li><a
+href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox
+虚拟网络类型差异可视化详解</a></li>
+<li><a
+href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的
+Virtualbox 虚拟网络详解（2014年课件）</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -483,12 +546,43 @@ sudo tcpdump -i enp0s8 -w http.pcap</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

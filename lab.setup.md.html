@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -47,7 +56,8 @@
 </section>
 
 <section>
-<section id="操作系统安装与虚拟机配置基础" class="title-slide slide level1">
+<section id="操作系统安装与虚拟机配置基础"
+class="title-slide slide level1">
 <h1>操作系统安装与虚拟机配置基础</h1>
 
 </section>
@@ -58,8 +68,7 @@ I.   安装镜像获取
 II.  虚拟机基本配置
 III. 安装过程 FAQ
 IV.  安装后 FAQ</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="直接导入-.ova-文件" class="title-slide slide level1">
 <h1>0. 直接导入 .ova 文件</h1>
@@ -67,10 +76,10 @@ IV.  安装后 FAQ</code></pre>
 </section>
 <section class="slide level2">
 
-<p>链接: https://pan.baidu.com/s/1gjzqIxxF85fctbCHGKhzOA 提取码: pkue 复制这段内容后打开百度网盘手机App，操作更方便哦</p>
+<p>链接: https://pan.baidu.com/s/1gjzqIxxF85fctbCHGKhzOA 提取码: pkue
+复制这段内容后打开百度网盘手机App，操作更方便哦</p>
 <p><img data-src="images/lab.setup/pan.baidu.com.png" /></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="i.-安装镜像获取" class="title-slide slide level1">
 <h1>I. 安装镜像获取</h1>
@@ -87,11 +96,15 @@ IV.  安装后 FAQ</code></pre>
 <section id="安装镜像下载渠道选择" class="slide level2">
 <h2>1. 安装镜像下载渠道选择</h2>
 <ul>
-<li>优先<a href="https://ubuntu.com/download">选择 <strong>官方</strong> 下载</a></li>
-<li>不要贪图下载速度而随意使用 <strong>第三方</strong> 下载镜像：软件包「投毒」和「后门」风险
+<li>优先<a href="https://ubuntu.com/download">选择 <strong>官方</strong>
+下载</a></li>
+<li>不要贪图下载速度而随意使用 <strong>第三方</strong>
+下载镜像：软件包「投毒」和「后门」风险
 <ul>
-<li><a href="refs/cappos_mirror_ccs_08.pdf">2008 年的一篇信息安全顶会论文</a></li>
-<li><a href="https://www.antiy.com/response/xcodeghost.html">2015 年的Xcode非官方版本恶意代码污染事件</a></li>
+<li><a href="refs/cappos_mirror_ccs_08.pdf">2008
+年的一篇信息安全顶会论文</a></li>
+<li><a href="https://www.antiy.com/response/xcodeghost.html">2015
+年的Xcode非官方版本恶意代码污染事件</a></li>
 </ul></li>
 </ul>
 </section>
@@ -110,22 +123,33 @@ IV.  安装后 FAQ</code></pre>
 <section class="slide level2">
 
 <h3 id="安装前-faq">安装前 FAQ</h3>
-<p>首推 <a href="https://help.ubuntu.com/community/ServerFaq">Ubuntu 官方的 FAQ</a> ，新手关心的服务器版系统安装问题这里都有。</p>
-<p>其次还是 <a href="https://help.ubuntu.com/community/Installation">Ubuntu 官方的 FAQ</a> ，进阶用户关心的诸如双系统共存、U盘安装、升级安装等问题这里都有。</p>
+<p>首推 <a href="https://help.ubuntu.com/community/ServerFaq">Ubuntu
+官方的 FAQ</a> ，新手关心的服务器版系统安装问题这里都有。</p>
+<p>其次还是 <a
+href="https://help.ubuntu.com/community/Installation">Ubuntu 官方的
+FAQ</a>
+，进阶用户关心的诸如双系统共存、U盘安装、升级安装等问题这里都有。</p>
 </section>
 <section class="slide level2">
 
-<h3 id="live-server-版-vs.-server-版"><a href="https://askubuntu.com/questions/1028580/what-is-the-difference-between-ubuntu-18-04-server-and-ubuntu-18-04-live-server">live-server 版 vs. server 版</a></h3>
+<h3 id="live-server-版-vs.-server-版"><a
+href="https://askubuntu.com/questions/1028580/what-is-the-difference-between-ubuntu-18-04-server-and-ubuntu-18-04-live-server">live-server
+版 vs. server 版</a></h3>
 <ul>
-<li>基于 preseed 实现「无人值守」安装只能选择非 <code>live-server</code> 版</li>
-<li>当前 Ubuntu 18.04 Server 版的官方下载托管域名 <a href="http://cdimage.ubuntu.com/releases/18.04.4/release/">cdimage.ubuntu.com</a></li>
-<li>当前 Ubuntu 18.04 Live-Server 版和 Desktop 版的官方下载托管域名 <a href="http://releases.ubuntu.com/18.04/">releases.ubuntu.com</a></li>
-<li>历史 Ubuntu 版本的官方下载托管域名 <a href="http://old-releases.ubuntu.com/releases/">old-releases.ubuntu.com</a></li>
+<li>基于 preseed 实现「无人值守」安装只能选择非 <code>live-server</code>
+版</li>
+<li>当前 Ubuntu 18.04 Server 版的官方下载托管域名 <a
+href="http://cdimage.ubuntu.com/releases/18.04.4/release/">cdimage.ubuntu.com</a></li>
+<li>当前 Ubuntu 18.04 Live-Server 版和 Desktop 版的官方下载托管域名 <a
+href="http://releases.ubuntu.com/18.04/">releases.ubuntu.com</a></li>
+<li>历史 Ubuntu 版本的官方下载托管域名 <a
+href="http://old-releases.ubuntu.com/releases/">old-releases.ubuntu.com</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="live-server-版专属无人值守安装方法">live-server 版专属「无人值守」安装方法</h3>
+<h3 id="live-server-版专属无人值守安装方法">live-server
+版专属「无人值守」安装方法</h3>
 <p>详见 <a href="chap0x01.exp.md">第一章 实验指南</a></p>
 </section>
 <section class="slide level2">
@@ -143,15 +167,22 @@ IV.  安装后 FAQ</code></pre>
 <h3 id="bit-vs.-64bit">32bit vs. 64bit</h3>
 <ul>
 <li>优先选择 <code>64bit</code> 操作系统镜像</li>
-<li><a href="https://forums.virtualbox.org/viewtopic.php?f=1&amp;t=62339">我的电脑是 64bit 系统，为什么无法安装 64bit 虚拟机</a></li>
+<li><a
+href="https://forums.virtualbox.org/viewtopic.php?f=1&amp;t=62339">我的电脑是
+64bit 系统，为什么无法安装 64bit 虚拟机</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="windows-10-的-hyper-v-和-virtualbox-共存">Windows 10 的 Hyper-V 和 Virtualbox 共存</h3>
+<h3 id="windows-10-的-hyper-v-和-virtualbox-共存">Windows 10 的 Hyper-V
+和 Virtualbox 共存</h3>
 <ul>
-<li><a href="https://docs.oracle.com/en/virtualization/virtualbox/6.0/admin/hyperv-support.html">Virualbox 6.0.0 开始新增加入对 Windows 宿主机上 Hyper-V 功能的共生支持</a></li>
-<li><a href="https://forums.virtualbox.org/viewtopic.php?f=6&amp;t=90853">VirtualBox 6.0 and Hyper-V 共存问题的讨论</a></li>
+<li><a
+href="https://docs.oracle.com/en/virtualization/virtualbox/6.0/admin/hyperv-support.html">Virualbox
+6.0.0 开始新增加入对 Windows 宿主机上 Hyper-V 功能的共生支持</a></li>
+<li><a
+href="https://forums.virtualbox.org/viewtopic.php?f=6&amp;t=90853">VirtualBox
+6.0 and Hyper-V 共存问题的讨论</a></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -159,7 +190,8 @@ IV.  安装后 FAQ</code></pre>
 <h3 id="server-版-vs.-desktop-版">server 版 vs. desktop 版</h3>
 <ul>
 <li>一句话概括：默认安装的软件包数量不同</li>
-<li>本课程推荐的实验环境是：默认不安装「图形用户界面」的 <code>server</code> 版</li>
+<li>本课程推荐的实验环境是：默认不安装「图形用户界面」的
+<code>server</code> 版</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -201,8 +233,7 @@ sha256sum ubuntu-18.04.4-server-amd64.iso
 # windows
 certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 # e2 ec da ce 33 c9 39 52 7c bc 9e 8d 23 57 63 81 c4 93 b0 71 10 72 07 d2 04 0a f7 25 95 f8 99 0b</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="ii.-虚拟机基本配置" class="title-slide slide level1">
 <h1>II. 虚拟机基本配置</h1>
@@ -219,7 +250,8 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 <section id="虚拟机软件选择" class="slide level2">
 <h2>1. 虚拟机软件选择</h2>
 <ul>
-<li>开源、免费、全功能 <a href="https://www.virtualbox.org/wiki/Downloads">Virtualbox</a></li>
+<li>开源、免费、全功能 <a
+href="https://www.virtualbox.org/wiki/Downloads">Virtualbox</a></li>
 </ul>
 <blockquote>
 <p>不要忘记安装 <strong>VirtualBox Extension Pack</strong></p>
@@ -228,16 +260,21 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 <section id="网卡配置" class="slide level2">
 <h2>2. 网卡配置</h2>
 <ul>
-<li>推荐「双网卡」配置: <code>NatNetwork</code> + <code>HostOnly</code></li>
+<li>推荐「双网卡」配置: <code>NatNetwork</code> +
+<code>HostOnly</code></li>
 </ul>
 <p>refs:</p>
 <ul>
-<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox 官网的虚拟网络配置详解文档</a></li>
-<li><a href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox 虚拟网络类型差异可视化详解</a></li>
-<li><a href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的 Virtualbox 虚拟网络详解（2014年课件）</a></li>
+<li><a href="https://www.virtualbox.org/manual/ch06.html">Virtualbox
+官网的虚拟网络配置详解文档</a></li>
+<li><a
+href="https://www.nakivo.com/blog/virtualbox-network-setting-guide/">Virtualbox
+虚拟网络类型差异可视化详解</a></li>
+<li><a
+href="https://github.com/c4pr1c3/cuc-courses/blob/master/2014_2/VirtualboxNetwork.pdf">本人的
+Virtualbox 虚拟网络详解（2014年课件）</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="iii.-安装过程-faq" class="title-slide slide level1">
 <h1>III. 安装过程 FAQ</h1>
@@ -249,7 +286,8 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 <li>安装选项</li>
 <li>分区方式
 <ul>
-<li>存储分区方式选择时，建议安装时勾选「LVM」和不勾选各来一次，得到 2 种分区方式的系统备用</li>
+<li>存储分区方式选择时，建议安装时勾选「LVM」和不勾选各来一次，得到 2
+种分区方式的系统备用</li>
 </ul></li>
 <li>多网卡选择</li>
 <li>自动更新</li>
@@ -259,8 +297,7 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 <h2>图文版安装向导</h2>
 <p><code>ubuntu install 20.04 step by step</code></p>
 <p><img data-src="images/lab.setup/step-by-step-install.png" /></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="iv.-安装后-faq" class="title-slide slide level1">
 <h1>IV. 安装后 FAQ</h1>
@@ -275,8 +312,7 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
 <li><code>net-plan</code> 配置</li>
 <li>网络连通性测试方法</li>
 </ol>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -288,12 +324,43 @@ certutil -hashfile ubuntu-18.04.4-server-amd64.iso SHA256
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

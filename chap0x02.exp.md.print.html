@@ -7,15 +7,172 @@
   <meta name="author" content="黄玮" />
   <title>Linux系统与网络管理</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -50,7 +207,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -63,7 +220,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -76,9 +233,6 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -98,48 +252,59 @@
 <h1 id="实验问题">实验问题</h1>
 <hr />
 <ul>
-<li>【软件包管理】在目标发行版上安装 <code>tmux</code> 和 <code>tshark</code> ；查看这 2 个软件被安装到哪些路径；卸载 <code>tshark</code> ；验证 <code>tshark</code> 卸载结果</li>
+<li>【软件包管理】在目标发行版上安装 <code>tmux</code> 和
+<code>tshark</code> ；查看这 2 个软件被安装到哪些路径；卸载
+<code>tshark</code> ；验证 <code>tshark</code> 卸载结果</li>
 </ul>
 <hr />
 <ul>
-<li>【文件管理】复制以下 <code>shell</code> 代码到终端运行，在目标 Linux 发行版系统中构造测试数据集，然后回答以下问题：
+<li>【文件管理】复制以下 <code>shell</code> 代码到终端运行，在目标 Linux
+发行版系统中构造测试数据集，然后回答以下问题：
 <ul>
-<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件名包含 <code>666</code> 的所有文件</li>
-<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件内容包含 <code>666</code> 的所有文件</li>
+<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件名包含
+<code>666</code> 的所有文件</li>
+<li>找到 <code>/tmp</code> 目录及其所有子目录下，文件内容包含
+<code>666</code> 的所有文件</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="bu">cd</span> /tmp <span class="kw">&amp;&amp;</span> <span class="kw">for</span> <span class="ex">i</span> in <span class="va">$(</span><span class="fu">seq</span> 0 1024<span class="va">)</span><span class="kw">;do</span> <span class="va">dir=</span><span class="st">&quot;test-</span><span class="va">$RANDOM</span><span class="st">&quot;</span>;<span class="fu">mkdir</span> <span class="st">&quot;</span><span class="va">$dir</span><span class="st">&quot;</span><span class="kw">;</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$RANDOM</span><span class="st">&quot;</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$dir</span><span class="st">/</span><span class="va">$dir</span><span class="st">-</span><span class="va">$RANDOM</span><span class="st">&quot;</span><span class="kw">;done</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> /tmp <span class="kw">&amp;&amp;</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="va">$(</span><span class="fu">seq</span> 0 1024<span class="va">)</span><span class="kw">;</span><span class="cf">do</span> <span class="va">dir</span><span class="op">=</span><span class="st">&quot;test-</span><span class="va">$RANDOM</span><span class="st">&quot;</span><span class="kw">;</span><span class="fu">mkdir</span> <span class="st">&quot;</span><span class="va">$dir</span><span class="st">&quot;</span><span class="kw">;</span><span class="bu">echo</span> <span class="st">&quot;</span><span class="va">$RANDOM</span><span class="st">&quot;</span> <span class="op">&gt;</span> <span class="st">&quot;</span><span class="va">$dir</span><span class="st">/</span><span class="va">$dir</span><span class="st">-</span><span class="va">$RANDOM</span><span class="st">&quot;</span><span class="kw">;</span><span class="cf">done</span></span></code></pre></div>
 <hr />
 <ul>
-<li>【文件压缩与解压缩】练习课件中 <a href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x02.md.html#/12/1">文件压缩与解压缩</a> 一节所有提到的压缩与解压缩命令的使用方法</li>
-<li>【跟练】 <a href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54">子进程管理实验</a></li>
+<li>【文件压缩与解压缩】练习课件中 <a
+href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x02.md.html#/12/1">文件压缩与解压缩</a>
+一节所有提到的压缩与解压缩命令的使用方法</li>
+<li>【跟练】 <a
+href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54">子进程管理实验</a></li>
 <li>【硬件信息获取】目标系统的 CPU、内存大小、硬盘数量与硬盘容量</li>
 </ul>
 <h1 id="在线实验环境任务清单">在线实验环境任务清单</h1>
 <hr />
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-掌握 scp 的使用场景和使用方法</li>
-<li><input type="checkbox" disabled="" />
-掌握常用文件压缩与解压缩工具的使用方法 tar, 7zip<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-解压缩文件: .rar, .7z, .gz, .tar.gz, .tar, .bz</li>
-<li><input type="checkbox" disabled="" />
-压缩文件与目录: .tar.gz, .7z</li>
+<li><label><input type="checkbox" />掌握 scp
+的使用场景和使用方法</label></li>
+<li><label><input
+type="checkbox" />掌握常用文件压缩与解压缩工具的使用方法 tar,
+7zip</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />解压缩文件: .rar, .7z, .gz, .tar.gz,
+.tar, .bz</label></li>
+<li><label><input type="checkbox" />压缩文件与目录: .tar.gz,
+.7z</label></li>
 </ul></li>
 </ul>
 <hr />
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-掌握按文件名查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件创建时间查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件大小查找文件的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握按文件名找到文件后检索文件内容是否包含指定文本的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握将查找到的文件计算 SHA-256 并将计算结果写入一个指定文本文件的方法</li>
+<li><label><input
+type="checkbox" />掌握按文件名查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件创建时间查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件大小查找文件的方法</label></li>
+<li><label><input
+type="checkbox" />掌握按文件名找到文件后检索文件内容是否包含指定文本的方法</label></li>
+<li><label><input type="checkbox" />掌握将查找到的文件计算 SHA-256
+并将计算结果写入一个指定文本文件的方法</label></li>
 </ul>
 </body>
 </html>

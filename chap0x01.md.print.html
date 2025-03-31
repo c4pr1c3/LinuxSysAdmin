@@ -7,15 +7,172 @@
   <meta name="author" content="黄玮" />
   <title>Linux系统与网络管理</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -50,7 +207,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -63,7 +220,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -76,9 +233,6 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -89,79 +243,101 @@
 <hr />
 <h2 id="gnu-is-not-unix">GNU is NOT Unix</h2>
 <blockquote>
-<p>GNU is a recursive acronym for “GNU’s Not Unix!”, chosen because GNU’s design is Unix-like, but differs from Unix by being free software and containing no Unix code.</p>
+<p>GNU is a recursive acronym for “GNU’s Not Unix!”, chosen because
+GNU’s design is Unix-like, but differs from Unix by being free software
+and containing no Unix code.</p>
 </blockquote>
 <h1 id="linux-与-unix-的渊源">Linux 与 Unix 的渊源</h1>
 <hr />
 <h2 id="里程碑事件---unix">里程碑事件 - Unix</h2>
 <ul>
-<li>1969 年，Ken Thompson(K&amp;T) 和 Dennis Ritchie(D&amp;R) 在贝尔实验室开发了 Unix 操作系统，它是一个多任务、多用户的分时系统，具有高度的可移植性和灵活性。</li>
-<li>1971-1972年，D&amp;R 发明了 C 语言，并用它重写了 Unix 的大部分源代码，使得 Unix 可以在不同的硬件平台上运行。</li>
-<li>1973年，Unix 的第四版发布，这是第一个广泛传播的版本，它被许多学术和研究机构使用和修改，产生了许多不同的 Unix 变体，如 BSD、Solaris、HP-UX、AIX 等。</li>
+<li>1969 年，Ken Thompson(K&amp;T) 和 Dennis Ritchie(D&amp;R)
+在贝尔实验室开发了 Unix
+操作系统，它是一个多任务、多用户的分时系统，具有高度的可移植性和灵活性。</li>
+<li>1971-1972年，D&amp;R 发明了 C 语言，并用它重写了 Unix
+的大部分源代码，使得 Unix 可以在不同的硬件平台上运行。</li>
+<li>1973年，Unix
+的第四版发布，这是第一个广泛传播的版本，它被许多学术和研究机构使用和修改，产生了许多不同的
+Unix 变体，如 BSD、Solaris、HP-UX、AIX 等。</li>
 </ul>
 <hr />
 <h2 id="里程碑事件---gnu">里程碑事件 - GNU</h2>
 <ul>
-<li>1983年，Richard Stallman 发起了 GNU 项目，旨在创建一个完全自由和开源的类 Unix 操作系统，他开发了许多 Unix 的实用程序和工具，如 GCC、Emacs、Bash 等，并制定了 GNU 通用公共许可证（GPL）。</li>
+<li>1983年，Richard Stallman 发起了 GNU
+项目，旨在创建一个完全自由和开源的类 Unix 操作系统，他开发了许多 Unix
+的实用程序和工具，如 GCC、Emacs、Bash 等，并制定了 GNU
+通用公共许可证（GPL）。</li>
 </ul>
 <hr />
 <h2 id="里程碑事件---linux">里程碑事件 - Linux</h2>
 <ul>
-<li>1991年，Linus Torvalds 在芬兰赫尔辛基大学学习时，为了个人兴趣，编写了一个与 Unix 兼容的操作系统内核，他称之为 Linux，并公开了源代码，邀请其他人一起完善。</li>
-<li>1992年，Linux 内核与 GNU 的软件结合，形成了一个完整的自由和开源的操作系统，这就是我们今天所说的 Linux 系统。</li>
-<li>1994年，Linux 内核 1.0 正式版发布，标志着 Linux 系统的成熟，从此 Linux 系统开始在各个领域广泛应用，如服务器、桌面、嵌入式、移动等。</li>
+<li>1991年，Linus Torvalds
+在芬兰赫尔辛基大学学习时，为了个人兴趣，编写了一个与 Unix
+兼容的操作系统内核，他称之为
+Linux，并公开了源代码，邀请其他人一起完善。</li>
+<li>1992年，Linux 内核与 GNU
+的软件结合，形成了一个完整的自由和开源的操作系统，这就是我们今天所说的
+Linux 系统。</li>
+<li>1994年，Linux 内核 1.0 正式版发布，标志着 Linux 系统的成熟，从此
+Linux 系统开始在各个领域广泛应用，如服务器、桌面、嵌入式、移动等。</li>
 </ul>
 <hr />
 <h2 id="linux内核"><a href="https://www.kernel.org/">Linux内核</a></h2>
-<p><a href="https://en.wikipedia.org/wiki/Linux_kernel"><img src="images/chap0x01/LinuxKernel.png" /></a></p>
+<p><a href="https://en.wikipedia.org/wiki/Linux_kernel"><img
+src="images/chap0x01/LinuxKernel.png" /></a></p>
 <h1 id="linux生态圈">Linux生态圈</h1>
 <hr />
 <p><img src="images/chap0x01/LinuxEcosystem.png" /></p>
 <hr />
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;">英文</th>
 <th style="text-align: left;">中文</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Linux Development Community</td>
 <td style="text-align: left;">Linux 开发社区</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">Linux Distribution</td>
 <td style="text-align: left;">Linux 发行版</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Carrier</td>
 <td style="text-align: left;">电信运营商</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">Network Equipment Provider</td>
 <td style="text-align: left;">网络设备提供商</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">OSS(Open-source Software) Community</td>
 <td style="text-align: left;">开源软件社区</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">ISV(Independent Software Vendor)</td>
 <td style="text-align: left;">独立软件开发商</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Hardware Manufacturer</td>
 <td style="text-align: left;">硬件制造商</td>
 </tr>
 </tbody>
 </table>
 <hr />
-<h2 id="linux-生态圈---开发社区与-git">Linux 生态圈 - 开发社区与 Git</h2>
+<h2 id="linux-生态圈---开发社区与-git">Linux 生态圈 - 开发社区与
+Git</h2>
 <ul>
-<li>早期的 Linux 内核开使用发商业化的版本控制软件 BitKeeper 进行代码管理，但开源社区对这个选择充满了质疑</li>
-<li>Linus 本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在 2005 年花了 10 天时间开发完成了第一个 Git 版本</li>
-<li>不同于 CVS、SVN 等集中式版本控制工具，Git 采用 <strong>分布式</strong> 版本管理，不需要服务器端软件</li>
+<li>早期的 Linux 内核开使用发商业化的版本控制软件 BitKeeper
+进行代码管理，但开源社区对这个选择充满了质疑</li>
+<li>Linus
+本人最初是希望避免重复造轮子，但他本人又对现有的版本控制系统均不满意，于是在
+2005 年花了 10 天时间开发完成了第一个 Git 版本</li>
+<li>不同于 CVS、SVN 等集中式版本控制工具，Git 采用
+<strong>分布式</strong> 版本管理，不需要服务器端软件</li>
 </ul>
 <hr />
 <h2 id="git-与-github">Git 与 GitHub</h2>
@@ -170,13 +346,15 @@
 <li>GitHub 是用 Git 做版本控制为全球开源软件作者提供集中的代码托管平台
 <ul>
 <li>针对私有闭源软件项目提供收费的代码托管服务</li>
-<li>目前主流的开源项目普遍将代码托管在 GitHub 上，软件开发过程可以被全世界所有人透明的查看和监管</li>
+<li>目前主流的开源项目普遍将代码托管在 GitHub
+上，软件开发过程可以被全世界所有人透明的查看和监管</li>
 </ul></li>
 </ul>
 <hr />
 <h2 id="github">GitHub</h2>
 <ul>
-<li><a href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
+<li><a
+href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
 <li>Google: github awesome xxxx
 <ul>
 <li>github awesome android</li>
@@ -185,31 +363,39 @@
 </ul></li>
 </ul>
 <hr />
-<h2 id="linux-distros-1">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
+<h2 id="linux-distros-1">Linux生态圈 - <a
+href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
 <ul>
 <li>基于 Linux 内核构建完整操作系统
 <ul>
-<li><a href="https://www.debian.org/">Debian</a>: 非营利性组织运营的开源软件构建发布版本
+<li><a href="https://www.debian.org/">Debian</a>:
+非营利性组织运营的开源软件构建发布版本
 <ul>
-<li><a href="http://www.ubuntu-china.cn/about/">Ubuntu</a>：商业公司Canonical基于Debian构建和维护
+<li><a
+href="http://www.ubuntu-china.cn/about/">Ubuntu</a>：商业公司Canonical基于Debian构建和维护
 <ul>
-<li><a href="https://www.linuxmint.com/about.php">Linux Mint</a>：开源社区维护</li>
+<li><a href="https://www.linuxmint.com/about.php">Linux
+Mint</a>：开源社区维护</li>
 </ul></li>
 </ul></li>
 <li>Fedora
 <ul>
 <li>RHEL: Red Hat Enterprise Linux
 <ul>
-<li><a href="https://blog.centos.org/2020/12/future-is-centos-stream/">CentOS is dead, CentOS Stream <code>is not a replacement</code></a>
+<li><a
+href="https://blog.centos.org/2020/12/future-is-centos-stream/">CentOS
+is dead, CentOS Stream <code>is not a replacement</code></a>
 <ul>
-<li>CentOS Stream, founded in 2019, is “a rolling preview of what’s next in RHEL.”</li>
+<li>CentOS Stream, founded in 2019, is “a rolling preview of what’s next
+in RHEL.”</li>
 </ul></li>
 <li><h2 id="oracle-linux">Oracle Linux</h2></li>
 </ul></li>
 </ul></li>
 </ul></li>
 </ul>
-<h2 id="linux-distros-2">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
+<h2 id="linux-distros-2">Linux生态圈 - <a
+href="https://en.wikipedia.org/wiki/Comparison_of_Linux_distributions">发行版</a></h2>
 <ul>
 <li>基于 Linux 内核构建完整操作系统
 <ul>
@@ -227,25 +413,31 @@
 </ul></li>
 </ul>
 <hr />
-<h2 id="linux-distros-3">Linux生态圈 - <a href="https://en.wikipedia.org/wiki/List_of_Linux_distributions">发行版</a></h2>
-<p><a href="http://tuxradar.com/content/best-distro-2011"><img src="images/chap0x01/LinuxPublisherComparison.jpg" /></a></p>
+<h2 id="linux-distros-3">Linux生态圈 - <a
+href="https://en.wikipedia.org/wiki/List_of_Linux_distributions">发行版</a></h2>
+<p><a href="http://tuxradar.com/content/best-distro-2011"><img
+src="images/chap0x01/LinuxPublisherComparison.jpg" /></a></p>
 <hr />
 <h3 id="内核gnu-与-发行版">内核、GNU 与 发行版</h3>
 <p><img src="images/chap0x01/linux-gnu-distro.png" /></p>
 <hr />
 <h2 id="linux生态圈---lsb">Linux生态圈 - LSB</h2>
 <ul>
-<li><a href="https://wiki.linuxfoundation.org/lsb/start">Linux Standard Base, LSB</a></li>
+<li><a href="https://wiki.linuxfoundation.org/lsb/start">Linux Standard
+Base, LSB</a></li>
 <li>愿景和使命
 <ul>
-<li>当Linux成为一个平台之后，应用软件开发者希望实现 <strong>write once</strong> (on one Linux distribution will) <strong>run everywhere</strong> (on other Linux distributions)</li>
+<li>当Linux成为一个平台之后，应用软件开发者希望实现 <strong>write
+once</strong> (on one Linux distribution will) <strong>run
+everywhere</strong> (on other Linux distributions)</li>
 <li>不仅如此，应用软件开发者希望平台的升级更新不要影响到他们已完成代码的可用性和兼容性</li>
 </ul></li>
 </ul>
 <hr />
 <h2 id="linux生态圈---cgl">Linux生态圈 - CGL</h2>
 <ul>
-<li><a href="https://wiki.linuxfoundation.org/cgl/start">Carrier Grade Linux, CGL</a> ：电信运营商级Linux</li>
+<li><a href="https://wiki.linuxfoundation.org/cgl/start">Carrier Grade
+Linux, CGL</a> ：电信运营商级Linux</li>
 <li>愿景和使命
 <ul>
 <li>调研网络设备提供商和电信运营商的需求并为Linux发行版厂商制定实现规范</li>
@@ -253,7 +445,8 @@
 </ul></li>
 </ul>
 <hr />
-<h2 id="linux生态圈---cgl-1">Linux生态圈 - <a href="https://www.linuxfoundation.org/sites/lfcorp/files/CGL_5.0_Specification.pdf">CGL</a></h2>
+<h2 id="linux生态圈---cgl-1">Linux生态圈 - <a
+href="https://www.linuxfoundation.org/sites/lfcorp/files/CGL_5.0_Specification.pdf">CGL</a></h2>
 <p>需求类别</p>
 <ul>
 <li>可用性</li>
@@ -264,22 +457,31 @@
 <li>硬件</li>
 <li>安全</li>
 </ul>
-<h1 id="oss-open-source-software-community-开源软件社区">OSS (Open-source Software) Community 开源软件社区</h1>
+<h1 id="oss-open-source-software-community-开源软件社区">OSS
+(Open-source Software) Community 开源软件社区</h1>
 <hr />
 <ul>
-<li><a href="https://github.com/open-source">The largest open source community in the world on GitHub</a></li>
-<li><a href="https://opensource.org/licenses">Open Source Licenses</a></li>
+<li><a href="https://github.com/open-source">The largest open source
+community in the world on GitHub</a></li>
+<li><a href="https://opensource.org/licenses">Open Source
+Licenses</a></li>
 </ul>
-<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img src="images/chap0x01/OpenSourceInTheEnterprise.png" /></a></p>
+<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img
+src="images/chap0x01/OpenSourceInTheEnterprise.png" /></a></p>
 <hr />
-<h2 id="isvindependent-software-vendor-独立软件开发商">ISV(Independent Software Vendor) 独立软件开发商</h2>
-<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img src="images/chap0x01/OpenSourceISV.png" /></a></p>
+<h2 id="isvindependent-software-vendor-独立软件开发商">ISV(Independent
+Software Vendor) 独立软件开发商</h2>
+<p><a href="http://events.linuxfoundation.org/sites/events/files/slides/lcna15_linuxone.pdf"><img
+src="images/chap0x01/OpenSourceISV.png" /></a></p>
 <hr />
-<h2 id="hardware-manufacturer-硬件制造商">Hardware Manufacturer 硬件制造商</h2>
+<h2 id="hardware-manufacturer-硬件制造商">Hardware Manufacturer
+硬件制造商</h2>
 <ul>
-<li><a href="https://community.linuxmint.com/hardware">Hardware on LinuxMint</a></li>
+<li><a href="https://community.linuxmint.com/hardware">Hardware on
+LinuxMint</a></li>
 <li><a href="https://certification.ubuntu.com/">Ubuntu 认证硬件</a></li>
-<li><a href="https://wiki.debian.org/Hardware">Hardware on Debian</a></li>
+<li><a href="https://wiki.debian.org/Hardware">Hardware on
+Debian</a></li>
 <li><a href="https://hardware.redhat.com">Hardware on RedHat</a></li>
 </ul>
 <h1 id="开源与商业化">开源与商业化</h1>
@@ -293,29 +495,36 @@
 <hr />
 <h2 id="linux-foundation">Linux基金会</h2>
 <ul>
-<li>孵化了<a href="https://www.linuxfoundation.org/projects">大量知名开源项目</a>
+<li>孵化了<a
+href="https://www.linuxfoundation.org/projects">大量知名开源项目</a>
 <ul>
 <li>例如：KVM、Xen、nodejs、Open vSwitch等</li>
 </ul></li>
-<li>Linux基金会采用的是<a href="https://www.linuxfoundation.org/about/bylaws">会员制，分为：准会员、银级、金级、白金级四个等级，白金级是最高等级</a>。
+<li>Linux基金会采用的是<a
+href="https://www.linuxfoundation.org/about/bylaws">会员制，分为：准会员、银级、金级、白金级四个等级，白金级是最高等级</a>。
 <ul>
-<li><a href="https://www.linuxfoundation.org/members/corporate">白金会员（年费50万美元）：思科、富士通、惠普企业、华为、IBM、英特尔、NEC、甲骨文、高通、三星和微软</a></li>
+<li><a
+href="https://www.linuxfoundation.org/members/corporate">白金会员（年费50万美元）：思科、富士通、惠普企业、华为、IBM、英特尔、NEC、甲骨文、高通、三星和微软</a></li>
 <li>黄金会员（年费10万美元）</li>
 <li>银级会员，按员工数量规模浮动5千美元/年 ～ 2万美元/年</li>
 <li>准会员：非盈利组织和政府实体才可加入，无投票权，费用采取审核批准制（免费与否不固定）</li>
 </ul></li>
 </ul>
 <hr />
-<h2 id="openinfra-1"><a href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
+<h2 id="openinfra-1"><a
+href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
 <ul>
 <li>OpenStack由NASA（美国国家航空航天局）和Rackspace合作研发并发起，旨在为公共及私有云的建设与管理提供软件的开源项目</li>
-<li>2020年10月正式升级为：开源基础设施基金会 - OIF (Open Infrastructure Foundation)</li>
+<li>2020年10月正式升级为：开源基础设施基金会 - OIF (Open Infrastructure
+Foundation)</li>
 <li>截止2017年2月，共有来自全球180个国家超过6万名独立会员。截止2021年2月，会员数已超过10万人</li>
 </ul>
 <hr />
-<h2 id="openinfra-2"><a href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
+<h2 id="openinfra-2"><a
+href="https://www.openstack.org/foundation/">OpenStack基金会</a></h2>
 <ul>
-<li><a href="https://www.openstack.org/join/">白金会员</a>：50万美元/年起步，2名全职工程师贡献</li>
+<li><a
+href="https://www.openstack.org/join/">白金会员</a>：50万美元/年起步，2名全职工程师贡献</li>
 <li>黄金会员：5万 ～20万美元/年，按照企业净收入的0.025%为参考</li>
 <li>企业赞助：创业公司1万美元/年起，其他公司2.5万美元/年起</li>
 <li>其他主要收入方式：认证、培训、商业化服务支持（安装、部署、架构、集成、定制开发等）</li>
@@ -323,33 +532,46 @@
 <hr />
 <h2 id="apache">Apache</h2>
 <ul>
-<li>Apache软件基金会，简称为ASF，它支持的Apache项目与子项目中，所发行的软件产品都需要遵循Apache许可证（Apache License）。</li>
-<li>目前其已经监管了<a href="https://www.apache.org/index.html#projects-list">数百个开源项目</a>，其中的知名项目包括：Apache HTTP Server、Hadoop、Spark、Kafka、Groovy、Struts等。</li>
-<li><a href="https://www.apache.org/foundation/sponsorship.html">会员赞助制</a>，这里是<a href="https://www.apache.org/foundation/thanks.html">赞助商名单致谢清单</a>
+<li>Apache软件基金会，简称为ASF，它支持的Apache项目与子项目中，所发行的软件产品都需要遵循Apache许可证（Apache
+License）。</li>
+<li>目前其已经监管了<a
+href="https://www.apache.org/index.html#projects-list">数百个开源项目</a>，其中的知名项目包括：Apache
+HTTP Server、Hadoop、Spark、Kafka、Groovy、Struts等。</li>
+<li><a
+href="https://www.apache.org/foundation/sponsorship.html">会员赞助制</a>，这里是<a
+href="https://www.apache.org/foundation/thanks.html">赞助商名单致谢清单</a>
 <ul>
 <li>白金：12.5万美元/年</li>
 <li>黄金：5万美元/年</li>
 <li>白银：2.5万美元/年</li>
 <li>青铜：6千美元/年</li>
 </ul></li>
-<li><a href="https://www.apache.org/foundation/contributing.html">任性打赏捐赠</a></li>
+<li><a
+href="https://www.apache.org/foundation/contributing.html">任性打赏捐赠</a></li>
 </ul>
 <hr />
-<h2 id="canonical"><a href="https://www.canonical.com/">Canonical</a></h2>
+<h2 id="canonical"><a
+href="https://www.canonical.com/">Canonical</a></h2>
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Canonical_(company)">科能软件有限公司（Canonical Ltd.） 是一家私人公司，由南非的企业家马克·沙特尔沃思创建，主要为了促进开源软件项目。</a></li>
+<li><a
+href="https://en.wikipedia.org/wiki/Canonical_(company)">科能软件有限公司（Canonical
+Ltd.）
+是一家私人公司，由南非的企业家马克·沙特尔沃思创建，主要为了促进开源软件项目。</a></li>
 <li>Canonical在曼岛登记注册，其雇员分布在世界各地，其主要办事处在伦敦，在波士顿、圣保罗、蒙特利尔、上海、台北和马恩岛也有分公司。</li>
 <li>订阅制增值服务：<a href="https://ubuntu.com/pro">Ubuntu Pro</a></li>
 <li>主要产品：Ubuntu家族的Linux发行版</li>
 </ul>
-<p>本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS 等其他常用服务器发行版。</p>
+<p>本课程主要以 Ubuntu 系统为基础实验环境，兼顾 CentOS
+等其他常用服务器发行版。</p>
 <h1 id="ubuntu">Ubuntu</h1>
 <hr />
 <h2 id="不同版本的维护周期规划">不同版本的维护周期规划</h2>
-<p><a href="https://ubuntu.com/about/release-cycle"><img src="images/chap0x01/UbuntuLTS.png" /></a></p>
+<p><a href="https://ubuntu.com/about/release-cycle"><img
+src="images/chap0x01/UbuntuLTS.png" /></a></p>
 <hr />
 <h2 id="长期支持版本">长期支持版本</h2>
-<p><a href="https://ubuntu.com/about/release-cycle"><img src="images/chap0x01/UbuntuLTS-ESM.png" /></a></p>
+<p><a href="https://ubuntu.com/about/release-cycle"><img
+src="images/chap0x01/UbuntuLTS-ESM.png" /></a></p>
 <h1 id="ubuntu-install">Ubuntu安装</h1>
 <hr />
 <ul>
@@ -366,8 +588,10 @@
 <li>新手避免直接在物理主机上安装Linux，推荐在虚拟机里安装（直接挂载使用iso文件）</li>
 <li>磁盘容量准备
 <ul>
-<li><a href="https://www.ubuntu.com/download/desktop/install-ubuntu-desktop">桌面版</a>：至少20GB</li>
-<li><a href="https://www.ubuntu.com/download/server/install-ubuntu-server">服务器</a>：至少10GB</li>
+<li><a
+href="https://www.ubuntu.com/download/desktop/install-ubuntu-desktop">桌面版</a>：至少20GB</li>
+<li><a
+href="https://www.ubuntu.com/download/server/install-ubuntu-server">服务器</a>：至少10GB</li>
 <li>虚拟机安装推荐使用<strong>动态分配</strong>的虚拟硬盘，预分配80GB磁盘空间</li>
 </ul></li>
 <li>优先选择64位系统</li>
@@ -375,7 +599,8 @@
 <hr />
 <h2 id="安装中">安装中</h2>
 <ul>
-<li>推荐在安装时软件包选择界面勾选（使用<strong>空格键</strong>确认勾选，使用<strong>方向键</strong>移动菜单光标）安装<strong>OpenSSH server</strong></li>
+<li>推荐在安装时软件包选择界面勾选（使用<strong>空格键</strong>确认勾选，使用<strong>方向键</strong>移动菜单光标）安装<strong>OpenSSH
+server</strong></li>
 <li><del>
 建议断网安装，避免安装时由于网速慢、联网更新会导致整个安装过程时间较长
 </del></li>
@@ -387,21 +612,32 @@
 </ul>
 <p>对于使用虚拟机软件安装的虚拟机系统，建议使用虚拟机自带的虚拟机导出功能或直接备份虚拟硬盘文件。</p>
 <hr />
-<h3 id="virtualbox-专属的基础镜像制作">Virtualbox 专属的基础镜像制作</h3>
-<p>关键词：<code>介质管理</code> - <code>虚拟硬盘</code> - <code>多重加载</code></p>
+<h3 id="virtualbox-专属的基础镜像制作">Virtualbox
+专属的基础镜像制作</h3>
+<p>关键词：<code>介质管理</code> - <code>虚拟硬盘</code> -
+<code>多重加载</code></p>
 <hr />
 <h2 id="安装过程自动化无人值守">安装过程自动化（无人值守）</h2>
 <ul>
-<li><a href="https://wiki.debian.org/DebianInstaller/Preseed">Preseed by Debian</a>
+<li><a href="https://wiki.debian.org/DebianInstaller/Preseed">Preseed by
+Debian</a>
 <ul>
-<li><a href="https://help.ubuntu.com/community/InstallCDCustomization">基于官方iso格式安装镜像制作无人值守定制安装镜像</a></li>
-<li><a href="https://help.ubuntu.com/lts/installation-guide/amd64/apb.html">Automating the installation using preseeding by Ubuntu</a>
+<li><a
+href="https://help.ubuntu.com/community/InstallCDCustomization">基于官方iso格式安装镜像制作无人值守定制安装镜像</a></li>
+<li><a
+href="https://help.ubuntu.com/lts/installation-guide/amd64/apb.html">Automating
+the installation using preseeding by Ubuntu</a>
 <ul>
-<li><a href="https://help.ubuntu.com/lts/installation-guide/example-preseed.txt">Ubuntu官方提供的preseed示例文件</a></li>
+<li><a
+href="https://help.ubuntu.com/lts/installation-guide/example-preseed.txt">Ubuntu官方提供的preseed示例文件</a></li>
 </ul></li>
 </ul></li>
-<li>基于 <a href="https://github.com/CanonicalLtd/subiquity">subiquity</a> - Ubuntu 18.04+ only</li>
-<li><a href="http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html">Kickstart by RedHat</a>
+<li>基于 <a
+href="https://github.com/CanonicalLtd/subiquity">subiquity</a> - Ubuntu
+18.04+ only</li>
+<li><a
+href="http://pykickstart.readthedocs.io/en/latest/kickstart-docs.html">Kickstart
+by RedHat</a>
 <ul>
 <li><a href="http://cobbler.github.io/">Cobbler</a></li>
 </ul></li>
@@ -432,20 +668,21 @@
 </ul>
 <h1 id="内置帮助系统">内置帮助系统</h1>
 <hr />
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">man</span> man</span>
-<span id="cb1-2"><a href="#cb1-2"></a></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="ex">...</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="ex">The</span>  table below shows the section numbers of the manual followed by the types of pages they contain.</span>
-<span id="cb1-5"><a href="#cb1-5"></a>       <span class="ex">1</span>   Executable programs or shell commands</span>
-<span id="cb1-6"><a href="#cb1-6"></a>       <span class="ex">2</span>   System calls (functions provided by the kernel)</span>
-<span id="cb1-7"><a href="#cb1-7"></a>       <span class="ex">3</span>   Library calls (functions within program libraries)</span>
-<span id="cb1-8"><a href="#cb1-8"></a>       <span class="ex">4</span>   Special files (usually found in /dev)</span>
-<span id="cb1-9"><a href="#cb1-9"></a>       <span class="ex">5</span>   File formats and conventions eg /etc/passwd</span>
-<span id="cb1-10"><a href="#cb1-10"></a>       <span class="ex">6</span>   Games</span>
-<span id="cb1-11"><a href="#cb1-11"></a>       <span class="ex">7</span>   Miscellaneous (including macro packages and conventions), <span class="ex">e.g.</span> man(7), <span class="fu">groff</span>(7)</span>
-<span id="cb1-12"><a href="#cb1-12"></a>       <span class="ex">8</span>   System administration commands (usually only for root)</span>
-<span id="cb1-13"><a href="#cb1-13"></a>       <span class="ex">9</span>   Kernel routines [Non standard]</span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="ex">...</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">man</span> man</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">The</span>  table below shows the section numbers of the manual followed by the types of pages they contain.</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>       <span class="ex">1</span>   Executable programs or shell commands</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>       <span class="ex">2</span>   System calls <span class="er">(</span><span class="ex">functions</span> provided by the kernel<span class="kw">)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>       <span class="ex">3</span>   Library calls <span class="er">(</span><span class="ex">functions</span> within program libraries<span class="kw">)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>       <span class="ex">4</span>   Special files <span class="er">(</span><span class="ex">usually</span> found in /dev<span class="kw">)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>       <span class="ex">5</span>   File formats and conventions eg /etc/passwd</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>       <span class="ex">6</span>   Games</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>       <span class="ex">7</span>   Miscellaneous <span class="er">(</span><span class="ex">including</span> macro packages and conventions<span class="kw">)</span><span class="ex">,</span> e.g. man<span class="er">(</span><span class="ex">7</span><span class="kw">)</span><span class="ex">,</span> groff<span class="er">(</span><span class="ex">7</span><span class="kw">)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>       <span class="ex">8</span>   System administration commands <span class="er">(</span><span class="ex">usually</span> only for root<span class="kw">)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>       <span class="ex">9</span>   Kernel routines [Non standard]</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span></span></code></pre></div>
 <hr />
 <ul>
 <li>使用<strong>h</strong>获取man帮助系统中的内置帮助（快捷键映射定义），学习如何使用man</li>
@@ -455,27 +692,31 @@
 </ul>
 <hr />
 <p>man的常用命令行参数</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># 安装开发相关的manual</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="fu">sudo</span> apt-get install manpages-dev</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># 在所有section中查找主题为printf的手册页</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="fu">man</span> -a printf</span>
-<span id="cb2-6"><a href="#cb2-6"></a></span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co"># 在所有manual的正文中查找printf关键词</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="fu">man</span> -k printf</span>
-<span id="cb2-9"><a href="#cb2-9"></a></span>
-<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># 直接查看系统调用类帮助文档中主题名为printf的手册页</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="fu">man</span> 3 printf</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装开发相关的manual</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt-get install manpages-dev</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 在所有section中查找主题为printf的手册页</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">man</span> <span class="at">-a</span> printf</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 在所有manual的正文中查找printf关键词</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">man</span> <span class="at">-k</span> printf</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 直接查看系统调用类帮助文档中主题名为printf的手册页</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="fu">man</span> 3 printf</span></code></pre></div>
 <hr />
 <h2 id="内置帮助系统---惯例">内置帮助系统 - 惯例</h2>
 <ul>
-<li>大多数命令行程序都支持 <code>-h</code> 或 <code>--help</code> 参数来获取内置的简洁使用帮助</li>
+<li>大多数命令行程序都支持 <code>-h</code> 或 <code>--help</code>
+参数来获取内置的简洁使用帮助</li>
 </ul>
 <h1 id="shell">Shell</h1>
 <hr />
-<h2 id="什么是shell"><a href="https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html">什么是shell</a></h2>
+<h2 id="什么是shell"><a
+href="https://www.gnu.org/software/bash/manual/html_node/What-is-a-shell_003f.html">什么是shell</a></h2>
 <ul>
-<li>shell 就是一个执行命令的「宏」处理器：输入的文本和符号被扩展为更「宏大」的表达式</li>
+<li>shell
+就是一个执行命令的「宏」处理器：输入的文本和符号被扩展为更「宏大」的表达式</li>
 <li>Unix shell 即是一个「命令解释器」，也是一种「编程语言」</li>
 <li>shell 的运行模式：交互模式、非交互模式
 <ul>
@@ -485,10 +726,12 @@
 <li>shell 同时支持同步或异步执行指令</li>
 </ul>
 <hr />
-<h2 id="shell家族"><a href="https://en.wikipedia.org/wiki/Unix_shell">shell家族</a></h2>
+<h2 id="shell家族"><a
+href="https://en.wikipedia.org/wiki/Unix_shell">shell家族</a></h2>
 <p><img src="images/chap0x01/unix-shells-large.png" /></p>
 <hr />
-<h2 id="命令行快捷键"><a href="http://billie66.github.io/TLCL/book/chap09.html">命令行快捷键</a></h2>
+<h2 id="命令行快捷键"><a
+href="http://billie66.github.io/TLCL/book/chap09.html">命令行快捷键</a></h2>
 <ul>
 <li>自动补全
 <ul>
@@ -525,8 +768,9 @@
 </ul></li>
 <li>SSH 跳板与堡垒主机</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># ProxyCommand</span></span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="fu">man</span> ssh_config</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ProxyCommand</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">man</span> ssh_config</span></code></pre></div>
 <ul>
 <li><code>SSH服务器安全加固</code></li>
 </ul>
@@ -539,9 +783,12 @@
 </ul></li>
 <li>Windows
 <ul>
-<li><a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux</a></li>
+<li><a
+href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows
+Subsystem for Linux</a></li>
 <li><a href="http://www.putty.org/">putty</a></li>
-<li><a href="https://www.netsarang.com/download/down_xsh.html">xshell</a></li>
+<li><a
+href="https://www.netsarang.com/download/down_xsh.html">xshell</a></li>
 <li><a href="http://mobaxterm.mobatek.net/">MobaXterm</a></li>
 <li><a href="https://gitforwindows.org/">git bash</a></li>
 </ul></li>
@@ -554,14 +801,30 @@
 <h1 id="参考文献">参考文献</h1>
 <hr />
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/History_of_Linux">History of Linux from WikiPedia</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/Arch_compared_to_other_distributions_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Arch compared to other distributions</a></li>
-<li><a href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
-<li><a href="https://help.ubuntu.com/lts/installation-guide/">Ubuntu Installation Guide（官方文档）</a></li>
-<li><a href="https://builtvisible.com/the-ubuntu-installation-guide/">How to install Ubuntu - The Ubuntu Installation Guide</a></li>
-<li><a href="http://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu">How do I create an EFI-bootable ISO of a customized version of Ubuntu?</a></li>
-<li><a href="http://askubuntu.com/questions/806820/how-do-i-create-a-completely-unattended-install-of-ubuntu-desktop-16-04-1-lts">How do I create a completely unattended install of Ubuntu Desktop 16.04.1 LTS?</a></li>
-<li><a href="http://billie66.github.io/TLCL/index.html">快乐的Linux命令行</a> | <a href="http://linuxcommand.org/tlcl.php">The Linux Command Line</a></li>
+<li><a href="https://en.wikipedia.org/wiki/History_of_Linux">History of
+Linux from WikiPedia</a></li>
+<li><a
+href="https://wiki.archlinux.org/index.php/Arch_compared_to_other_distributions_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">Arch
+compared to other distributions</a></li>
+<li><a
+href="https://www.zhihu.com/topic/19566035">GitHub在知乎上的主题索引</a></li>
+<li><a href="https://help.ubuntu.com/lts/installation-guide/">Ubuntu
+Installation Guide（官方文档）</a></li>
+<li><a
+href="https://builtvisible.com/the-ubuntu-installation-guide/">How to
+install Ubuntu - The Ubuntu Installation Guide</a></li>
+<li><a
+href="http://askubuntu.com/questions/457528/how-do-i-create-an-efi-bootable-iso-of-a-customized-version-of-ubuntu">How
+do I create an EFI-bootable ISO of a customized version of
+Ubuntu?</a></li>
+<li><a
+href="http://askubuntu.com/questions/806820/how-do-i-create-a-completely-unattended-install-of-ubuntu-desktop-16-04-1-lts">How
+do I create a completely unattended install of Ubuntu Desktop 16.04.1
+LTS?</a></li>
+<li><a
+href="http://billie66.github.io/TLCL/index.html">快乐的Linux命令行</a> |
+<a href="http://linuxcommand.org/tlcl.php">The Linux Command
+Line</a></li>
 </ul>
 </body>
 </html>

@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -46,48 +55,60 @@
   <p class="author">黄玮</p>
 </section>
 
+<section>
 <section id="第三章实验" class="title-slide slide level1">
 <h1>第三章：（实验）</h1>
 
 </section>
-<section class="slide level6">
-
-<p>课件中的实验任务请自主在有 root 权限的 Linux 主机环境中完成。</p>
-</section>
-
-<section id="在线实验环境任务清单" class="title-slide slide level1">
-<h1>在线实验环境任务清单</h1>
-
-</section>
-<section class="slide level6">
-
-<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-自主探索课件中的实验任务哪些需要 root 权限才能完成</li>
-<li><input type="checkbox" disabled="" />
-自主探索课件中的实验任务哪些无需 root 权限也能完成</li>
+<section id="实验报告任务清单" class="slide level2">
+<h2>实验报告任务清单</h2>
+<ul>
+<li>在 <code>本地虚拟机</code> 中完成课件 <a
+href="https://c4pr1c3.github.io/LinuxSysAdmin/chap0x03.md.html#/16">本章完成后的自查清单</a>
+所有实验任务，实验操作记录在实验报告中。</li>
+<li>完整实验操作过程通过 <a href="https://asciinema.org">asciinema</a>
+进行录像并上传，在实验报告中引用 asciinema 在线可访问链接。</li>
+<li>对于 <code>asciinema</code> 已进行操作的实验任务，实验报告中需提供
+<code>asciinema</code>
+在线可访问链接；一个任务对应一个在线链接；相应的实验操作可以在实验报告中简要描述。</li>
+<li>对于 <code>asciinema</code>
+不方便呈现的操作步骤，可以通过图文并茂的方式进行描述说明。</li>
 </ul>
 </section>
-<section class="slide level6">
+<section id="在线实验环境任务清单" class="slide level2">
+<h2>在线实验环境任务清单</h2>
+<p><strong>无需写入实验报告</strong> ，只需在
+<code>共享课程服务器</code>
+完成实验任务即可，相应操作记录作为平时成绩计算的日志依据。</p>
+</section>
+<section class="slide level2">
 
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-网络故障排查初步<ul class="task-list">
-<li><input type="checkbox" disabled="" />
-查看网络接口状况和网络基本信息 ip a, ip link</li>
-<li><input type="checkbox" disabled="" />
-查看局域网基本信息 ip neigh</li>
-<li><input type="checkbox" disabled="" />
-查看路由表和默认路由 ip r</li>
-<li><input type="checkbox" disabled="" />
-检查网络层连通性 ping</li>
-<li><input type="checkbox" disabled="" />
-检查从源到目的的路由链路信息 mtr, tracepath</li>
-<li><input type="checkbox" disabled="" />
-检查域名解析故障 resolvectl, dig</li>
+<li><label><input type="checkbox" />自主探索课件中的实验任务哪些需要
+root 权限才能完成</label></li>
+<li><label><input type="checkbox" />自主探索课件中的实验任务哪些无需
+root 权限也能完成</label></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul class="task-list">
+<li><label><input type="checkbox" />网络故障排查初步</label>
+<ul class="task-list">
+<li><label><input type="checkbox" />查看网络接口状况和网络基本信息 ip a,
+ip link</label></li>
+<li><label><input type="checkbox" />查看局域网基本信息 ip
+neigh</label></li>
+<li><label><input type="checkbox" />查看路由表和默认路由 ip
+r</label></li>
+<li><label><input type="checkbox" />检查网络层连通性 ping</label></li>
+<li><label><input type="checkbox" />检查从源到目的的路由链路信息 mtr,
+tracepath</label></li>
+<li><label><input type="checkbox" />检查域名解析故障 resolvectl,
+dig</label></li>
 </ul></li>
 </ul>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -99,12 +120,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

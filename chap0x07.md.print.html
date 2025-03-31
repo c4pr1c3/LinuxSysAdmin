@@ -7,15 +7,172 @@
   <meta name="author" content="黄玮" />
   <title>Linux系统与网络管理</title>
   <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
     pre > code.sourceCode { white-space: pre; position: relative; }
     pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
     div.sourceCode { margin: 1em 0; }
     pre.sourceCode { margin: 0; }
@@ -50,7 +207,7 @@
     code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
     code span.at { color: #7d9029; } /* Attribute */
     code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
+    code span.bu { color: #008000; } /* BuiltIn */
     code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
     code span.ch { color: #4070a0; } /* Char */
     code span.cn { color: #880000; } /* Constant */
@@ -63,7 +220,7 @@
     code span.ex { } /* Extension */
     code span.fl { color: #40a070; } /* Float */
     code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
     code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
     code span.kw { color: #007020; font-weight: bold; } /* Keyword */
     code span.op { color: #666666; } /* Operator */
@@ -76,9 +233,6 @@
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
   </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
 <header id="title-block-header">
@@ -88,9 +242,14 @@
 <h1 id="第七章dhcp与dns服务">第七章：DHCP与DNS服务</h1>
 <hr />
 <h2 id="just-get-network-works">Just Get Network Works</h2>
-<h1 id="动态主机配置协议-dhcp"><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">动态主机配置协议 (DHCP)</a></h1>
+<h1 id="动态主机配置协议-dhcp"><a
+href="https://help.ubuntu.com/lts/serverguide/dhcp.html">动态主机配置协议
+(DHCP)</a></h1>
 <hr />
-<p>动态主机配置协议 (DHCP) 是一种网络服务，相对于手工为每台网络主机配置，它使网络主机可能自动被服务器指定设置。被配置成 DHCP 客户端的计算机并不能控制其从 DHCP 服务器得到的设置，且该配置对于计算机用户来说是透明的。</p>
+<p>动态主机配置协议 (DHCP)
+是一种网络服务，相对于手工为每台网络主机配置，它使网络主机可能自动被服务器指定设置。被配置成
+DHCP 客户端的计算机并不能控制其从 DHCP
+服务器得到的设置，且该配置对于计算机用户来说是透明的。</p>
 <p>由 DHCP 服务器提供给 DHCP 客户端最常用的设置包括：</p>
 <ul>
 <li>IP地址和子网掩码</li>
@@ -104,7 +263,8 @@
 <li>NTP时间服务器</li>
 <li>打印服务器</li>
 </ul>
-<h1 id="dhcp服务器的常见客户端地址配置策略">DHCP服务器的常见客户端地址配置策略</h1>
+<h1
+id="dhcp服务器的常见客户端地址配置策略">DHCP服务器的常见客户端地址配置策略</h1>
 <hr />
 <p><strong>手工分配（基于客户端网卡MAC地址）</strong></p>
 <p>DHCP服务器根据网络中每个联网网卡的物理地址为其提供一个固定的配置，当使用该网卡的客户端发起DHCP请求时可以确保客户端网络地址自动配置的确定性。</p>
@@ -115,19 +275,29 @@
 <p><strong>自动分配</strong></p>
 <p>DHCP服务器通常是给客户端分配一个临时地址，但也能设置有效期为永不过期，从而达到客户端既能自动获取IP地址又能永久使用的效果。</p>
 <hr />
-<h2 id="rogue-dhcp"><a href="https://en.wikipedia.org/wiki/Rogue_DHCP">Rogue DHCP</a></h2>
+<h2 id="rogue-dhcp"><a
+href="https://en.wikipedia.org/wiki/Rogue_DHCP">Rogue DHCP</a></h2>
 <p><img src="images/chap0x07/rogue-dhcp.png" /></p>
 <hr />
-<h2 id="防御-rogue-dhcp-dhcp-snooping">防御 <a href="https://en.wikipedia.org/wiki/DHCP_snooping">Rogue DHCP: DHCP snooping</a></h2>
+<h2 id="防御-rogue-dhcp-dhcp-snooping">防御 <a
+href="https://en.wikipedia.org/wiki/DHCP_snooping">Rogue DHCP: DHCP
+snooping</a></h2>
 <p><img src="images/chap0x07/dhcp-snooping.png" /></p>
-<h1 id="dns"><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS</a></h1>
+<h1 id="dns"><a
+href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS</a></h1>
 <hr />
-<p>DNS(域名解析服务)是将IP地址与FQDN(fully qualified domain name，全称域名)相互转换的一种互联网服务。</p>
+<p>DNS(域名解析服务)是将IP地址与FQDN(fully qualified domain
+name，全称域名)相互转换的一种互联网服务。</p>
 <hr />
-<h2 id="bind9服务的主要角色"><strong><em>BIND9</em></strong>服务的主要角色</h2>
-<p>When configured as a caching nameserver BIND9 will find the answer to name queries and remember the answer when the domain is queried again.</p>
-<p>As a primary master server BIND9 reads the data for a zone from a file on it’s host and is authoritative for that zone.</p>
-<p>In a secondary master configuration BIND9 gets the zone data from another nameserver authoritative for the zone.</p>
+<h2
+id="bind9服务的主要角色"><strong><em>BIND9</em></strong>服务的主要角色</h2>
+<p>When configured as a caching nameserver BIND9 will find the answer to
+name queries and remember the answer when the domain is queried
+again.</p>
+<p>As a primary master server BIND9 reads the data for a zone from a
+file on it’s host and is authoritative for that zone.</p>
+<p>In a secondary master configuration BIND9 gets the zone data from
+another nameserver authoritative for the zone.</p>
 <h1 id="常见dhcp服务器">常见DHCP服务器</h1>
 <hr />
 <ul>
@@ -161,83 +331,88 @@
 <p><img src="images/chap0x07/dnsmasq-exp-network.png" /></p>
 <hr />
 <h2 id="主要操作步骤">主要操作步骤</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># 安装 dnsmasq</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install -y dnsmasq</span>
-<span id="cb1-3"><a href="#cb1-3"></a></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># 如果遇到如下错误提示信息</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Job for dnsmasq.service failed because the control process exited with error code.</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># See &quot;systemctl status dnsmasq.service&quot; and &quot;journalctl -xe&quot; for details.</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># invoke-rc.d: initscript dnsmasq, action &quot;start&quot; failed.</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># ● dnsmasq.service - dnsmasq - A lightweight DHCP and caching DNS server</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#      Loaded: loaded (/lib/systemd/system/dnsmasq.service; enabled; vendor preset: enabled)</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#           Active: failed (Result: exit-code) since Mon 2021-05-03 02:41:17 UTC; 11ms ago</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co">#               Process: 17812 ExecStartPre=/usr/sbin/dnsmasq --test (code=exited, status=0/SUCCESS)</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co">#                   Process: 17813 ExecStart=/etc/init.d/dnsmasq systemd-exec (code=exited, status=2)</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co"># </span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#                   May 03 02:41:16 cuc-lab systemd[1]: Starting dnsmasq - A lightweight DHCP and caching DNS server...</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a><span class="co">#                   May 03 02:41:16 cuc-lab dnsmasq[17812]: dnsmasq: syntax check OK.</span></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: dnsmasq: failed to create listening socket for port 53: Address already in use</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: failed to create listening socket for port 53: Address already in use</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: FAILED to start up</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Control process exited, code=exited, status=2/INVALIDARGUMENT</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Failed with result &#39;exit-code&#39;.</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: Failed to start dnsmasq - A lightweight DHCP and caching DNS server.</span></span>
-<span id="cb1-22"><a href="#cb1-22"></a></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co"># 检查 53 端口监听占用情况</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a><span class="fu">sudo</span> lsof -i:53 -P -n <span class="kw">|</span> <span class="fu">grep</span> systemd</span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co"># systemd-r  743 systemd-resolve   12u  IPv4  25641      0t0  UDP 127.0.0.53:53</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co"># systemd-r  743 systemd-resolve   13u  IPv4  25642      0t0  TCP 127.0.0.53:53 (LISTEN)</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a></span>
-<span id="cb1-28"><a href="#cb1-28"></a><span class="co"># ref: https://unix.stackexchange.com/questions/304050/how-to-avoid-conflicts-between-dnsmasq-and-systemd-resolved/358485</span></span>
-<span id="cb1-29"><a href="#cb1-29"></a><span class="co"># 禁用 systemd-resolved 内置的 DNS 解析服务 </span></span>
-<span id="cb1-30"><a href="#cb1-30"></a><span class="fu">sudo</span> sed -i.bak <span class="st">&quot;s/#DNSStubListener=yes/DNSStubListener=no/g&quot;</span> /etc/systemd/resolved.conf</span>
-<span id="cb1-31"><a href="#cb1-31"></a><span class="co"># 修改上述配置选项后重启 systemd-resolved 服务使得配置生效</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="fu">sudo</span> systemctl restart systemd-resolved</span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="co"># 再次检查 53 端口监听占用情况</span></span>
-<span id="cb1-35"><a href="#cb1-35"></a><span class="fu">sudo</span> lsof -i:53 -P -n <span class="kw">|</span> <span class="fu">grep</span> systemd</span>
-<span id="cb1-36"><a href="#cb1-36"></a><span class="co"># sudo ss -tunlp -o &quot;sport 53&quot; | grep systemd</span></span>
-<span id="cb1-37"><a href="#cb1-37"></a></span>
-<span id="cb1-38"><a href="#cb1-38"></a><span class="co"># 编辑 /etc/dnsmasq.conf</span></span>
-<span id="cb1-39"><a href="#cb1-39"></a><span class="co"># 配置 dnsmasq 只监听在「内部网络」网卡上</span></span>
-<span id="cb1-40"><a href="#cb1-40"></a><span class="co"># 本实验中对应网卡名称 enp0s9</span></span>
-<span id="cb1-41"><a href="#cb1-41"></a><span class="co"># 先将配置代码写入临时文件</span></span>
-<span id="cb1-42"><a href="#cb1-42"></a><span class="co"># 建议使用宿主机本地默认域名解析服务器地址，此处 114.114.114.114 仅作为示例</span></span>
-<span id="cb1-43"><a href="#cb1-43"></a><span class="fu">cat</span> <span class="op">&lt;&lt; EOF</span> <span class="op">&gt;</span> <span class="ex">/tmp/dnsmasq.conf</span></span>
-<span id="cb1-44"><a href="#cb1-44"></a>interface=enp0s9</span>
-<span id="cb1-45"><a href="#cb1-45"></a>server=114.114.114.114 </span>
-<span id="cb1-46"><a href="#cb1-46"></a>dhcp-range=172.16.233.50,172.16.233.150,255.255.255.0,240h</span>
-<span id="cb1-47"><a href="#cb1-47"></a>EOF</span>
-<span id="cb1-48"><a href="#cb1-48"></a># 然后合并临时文件内容追加到 /etc/dnsmasq.conf</span>
-<span id="cb1-49"><a href="#cb1-49"></a>cat /tmp/dnsmasq.conf | sudo tee -a /etc/dnsmasq.conf</span>
-<span id="cb1-50"><a href="#cb1-50"></a></span>
-<span id="cb1-51"><a href="#cb1-51"></a># 手动配置 enp0s9 为固定 IP</span>
-<span id="cb1-52"><a href="#cb1-52"></a># 先将配置代码写入临时文件</span>
-<span id="cb1-53"><a href="#cb1-53"></a>cat &lt;&lt; EOF &gt; /tmp/01-dhcp.yaml</span>
-<span id="cb1-54"><a href="#cb1-54"></a>network:</span>
-<span id="cb1-55"><a href="#cb1-55"></a>  ethernets:</span>
-<span id="cb1-56"><a href="#cb1-56"></a>    enp0s9:</span>
-<span id="cb1-57"><a href="#cb1-57"></a>      addresses:</span>
-<span id="cb1-58"><a href="#cb1-58"></a>        - 172.16.233.1/24</span>
-<span id="cb1-59"><a href="#cb1-59"></a>  version: 2</span>
-<span id="cb1-60"><a href="#cb1-60"></a>EOF</span>
-<span id="cb1-61"><a href="#cb1-61"></a># 保存配置文件到指定目录</span>
-<span id="cb1-62"><a href="#cb1-62"></a>sudo cp /tmp/01-dhcp.yaml /etc/netplan/01-dhcp.yaml</span>
-<span id="cb1-63"><a href="#cb1-63"></a># 使新配置网卡配置生效</span>
-<span id="cb1-64"><a href="#cb1-64"></a>sudo netplan apply</span>
-<span id="cb1-65"><a href="#cb1-65"></a></span>
-<span id="cb1-66"><a href="#cb1-66"></a># 启用 dnsmasq 服务</span>
-<span id="cb1-67"><a href="#cb1-67"></a>sudo systemctl start dnsmasq</span>
-<span id="cb1-68"><a href="#cb1-68"></a></span>
-<span id="cb1-69"><a href="#cb1-69"></a># 启动 dhcp-client 测试 DHCP 和 DNS 服务是否生效</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装 dnsmasq</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install <span class="at">-y</span> dnsmasq</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 如果遇到如下错误提示信息</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Job for dnsmasq.service failed because the control process exited with error code.</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># See &quot;systemctl status dnsmasq.service&quot; and &quot;journalctl -xe&quot; for details.</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># invoke-rc.d: initscript dnsmasq, action &quot;start&quot; failed.</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ● dnsmasq.service - dnsmasq - A lightweight DHCP and caching DNS server</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#      Loaded: loaded (/lib/systemd/system/dnsmasq.service; enabled; vendor preset: enabled)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#           Active: failed (Result: exit-code) since Mon 2021-05-03 02:41:17 UTC; 11ms ago</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#               Process: 17812 ExecStartPre=/usr/sbin/dnsmasq --test (code=exited, status=0/SUCCESS)</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                   Process: 17813 ExecStart=/etc/init.d/dnsmasq systemd-exec (code=exited, status=2)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:16 cuc-lab systemd[1]: Starting dnsmasq - A lightweight DHCP and caching DNS server...</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:16 cuc-lab dnsmasq[17812]: dnsmasq: syntax check OK.</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: dnsmasq: failed to create listening socket for port 53: Address already in use</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: failed to create listening socket for port 53: Address already in use</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab dnsmasq[17813]: FAILED to start up</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Control process exited, code=exited, status=2/INVALIDARGUMENT</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: dnsmasq.service: Failed with result &#39;exit-code&#39;.</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                   May 03 02:41:17 cuc-lab systemd[1]: Failed to start dnsmasq - A lightweight DHCP and caching DNS server.</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查 53 端口监听占用情况</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> lsof <span class="at">-i:53</span> <span class="at">-P</span> <span class="at">-n</span> <span class="kw">|</span> <span class="fu">grep</span> systemd</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># systemd-r  743 systemd-resolve   12u  IPv4  25641      0t0  UDP 127.0.0.53:53</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># systemd-r  743 systemd-resolve   13u  IPv4  25642      0t0  TCP 127.0.0.53:53 (LISTEN)</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># ref: https://unix.stackexchange.com/questions/304050/how-to-avoid-conflicts-between-dnsmasq-and-systemd-resolved/358485</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 禁用 systemd-resolved 内置的 DNS 解析服务 </span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> sed <span class="at">-i.bak</span> <span class="st">&quot;s/#DNSStubListener=yes/DNSStubListener=no/g&quot;</span> /etc/systemd/resolved.conf</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改上述配置选项后重启 systemd-resolved 服务使得配置生效</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl restart systemd-resolved</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 再次检查 53 端口监听占用情况</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> lsof <span class="at">-i:53</span> <span class="at">-P</span> <span class="at">-n</span> <span class="kw">|</span> <span class="fu">grep</span> systemd</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># sudo ss -tunlp -o &quot;sport 53&quot; | grep systemd</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 编辑 /etc/dnsmasq.conf</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 配置 dnsmasq 只监听在「内部网络」网卡上</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 本实验中对应网卡名称 enp0s9</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 先将配置代码写入临时文件</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 建议使用宿主机本地默认域名解析服务器地址，此处 114.114.114.114 仅作为示例</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&lt;&lt; EOF</span> <span class="op">&gt;</span> /tmp/dnsmasq.conf</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="st">interface=enp0s9</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="st">server=114.114.114.114 </span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="st">dhcp-range=172.16.233.50,172.16.233.150,255.255.255.0,240h</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="co"># 然后合并临时文件内容追加到 /etc/dnsmasq.conf</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> /tmp/dnsmasq.conf <span class="kw">|</span> <span class="fu">sudo</span> tee <span class="at">-a</span> /etc/dnsmasq.conf</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co"># 手动配置 enp0s9 为固定 IP</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 先将配置代码写入临时文件</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&lt;&lt; EOF</span> <span class="op">&gt;</span> /tmp/01-dhcp.yaml</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="st">network:</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="st">  ethernets:</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="st">    enp0s9:</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="st">      addresses:</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="st">        - 172.16.233.1/24</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="st">  version: 2</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="op">EOF</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 保存配置文件到指定目录</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> cp /tmp/01-dhcp.yaml /etc/netplan/01-dhcp.yaml</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="co"># 使新配置网卡配置生效</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> netplan apply</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 启用 dnsmasq 服务</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> systemctl start dnsmasq</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="co"># 启动 dhcp-client 测试 DHCP 和 DNS 服务是否生效</span></span></code></pre></div>
 <hr />
 <h2 id="主要操作步骤录屏">主要操作步骤录屏</h2>
-<p><a href="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss"><img src="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg" alt="asciicast" /></a></p>
+<p><a href="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss"><img
+src="https://asciinema.org/a/44LfKzCs9JoT6RSWOnlcBO4ss.svg"
+alt="asciicast" /></a></p>
 <h1 id="参考文献">参考文献</h1>
 <hr />
 <ul>
-<li><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">Dynamic Host Configuration Protocol from Ubuntu Official Documentation</a></li>
-<li><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dhcp.html">Dynamic
+Host Configuration Protocol from Ubuntu Official Documentation</a></li>
+<li><a href="https://help.ubuntu.com/lts/serverguide/dns.html">DNS from
+Ubuntu Official Documentation</a></li>
 </ul>
 </body>
 </html>

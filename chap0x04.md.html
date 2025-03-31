@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -52,9 +61,9 @@
 
 </section>
 <section id="dont-repeat-yourself" class="slide level2">
-<h2><font color='red'>D</font>on’t <font color='red'>r</font>epeat <font color='red'>y</font>ourself</h2>
-</section>
-</section>
+<h2><font color='red'>D</font>on’t <font color='red'>r</font>epeat
+<font color='red'>y</font>ourself</h2>
+</section></section>
 <section>
 <section id="hello-world" class="title-slide slide level1">
 <h1>Hello World</h1>
@@ -62,7 +71,9 @@
 </section>
 <section class="slide level2">
 
-<p><a href="https://repl.it/@c4pr1c3/LinuxSysAdmin"><img data-src="images/chap0x04/bash-online.png" alt="在线 Bash 解释器和编辑器环境" /></a></p>
+<p><a href="https://repl.it/@c4pr1c3/LinuxSysAdmin"><img
+data-src="images/chap0x04/bash-online.png"
+alt="在线 Bash 解释器和编辑器环境" /></a></p>
 <blockquote>
 <p>扫码或点击图片「零安装、零配置」直接在浏览器里体验 Bash 编程</p>
 </blockquote>
@@ -70,8 +81,10 @@
 <section id="备用在线-bash-解释器和编辑器环境" class="slide level2">
 <h2>备用在线 Bash 解释器和编辑器环境</h2>
 <ul>
-<li><a href="https://www.tutorialspoint.com/execute_bash_online.php">CodingGround@tutorialspoint.com</a></li>
-<li><a href="https://paiza.io/en/projects/new?language=bash">paiza.io</a></li>
+<li><a
+href="https://www.tutorialspoint.com/execute_bash_online.php">CodingGround@tutorialspoint.com</a></li>
+<li><a
+href="https://paiza.io/en/projects/new?language=bash">paiza.io</a></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -84,7 +97,9 @@ echo &quot;hello world!&quot;</code></pre>
 <h2>详解</h2>
 <ul>
 <li>注释符号 <strong>#</strong></li>
-<li><a href="https://asciinema.org/a/z1xLUVCLitp02XLIICSfdnPSC">文件起始处的 <code>#!</code> 声明自己是一个<strong>脚本</strong>文件</a></li>
+<li><a
+href="https://asciinema.org/a/z1xLUVCLitp02XLIICSfdnPSC">文件起始处的
+<code>#!</code> 声明自己是一个<strong>脚本</strong>文件</a></li>
 <li>当前shell脚本默认使用的<strong>解释器</strong></li>
 <li>查看当前正在使用shell解释器</li>
 </ul>
@@ -102,12 +117,16 @@ echo &quot;hello world!&quot;</code></pre>
 <pre class="bash"><code>bash --version</code></pre>
 </section>
 <section id="为什么使用-usrbinenv-bash" class="slide level2">
-<h2><a href="https://stackoverflow.com/questions/16365130/what-is-the-difference-between-usr-bin-env-bash-and-usr-bin-bash">为什么使用 <code>#!/usr/bin/env bash</code></a></h2>
+<h2><a
+href="https://stackoverflow.com/questions/16365130/what-is-the-difference-between-usr-bin-env-bash-and-usr-bin-bash">为什么使用
+<code>#!/usr/bin/env bash</code></a></h2>
 <p>当我们通过 <code>./target.sh</code> 执行脚本时：</p>
 <ul>
 <li>避免目标系统上的解释器路径和预期不一致
 <ul>
-<li>例如同时存在多个版本的 Bash，通过环境变量设置的优先解释器路径不同于期望的 <code>/bin/bash</code></li>
+<li>例如同时存在多个版本的
+Bash，通过环境变量设置的优先解释器路径不同于期望的
+<code>/bin/bash</code></li>
 </ul></li>
 </ul>
 </section>
@@ -124,9 +143,10 @@ echo &quot;hello world!&quot;</code></pre>
 </section>
 <section class="slide level2">
 
-<p>如果我们通过 <code>bash target.sh</code> 或 <code>/bin/bash target.sh</code> 执行脚本则上述设置相当于原本的注释行作用</p>
-</section>
-</section>
+<p>如果我们通过 <code>bash target.sh</code> 或
+<code>/bin/bash target.sh</code>
+执行脚本则上述设置相当于原本的注释行作用</p>
+</section></section>
 <section>
 <section id="shell-内置帮助" class="title-slide slide level1">
 <h1>Shell 内置帮助</h1>
@@ -137,8 +157,7 @@ echo &quot;hello world!&quot;</code></pre>
 <pre class="bash"><code>help type
 
 help help</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="变量" class="title-slide slide level1">
 <h1>变量</h1>
@@ -162,12 +181,13 @@ echo &quot;The price of an Apple today is: \$HK $PRICE_PER_APPLE&quot;</code></p
 <section class="slide level2">
 
 <ul>
-<li>使用 <strong>${}</strong> 包围变量名避免变量名被解释执行时的二义性</li>
+<li>使用 <strong>${}</strong>
+包围变量名避免变量名被解释执行时的二义性</li>
 </ul>
 <pre class="bash"><code>MyFirstLetters=ABC
 echo &quot;The first 10 letters in the alphabet are: ${MyFirstLetters}DEFGHIJ&quot;</code></pre>
 <ul>
-<li>使用双引号 <strong>""</strong> 包围变量名可以保留所有空格字符</li>
+<li>使用双引号 <strong>““</strong> 包围变量名可以保留所有空格字符</li>
 </ul>
 <pre class="bash"><code>greeting=&#39;Hello        world!&#39;
 
@@ -181,7 +201,8 @@ echo $greeting&quot; now with spaces: $greeting&quot;</code></pre>
 </ul>
 <pre class="bash"><code>FILELIST=`ls`
 FileWithTimeStamp=/tmp/file_$(/bin/date +%Y-%m-%d).txt</code></pre>
-<p>上述代码中的 <strong>``</strong> 符号和 <strong>$()</strong> 都可以用于命令输出结果替换变量赋值结果。</p>
+<p>上述代码中的 <strong>``</strong> 符号和 <strong>$()</strong>
+都可以用于命令输出结果替换变量赋值结果。</p>
 </section>
 <section class="slide level2">
 
@@ -214,14 +235,15 @@ fi</code></pre>
 <section class="slide level2">
 
 <blockquote>
-<p>提示：可以使用以下方法将形如“Jan 1 2000”的日期时间字符串$date1转换出星期几</p>
+<p>提示：可以使用以下方法将形如”Jan 1
+2000”的日期时间字符串$date1转换出星期几</p>
 </blockquote>
 <pre class="bash"><code>date -d &quot;$date1&quot; +%A</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="脚本调试的方法" class="title-slide slide level1">
-<h1><a href="http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_03.html">脚本调试的方法</a></h1>
+<h1><a
+href="http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_02_03.html">脚本调试的方法</a></h1>
 
 </section>
 <section class="slide level2">
@@ -240,8 +262,7 @@ echo -e &quot;$msg&quot; &gt;&gt; /tmp/debug.log
 # 如果打印变量内容包含「不可打印字符」
 # msg=&quot;hello world\x01\x02&quot;
 echo -n -e &quot;$msg&quot; | xxd -p &gt;&gt; /tmp/debug.log</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="给脚本传参" class="title-slide slide level1">
 <h1>给脚本传参</h1>
@@ -254,7 +275,8 @@ echo -n -e &quot;$msg&quot; | xxd -p &gt;&gt; /tmp/debug.log</code></pre>
 <li>参数与参数之间、脚本文件名与参数之间使用1个或多个空格分隔</li>
 <li><code>$0</code> 指代脚本文件本身</li>
 <li><code>$1</code> 指代命令行上的第1个参数</li>
-<li><code>$2</code> 指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法</li>
+<li><code>$2</code>
+指代命令行上的第2个参数，以此类推其他参数的脚本内引用方法</li>
 <li><code>$@</code> 指代命令行上的所有参数（参数数组）</li>
 <li><code>$#</code> 指代命令行上的参数个数（参数数组大小）</li>
 </ul>
@@ -276,8 +298,7 @@ echo &quot;$@&quot;
 echo $#</code></pre>
 <p>用以下方法执行该脚本，观察脚本输出结果</p>
 <pre class="bash"><code>bash test.sh apple 5 banana 8 &quot;Fruit Basket&quot; 15</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="数组" class="title-slide slide level1">
 <h1>数组</h1>
@@ -286,9 +307,17 @@ echo $#</code></pre>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://www.tldp.org/LDP/abs/html/bashver4.html">Bash 4.0 开始支持关联数组</a></li>
-<li><code>declare -a</code> 声明的是「索引」数组，<code>declare -A</code> 声明的是「关联」数组。<a href="https://www.gnu.org/software/bash/manual/html_node/Arrays.html">如果同时使用 <code>-a -A</code> ，<code>-A</code> 优先级更高，数组被声明为「关联」数组</a></li>
-<li><a href="https://stackoverflow.com/questions/10806357/associative-arrays-are-local-by-default">Bash 4.2</a> 开始支持 <code>declare -g</code> 方式声明关联数组为「全局」变量，在此之前，关联数组仅限局部变量作用域</li>
+<li><a href="https://www.tldp.org/LDP/abs/html/bashver4.html">Bash 4.0
+开始支持关联数组</a></li>
+<li><code>declare -a</code>
+声明的是「索引」数组，<code>declare -A</code> 声明的是「关联」数组。<a
+href="https://www.gnu.org/software/bash/manual/html_node/Arrays.html">如果同时使用
+<code>-a -A</code> ，<code>-A</code>
+优先级更高，数组被声明为「关联」数组</a></li>
+<li><a
+href="https://stackoverflow.com/questions/10806357/associative-arrays-are-local-by-default">Bash
+4.2</a> 开始支持 <code>declare -g</code>
+方式声明关联数组为「全局」变量，在此之前，关联数组仅限局部变量作用域</li>
 </ul>
 </section>
 <section id="示例" class="slide level2">
@@ -374,8 +403,7 @@ fi
 if [[ &quot;${NAMES[1]}&quot; != &quot;${second_name}&quot; ]];then
   echo &quot;failed in Array Element Access test&quot;
 fi</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="基本算术运算" class="title-slide slide level1">
 <h1>基本算术运算</h1>
@@ -383,7 +411,9 @@ fi</code></pre>
 </section>
 <section class="slide level2">
 
-<p>使用 <strong>$((expression))</strong> 算术运算符表达式，注意这种方式只支持 <strong><font color='red'>整数</font>运算</strong></p>
+<p>使用 <strong>$((expression))</strong>
+算术运算符表达式，注意这种方式只支持
+<strong><font color='red'>整数</font>运算</strong></p>
 <pre class="bash"><code>A=3
 B=$((100 * A + 5)) # 305</code></pre>
 <ul>
@@ -406,8 +436,7 @@ pi=$(echo &quot;scale=10; 4*a(1)&quot; | bc -l)
 # 计算 4 * arctangent(1) ，计算结果保留 1000 位有效数字
 # 禁止输出结果因超长而自动折行
 pi=$(BC_LINE_LENGTH=0 bc -l &lt;&lt;&lt; &quot;scale=1000; 4*a(1)&quot;)</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="基本字符串操作" class="title-slide slide level1">
 <h1>基本字符串操作</h1>
@@ -465,8 +494,7 @@ echo ${STRING[@]/%be/eat}        # to be or not to eat
 # 字符串查找并使用子命令输出结果替换匹配项
 STRING=&quot;to be or not to be&quot;
 echo ${STRING[@]/%be/be on $(date +%Y-%m-%d)}    # to be or not to be on 2012-06-14</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="条件判断" class="title-slide slide level1">
 <h1>条件判断</h1>
@@ -491,11 +519,16 @@ fi</code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts">[]和[[]]的区别</a></p>
+<p><a
+href="http://stackoverflow.com/questions/669452/is-preferable-over-in-bash-scripts">[]和[[]]的区别</a></p>
 <ul>
-<li><code>[</code> 实质上命令 <code>test</code> 的另一种形式，<code>[[</code> 是一种更符合你期望的 <code>test</code> 命令</li>
-<li><code>[</code> 符合 POSIX 标准，<code>[[</code> 不符合 POSIX 标准</li>
-<li>现代 Linux 发行版自带的 shell 环境普遍支持 <code>[[</code> ，推荐优先使用（除非需要考虑兼容古老 shell）</li>
+<li><code>[</code> 实质上命令 <code>test</code>
+的另一种形式，<code>[[</code> 是一种更符合你期望的 <code>test</code>
+命令</li>
+<li><code>[</code> 符合 POSIX 标准，<code>[[</code> 不符合 POSIX
+标准</li>
+<li>现代 Linux 发行版自带的 shell 环境普遍支持 <code>[[</code>
+，推荐优先使用（除非需要考虑兼容古老 shell）</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -570,8 +603,7 @@ case $mycase in
     4) echo &quot;You selected c++&quot;;;
     5) exit
 esac</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="循环" class="title-slide slide level1">
 <h1>循环</h1>
@@ -663,7 +695,8 @@ done</code></pre>
 <p>循环控制</p>
 <ul>
 <li>break 跳过本层循环体剩余部分代码并返回上一级代码片段</li>
-<li>continue 跳过本次循环执行剩余部分代码，继续执行下一次循环条件表达式计算判断</li>
+<li>continue
+跳过本次循环执行剩余部分代码，继续执行下一次循环条件表达式计算判断</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -705,15 +738,16 @@ set -e
 for f in $(ps -eo command) ; do
   ls &quot;$f&quot;
 done</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="编写健壮的-shell-脚本" class="title-slide slide level1">
 <h1>编写健壮的 shell 脚本</h1>
 
 </section>
 <section id="fail-fast-避免错误蔓延" class="slide level2">
-<h2><a href="https://dzone.com/articles/fail-fast-principle-in-software-development">Fail-Fast: 避免错误蔓延</a></h2>
+<h2><a
+href="https://dzone.com/articles/fail-fast-principle-in-software-development">Fail-Fast:
+避免错误蔓延</a></h2>
 <ul>
 <li>越早期的 Bug 越容易被检测到、发现，从而可以更快被修复
 <ul>
@@ -761,12 +795,15 @@ done</code></pre>
 </section>
 <section class="slide level2">
 
-<h3 id="shellcheck---shell-脚本静态分析工具"><a href="https://github.com/koalaman/shellcheck">shellcheck</a> - shell 脚本静态分析工具</h3>
+<h3 id="shellcheck---shell-脚本静态分析工具"><a
+href="https://github.com/koalaman/shellcheck">shellcheck</a> - shell
+脚本静态分析工具</h3>
 <figure>
-<img data-src="images/chap0x04/shellcheck-in-vim.png" alt="" /><figcaption>shellcheck in vim</figcaption>
+<img data-src="images/chap0x04/shellcheck-in-vim.png"
+alt="shellcheck in vim" />
+<figcaption aria-hidden="true">shellcheck in vim</figcaption>
 </figure>
-</section>
-</section>
+</section></section>
 <section>
 <section id="函数" class="title-slide slide level1">
 <h1>函数</h1>
@@ -784,7 +821,8 @@ function_name () compound-command [ redirections ]
 # 现代主流shell解释权均支持的语法，可以避免alias机制污染函数名
 function function_name [()] compound-command [ redirections ]</code></pre>
 <blockquote>
-<p><a href="http://unix.stackexchange.com/questions/73750/difference-between-function-foo-and-foo">function关键字是可选的，主要区别在于可移植性</a></p>
+<p><a
+href="http://unix.stackexchange.com/questions/73750/difference-between-function-foo-and-foo">function关键字是可选的，主要区别在于可移植性</a></p>
 </blockquote>
 </section>
 <section class="slide level2">
@@ -804,8 +842,7 @@ function adder {
 function_A &quot;Function A.&quot;     # Function A.
 function_B                   # Function B.
 adder 12 56                  # 68</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="课内练习" class="title-slide slide level1">
 <h1>课内练习</h1>
@@ -817,8 +854,7 @@ adder 12 56                  # 68</code></pre>
 <ul>
 <li>通过命令行参数读取2个整数，对不符合参数调用规范（使用小数、字符、少于2个参数等）的脚本执行要给出明确的错误提示信息，并退出代码执行</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="进阶主题" class="title-slide slide level1">
 <h1>进阶主题</h1>
@@ -881,10 +917,10 @@ while IFS= read -r line || [[ -n &quot;$line&quot; ]]; do
       # do something with $line
       echo &quot;$line&quot; | xxd -p
 done &lt; file</code></pre>
-</section>
-</section>
+</section></section>
 <section>
-<section id="实战例子---校园网账号自动登录的bash脚本实现" class="title-slide slide level1">
+<section id="实战例子---校园网账号自动登录的bash脚本实现"
+class="title-slide slide level1">
 <h1>实战例子 - 校园网账号自动登录的bash脚本实现</h1>
 
 </section>
@@ -976,8 +1012,7 @@ else
   connect_internet
   keep_connected
 fi</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="中英文符号对照表" class="title-slide slide level1">
 <h1>中英文符号对照表</h1>
@@ -989,15 +1024,17 @@ fi</code></pre>
 <li><strong>`</strong> backtick/backquote 反引号</li>
 <li><strong>[</strong> square bracket 方括号</li>
 <li><strong>’</strong> single quote 单引号</li>
-<li><strong>"</strong> double quote 双引号</li>
+<li><strong>“</strong> double quote 双引号</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
 <li><strong>_</strong> underscore 下划线</li>
-<li><strong>/</strong> slash 斜线（URL、<strong>*NIX</strong> 路径分隔符）</li>
-<li><strong>\</strong> backslash 反斜线（转义符号、<strong>Windows</strong> 路径分隔符）</li>
+<li><strong>/</strong> slash 斜线（URL、<strong>*NIX</strong>
+路径分隔符）</li>
+<li><strong>\</strong> backslash
+反斜线（转义符号、<strong>Windows</strong> 路径分隔符）</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -1019,8 +1056,7 @@ printf &#39;%s&#39; &#39;–&#39; | xxd
 
 # 16进制表示的 ascii 码: e28094，这是中文输入法打出来的破折号的一半，英文术语：em dash
 printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="推荐阅读" class="title-slide slide level1">
 <h1>推荐阅读</h1>
@@ -1028,19 +1064,22 @@ printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://mywiki.wooledge.org/BashPitfalls">Bash Pitfalls</a></p>
+<p><a href="https://mywiki.wooledge.org/BashPitfalls">Bash
+Pitfalls</a></p>
 <blockquote>
-<p>参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C 陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。</p>
+<p>参考C语言的一本经典著作《C Traps and Pitfalls》（中文译名《C
+陷阱与缺陷》）的江湖地位和作用，堪为：入门后，进阶必读。</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
-<p><a href="https://zhuanlan.zhihu.com/p/47819029">千万别混淆 Bash/Zsh 的四种运行模式</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/47819029">千万别混淆 Bash/Zsh
+的四种运行模式</a></p>
 <blockquote>
-<p>Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢 bash 的速度，还会发生明明写了登录配置但是就是没生效的情况</p>
+<p>Bash/Zsh 有四种不同运行模式，你的 bash 配置写错地方的话，不但会拖慢
+bash 的速度，还会发生明明写了登录配置但是就是没生效的情况</p>
 </blockquote>
-</section>
-</section>
+</section></section>
 <section>
 <section id="推荐工具" class="title-slide slide level1">
 <h1>推荐工具</h1>
@@ -1048,27 +1087,38 @@ printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://explainshell.com/"><img data-src="images/chap0x04/explainshell.png" alt="explainshell.com" /></a></p>
+<p><a href="https://explainshell.com/"><img
+data-src="images/chap0x04/explainshell.png"
+alt="explainshell.com" /></a></p>
 </section>
 <section id="bash-automated-testing-system" class="slide level2">
-<h2><a href="https://github.com/bats-core/bats-core">Bash Automated Testing System</a></h2>
-<p><a href="https://travis-ci.org/3c1rp4c/TravisBasedOJ"><img data-src="images/chap0x04/bats-core.png" alt="bats-core / bats-core" /></a></p>
+<h2><a href="https://github.com/bats-core/bats-core">Bash Automated
+Testing System</a></h2>
+<p><a href="https://travis-ci.org/3c1rp4c/TravisBasedOJ"><img
+data-src="images/chap0x04/bats-core.png"
+alt="bats-core / bats-core" /></a></p>
 <blockquote>
-<p>Bats is a <a href="https://testanything.org/">TAP</a>-compliant testing framework for Bash. It provides a simple way to verify that the UNIX programs you write behave as expected.</p>
+<p>Bats is a <a href="https://testanything.org/">TAP</a>-compliant
+testing framework for Bash. It provides a simple way to verify that the
+UNIX programs you write behave as expected.</p>
 </blockquote>
 </section>
 <section id="vscode-remote-配置-bash-集成开发环境" class="slide level2">
 <h2>VSCode Remote 配置 Bash 集成开发环境</h2>
 <ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=mads-hartmann.bash-ide-vscode">Bash IDE</a>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=mads-hartmann.bash-ide-vscode">Bash
+IDE</a>
 <ul>
 <li>跳转到函数定义、查找代码片段引用、自动补全代码、鼠标悬停代码关键词显示帮助文档等</li>
 </ul></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck">ShellCheck</a></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug">Bash Debug</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=timonwong.shellcheck">ShellCheck</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=rogalmic.bash-debug">Bash
+Debug</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -1077,14 +1127,18 @@ printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH Programming - Introduction HOW-TO</a></li>
-<li><a href="http://tldp.org/LDP/abs/html/">Advanced Bash-Scripting Guide</a></li>
-<li><a href="https://google.github.io/styleguide/shell.xml">Shell Style Guide by Google Inc.</a></li>
-<li><a href="https://www.gnu.org/software/bash/manual/html_node/index.html">Bash Reference Manual</a></li>
+<li><a href="http://tldp.org/HOWTO/Bash-Prog-Intro-HOWTO.html">BASH
+Programming - Introduction HOW-TO</a></li>
+<li><a href="http://tldp.org/LDP/abs/html/">Advanced Bash-Scripting
+Guide</a></li>
+<li><a href="https://google.github.io/styleguide/shell.xml">Shell Style
+Guide by Google Inc.</a></li>
+<li><a
+href="https://www.gnu.org/software/bash/manual/html_node/index.html">Bash
+Reference Manual</a></li>
 <li><a href="http://www.bash.academy/">The Bash Academy</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="延伸学习" class="title-slide slide level1">
 <h1>延伸学习</h1>
@@ -1093,10 +1147,11 @@ printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://github.com/dylanaraps/pure-bash-bible">技巧汇编：使用纯 Bash 脚本代替外部程序调用</a></li>
+<li><a
+href="https://github.com/dylanaraps/pure-bash-bible">技巧汇编：使用纯
+Bash 脚本代替外部程序调用</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -1108,12 +1163,43 @@ printf &#39;%s&#39; &#39;—&#39; | xxd </code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

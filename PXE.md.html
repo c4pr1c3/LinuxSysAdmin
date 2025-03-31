@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,8 +62,7 @@
 </section>
 <section class="slide level2">
 
-</section>
-</section>
+</section></section>
 <section>
 <section id="pxe-intro" class="title-slide slide level1">
 <h1>从零到一 2.0</h1>
@@ -68,11 +76,14 @@
 </section>
 <section id="pxe-基本概念" class="slide level2">
 <h2>PXE 基本概念</h2>
-<p><code>PXE</code> - <strong>P</strong>reboot e<strong>X</strong>ecution <strong>E</strong>nvironment, 预启动执行环境</p>
+<p><code>PXE</code> - <strong>P</strong>reboot
+e<strong>X</strong>ecution <strong>E</strong>nvironment,
+预启动执行环境</p>
 <blockquote>
 <p>Intel公司提出的一种使用网络接口启动计算机的机制，能够代替本地数据存储设备（光盘、硬盘、USB设备）进行安装操作系统。</p>
 </blockquote>
-<p>目前，PXE 启动已成为一种<a href="http://www.pix.net/software/pxeboot/archive/pxespec.pdf">固件标准</a>，大部分服务器BIOS都支持PXE启动，特别适合大规模集群批量、自动化、无人值守方式安装操作系统。</p>
+<p>目前，PXE 启动已成为一种<a
+href="http://www.pix.net/software/pxeboot/archive/pxespec.pdf">固件标准</a>，大部分服务器BIOS都支持PXE启动，特别适合大规模集群批量、自动化、无人值守方式安装操作系统。</p>
 </section>
 <section class="slide level2">
 
@@ -82,28 +93,42 @@
 </section>
 <section class="slide level2">
 
-<h3 id="基于-pxe-安装操作系统的工作过程如下">基于 PXE 安装操作系统的工作过程如下</h3>
+<h3 id="基于-pxe-安装操作系统的工作过程如下">基于 PXE
+安装操作系统的工作过程如下</h3>
 <ul>
 <li>客户端（裸机）设置 BIOS 开启「从网卡启动」</li>
 <li>客户端网卡会发起 DHCP 请求分配 IP 地址</li>
-<li>DHCP 服务器处理返回分配的IP地址外，还返回预设网关、TFTP 服务器地址及引导程序 Bootstrap
+<li>DHCP 服务器处理返回分配的IP地址外，还返回预设网关、TFTP
+服务器地址及引导程序 Bootstrap
 <ul>
-<li>该文件是一种由 PXE 启动规范规定的固定格式的可执行文件，类似于开机启动项的「可执行文件」：并由此支持来自网络的操作系统的启动过程</li>
-<li>Linux 系统为 <code>pxelinux.0</code>，<a href="https://docs.microsoft.com/zh-cn/windows/deployment/configure-a-pxe-server-to-load-windows-pe?ocid=tia-257895000">Windows 使用 PE 系统</a></li>
+<li>该文件是一种由 PXE
+启动规范规定的固定格式的可执行文件，类似于开机启动项的「可执行文件」：并由此支持来自网络的操作系统的启动过程</li>
+<li>Linux 系统为 <code>pxelinux.0</code>，<a
+href="https://docs.microsoft.com/zh-cn/windows/deployment/configure-a-pxe-server-to-load-windows-pe?ocid=tia-257895000">Windows
+使用 PE 系统</a></li>
 </ul></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li>客户端通过 TFTP（<strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）或 MTFTP（<strong>M</strong>ulticast <strong>T</strong>rivial <strong>F</strong>ile <strong>T</strong>ransfer <strong>P</strong>rotocol）协议下载 Bootstrap 的配置文件（例如 <code>pxelinux.cfg/default</code>）</li>
-<li>客户端读取收到的配置文件，根据其中内容，再次请求 TFTP 传送内核映像文件和系统启动文件（例如 <code>initrd.gz</code>）</li>
-<li>完成后开始启动内核，内核程序读取 Bootstrap 的配置文件，通过网络获取操作系统自动安装脚本（例如 <code>preseed.cfg</code>），并通过网络服务（NFS / FTP / HTTP）获得系统所需安装文件，按照自动安装脚本的配置进行安装</li>
+<li>客户端通过 TFTP（<strong>T</strong>rivial <strong>F</strong>ile
+<strong>T</strong>ransfer <strong>P</strong>rotocol）或
+MTFTP（<strong>M</strong>ulticast <strong>T</strong>rivial
+<strong>F</strong>ile <strong>T</strong>ransfer
+<strong>P</strong>rotocol）协议下载 Bootstrap 的配置文件（例如
+<code>pxelinux.cfg/default</code>）</li>
+<li>客户端读取收到的配置文件，根据其中内容，再次请求 TFTP
+传送内核映像文件和系统启动文件（例如 <code>initrd.gz</code>）</li>
+<li>完成后开始启动内核，内核程序读取 Bootstrap
+的配置文件，通过网络获取操作系统自动安装脚本（例如
+<code>preseed.cfg</code>），并通过网络服务（NFS / FTP /
+HTTP）获得系统所需安装文件，按照自动安装脚本的配置进行安装</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="从实例学-pxe-无人值守同时安装多台主机" class="title-slide slide level1">
+<section id="从实例学-pxe-无人值守同时安装多台主机"
+class="title-slide slide level1">
 <h1>从实例学 PXE + 「无人值守」同时安装多台主机</h1>
 
 </section>
@@ -121,13 +146,16 @@
 <li>PXE Server</li>
 <li>TFTP Server</li>
 <li>DNS Server（非必需）</li>
-<li>HTTP Server（提供 <code>preseed.cfg</code> 下载，本例子中由 <strong>apache2</strong> 提供）</li>
+<li>HTTP Server（提供 <code>preseed.cfg</code> 下载，本例子中由
+<strong>apache2</strong> 提供）</li>
 </ul></li>
 </ul>
 </section>
 <section id="pxe-configure" class="slide level2">
 <h2>本例所用 PXE 服务器的自动安装配置</h2>
-<p><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/pxe-boot">c4pr1c3/AnsibleTutorial/pxeboot on Github</a></p>
+<p><a
+href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/pxe-boot">c4pr1c3/AnsibleTutorial/pxeboot
+on Github</a></p>
 <ul>
 <li>关键配置
 <ul>
@@ -141,12 +169,14 @@
 </section>
 <section id="通信过程抓包分析" class="slide level2">
 <h2>通信过程抓包分析</h2>
-<p><a href="images/pxe/pxe-boot-filtered.pcap">PXE Boot 过程（过滤掉了 TFTP 服务器返回的数据，仅保留「信令」通信过程数据）pcap 文件</a></p>
+<p><a href="images/pxe/pxe-boot-filtered.pcap">PXE Boot 过程（过滤掉了
+TFTP 服务器返回的数据，仅保留「信令」通信过程数据）pcap 文件</a></p>
 </section>
 <section class="slide level2">
 
 <figure>
-<img data-src="images/pxe/pxe-boot-flow-1.png" alt="" /><figcaption>PXE 初始化过程</figcaption>
+<img data-src="images/pxe/pxe-boot-flow-1.png" alt="PXE 初始化过程" />
+<figcaption aria-hidden="true">PXE 初始化过程</figcaption>
 </figure>
 </section>
 <section class="slide level2">
@@ -159,21 +189,31 @@
 <ul>
 <li>目标主机（包含 PXE 客户端）上电启动</li>
 <li>目标主机的网卡发起 DHCP 请求</li>
-<li>DHCP 服务器响应目标主机的 DHCP 请求：网络配置信息（IP、子网掩码、网关、DNS等）和 TFP 服务器地址、<strong>可启动镜像</strong> 地址（ <code>pxelinux.0</code> ）</li>
-<li>目标主机接收到上述响应信息后，访问 TFTP 服务器下载 <strong>可启动镜像</strong></li>
-<li>TFTP 服务器发送 <strong>可启动镜像</strong> （<code>pxelinux.0</code>），目标主机执行下载的镜像启动系统</li>
+<li>DHCP 服务器响应目标主机的 DHCP
+请求：网络配置信息（IP、子网掩码、网关、DNS等）和 TFP
+服务器地址、<strong>可启动镜像</strong> 地址（ <code>pxelinux.0</code>
+）</li>
+<li>目标主机接收到上述响应信息后，访问 TFTP 服务器下载
+<strong>可启动镜像</strong></li>
+<li>TFTP 服务器发送 <strong>可启动镜像</strong>
+（<code>pxelinux.0</code>），目标主机执行下载的镜像启动系统</li>
 </ul>
 </section>
 <section class="slide level2">
 
 <h3 id="pxelinux.cfg-search-1">PXE 配置文件下载策略</h3>
-<p>默认情况下，<code>PXE 客户端</code> 在 <code>TFP 服务器</code> 的 <code>pxelinux.cfg</code> 子目录下 <strong>按以下优先级次序</strong> 搜索 <code>镜像启动配置文件</code>：</p>
+<p>默认情况下，<code>PXE 客户端</code> 在 <code>TFP 服务器</code> 的
+<code>pxelinux.cfg</code> 子目录下 <strong>按以下优先级次序</strong>
+搜索 <code>镜像启动配置文件</code>：</p>
 <ul>
-<li>查询 <code>PXE 客户端</code> 所在主机的唯一标识 <strong>GUID</strong>
+<li>查询 <code>PXE 客户端</code> 所在主机的唯一标识
+<strong>GUID</strong>
 <ul>
-<li>例如本例子中的 <code>aabd48c4-0eb7-4b00-9ec1-b9d1271425c0</code></li>
+<li>例如本例子中的
+<code>aabd48c4-0eb7-4b00-9ec1-b9d1271425c0</code></li>
 </ul></li>
-<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 发起 DHCP 请求所使用网卡的 <strong>MAC 地址</strong>
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 发起 DHCP
+请求所使用网卡的 <strong>MAC 地址</strong>
 <ul>
 <li>例如本例子中的 <code>01-08-00-27-b0-e1-4f</code></li>
 </ul></li>
@@ -183,9 +223,13 @@
 
 <h3 id="pxelinux.cfg-search-2">PXE 配置文件下载策略</h3>
 <ul>
-<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 通过 DHCP 响应获得到的 <strong>IP 地址</strong> （转换成 16 进制大写字母表示后，从右向左依次查询匹配）
+<li>查无上述命名配置文件后，再查询 <code>PXE 客户端</code> 通过 DHCP
+响应获得到的 <strong>IP 地址</strong> （转换成 16
+进制大写字母表示后，从右向左依次查询匹配）
 <ul>
-<li>例如本例子中依次查询了 <code>AC100062</code>, <code>AC10006</code>, <code>AC1000</code>, <code>AC100</code>, <code>AC10</code>, <code>AC1</code>, <code>AC</code>, <code>A</code></li>
+<li>例如本例子中依次查询了 <code>AC100062</code>, <code>AC10006</code>,
+<code>AC1000</code>, <code>AC100</code>, <code>AC10</code>,
+<code>AC1</code>, <code>AC</code>, <code>A</code></li>
 </ul></li>
 <li>查无上述命名配置文件后，最后查询 <code>default</code></li>
 </ul>
@@ -200,24 +244,26 @@ printf &#39;%02X&#39; ${IP//./ }; echo
 <section class="slide level2">
 
 <figure>
-<img data-src="images/pxe/pxe-boot-flow-3.png" alt="" /><figcaption>镜像启动配置文件搜索过程</figcaption>
+<img data-src="images/pxe/pxe-boot-flow-3.png"
+alt="镜像启动配置文件搜索过程" />
+<figcaption aria-hidden="true">镜像启动配置文件搜索过程</figcaption>
 </figure>
 </section>
 <section id="pxe-客户端启动过程" class="slide level2">
 <h2>PXE 客户端启动过程</h2>
 <p><img data-src="images/pxe/pxe-boot.gif" /></p>
-</section>
-</section>
+</section></section>
 <section>
-<section id="完整-pxe-无人值守安装过程演示" class="title-slide slide level1">
+<section id="完整-pxe-无人值守安装过程演示"
+class="title-slide slide level1">
 <h1>完整 PXE + 无人值守安装过程演示</h1>
 
 </section>
 <section class="slide level2">
 
-<p><a href="https://www.bilibili.com/video/av43936728/"><img data-src="images/pxe/cover.jpg" /></a></p>
-</section>
-</section>
+<p><a href="https://www.bilibili.com/video/av43936728/"><img
+data-src="images/pxe/cover.jpg" /></a></p>
+</section></section>
 <section>
 <section id="小结" class="title-slide slide level1">
 <h1>小结</h1>
@@ -226,23 +272,31 @@ printf &#39;%02X&#39; ${IP//./ }; echo
 <section class="slide level2">
 
 <ul>
-<li>PXE 首先是提供了裸机 <strong>批量</strong>、<strong>自动化</strong> 加载运行「最小化」系统的能力</li>
-<li>「最小化」系统不仅可以是 Linux，也可以是其他操作系统的「最小化」版本</li>
-<li>基于「最小化」系统内置的「无人值守安装配置」能力（例如 Debian/Ubuntu 使用的 <code>preseed</code> 技术）继续通过 <strong>网络</strong> 在线安装完整操作系统
+<li>PXE 首先是提供了裸机 <strong>批量</strong>、<strong>自动化</strong>
+加载运行「最小化」系统的能力</li>
+<li>「最小化」系统不仅可以是
+Linux，也可以是其他操作系统的「最小化」版本</li>
+<li>基于「最小化」系统内置的「无人值守安装配置」能力（例如 Debian/Ubuntu
+使用的 <code>preseed</code> 技术）继续通过 <strong>网络</strong>
+在线安装完整操作系统
 <ul>
-<li>在「内网」搭建完整的在线安装系统 <strong>镜像源</strong> 可以大幅度缩短通过互联网在线安装系统的时间</li>
+<li>在「内网」搭建完整的在线安装系统 <strong>镜像源</strong>
+可以大幅度缩短通过互联网在线安装系统的时间</li>
 </ul></li>
 </ul>
 </section>
 <section id="参考资料" class="slide level2">
 <h2>参考资料</h2>
 <ul>
-<li><a href="https://wiki.debian.org/PXEBootInstall">PXEBootInstall: Installing Debian using network booting</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/dnsmasq">dnsmasq on ArchLinux</a></li>
-<li><a href="https://docs.oracle.com/cd/E24628_01/em.121/e27046/appdx_pxeboot.htm#EMLCM12199">Understanding PXE Booting and Kickstart Technology</a></li>
+<li><a href="https://wiki.debian.org/PXEBootInstall">PXEBootInstall:
+Installing Debian using network booting</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/dnsmasq">dnsmasq on
+ArchLinux</a></li>
+<li><a
+href="https://docs.oracle.com/cd/E24628_01/em.121/e27046/appdx_pxeboot.htm#EMLCM12199">Understanding
+PXE Booting and Kickstart Technology</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -254,12 +308,43 @@ printf &#39;%02X&#39; ${IP//./ }; echo
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -47,15 +56,15 @@
 </section>
 
 <section>
-<section id="第二章linux服务器系统使用基础" class="title-slide slide level1">
+<section id="第二章linux服务器系统使用基础"
+class="title-slide slide level1">
 <h1>第二章：Linux服务器系统使用基础</h1>
 
 </section>
 <section id="from-gui-to-cli" class="slide level2">
 <h2>From GUI to CLI</h2>
 <p><img data-src="images/chap0x02/sl.gif" /></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="软件包管理" class="title-slide slide level1">
 <h1>软件包管理</h1>
@@ -66,7 +75,8 @@
 <ul>
 <li>sources.list格式</li>
 <li>小心添加第三方软件源</li>
-<li>查找：apt-get update &amp;&amp; apt-cache search、apt-file、google、dpkg -S、aptitude</li>
+<li>查找：apt-get update &amp;&amp; apt-cache
+search、apt-file、google、dpkg -S、aptitude</li>
 <li>安装：软件被装到哪里去了</li>
 <li>升级：区分upgrade与dist-upgrade</li>
 <li>卸载：purge、clean、remove</li>
@@ -76,42 +86,48 @@
 </ul></li>
 </ul>
 </section>
-<section id="ubuntu-16.04-vs-20.04-etcaptsources.list" class="slide level2">
+<section id="ubuntu-16.04-vs-20.04-etcaptsources.list"
+class="slide level2">
 <h2>Ubuntu 16.04 vs 20.04 /etc/apt/sources.list</h2>
-<p><img data-src="images/chap0x02/vimdiff-16vs20.sources.list.png" /></p>
+<p><img
+data-src="images/chap0x02/vimdiff-16vs20.sources.list.png" /></p>
 </section>
 <section id="sources.list-格式说明" class="slide level2">
 <h2>sources.list 格式说明</h2>
 <pre class="bash"><code>man sources.list</code></pre>
 <ul>
-<li>xenial 是 Ubuntu 16.04 的<a href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
-<li>focal 是 Ubuntu 20.04 的<a href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
+<li>xenial 是 Ubuntu 16.04 的<a
+href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
+<li>focal 是 Ubuntu 20.04 的<a
+href="https://en.wikipedia.org/wiki/Ubuntu_version_history">官方版本代号</a></li>
 </ul>
 </section>
 <section id="soft-type-codename-1" class="slide level2">
-<h2><a href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
+<h2><a
+href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
 <ul>
 <li>Main - Canonical官方支持的免费和开源软件</li>
 <li>Universe - （开源）社区维护的免费和开源软件</li>
 <li>Restricted - 私有设备驱动</li>
 <li>Multiverse - 有版权限制的私有软件</li>
 </ul>
-<p>以下是<a href="https://en.wikipedia.org/wiki/Ubuntu_%28operating_system%29#Package_classification_and_support">Wikipedia的软件包分类和支持分类说明</a></p>
+<p>以下是<a
+href="https://en.wikipedia.org/wiki/Ubuntu_%28operating_system%29#Package_classification_and_support">Wikipedia的软件包分类和支持分类说明</a></p>
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;"></th>
 <th style="text-align: left;">免费软件</th>
 <th style="text-align: left;">非免费软件</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">官方支持</td>
 <td style="text-align: left;">main</td>
 <td style="text-align: left;">restricted</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">官方不支持（社区或第三方支持）</td>
 <td style="text-align: left;">universe</td>
 <td style="text-align: left;">multiverse</td>
@@ -120,14 +136,18 @@
 </table>
 </section>
 <section id="soft-type-codename-2" class="slide level2">
-<h2><a href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
+<h2><a
+href="https://help.ubuntu.com/community/Repositories/Ubuntu">软件包类型代号</a></h2>
 <ul>
-<li><a href="https://help.ubuntu.com/community/UbuntuBackports">backports</a>
+<li><a
+href="https://help.ubuntu.com/community/UbuntuBackports">backports</a>
 <ul>
-<li>官方安全审查小组 <strong>不会</strong> 提供任何 <code>安全审查和安全性承诺保障</code></li>
+<li>官方安全审查小组 <strong>不会</strong> 提供任何
+<code>安全审查和安全性承诺保障</code></li>
 <li>向旧版本系统提供较新且兼容旧版系统和所有依赖关系的软件</li>
 </ul></li>
-<li><a href="https://help.ubuntu.com/community/Repositories/Ubuntu#Enabling_Canonical_Partner_Repositories">partner</a>
+<li><a
+href="https://help.ubuntu.com/community/Repositories/Ubuntu#Enabling_Canonical_Partner_Repositories">partner</a>
 <ul>
 <li>非Ubuntu系统的必要组件，是Canonical公司及其合作伙伴向Ubuntu用户提供的附加软件：通常是闭源和商业版权软件</li>
 </ul></li>
@@ -137,19 +157,26 @@
 
 <h3 id="举例讲解">举例讲解</h3>
 <pre class="ini"><code>deb http://cn.archive.ubuntu.com/ubuntu/ xenial multiverse</code></pre>
-<p><strong>apt-get update</strong>的过程是访问一个构造好的URL，该URL使用内置的字符串“拼接”规则构造成</p>
+<p><strong>apt-get
+update</strong>的过程是访问一个构造好的URL，该URL使用内置的字符串“拼接”规则构造成</p>
 <pre class="ini"><code>http://cn.archive.ubuntu.com/ubuntu/dists/xenial/multiverse/binary-amd64/</code></pre>
 <ul>
-<li>其中 <strong>binary-amd64</strong> 是根据当前系统是64位而“换算”得来的，如果是32位系统该位置字符串会被替换为 <strong>binary-i386</strong></li>
+<li>其中 <strong>binary-amd64</strong>
+是根据当前系统是64位而“换算”得来的，如果是32位系统该位置字符串会被替换为
+<strong>binary-i386</strong></li>
 <li>当前发行版版本代号后面有不止一个软件包类型代号时，有几个软件包类型代号就对应会构造出几个实际的软件列表下载地址</li>
 </ul>
 </section>
 <section id="ports.ubuntu.com" class="slide level2">
 <h2>ports.ubuntu.com</h2>
 <ul>
-<li><a href="https://www.yuque.com/c4pr1c3/linux/ttkz7y#comment-9934732">无人值守安装时卡住很久？</a>
+<li><a
+href="https://www.yuque.com/c4pr1c3/linux/ttkz7y#comment-9934732">无人值守安装时卡住很久？</a>
 <ul>
-<li><a href="https://wiki.ubuntu.com/UbuntuDevelopment/PackageArchive">软件源 http://ports.ubuntu.com 收录的架构为 arm64，armhf，PowerPC，ppc64el 等</a></li>
+<li><a
+href="https://wiki.ubuntu.com/UbuntuDevelopment/PackageArchive">软件源
+http://ports.ubuntu.com 收录的架构为 arm64，armhf，PowerPC，ppc64el
+等</a></li>
 <li>软件源 http://cn.archive.ubuntu.com 收录的架构为 amd64 和 i386</li>
 </ul></li>
 <li>Ubuntu 官方支持的技术架构：amd64, armhf, i386</li>
@@ -158,48 +185,63 @@
 <section class="slide level2">
 
 <h3 id="验证-ports.ubuntu.com-访问">验证 ports.ubuntu.com 访问</h3>
-<p><a href="https://tools.ipip.net/newping.php"><img data-src="images/chap0x02/ipip.net.ping.test.png" /></a></p>
+<p><a href="https://tools.ipip.net/newping.php"><img
+data-src="images/chap0x02/ipip.net.ping.test.png" /></a></p>
 </section>
 <section class="slide level2">
 
-<h3 id="解决-ports.ubuntu.com-导致的无人值守安装卡住问题">解决 ports.ubuntu.com 导致的无人值守安装卡住问题</h3>
+<h3 id="解决-ports.ubuntu.com-导致的无人值守安装卡住问题">解决
+ports.ubuntu.com 导致的无人值守安装卡住问题</h3>
 <ul>
 <li>删除 <code>ports.ubuntu.com</code> 相关的 2 行配置代码</li>
-<li>搜索 <code>ports.ubuntu.com 中国镜像</code> 进行镜像源地址修改，推荐阿里云、中科大、清华的镜像源</li>
+<li>搜索 <code>ports.ubuntu.com 中国镜像</code>
+进行镜像源地址修改，推荐阿里云、中科大、清华的镜像源</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p><strong>apt-get update</strong> VS. <strong>apt-get upgrade</strong> VS. <strong>apt-get dist-upgrade</strong></p>
+<p><strong>apt-get update</strong> VS. <strong>apt-get upgrade</strong>
+VS. <strong>apt-get dist-upgrade</strong></p>
 <pre class="bash"><code>man apt-get</code></pre>
 <ul>
-<li><strong>apt-get update</strong> 使用/etc/apt/sources.list中定义的镜像源地址更新可用软件包列表，更新本地的可用软件包信息数据库文件，并不会“安装”或“更新”任何软件</li>
-<li><strong>apt-get upgrade</strong> 根据本地的可用软件包信息数据库文件内容更新安装当前系统中所有已安装软件的版本</li>
-<li><strong>apt-get dist-upgrade</strong> 在<strong>apt-get upgrade</strong>的基础上可以解决部分软件升级时需要卸载其他软件的自动依赖关系推导和解决问题，通常内核版本升级都需要通过该命令来实现</li>
+<li><strong>apt-get update</strong>
+使用/etc/apt/sources.list中定义的镜像源地址更新可用软件包列表，更新本地的可用软件包信息数据库文件，并不会“安装”或“更新”任何软件</li>
+<li><strong>apt-get upgrade</strong>
+根据本地的可用软件包信息数据库文件内容更新安装当前系统中所有已安装软件的版本</li>
+<li><strong>apt-get dist-upgrade</strong> 在<strong>apt-get
+upgrade</strong>的基础上可以解决部分软件升级时需要卸载其他软件的自动依赖关系推导和解决问题，通常内核版本升级都需要通过该命令来实现</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p><strong>apt-get remove</strong> VS. <strong>apt-get purge</strong> VS. <strong>apt-get clean</strong></p>
+<p><strong>apt-get remove</strong> VS. <strong>apt-get purge</strong>
+VS. <strong>apt-get clean</strong></p>
 <ul>
-<li><strong>apt-get remove</strong> 删除已安装软件包但不删除配置文件</li>
+<li><strong>apt-get remove</strong>
+删除已安装软件包但不删除配置文件</li>
 <li><strong>apt-get purge</strong> 删除已安装软件包和配置文件</li>
-<li><strong>apt-get clean</strong> 删除/var/cache/apt/archives/和/var/cache/apt/archives/partial/目录下除了lock文件之外的所有已下载（软件包）文件</li>
+<li><strong>apt-get clean</strong>
+删除/var/cache/apt/archives/和/var/cache/apt/archives/partial/目录下除了lock文件之外的所有已下载（软件包）文件</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p><strong>apt-get autoclean</strong> VS. <strong>apt-get autoremove</strong></p>
+<p><strong>apt-get autoclean</strong> VS. <strong>apt-get
+autoremove</strong></p>
 <ul>
-<li><strong>apt-get autoclean</strong> 和<strong>apt-get clean</strong>类似，但更“智能”，主要是为了清除无用缓存保留可能还有用的缓存用的</li>
-<li><strong>apt-get autoremove</strong> 删除所有用于满足其他软件依赖关系而自动安装但现在已经没有软件依赖的软件包</li>
+<li><strong>apt-get autoclean</strong> 和<strong>apt-get
+clean</strong>类似，但更“智能”，主要是为了清除无用缓存保留可能还有用的缓存用的</li>
+<li><strong>apt-get autoremove</strong>
+删除所有用于满足其他软件依赖关系而自动安装但现在已经没有软件依赖的软件包</li>
 </ul>
 </section>
-<section id="查找你需要的软件包-如果你知道软件包名" class="slide level2">
+<section id="查找你需要的软件包-如果你知道软件包名"
+class="slide level2">
 <h2>查找你需要的软件包 —— 如果你知道软件包名</h2>
 <pre class="bash"><code>apt-get install &lt;package_name&gt;</code></pre>
 </section>
-<section id="查找你需要的软件包-如果你知道软件名但不知道软件包名" class="slide level2">
+<section id="查找你需要的软件包-如果你知道软件名但不知道软件包名"
+class="slide level2">
 <h2>查找你需要的软件包 —— 如果你知道软件名，但不知道软件包名</h2>
 <pre class="bash"><code>apt-cache search &lt;software_keyword&gt;
 apt-get install &lt;software_keyword&gt;&lt;TAB&gt;&lt;TAB&gt;
@@ -220,12 +262,14 @@ apt-get install mysql&lt;TAB&gt;&lt;TAB&gt;</code></pre>
 <pre class="bash"><code>apt-get install apt-file
 man apt-file</code></pre>
 <blockquote>
-<p>apt-file is a command line tool for searching files in packages for the APT package management system.</p>
+<p>apt-file is a command line tool for searching files in packages for
+the APT package management system.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
-<p>aptitude - 对<strong>apt-get</strong>进行封装的一个更友好、更易用（主要体现在自动解决软件依赖bug上）包管理工具</p>
+<p>aptitude -
+对<strong>apt-get</strong>进行封装的一个更友好、更易用（主要体现在自动解决软件依赖bug上）包管理工具</p>
 <pre class="bash"><code>apt-get install aptitude
 man aptitude</code></pre>
 <pre class="bash"><code>$ aptitude show mysql-server
@@ -280,10 +324,14 @@ Homepage: http://aptitude.alioth.debian.org/</code></pre>
 </section>
 <section id="aptitude-apt-get-apt" class="slide level2">
 <h2>aptitude, apt-get, apt</h2>
-<p>整理自：<a href="https://debian-handbook.info/browse/stable/sect.apt-get.html">The Debian Administrator’s Handbook</a></p>
+<p>整理自：<a
+href="https://debian-handbook.info/browse/stable/sect.apt-get.html">The
+Debian Administrator’s Handbook</a></p>
 <ul>
-<li>CLI: <code>apt-get</code> 诞生最早；<code>apt</code> 稍晚，改进了 <code>apt-get</code> 的一些设计缺陷，更简单易用，推荐优先使用</li>
-<li>GUI: <code>synaptic</code>, <code>aptitude</code>（也有 CLI 接口）</li>
+<li>CLI: <code>apt-get</code> 诞生最早；<code>apt</code> 稍晚，改进了
+<code>apt-get</code> 的一些设计缺陷，更简单易用，推荐优先使用</li>
+<li>GUI: <code>synaptic</code>, <code>aptitude</code>（也有 CLI
+接口）</li>
 </ul>
 </section>
 <section id="在安装前如何确认软件包的版本来源" class="slide level2">
@@ -334,11 +382,13 @@ $ dpkg -L apache2-bin</code></pre>
 <section id="使用第三方镜像源的风险" class="slide level2">
 <h2>使用第三方镜像源的风险</h2>
 <ul>
-<li><a href="http://weibo.com/1651460060/A4L8xoRZQ">发行版不匹配、发行版匹配但版本代号不匹配导致大量软件依赖关系出现错乱，无法修复、无法删除、无法安装软件</a>
+<li><a
+href="http://weibo.com/1651460060/A4L8xoRZQ">发行版不匹配、发行版匹配但版本代号不匹配导致大量软件依赖关系出现错乱，无法修复、无法删除、无法安装软件</a>
 <ul>
 <li>最大可能是：只能重装系统解决</li>
 </ul></li>
-<li><a href="http://weibo.com/1651460060/BrdV8lYYK">第三方镜像源的软件篡改留后门、中间人劫持风险</a></li>
+<li><a
+href="http://weibo.com/1651460060/BrdV8lYYK">第三方镜像源的软件篡改留后门、中间人劫持风险</a></li>
 </ul>
 </section>
 <section id="deb软件包管理工具-dpkg" class="slide level2">
@@ -371,8 +421,7 @@ Commands:
 <li>确保本地编译环境满足源代码安装的所有依赖条件</li>
 <li>安装失败一定要仔细核对出错信息、出错日志，在Google中根据错误代码、错误关键字搜索解决方案</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件管理基本命令" class="title-slide slide level1">
 <h1>文件管理基本命令</h1>
@@ -411,8 +460,7 @@ Commands:
 <li>grep -E</li>
 <li>grep -v</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="管道-pipe" class="title-slide slide level1">
 <h1>管道 Pipe</h1>
@@ -429,17 +477,25 @@ Commands:
 
 <p>上一页的例子中</p>
 <ul>
-<li><code>-print0</code> 将标准输出中的多条记录使用 <strong>NULL</strong>（<code>\00</code>）字符拼接成一个「长字符串」一次性输出到「标准输出」</li>
-<li>如果不使用 <code>xargs</code> 命令，<code>md5sum</code> 将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5 散列值</li>
-<li><code>xargs</code> 的 <code>-0</code> 参数将「标准输入」中的 <strong>NULL</strong> 字符视为「数组分隔符」来「解析」标准输入内容</li>
-<li><code>xargs</code> 从「标准输入」中每解析出「一个参数」就按照构造好的 <code>命令+参数</code> 执行一次指定的命令（此处是 <code>md5sum [fileN]</code> ），直到「标准输入」被解析完毕</li>
+<li><code>-print0</code> 将标准输出中的多条记录使用
+<strong>NULL</strong>（<code>\00</code>）字符拼接成一个「长字符串」一次性输出到「标准输出」</li>
+<li>如果不使用 <code>xargs</code> 命令，<code>md5sum</code>
+将把「管道操作符」左侧命令的「标准输出」当作自己的「标准输入」计算 MD5
+散列值</li>
+<li><code>xargs</code> 的 <code>-0</code> 参数将「标准输入」中的
+<strong>NULL</strong> 字符视为「数组分隔符」来「解析」标准输入内容</li>
+<li><code>xargs</code>
+从「标准输入」中每解析出「一个参数」就按照构造好的
+<code>命令+参数</code> 执行一次指定的命令（此处是
+<code>md5sum [fileN]</code> ），直到「标准输入」被解析完毕</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p><a href="https://explainshell.com/explain?cmd=cd+%7E%2Fcd+%26%26+find+.+-type+f+-print0+%7C+xargs+-0+md5sum+%3E+md5sum.txt">explainshell.com 对上述复杂命令的可视化解读</a></p>
-</section>
-</section>
+<p><a
+href="https://explainshell.com/explain?cmd=cd+%7E%2Fcd+%26%26+find+.+-type+f+-print0+%7C+xargs+-0+md5sum+%3E+md5sum.txt">explainshell.com
+对上述复杂命令的可视化解读</a></p>
+</section></section>
 <section>
 <section id="sed" class="title-slide slide level1">
 <h1>sed</h1>
@@ -447,9 +503,12 @@ Commands:
 </section>
 <section class="slide level2">
 
-<p>SED的英文全称是<strong>Stream EDitor</strong>，它是一个简单而强大的文本解析转换工具，在1973-1974年期间由贝尔实验室的<strong><em>Lee E. McMahon</em></strong>开发。</p>
+<p>SED的英文全称是<strong>Stream
+EDitor</strong>，它是一个简单而强大的文本解析转换工具，在1973-1974年期间由贝尔实验室的<strong><em>Lee
+E. McMahon</em></strong>开发。</p>
 <p><strong><em>McMahon</em></strong>创建了一个通用的行编辑器，最终变成为了SED。SED的很多语法和特性都借鉴了ed编辑器。设计之初，它就已经支持正则表达式，SED可以从文件中接受类似于管道的输入，也可以接受来自标准输入流的输入。</p>
-<p>SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进行分发，因此，通常它也称作<strong><em>GNU SED</em></strong>。</p>
+<p>SED由自由软件基金组织（FSF）开发和维护并且随着GNU/Linux进行分发，因此，通常它也称作<strong><em>GNU
+SED</em></strong>。</p>
 </section>
 <section id="sed-典型用途" class="slide level2">
 <h2>SED 典型用途</h2>
@@ -466,9 +525,13 @@ Commands:
 <section class="slide level2">
 
 <ul>
-<li><a href="http://www.ituring.com.cn/article/273760">三十分钟学会SED</a></li>
-<li><a href="https://www.google.com/#newwindow=1&amp;q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE">Google: sed思维导图</a></li>
-<li><a href="http://sed.sourceforge.net/sed1line_zh-CN.html">sed单行常用脚本</a></li>
+<li><a
+href="http://www.ituring.com.cn/article/273760">三十分钟学会SED</a></li>
+<li><a
+href="https://www.google.com/#newwindow=1&amp;q=sed+%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE">Google:
+sed思维导图</a></li>
+<li><a
+href="http://sed.sourceforge.net/sed1line_zh-CN.html">sed单行常用脚本</a></li>
 </ul>
 </section>
 <section id="学习-sed-的模式" class="slide level2">
@@ -476,8 +539,7 @@ Commands:
 <ul>
 <li>REPL: read–eval–print loop</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="正则表达式" class="title-slide slide level1">
 <h1>正则表达式</h1>
@@ -486,7 +548,10 @@ Commands:
 <section class="slide level2">
 
 <blockquote>
-<p>正则表达式是用于匹配字符串中字符组合的 <strong>模式</strong> ，可以用来检查一个串是否 <strong>包含</strong> 有某种子串、将匹配的子串 <strong>替换</strong> 或者从某个串中 <strong>取出</strong> 符合某个条件的子串等。</p>
+<p>正则表达式是用于匹配字符串中字符组合的 <strong>模式</strong>
+，可以用来检查一个串是否 <strong>包含</strong> 有某种子串、将匹配的子串
+<strong>替换</strong> 或者从某个串中 <strong>取出</strong>
+符合某个条件的子串等。</p>
 </blockquote>
 </section>
 <section id="在线正则表达式调试工具" class="slide level2">
@@ -516,9 +581,9 @@ grep
 </section>
 <section class="slide level2">
 
-<p><a href="images/chap0x02/davechild_regular-expressions.bw.jpg"><img data-src="images/chap0x02/davechild_regular-expressions.bw.jpg" /></a></p>
-</section>
-</section>
+<p><a href="images/chap0x02/davechild_regular-expressions.bw.jpg"><img
+data-src="images/chap0x02/davechild_regular-expressions.bw.jpg" /></a></p>
+</section></section>
 <section>
 <section id="社区驱动的脱水版帮助手册" class="title-slide slide level1">
 <h1>社区驱动的「脱水版」帮助手册</h1>
@@ -526,7 +591,8 @@ grep
 </section>
 <section class="slide level2">
 
-<p><a href="https://github.com/tldr-pages/tldr">tldr: To Long, Don’t Read</a></p>
+<p><a href="https://github.com/tldr-pages/tldr">tldr: To Long, Don’t
+Read</a></p>
 <blockquote>
 <p>跟着「范例」学命令</p>
 </blockquote>
@@ -560,20 +626,20 @@ ln -s pages.zh pages
 # 恢复默认英文查询手册页设置
 rm pages
 ln -s pages.en pages</code></pre>
-</section>
-</section>
+</section></section>
 <section>
-<section id="文本内容查找替换神器之awk" class="title-slide slide level1">
+<section id="文本内容查找替换神器之awk"
+class="title-slide slide level1">
 <h1>文本内容查找替换神器之AWK</h1>
 
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://www.pement.org/awk/awk1line.txt">HANDY ONE-LINE SCRIPTS FOR AWK</a></li>
+<li><a href="http://www.pement.org/awk/awk1line.txt">HANDY ONE-LINE
+SCRIPTS FOR AWK</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="其他文本内容处理小工具" class="title-slide slide level1">
 <h1>其他文本内容处理小工具</h1>
@@ -596,8 +662,7 @@ ln -s pages.en pages</code></pre>
 <li><code>echo "hello world" | tr -d hello</code></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="一些文本处理的任务" class="title-slide slide level1">
 <h1>一些文本处理的任务</h1>
@@ -610,8 +675,7 @@ ln -s pages.en pages</code></pre>
 <li>在整个目录中查找某关键词出现在哪些文件的哪些行</li>
 <li>删除C语言编写项目中的所有注释行</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="别名机制---alias" class="title-slide slide level1">
 <h1>别名机制 - alias</h1>
@@ -625,11 +689,11 @@ alias
 man alias
 # 在bash的手册页中去搜索alias
 man bash</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件压缩与解压缩" class="title-slide slide level1">
-<h1><a href="https://www.cyberciti.biz/howto/question/general/compress-file-unix-linux-cheat-sheet.php">文件压缩与解压缩</a></h1>
+<h1><a
+href="https://www.cyberciti.biz/howto/question/general/compress-file-unix-linux-cheat-sheet.php">文件压缩与解压缩</a></h1>
 
 </section>
 <section class="slide level2">
@@ -648,10 +712,10 @@ man bash</code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://www.zhihu.com/question/20523036">Linux 下 zip 文件解压乱码如何解决？</a></p>
+<p><a href="https://www.zhihu.com/question/20523036">Linux 下 zip
+文件解压乱码如何解决？</a></p>
 <p><a href="https://asciinema.org/a/d81fdjlf83ecltrpewh4tg4hj" target="_blank"><img src="images/chap0x02/d81fdjlf83ecltrpewh4tg4hj.png" /></a></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="进程管理" class="title-slide slide level1">
 <h1>进程管理</h1>
@@ -671,7 +735,8 @@ man bash</code></pre>
 <ul>
 <li>改进的交互式系统信息查看器</li>
 </ul></li>
-<li>kill / kill -9 / kill -s N / killall <code>&lt;process_imagename&gt;</code></li>
+<li>kill / kill -9 / kill -s N / killall
+<code>&lt;process_imagename&gt;</code></li>
 </ul>
 </section>
 <section id="子进程管理" class="slide level2">
@@ -704,7 +769,8 @@ killall ping</code></pre>
 <section id="子进程管理实验live-demo" class="slide level2">
 <h2>子进程管理实验Live Demo</h2>
 <ul>
-<li>注意CTRL-Z的作用，被CTRL-Z的进程在<strong><em>ps aux</em></strong>中的进程状态如何显示的</li>
+<li>注意CTRL-Z的作用，被CTRL-Z的进程在<strong><em>ps
+aux</em></strong>中的进程状态如何显示的</li>
 </ul>
 <p><a href="https://asciinema.org/a/f3ux5ogwbxwo2q0wxxd0hmn54" target="_blank"><img src="images/chap0x02/asciinema_demo_1.png" alt="子进程管理Demo"/></a></p>
 </section>
@@ -712,8 +778,7 @@ killall ping</code></pre>
 <h2>关于输出重定向</h2>
 <pre class="bash"><code>man bash
 # search &quot;Redirecting Standard Output and Standard Error&quot;</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="目录管理" class="title-slide slide level1">
 <h1>目录管理</h1>
@@ -729,8 +794,7 @@ killall ping</code></pre>
 <li><code>~</code> / . / .. / -</li>
 <li>/proc</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="环境变量" class="title-slide slide level1">
 <h1>环境变量</h1>
@@ -744,8 +808,7 @@ killall ping</code></pre>
 <li>/etc/profile</li>
 <li><code>~/.bashrc、~/.profile</code></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="网络调试" class="title-slide slide level1">
 <h1>网络调试</h1>
@@ -788,10 +851,10 @@ netstat
 <li>/etc/network/interfaces</li>
 <li>/etc/network/if-up.d、if-post-down.d、if-pre-up.d、if-down.d</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="提问的智慧---描述你的环境" class="title-slide slide level1">
+<section id="提问的智慧---描述你的环境"
+class="title-slide slide level1">
 <h1>提问的智慧 - 描述你的环境</h1>
 
 </section>
@@ -851,7 +914,8 @@ netstat
 <li>联网信息，例如使用的宽带接入方式、上下行带宽、运营商信息等</li>
 </ul>
 </section>
-<section id="提问的智慧---使用自动化的工具描述你的环境" class="slide level2">
+<section id="提问的智慧---使用自动化的工具描述你的环境"
+class="slide level2">
 <h2>提问的智慧 - 使用自动化的工具描述你的环境</h2>
 <pre class="bash"><code># 获得硬件信息
 report-hw
@@ -871,33 +935,44 @@ sudo ubuntu-bug openssh-server --save openssh-server.bug</code></pre>
 
 <ul>
 <li>目标应用程序官方提供的故障诊断工具运行日志</li>
-<li><a href="https://nicolargo.github.io/glances/">An Eye on your system</a></li>
+<li><a href="https://nicolargo.github.io/glances/">An Eye on your
+system</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
-<section id="面向大模型的提示词工程技巧" class="title-slide slide level1">
+<section id="面向大模型的提示词工程技巧"
+class="title-slide slide level1">
 <h1>面向大模型的提示词工程技巧</h1>
 
 </section>
 <section id="prompt-engineering-1" class="slide level2">
 <h2>六要素模型 (1/2)</h2>
 <ol type="1">
-<li><strong>指令</strong> 。明确任务的目的和要求，使用清晰、准确、简洁的语言表达。
+<li><strong>指令</strong>
+。明确任务的目的和要求，使用清晰、准确、简洁的语言表达。
 <ul>
-<li><strong>细化</strong> 。将复杂的任务拆分为更简单的子任务，使用分隔符或列表等方式清晰地划分不同的文本部分。</li>
-<li><strong>强调</strong> 。使用强调词或强调符号，突出重要的需求或约束。</li>
+<li><strong>细化</strong>
+。将复杂的任务拆分为更简单的子任务，使用分隔符或列表等方式清晰地划分不同的文本部分。</li>
+<li><strong>强调</strong>
+。使用强调词或强调符号，突出重要的需求或约束。</li>
 </ul></li>
-<li><strong>上下文</strong> 。提供与任务相关的详细信息或上下文，帮助模型理解任务的背景和意图。如“Ubuntu 22.04”、“Python 3.11 和基于 requests 库”。</li>
-<li><strong>输入数据</strong> 。用户输入的内容或问题，作为模型生成输出的依据，如“输入的数据是 JSON 格式”、“通过命令行参数传递输入”等。</li>
+<li><strong>上下文</strong>
+。提供与任务相关的详细信息或上下文，帮助模型理解任务的背景和意图。如“Ubuntu
+22.04”、“Python 3.11 和基于 requests 库”。</li>
+<li><strong>输入数据</strong>
+。用户输入的内容或问题，作为模型生成输出的依据，如“输入的数据是 JSON
+格式”、“通过命令行参数传递输入”等。</li>
 </ol>
 </section>
 <section id="prompt-engineering-2" class="slide level2">
 <h2>六要素模型 (2/2)</h2>
 <ol start="4" type="1">
-<li><strong>输出指示</strong> 。指定输出的类型或格式，控制模型生成的结果的长度、结构、风格等。</li>
-<li><strong>示例</strong> 。提供一些输入相关的示例或参考文本，展示期望的输出效果。</li>
-<li><strong>角色</strong> 。指定模型所扮演的角色或身份，影响模型的专业知识领域、语言风格和回答方式。</li>
+<li><strong>输出指示</strong>
+。指定输出的类型或格式，控制模型生成的结果的长度、结构、风格等。</li>
+<li><strong>示例</strong>
+。提供一些输入相关的示例或参考文本，展示期望的输出效果。</li>
+<li><strong>角色</strong>
+。指定模型所扮演的角色或身份，影响模型的专业知识领域、语言风格和回答方式。</li>
 </ol>
 </section>
 <section id="和提问的智慧进行比较" class="slide level2">
@@ -909,8 +984,7 @@ sudo ubuntu-bug openssh-server --save openssh-server.bug</code></pre>
 <li>尊重你的回答者或模型的时间和能力，不要提出过于简单或过于复杂的问题。</li>
 <li>从回答或输出中学习，并对其进行验证和反馈。</li>
 </ol>
-</section>
-</section>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -919,15 +993,23 @@ sudo ubuntu-bug openssh-server --save openssh-server.bug</code></pre>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://help.ubuntu.com/community/EnvironmentVariables">EnvironmentVariables from Ubuntu Official Documentation</a></li>
-<li><a href="http://blog.jobbole.com/36375/">在服务器上排除问题的头五分钟</a></li>
-<li><a href="https://news.ycombinator.com/item?id=11909543">My First 10 Minutes on a Server</a></li>
-<li><a href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md">提问的智慧</a></li>
-<li><a href="https://help.ubuntu.com/community/ReportingBugs">ReportingBugs Tutorial by Ubuntu Official Documentation</a></li>
-<li><a href="https://wiki.ubuntu.com/DebuggingProcedures">DebuggingProcedures Tutorial by Ubuntu Official Documentation</a></li>
+<li><a
+href="https://help.ubuntu.com/community/EnvironmentVariables">EnvironmentVariables
+from Ubuntu Official Documentation</a></li>
+<li><a
+href="http://blog.jobbole.com/36375/">在服务器上排除问题的头五分钟</a></li>
+<li><a href="https://news.ycombinator.com/item?id=11909543">My First 10
+Minutes on a Server</a></li>
+<li><a
+href="https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/master/README-zh_CN.md">提问的智慧</a></li>
+<li><a
+href="https://help.ubuntu.com/community/ReportingBugs">ReportingBugs
+Tutorial by Ubuntu Official Documentation</a></li>
+<li><a
+href="https://wiki.ubuntu.com/DebuggingProcedures">DebuggingProcedures
+Tutorial by Ubuntu Official Documentation</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -939,12 +1021,43 @@ sudo ubuntu-bug openssh-server --save openssh-server.bug</code></pre>
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

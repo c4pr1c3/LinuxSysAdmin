@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,8 +62,7 @@
 </section>
 <section id="keep-things-shared-and-synchronized" class="slide level2">
 <h2>Keep Things Shared and Synchronized</h2>
-</section>
-</section>
+</section></section>
 <section>
 <section id="经典文件共享服务" class="title-slide slide level1">
 <h1>经典文件共享服务</h1>
@@ -67,17 +75,20 @@
 <li>NFS</li>
 <li>SMB/CIFS</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="ftp" class="title-slide slide level1">
-<h1><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html.en">FTP</a></h1>
+<h1><a
+href="https://help.ubuntu.com/lts/serverguide/ftp-server.html.en">FTP</a></h1>
 
 </section>
 <section class="slide level2">
 
 <blockquote>
-<p>File Transfer Protocol (FTP) is a TCP protocol for downloading files between computers. In the past, it has also been used for uploading but, as that method does not use encryption, user credentials as well as data transferred in the clear and are easily intercepted.</p>
+<p>File Transfer Protocol (FTP) is a TCP protocol for downloading files
+between computers. In the past, it has also been used for uploading but,
+as that method does not use encryption, user credentials as well as data
+transferred in the clear and are easily intercepted.</p>
 </blockquote>
 <ul>
 <li>计算机之间<strong>下载</strong>文件之用</li>
@@ -114,30 +125,41 @@
 <li>性能和可扩展性是否满足需求</li>
 <li>安全性
 <ul>
-<li><a href="https://www.cvedetails.com/product/9804/Ftpd-Ftpd.html?vendor_id=5802">ftpd</a> / <a href="https://www.cvedetails.com/product/3475/Beasts-Vsftpd.html?vendor_id=2041">vsftpd</a> / <a href="https://www.cvedetails.com/product/353/Proftpd-Project-Proftpd.html?vendor_id=204">proftpd</a> / <a href="https://www.cvedetails.com/vendor/2152/Pureftpd.html">pure-ftpd</a></li>
+<li><a
+href="https://www.cvedetails.com/product/9804/Ftpd-Ftpd.html?vendor_id=5802">ftpd</a>
+/ <a
+href="https://www.cvedetails.com/product/3475/Beasts-Vsftpd.html?vendor_id=2041">vsftpd</a>
+/ <a
+href="https://www.cvedetails.com/product/353/Proftpd-Project-Proftpd.html?vendor_id=204">proftpd</a>
+/ <a
+href="https://www.cvedetails.com/vendor/2152/Pureftpd.html">pure-ftpd</a></li>
 </ul></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="w2h-理论指导技术方案选型-12">5W2H 理论指导技术方案选型 (1/2)</h3>
+<h3 id="w2h-理论指导技术方案选型-12">5W2H 理论指导技术方案选型
+(1/2)</h3>
 <ul>
 <li>What 功能特性列表、安全特性列表</li>
-<li>Why 需求优先级列表：功能和需求一次性匹配度（减少二次开发成本）、易用性、易维护性、性能、价格（一次性买断 or 订阅持续付费），孰先孰后？</li>
+<li>Why
+需求优先级列表：功能和需求一次性匹配度（减少二次开发成本）、易用性、易维护性、性能、价格（一次性买断
+or 订阅持续付费），孰先孰后？</li>
 <li>Who 项目的发起和维护者是谁？商业公司 or 开源社区 or 个人？</li>
 <li>Where 成功案例都有哪些？是否开源？不适合的场景有哪些？</li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="w2h-理论指导技术方案选型-22">5W2H 理论指导技术方案选型 (2/2)</h3>
+<h3 id="w2h-理论指导技术方案选型-22">5W2H 理论指导技术方案选型
+(2/2)</h3>
 <ul>
 <li>When 项目的最近一次更新时间？项目历史？</li>
 <li>How 项目技术栈？是否和当前需求场景使用的主要技术栈集成？</li>
-<li>How Much 性能？开发成本（人力投入、时间投入、授权费用、依赖软硬件采购费用等）</li>
+<li>How Much
+性能？开发成本（人力投入、时间投入、授权费用、依赖软硬件采购费用等）</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="ftp-configuration-task" class="title-slide slide level1">
 <h1>FTP服务器配置任务</h1>
@@ -147,10 +169,11 @@
 
 <p>请自行根据以下任务需求从以上FTP服务器软件中选择一款满足所有任务要求的FTP服务器进行安装配置实验</p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-配置一个提供匿名访问的FTP服务器，匿名访问者可以访问1个目录且仅拥有该目录及其所有子目录的只读访问权限；</li>
-<li><input type="checkbox" disabled="" />
-配置一个支持用户名和密码方式访问的账号，该账号继承匿名访问者所有权限，且拥有对另1个独立目录及其子目录完整读写（包括创建目录、修改文件、删除文件等）权限；<ul>
+<li><label><input
+type="checkbox" />配置一个提供匿名访问的FTP服务器，匿名访问者可以访问1个目录且仅拥有该目录及其所有子目录的只读访问权限；</label></li>
+<li><label><input
+type="checkbox" />配置一个支持用户名和密码方式访问的账号，该账号继承匿名访问者所有权限，且拥有对另1个独立目录及其子目录完整读写（包括创建目录、修改文件、删除文件等）权限；</label>
+<ul>
 <li>该账号仅可用于FTP服务访问，不能用于系统shell登录；</li>
 </ul></li>
 </ul>
@@ -160,18 +183,18 @@
 
 <p><strong><em>resumed</em></strong></p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-FTP用户不能越权访问指定目录之外的任意其他目录和文件；</li>
-<li><input type="checkbox" disabled="" />
-匿名访问权限仅限白名单IP来源用户访问，禁止白名单IP以外的访问；</li>
-<li><input type="checkbox" disabled="" />
-（可选加分任务）使用FTPS服务代替FTP服务，上述所有要求在FTPS服务中同时得到满足；</li>
+<li><label><input
+type="checkbox" />FTP用户不能越权访问指定目录之外的任意其他目录和文件；</label></li>
+<li><label><input
+type="checkbox" />匿名访问权限仅限白名单IP来源用户访问，禁止白名单IP以外的访问；</label></li>
+<li><label><input
+type="checkbox" />（可选加分任务）使用FTPS服务代替FTP服务，上述所有要求在FTPS服务中同时得到满足；</label></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="nfs" class="title-slide slide level1">
-<h1><a href="https://help.ubuntu.com/16.04/serverguide/network-file-system.html">NFS</a></h1>
+<h1><a
+href="https://help.ubuntu.com/16.04/serverguide/network-file-system.html">NFS</a></h1>
 
 </section>
 <section class="slide level2">
@@ -181,10 +204,11 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 <section id="nfs-config-task" class="slide level2">
 <h2>NFS服务器配置任务</h2>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-在1台Linux上配置NFS服务，另1台电脑上配置NFS客户端挂载2个权限不同的共享目录，分别对应只读访问和读写访问权限；</li>
-<li><input type="checkbox" disabled="" />
-实验报告中请记录你在NFS客户端上看到的：<ul>
+<li><label><input
+type="checkbox" />在1台Linux上配置NFS服务，另1台电脑上配置NFS客户端挂载2个权限不同的共享目录，分别对应只读访问和读写访问权限；</label></li>
+<li><label><input
+type="checkbox" />实验报告中请记录你在NFS客户端上看到的：</label>
+<ul>
 <li>共享目录中文件、子目录的属主、权限信息</li>
 <li>你通过NFS客户端在NFS共享目录中新建的目录、创建的文件的属主、权限信息</li>
 <li>上述共享目录中文件、子目录的属主、权限信息和在NFS服务器端上查看到的信息一样吗？无论是否一致，请给出你查到的资料是如何讲解NFS目录中的属主和属主组信息应该如何正确解读</li>
@@ -196,11 +220,10 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 
 <p><strong><em>resumed</em></strong></p>
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-（可选任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？</li>
+<li><label><input
+type="checkbox" />（可选任务）在客户端或NFS服务器上抓包分析使用NFS协议时的远程文件下载、上传、移动、删除等操作是否是明文？远程的文件传输数据流是否可以被恢复出完整的传输文件？</label></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="smbcifsheading" class="title-slide slide level1">
 <h1>SMB/CIFS</h1>
@@ -211,9 +234,16 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 <p><img data-src="images/chap0x06/smb_demo.png" /></p>
 </section>
 <section id="smb与cifs的关系" class="slide level2">
-<h2><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">SMB与CIFS的关系</a></h2>
+<h2><a
+href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">SMB与CIFS的关系</a></h2>
 <blockquote>
-<p>The Server Message Block (SMB) Protocol is a network file sharing protocol, and as implemented in Microsoft Windows is known as Microsoft SMB Protocol. The set of message packets that defines a particular version of the protocol is called a dialect. The Common Internet File System (CIFS) Protocol is a dialect of SMB. Both SMB and CIFS are also available on VMS, several versions of Unix, and other operating systems.</p>
+<p>The Server Message Block (SMB) Protocol is a network file sharing
+protocol, and as implemented in Microsoft Windows is known as Microsoft
+SMB Protocol. The set of message packets that defines a particular
+version of the protocol is called a dialect. The Common Internet File
+System (CIFS) Protocol is a dialect of SMB. Both SMB and CIFS are also
+available on VMS, several versions of Unix, and other operating
+systems.</p>
 </blockquote>
 </section>
 <section class="slide level2">
@@ -221,7 +251,8 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 <p>CIFS协议是SMB协议的一个本地化实现（dialect，直译为“方言”)，协议设计的初衷是文件共享，但微软的SMB协议还提供了一些额外功能：</p>
 <ul>
 <li>Dialect negotiation</li>
-<li>Determining other Microsoft SMB Protocol servers on the network, or network browsing</li>
+<li>Determining other Microsoft SMB Protocol servers on the network, or
+network browsing</li>
 <li>Printing over a network</li>
 <li>File, directory, and share access authentication</li>
 <li>File and record locking</li>
@@ -235,7 +266,8 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 
 <ul>
 <li>按照OSI网络模型，微软SMB协议常被归类到应用层或表示层协议。</li>
-<li>微软SMB数据传输通常使用NetBIOS over TCP/IP (NBT)，但仅仅是为了后向兼容性需要。实际上，这并不是SMB协议唯一的传输层协议选择。</li>
+<li>微软SMB数据传输通常使用NetBIOS over TCP/IP
+(NBT)，但仅仅是为了后向兼容性需要。实际上，这并不是SMB协议唯一的传输层协议选择。</li>
 <li>微软SMB协议采用<strong>客户端-服务器</strong>模式实现，由一系列客户端请求和服务器响应数据构成：
 <ul>
 <li>会话控制报文—和共享服务资源建立和断开连接</li>
@@ -244,8 +276,7 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 </ul></li>
 </ul>
 <p>某些数据报文会分组打包在一次数据传输中以降低响应延迟和提高带宽利用率，这种方法被称为“批处理”。</p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="sambaheading" class="title-slide slide level1">
 <h1>Samba</h1>
@@ -254,16 +285,21 @@ FTP用户不能越权访问指定目录之外的任意其他目录和文件；</
 <section class="slide level2">
 
 <blockquote>
-<p><a href="https://help.ubuntu.com/lts/serverguide/samba-introduction.html">为Windows环境提供和整合常用服务</a></p>
+<p><a
+href="https://help.ubuntu.com/lts/serverguide/samba-introduction.html">为Windows环境提供和整合常用服务</a></p>
 </blockquote>
 <ul>
 <li><strong>文件和打印机共享服务</strong>。SMB协议可以使在网络上共享文件、文件夹、卷和打印机变得容易。</li>
-<li><strong>目录服务</strong>。通过 LDAP(Lightweight Directory Access Protocol，轻量目录访问协议) 和 Microsoft Active Directory® 技术来共享网络计算机和用户的重要信息。</li>
-<li><strong>认证和权限</strong>。建立网络计算机和用户的身份信息，并通过使用文件权限、组策略和 Kerberos 认证服务等原理和技术来确定计算机或用户可以访问的信息。</li>
+<li><strong>目录服务</strong>。通过 LDAP(Lightweight Directory Access
+Protocol，轻量目录访问协议) 和 Microsoft Active Directory®
+技术来共享网络计算机和用户的重要信息。</li>
+<li><strong>认证和权限</strong>。建立网络计算机和用户的身份信息，并通过使用文件权限、组策略和
+Kerberos 认证服务等原理和技术来确定计算机或用户可以访问的信息。</li>
 </ul>
 </section>
 <section id="安装和配置samba独立共享服务器" class="slide level2">
-<h2><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">安装和配置Samba独立共享服务器</a></h2>
+<h2><a
+href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">安装和配置Samba独立共享服务器</a></h2>
 <ul>
 <li>Linux设置用户名密码方式的共享目录</li>
 </ul>
@@ -298,7 +334,8 @@ sudo chown -R demoUser:demoGroup /srv/samba/demo</code></pre>
 <section id="smbclient" class="slide level2">
 <h2>smbclient</h2>
 <ul>
-<li>分别查看基于 Windows 和 Linux 搭建 SMB 共享服务包含的共享目录清单</li>
+<li>分别查看基于 Windows 和 Linux 搭建 SMB
+共享服务包含的共享目录清单</li>
 <li>向远程共享目录上传文件和目录</li>
 <li>从远程共享目录中下载文件和目录</li>
 </ul>
@@ -342,8 +379,7 @@ prompt
 mget target_dir
 ## 下载所有目录和文件
 mget *</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="windows-share-faq" class="title-slide slide level1">
 <h1>SMB 共享实验 FAQ</h1>
@@ -368,7 +404,9 @@ mget *</code></pre>
 
 <h3 id="windows-fw-config-0">配置 Windows 防火墙策略</h3>
 <ul>
-<li><code>开始菜单</code> –&gt; <code>gpedit.msc</code> –&gt; <code>Windows 设置</code> –&gt; <code>安全设置</code> –&gt; <code>网络列表管理器策略</code> –&gt; <code>无法识别的网络</code>
+<li><code>开始菜单</code> –&gt; <code>gpedit.msc</code> –&gt;
+<code>Windows 设置</code> –&gt; <code>安全设置</code> –&gt;
+<code>网络列表管理器策略</code> –&gt; <code>无法识别的网络</code>
 <ul>
 <li>位置类型：专用</li>
 <li>用户权限：用户可以更改位置</li>
@@ -385,7 +423,8 @@ mget *</code></pre>
 <h3 id="windows-fw-config-2">配置 Windows 防火墙策略</h3>
 <p><img data-src="images/chap0x06/windows-fw-config-2.png" /></p>
 </section>
-<section id="设置使用非当前登录账号作为-smb-共享用户" class="slide level2">
+<section id="设置使用非当前登录账号作为-smb-共享用户"
+class="slide level2">
 <h2>设置使用非当前登录账号作为 SMB 共享用户</h2>
 <pre class="bash"><code># 在 Windows CMD 中输入以下命令完成用户添加与口令设置
 # 添加用户 demo 密码为 pass 用于访问共享文件夹
@@ -399,7 +438,8 @@ net user demo /DELETE</code></pre>
 <ul>
 <li>目录写入权限设置检查</li>
 <li><code>put</code> 只支持上传 <strong>当前目录下</strong> 文件</li>
-<li>在 SMB 交互式终端中通过 <code>!</code> 命令前缀执行本地 <code>shell</code> 命令</li>
+<li>在 SMB 交互式终端中通过 <code>!</code> 命令前缀执行本地
+<code>shell</code> 命令</li>
 </ul>
 <pre class="bash"><code>smb: \&gt; ls
 #   .                                   D        0  Thu Apr 22 05:38:17 2021
@@ -439,8 +479,7 @@ ls -ld /srv/samba/demo/
 
 # Windows 宿主机
 </code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="windows-rm-intro" class="title-slide slide level1">
 <h1>远程管理 Windows 主机简介</h1>
@@ -452,8 +491,11 @@ ls -ld /srv/samba/demo/
 <li>GUI: Windows 远程桌面</li>
 <li>CLI
 <ul>
-<li><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands">Powershell Remote</a></li>
-<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview">SSH</a></li>
+<li><a
+href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/running-remote-commands">Powershell
+Remote</a></li>
+<li><a
+href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_overview">SSH</a></li>
 </ul></li>
 </ul>
 </section>
@@ -461,8 +503,11 @@ ls -ld /srv/samba/demo/
 
 <h3 id="windows-rdp">Windows 远程桌面</h3>
 <ul>
-<li><a href="https://support.microsoft.com/zh-cn/windows/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2-5fe128d5-8fb1-7a23-3b8a-41e636865e8c">微软官方文档: 如何使用远程桌面 Windows 10</a></li>
-<li><a href="https://github.com/stascorp/rdpwrap">Windows 10 Home 版开启远程桌面: stascorp/rdpwrap</a></li>
+<li><a
+href="https://support.microsoft.com/zh-cn/windows/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2-5fe128d5-8fb1-7a23-3b8a-41e636865e8c">微软官方文档:
+如何使用远程桌面 Windows 10</a></li>
+<li><a href="https://github.com/stascorp/rdpwrap">Windows 10 Home
+版开启远程桌面: stascorp/rdpwrap</a></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -493,7 +538,8 @@ New-NetFirewallRule -Name sshd -DisplayName &#39;OpenSSH Server (sshd)&#39; -Ena
 
 <h3 id="sshd-configure-3">CLI - OpenSSH Server</h3>
 <ul>
-<li>配置 OpenSSH 客户端连接后启动的默认 Shell 为 <code>PowerShell</code></li>
+<li>配置 OpenSSH 客户端连接后启动的默认 Shell 为
+<code>PowerShell</code></li>
 </ul>
 <pre class="bash"><code># 以下代码需要在「管理员权限」的 PowerShell 中执行
 New-ItemProperty -Path &quot;HKLM:\SOFTWARE\OpenSSH&quot; -Name DefaultShell -Value &quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&quot; -PropertyType String -Force</code></pre>
@@ -566,8 +612,7 @@ get-acl .\administrators_authorized_keys | fl
 </ul>
 <pre class="bash"><code># 注意 Windows 路径分隔符要使用 / 而不是 \
 scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="移动互联时代的文件共享" class="title-slide slide level1">
 <h1>移动互联时代的文件共享</h1>
@@ -585,15 +630,15 @@ scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</co
 <section id="开源解决方案" class="slide level2">
 <h2>开源解决方案</h2>
 <ul>
-<li><a href="https://github.com/awesome-selfhosted/awesome-selfhosted#file-transfersynchronization">自建文件传输/同步解决方案</a>
+<li><a
+href="https://github.com/awesome-selfhosted/awesome-selfhosted#file-transfersynchronization">自建文件传输/同步解决方案</a>
 <ul>
 <li><a href="https://owncloud.org/">ownCloud</a></li>
 <li><a href="https://www.seafile.com/home/">Seafile</a></li>
 <li><a href="https://syncthing.net/">Syncthing</a></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -602,16 +647,29 @@ scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</co
 <section class="slide level2">
 
 <ul>
-<li><a href="https://help.ubuntu.com/lts/serverguide/ftp-server.html">FTP Server from Ubuntu Official Documentation</a></li>
-<li><a href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-16-04">How To Set Up an NFS Mount on Ubuntu 16.04</a></li>
-<li><a href="https://help.ubuntu.com/lts/serverguide/samba.html.en">Samba from Ubuntu Official Documentation</a></li>
-<li><a href="https://help.ubuntu.com/community/Samba/SambaClientGuide">Samba/SambaClientGuide from Ubuntu Official Documentation</a></li>
-<li><a href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">Setting up Samba as a Standalone Server from Samba Official Wiki</a></li>
-<li><a href="https://wiki.samba.org/index.php/Mounting_samba_shares_from_a_unix_client">Mounting samba shares from a unix client from Samba Official Wiki</a></li>
-<li><a href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">Microsoft SMB Protocol and CIFS Protocol Overview from MSDN</a></li>
+<li><a
+href="https://help.ubuntu.com/lts/serverguide/ftp-server.html">FTP
+Server from Ubuntu Official Documentation</a></li>
+<li><a
+href="https://www.digitalocean.com/community/tutorials/how-to-set-up-an-nfs-mount-on-ubuntu-16-04">How
+To Set Up an NFS Mount on Ubuntu 16.04</a></li>
+<li><a
+href="https://help.ubuntu.com/lts/serverguide/samba.html.en">Samba from
+Ubuntu Official Documentation</a></li>
+<li><a
+href="https://help.ubuntu.com/community/Samba/SambaClientGuide">Samba/SambaClientGuide
+from Ubuntu Official Documentation</a></li>
+<li><a
+href="https://wiki.samba.org/index.php/Setting_up_Samba_as_a_Standalone_Server">Setting
+up Samba as a Standalone Server from Samba Official Wiki</a></li>
+<li><a
+href="https://wiki.samba.org/index.php/Mounting_samba_shares_from_a_unix_client">Mounting
+samba shares from a unix client from Samba Official Wiki</a></li>
+<li><a
+href="https://msdn.microsoft.com/zh-cn/library/windows/desktop/aa365233(v=vs.85).aspx">Microsoft
+SMB Protocol and CIFS Protocol Overview from MSDN</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -623,12 +681,43 @@ scp demo@192.168.56.182:c:/programdata/ssh/administrators_authorized_keys ./</co
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

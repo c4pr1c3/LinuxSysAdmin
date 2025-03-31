@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,8 +62,7 @@
 </section>
 <section id="gnu-is-not-unix" class="slide level2">
 <h2>GNU is NOT Unix</h2>
-</section>
-</section>
+</section></section>
 <section>
 <section id="软件环境" class="title-slide slide level1">
 <h1>软件环境</h1>
@@ -65,17 +73,20 @@
 <ul>
 <li><a href="https://www.virtualbox.org/">Virtualbox</a>
 <ul>
-<li>苹果 M1 用户可以使用任意桌面虚拟化解决方案，例如 <a href="https://mac.getutm.app/">UTM</a></li>
+<li>苹果 M1 用户可以使用任意桌面虚拟化解决方案，例如 <a
+href="https://mac.getutm.app/">UTM</a></li>
 </ul></li>
 <li>Ubuntu 22.04 Server 64bit</li>
-<li><a href="https://developer.aliyun.com/adc/">阿里云 云起实验室 提供的【零门槛云上实践平台】</a>
+<li><a href="https://developer.aliyun.com/adc/">阿里云 云起实验室
+提供的【零门槛云上实践平台】</a>
 <ul>
-<li><a href="https://developer.aliyun.com/adc/scenario/exp/a12055b0e9e84e5692b05ae25d377ec0">备用场景资源一</a></li>
-<li><a href="https://developer.aliyun.com/adc/scenario/exp/410e5b6a852f4b4b88bf74bf4c197a57">备用场景资源二</a></li>
+<li><a
+href="https://developer.aliyun.com/adc/scenario/exp/a12055b0e9e84e5692b05ae25d377ec0">备用场景资源一</a></li>
+<li><a
+href="https://developer.aliyun.com/adc/scenario/exp/410e5b6a852f4b4b88bf74bf4c197a57">备用场景资源二</a></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="实验问题" class="title-slide slide level1">
 <h1>实验问题</h1>
@@ -89,12 +100,13 @@
 <li>当前 Linux 发行版基本信息</li>
 <li>当前 Linux 内核版本信息</li>
 </ul></li>
-<li>Virtualbox 安装完 Ubuntu 之后新添加的网卡如何实现系统开机自动启用和自动获取 IP？</li>
-<li>如何使用 <code>scp</code> 在「虚拟机和宿主机之间」、「本机和远程 Linux 系统之间」传输文件？</li>
+<li>Virtualbox 安装完 Ubuntu
+之后新添加的网卡如何实现系统开机自动启用和自动获取 IP？</li>
+<li>如何使用 <code>scp</code> 在「虚拟机和宿主机之间」、「本机和远程
+Linux 系统之间」传输文件？</li>
 <li>如何配置 SSH 免密登录？</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="在线实验环境任务清单" class="title-slide slide level1">
 <h1>在线实验环境任务清单</h1>
@@ -103,17 +115,16 @@
 <section class="slide level2">
 
 <ul class="task-list">
-<li><input type="checkbox" disabled="" />
-掌握 SSH 登录在线共享实验环境的方法</li>
-<li><input type="checkbox" disabled="" />
-掌握 SSH 免密登录配置</li>
-<li><input type="checkbox" disabled="" />
-掌握常用命令 ls, cat, man, help, echo, less 的使用场景和使用方法</li>
-<li><input type="checkbox" disabled="" />
-通过使用帮助手册或在线检索/学习，了解 wc, sort, uniq 的使用场景和使用方法</li>
+<li><label><input type="checkbox" />掌握 SSH
+登录在线共享实验环境的方法</label></li>
+<li><label><input type="checkbox" />掌握 SSH 免密登录配置</label></li>
+<li><label><input type="checkbox" />掌握常用命令 ls, cat, man, help,
+echo, less 的使用场景和使用方法</label></li>
+<li><label><input
+type="checkbox" />通过使用帮助手册或在线检索/学习，了解 wc, sort, uniq
+的使用场景和使用方法</label></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="实验报告要求" class="title-slide slide level1">
 <h1>实验报告要求</h1>
@@ -127,8 +138,10 @@
 
 <ul>
 <li>使用 <code>markdown</code> 格式纯文本</li>
-<li>使用 <a href="https://git.cuc.edu.cn/">校内 GitLab</a> 管理作业（课堂当日宣讲为准）</li>
-<li>每次作业应 <code>commit</code> 到独立分支并通过 <code>Merge Request</code> 分别提交每一次作业</li>
+<li>使用 <a href="https://git.cuc.edu.cn/">校内 GitLab</a>
+管理作业（课堂当日宣讲为准）</li>
+<li>每次作业应 <code>commit</code> 到独立分支并通过
+<code>Merge Request</code> 分别提交每一次作业</li>
 <li>实验报告应图文并茂的记录实验过程，证明自己独立完成的实验作业</li>
 <li>记录自己独立解决的问题和解决办法，并给出问题解决用到的参考资料出处、链接</li>
 </ul>
@@ -136,7 +149,8 @@
 <section id="checkpoints-1" class="slide level2">
 <h2>评分标准(1/4)</h2>
 <blockquote>
-<p>以下规则以单次实验报告满分 10 分为例，其他满分分值需要进行等比例调整。</p>
+<p>以下规则以单次实验报告满分 10
+分为例，其他满分分值需要进行等比例调整。</p>
 </blockquote>
 <ul>
 <li>实验报告内容完成度「满分 <strong>7分</strong>」
@@ -153,8 +167,12 @@
 <li><code>markdown</code> 使用规范 「<strong>1分</strong>」
 <ul>
 <li>在 github 上在线渲染结果正确无误 （本条违反，本项直接扣 1 分）</li>
-<li>所有配图均已上传到 <code>github</code> 且在文档内使用「相对路径」引用（禁止使用图片「外链」）（仅本条违反，扣 0.5 分。同时第三条违反，扣 1 分）</li>
-<li>代码块正确使用语法高亮标记 （仅有这一条少量违反，本项可以不扣分。超过 5 处代码引用未高亮标记，扣 0.5 分）</li>
+<li>所有配图均已上传到 <code>github</code>
+且在文档内使用「相对路径」引用（禁止使用图片「外链」）（仅本条违反，扣
+0.5 分。同时第三条违反，扣 1 分）</li>
+<li>代码块正确使用语法高亮标记
+（仅有这一条少量违反，本项可以不扣分。超过 5 处代码引用未高亮标记，扣
+0.5 分）</li>
 </ul></li>
 </ul>
 </section>
@@ -163,9 +181,14 @@
 <ul>
 <li><code>git</code> 使用规范 「<strong>0.5分</strong>」
 <ul>
-<li>在 <code>PR</code> 标题中体现了作业序号，例如 <code>chap0x01</code></li>
-<li><a href="https://c4pr1c3.github.io/cuc-ns/chap0x01/exp.html">推荐的目录结构和分支结构</a></li>
-<li><code>见名知意</code> 的文件命名，<strong>好评</strong> 示例如 <code>logged_in.png</code>, <code>install_complete.png</code> 。<strong>扣分</strong> 示例：<code>1.png</code>, <code>新建文本文件.md</code> 。</li>
+<li>在 <code>PR</code> 标题中体现了作业序号，例如
+<code>chap0x01</code></li>
+<li><a
+href="https://c4pr1c3.github.io/cuc-ns/chap0x01/exp.html">推荐的目录结构和分支结构</a></li>
+<li><code>见名知意</code> 的文件命名，<strong>好评</strong> 示例如
+<code>logged_in.png</code>, <code>install_complete.png</code>
+。<strong>扣分</strong> 示例：<code>1.png</code>,
+<code>新建文本文件.md</code> 。</li>
 </ul></li>
 <li>实验报告结构规范性程度 「<strong>0.5分</strong>」
 <ul>
@@ -180,9 +203,11 @@
 </section>
 <section id="checkpoints-4" class="slide level2">
 <h2>评分标准(4/4)</h2>
-<p>未体现 <strong>自己亲自动手完成</strong> 的实验报告直接按照 0 分处理。体现自己亲自动手完成的实验报告的典型方式如：截图中包含体现自己个人特征的实验环境指纹，包括但不限于：Linux 系统的命令行提示符、自定义的 <code>shell 提示符</code> 包含自己的网名；操作截图中多次出现自己独一无二的桌面壁纸的不同局部、录制完整的自己动手操作视频并进行后期剪辑、添加水印、上传到视频网站自己的账号下</p>
-</section>
-</section>
+<p>未体现 <strong>自己亲自动手完成</strong> 的实验报告直接按照 0
+分处理。体现自己亲自动手完成的实验报告的典型方式如：截图中包含体现自己个人特征的实验环境指纹，包括但不限于：Linux
+系统的命令行提示符、自定义的 <code>shell 提示符</code>
+包含自己的网名；操作截图中多次出现自己独一无二的桌面壁纸的不同局部、录制完整的自己动手操作视频并进行后期剪辑、添加水印、上传到视频网站自己的账号下</p>
+</section></section>
     </div>
   </div>
 
@@ -194,12 +219,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

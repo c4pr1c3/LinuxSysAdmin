@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -53,9 +62,15 @@
 </section>
 <section class="slide level2">
 
-<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
-<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
-<p>最权威，没有之一：<a href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core - Official Documentation</a></p>
+<p>最权威，没有之一：<a
+href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core -
+Official Documentation</a></p>
+<p>最权威，没有之一：<a
+href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core -
+Official Documentation</a></p>
+<p>最权威，没有之一：<a
+href="http://docs.ansible.com/ansible/latest/index.html">Ansible Core -
+Official Documentation</a></p>
 </section>
 <section id="提纲" class="slide level2">
 <h2>提纲</h2>
@@ -68,8 +83,7 @@
 <li>开发环境配置</li>
 <li>更多实例</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="版本说明" class="title-slide slide level1">
 <h1>版本说明</h1>
@@ -84,16 +98,20 @@
 #   ansible python module location = /home/cuc/.pyenv/versions/3.6.8/lib/python3.6/site-packages/ansible
 #   executable location = /home/cuc/.pyenv/versions/3.6.8/bin/ansible
 #   python version = 3.6.8 (default, Apr 10 2020, 17:47:18) [GCC 7.5.0]</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="installation" class="title-slide slide level1">
-<h1><a href="http://docs.ansible.com/ansible/latest/intro_installation.html">安装</a></h1>
+<h1><a
+href="http://docs.ansible.com/ansible/latest/intro_installation.html">安装</a></h1>
 
 </section>
 <section class="slide level2">
 
-<p>Ansible 官方推荐 <code>Red Hat Enterprise Linux (TM)</code>, <code>CentOS</code>, <code>Fedora</code>, <code>Debian</code>, <code>Ubuntu</code> 操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过 Python 的包管理器 <code>pip</code> 进行安装。</p>
+<p>Ansible 官方推荐 <code>Red Hat Enterprise Linux (TM)</code>,
+<code>CentOS</code>, <code>Fedora</code>, <code>Debian</code>,
+<code>Ubuntu</code>
+操作系统用户直接使用操作系统官方维护和打包的最新版软件包。除此之外，也可以通过
+Python 的包管理器 <code>pip</code> 进行安装。</p>
 </section>
 <section id="apt-get-issue-1" class="slide level2">
 <h2>apt-get install 方式安装注意事项</h2>
@@ -152,8 +170,7 @@ pip install -U ansible
 
 # 国内安装时临时使用清华 pypi 镜像源
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U ansible</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="required-terms" class="title-slide slide level1">
 <h1>核心术语</h1>
@@ -161,13 +178,21 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple -U ansible</code></pre>
 </section>
 <section class="slide level2">
 
-<p><a href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#prerequisites">Ansible 官方安装指南</a> 中的「先决条件」。</p>
+<p><a
+href="https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#prerequisites">Ansible
+官方安装指南</a> 中的「先决条件」。</p>
 <blockquote>
-<p>You install Ansible on a <strong>control node</strong>, which then uses <strong>SSH (by default)</strong> to communicate with your <strong>managed nodes</strong> (those end devices you want to automate).</p>
+<p>You install Ansible on a <strong>control node</strong>, which then
+uses <strong>SSH (by default)</strong> to communicate with your
+<strong>managed nodes</strong> (those end devices you want to
+automate).</p>
 </blockquote>
 <ul>
-<li><strong>控制节点</strong>。安装 <code>ansible</code> 软件的系统。</li>
-<li><strong>被管理节点</strong>。无需安装 <code>ansible</code> 软件，接受 <code>ansible</code> 自动化管理的系统，但需要安装 <code>python</code> 解释器。</li>
+<li><strong>控制节点</strong>。安装 <code>ansible</code>
+软件的系统。</li>
+<li><strong>被管理节点</strong>。无需安装 <code>ansible</code>
+软件，接受 <code>ansible</code> 自动化管理的系统，但需要安装
+<code>python</code> 解释器。</li>
 </ul>
 </section>
 <section id="python3-install" class="slide level2">
@@ -205,18 +230,28 @@ apt policy python3.8
 <section id="python-prerequesites" class="slide level2">
 <h2>Ansible 对 Python 版本的要求</h2>
 <ul>
-<li><a href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Ansible 2.5+ 支持的 Python3 最低版本是 3.5</a>
+<li><a
+href="https://docs.ansible.com/ansible/latest/reference_appendices/python_3_support.html">Ansible
+2.5+ 支持的 Python3 最低版本是 3.5</a>
 <ul>
 <li>Ansible 2.5- 对 Python3 的支持是「试验性质」</li>
 </ul></li>
-<li><strong>被管理节点</strong> 上同时支持 Python 2.6+ 和 Python 3.5+ 的解释器</li>
+<li><strong>被管理节点</strong> 上同时支持 Python 2.6+ 和 Python 3.5+
+的解释器</li>
 </ul>
 </section>
 <section id="python-versions" class="slide level2">
 <h2>选择哪个 Python 版本</h2>
 <table>
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 27%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+<col style="width: 18%" />
+</colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th>版本号</th>
 <th>PEP</th>
 <th>发布日期</th>
@@ -225,35 +260,35 @@ apt policy python3.8
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>2.7</td>
 <td><a href="https://www.python.org/dev/peps/pep-0373/">373</a></td>
 <td>2010-07-03</td>
 <td>2020-01-01</td>
 <td>2020-01-01</td>
 </tr>
-<tr class="even">
+<tr>
 <td>3.5</td>
 <td><a href="https://www.python.org/dev/peps/pep-0478/">478</a></td>
 <td>2015-09-13</td>
 <td>2017-08-08</td>
 <td><strong>2020-09-13</strong></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>3.6</td>
 <td><a href="https://www.python.org/dev/peps/pep-0494/">494</a></td>
 <td>2016-12-23</td>
 <td>2018-12-24</td>
 <td><strong>2021-12</strong></td>
 </tr>
-<tr class="even">
+<tr>
 <td>3.7</td>
 <td><a href="https://www.python.org/dev/peps/pep-0537/">537</a></td>
 <td>2018-06-27</td>
 <td><strong>2020-06-27</strong></td>
 <td><strong>2023-06</strong></td>
 </tr>
-<tr class="odd">
+<tr>
 <td>3.8</td>
 <td><a href="https://www.python.org/dev/peps/pep-0569/">569</a></td>
 <td>2019-10-14</td>
@@ -262,8 +297,7 @@ apt policy python3.8
 </tr>
 </tbody>
 </table>
-</section>
-</section>
+</section></section>
 <section>
 <section id="hello-world" class="title-slide slide level1">
 <h1>Hello World</h1>
@@ -272,10 +306,10 @@ apt policy python3.8
 <section class="slide level2">
 
 <ul>
-<li><a href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/ssh-copy-id">将「控制节点」设置为「被管理节点」的信任主机</a></li>
+<li><a
+href="https://github.com/c4pr1c3/AnsibleTutorial/tree/master/ssh-copy-id">将「控制节点」设置为「被管理节点」的信任主机</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="terms-list" class="title-slide slide level1">
 <h1>术语列表</h1>
@@ -284,22 +318,34 @@ apt policy python3.8
 <section class="slide level2">
 
 <ul>
-<li><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc
+Commands</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></li>
+<li><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible
+Vault</a></li>
 </ul>
 </section>
 <section id="inventory" class="slide level2">
-<h2><a href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></h2>
+<h2><a
+href="http://docs.ansible.com/ansible/latest/intro_inventory.html">Inventory</a></h2>
 <ul>
-<li>默认全局 <code>清单</code> 文件：<code>/etc/ansible/hosts</code></li>
-<li><strong>最常用</strong>的 <code>清单</code> 文件：<code>-i &lt;path&gt;</code> ，通过命令行参数自行指定 <code>清单</code> 文件路径</li>
+<li>默认全局 <code>清单</code>
+文件：<code>/etc/ansible/hosts</code></li>
+<li><strong>最常用</strong>的 <code>清单</code>
+文件：<code>-i &lt;path&gt;</code> ，通过命令行参数自行指定
+<code>清单</code> 文件路径</li>
 </ul>
 </section>
 <section id="ad-hoc-commands" class="slide level2">
-<h2><a href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc Commands</a></h2>
+<h2><a
+href="http://docs.ansible.com/ansible/latest/intro_adhoc.html">Ad-Hoc
+Commands</a></h2>
 <pre class="bash"><code># 使用 ansible 内置的 ping 模块
 ## 在 清单 文件中名为 ubuntu 的主机或主机组定义的所有主机上执行
 ansible ubuntu -i hosts -m ping
@@ -310,19 +356,28 @@ ansible all -i hosts -m ping
 ansible all -i hosts -a &#39;ip addr&#39;</code></pre>
 </section>
 <section id="playbooks" class="slide level2">
-<h2><a href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></h2>
+<h2><a
+href="http://docs.ansible.com/ansible/latest/playbooks.html">Playbooks</a></h2>
 <blockquote>
-<p>Playbooks 是 Ansible 的 配置、部署和编排语言，可以用于定义远程主机强制执行策略或一般性 IT 过程。</p>
+<p>Playbooks 是 Ansible 的
+配置、部署和编排语言，可以用于定义远程主机强制执行策略或一般性 IT
+过程。</p>
 </blockquote>
 <ul>
-<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
-<li>核心语言使用的 <a href="http://docs.ansible.com/ansible/latest/YAMLSyntax.html">YAML</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/playbooks_keywords.html">Ansible 官方提供的指令速查词典</a></li>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible
+官方提供的一些示例 Playbooks</a></li>
+<li>核心语言使用的 <a
+href="http://docs.ansible.com/ansible/latest/YAMLSyntax.html">YAML</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/playbooks_keywords.html">Ansible
+官方提供的指令速查词典</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="playbooks_variables"><a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html">在 Playbook 里使用变量</a></h3>
+<h3 id="playbooks_variables"><a
+href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html">在
+Playbook 里使用变量</a></h3>
 <pre class="jinja"><code>{# 简单变量 #}
 {{ max_amp_value }}
 
@@ -331,7 +386,9 @@ ansible all -i hosts -a &#39;ip addr&#39;</code></pre>
 
 {# ansible hostname -m setup #}
 {{ ansible_facts[&#39;devices&#39;][&#39;sda&#39;][&#39;model&#39;] }}</code></pre>
-<p>更多关于模版（Jinja2）的帮助请阅读<a href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html">Ansible 官方文档</a> 。</p>
+<p>更多关于模版（Jinja2）的帮助请阅读<a
+href="https://docs.ansible.com/ansible/latest/user_guide/playbooks_templating.html">Ansible
+官方文档</a> 。</p>
 </section>
 <section class="slide level2">
 
@@ -359,30 +416,43 @@ set_facts / registered vars
 extra vars (always win precedence)</code></pre>
 </section>
 <section id="modules" class="slide level2">
-<h2><a href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></h2>
+<h2><a
+href="http://docs.ansible.com/ansible/latest/modules.html">Modules</a></h2>
 <p>常见运维任务都可以找到 <code>ansible</code> 内置模块的支持</p>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_files_modules.html">文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html">bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_system_modules.html">操作系统级别管理工具：用户/用户组管理、systemd服务管理、时区管理、内核加载模块管理等</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_files_modules.html">文件上传、权限设置、查找、元信息获取、基于模版生成配置文件等</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_packaging_modules.html">bower、composer、pip、pear等主流编程语言的包管理工具，apt、homebrew、yum等操作系统包管理工具</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_system_modules.html">操作系统级别管理工具：用户/用户组管理、systemd服务管理、时区管理、内核加载模块管理等</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_commands_modules.html">远程命令执行、脚本执行等</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_crypto_modules.html">PKI 证书管理</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_database_modules.html">常见数据库管理</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_web_infrastructure_modules.html">常见Web基础设施管理：supervisorctl、htpasswd、apache2_module、letsencrypt等</a></li>
-<li><a href="http://docs.ansible.com/ansible/latest/list_of_source_control_modules.html">常见版本控制工具管理</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_commands_modules.html">远程命令执行、脚本执行等</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_crypto_modules.html">PKI
+证书管理</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_database_modules.html">常见数据库管理</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_web_infrastructure_modules.html">常见Web基础设施管理：supervisorctl、htpasswd、apache2_module、letsencrypt等</a></li>
+<li><a
+href="http://docs.ansible.com/ansible/latest/list_of_source_control_modules.html">常见版本控制工具管理</a></li>
 </ul>
 </section>
 <section id="ansible-vault" class="slide level2">
-<h2><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible Vault</a></h2>
-<p><a href="http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault">使用 Vault 加密敏感数据</a> ，可以对以下路径下的文件加密：</p>
+<h2><a href="http://docs.ansible.com/ansible/latest/vault.html">Ansible
+Vault</a></h2>
+<p><a
+href="http://docs.ansible.com/ansible/latest/vault.html#what-can-be-encrypted-with-vault">使用
+Vault 加密敏感数据</a> ，可以对以下路径下的文件加密：</p>
 <ul>
 <li><code>group_vars/</code></li>
 <li><code>host_vars/</code></li>
@@ -392,8 +462,12 @@ extra vars (always win precedence)</code></pre>
 <section class="slide level2">
 
 <ul>
-<li><strong>建议-1</strong> 仅对需要加密的变量进行加密，避免加密扩大化；</li>
-<li><strong>建议-2</strong> 为了便于 <code>grep</code> 等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个 <strong>中间变量</strong> 来隔离 <code>被引用变量</code> 和 <code>加密数据</code>。</li>
+<li><strong>建议-1</strong>
+仅对需要加密的变量进行加密，避免加密扩大化；</li>
+<li><strong>建议-2</strong> 为了便于 <code>grep</code>
+等文本检索工具检索所有被引用的变量定义，对于需要加密的变量建议使用一个
+<strong>中间变量</strong> 来隔离 <code>被引用变量</code> 和
+<code>加密数据</code>。</li>
 </ul>
 </section>
 <section class="slide level2">
@@ -416,8 +490,7 @@ vault_demo_users:
     passwd: &quot;plz-change-me&quot;
   bob:
     passwd: &quot;plz-change-me&quot;</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="项目结构" class="title-slide slide level1">
 <h1>项目结构</h1>
@@ -425,8 +498,12 @@ vault_demo_users:
 </section>
 <section class="slide level2">
 
-<p><a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html">Ansible 最佳实践</a></p>
-<p>在官方推荐的 <a href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout">目录布局</a> 基础之上，进一步精简一个常用目录组织结构：</p>
+<p><a
+href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html">Ansible
+最佳实践</a></p>
+<p>在官方推荐的 <a
+href="http://docs.ansible.com/ansible/latest/playbooks_best_practices.html#directory-layout">目录布局</a>
+基础之上，进一步精简一个常用目录组织结构：</p>
 <pre class="yaml"><code>production                # 生产环境服务器清单文件
 staging                   # 模拟环境服务器清单文件
 
@@ -462,8 +539,7 @@ roles/
     webtier/              # same kind of structure as &quot;common&quot; was above, done for the webtier role
     monitoring/           # &quot;&quot;
     fooapp/               # &quot;&quot;</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="开发环境配置" class="title-slide slide level1">
 <h1>开发环境配置</h1>
@@ -490,18 +566,29 @@ roles/
 <ul>
 <li>vscode
 <ul>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit">Remote - SSH: Editing Configuration Files</a></li>
-<li><a href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">（可选）vim</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better
+Jinja</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote
+- SSH</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh-edit">Remote
+- SSH: Editing Configuration Files</a></li>
+<li><a
+href="https://marketplace.visualstudio.com/items?itemName=vscodevim.vim">（可选）vim</a></li>
 </ul></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<h3 id="ansible"><a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></h3>
-<p><a href="https://code.visualstudio.com/docs/languages/identifiers">vscode 里全局 settings.json 里设置 files.associations</a></p>
+<h3 id="ansible"><a
+href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible</a></h3>
+<p><a
+href="https://code.visualstudio.com/docs/languages/identifiers">vscode
+里全局 settings.json 里设置 files.associations</a></p>
 <pre class="json"><code>&quot;files.associations&quot;: {
     &quot;**/defaults/**/*&quot;: &quot;ansible&quot;,
     &quot;**/tasks/**/*.yml&quot; : &quot;ansible&quot;,
@@ -513,11 +600,15 @@ roles/
     &quot;**/vars/**/*.yml&quot;: &quot;ansible&quot;,
     &quot;**/inventory/*/*&quot;: &quot;ansible&quot;
 }</code></pre>
-<p><a href="https://marketplace.visualstudio.com/items?itemName=haaaad.ansible">以上参考 language-Ansible 的文件关联配置</a></p>
+<p><a
+href="https://marketplace.visualstudio.com/items?itemName=haaaad.ansible">以上参考
+language-Ansible 的文件关联配置</a></p>
 </section>
 <section class="slide level2">
 
-<h3 id="使用-ssh-进行远程开发"><a href="https://code.visualstudio.com/docs/remote/ssh">使用 SSH 进行远程开发</a></h3>
+<h3 id="使用-ssh-进行远程开发"><a
+href="https://code.visualstudio.com/docs/remote/ssh">使用 SSH
+进行远程开发</a></h3>
 <p><img data-src="images/ansible/architecture-ssh.png" /></p>
 </section>
 <section id="语法检查" class="slide level2">
@@ -538,18 +629,31 @@ roles/
 <ul>
 <li>自动补全
 <ul>
-<li>重复输入内容: <a href="https://stackoverflow.com/questions/51341555/visualcode-shortcut-to-display-autocomplete-list-before-typing-in-macos">vscode 内置功能</a></li>
-<li>语法关键字: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a></li>
-<li>常用代码片段: <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展 snippets 功能</a></li>
+<li>重复输入内容: <a
+href="https://stackoverflow.com/questions/51341555/visualcode-shortcut-to-display-autocomplete-list-before-typing-in-macos">vscode
+内置功能</a></li>
+<li>语法关键字: <a
+href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible
+扩展</a></li>
+<li>常用代码片段: <a
+href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible
+扩展 snippets 功能</a></li>
 </ul></li>
-<li>语法高亮 <a href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible 扩展</a> + <a href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better Jinja</a></li>
+<li>语法高亮 <a
+href="https://marketplace.visualstudio.com/items?itemName=vscoss.vscode-ansible">Ansible
+扩展</a> + <a
+href="https://marketplace.visualstudio.com/items?itemName=samuelcolvin.jinjahtml">Better
+Jinja</a></li>
 <li>语法检查 <code>ansible-lint</code> + <code>yamllint</code></li>
-<li>调试 <a href="https://docs.ansible.com/ansible/latest/modules/debug_module.html">Ansible 内置的 debug 模块，调试打印方式</a></li>
-<li>运行 <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote - SSH</a></li>
+<li>调试 <a
+href="https://docs.ansible.com/ansible/latest/modules/debug_module.html">Ansible
+内置的 debug 模块，调试打印方式</a></li>
+<li>运行 <a
+href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-ssh">Remote
+- SSH</a></li>
 <li>语法即时帮助 暂时没有集成解决方案</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="more-playbooks" class="title-slide slide level1">
 <h1>Playbooks 实例</h1>
@@ -558,12 +662,14 @@ roles/
 <section class="slide level2">
 
 <ul>
-<li><a href="https://github.com/c4pr1c3/AnsibleTutorial">原创实例</a></li>
-<li><a href="https://github.com/ansible/ansible-examples">Ansible 官方提供的一些示例 Playbooks</a></li>
-<li><a href="https://spacelift.io/blog/ansible-playbooks">Working with Ansible Playbooks – Tips &amp; Tricks with Examples</a></li>
+<li><a
+href="https://github.com/c4pr1c3/AnsibleTutorial">原创实例</a></li>
+<li><a href="https://github.com/ansible/ansible-examples">Ansible
+官方提供的一些示例 Playbooks</a></li>
+<li><a href="https://spacelift.io/blog/ansible-playbooks">Working with
+Ansible Playbooks – Tips &amp; Tricks with Examples</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="参考资料" class="title-slide slide level1">
 <h1>参考资料</h1>
@@ -572,11 +678,13 @@ roles/
 <section class="slide level2">
 
 <ul>
-<li><a href="http://cheat.readthedocs.io/en/latest/ansible/">Cheatsheet of Ansible</a></li>
-<li><a href="https://gist.github.com/andreicristianpetcu/b892338de279af9dac067891579cad7d">An Ansible summary Jon Warbrick, July 2014, V3.2 (for Ansible 1.7)</a></li>
+<li><a href="http://cheat.readthedocs.io/en/latest/ansible/">Cheatsheet
+of Ansible</a></li>
+<li><a
+href="https://gist.github.com/andreicristianpetcu/b892338de279af9dac067891579cad7d">An
+Ansible summary Jon Warbrick, July 2014, V3.2 (for Ansible 1.7)</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="附录-a" class="title-slide slide level1">
 <h1>附录 A</h1>
@@ -585,8 +693,10 @@ roles/
 <section id="yaml-quickstart" class="slide level2">
 <h2>YAML 快速上手</h2>
 <ul>
-<li>（可选）<code>---</code> 定义 YAML 文件开始，<code>...</code> 定义 YAML 文件结束</li>
-<li><code>list</code> 数据结构，使用 `- ` （一个短杠和一个空格）</li>
+<li>（可选）<code>---</code> 定义 YAML 文件开始，<code>...</code> 定义
+YAML 文件结束</li>
+<li><code>list</code> 数据结构，使用 <code>-</code>
+（一个短杠和一个空格）</li>
 <li><code>dict</code> 数据结构，使用 <code>key: value</code> 形式</li>
 <li>续行符
 <ul>
@@ -630,8 +740,7 @@ ignore_newlines: &gt;
             this is really a
             single line of text
             despite appearances</code></pre>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -643,12 +752,43 @@ ignore_newlines: &gt;
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

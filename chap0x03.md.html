@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -47,16 +56,17 @@
 </section>
 
 <section>
-<section id="第三章linux服务器系统管理基础" class="title-slide slide level1">
+<section id="第三章linux服务器系统管理基础"
+class="title-slide slide level1">
 <h1>第三章：Linux服务器系统管理基础</h1>
 
 </section>
 <section id="system-administrator-is-root" class="slide level2">
 <h2>System Administrator is root</h2>
-</section>
-</section>
+</section></section>
 <section>
-<section id="linux服务器管理员的典型工作场景和需求" class="title-slide slide level1">
+<section id="linux服务器管理员的典型工作场景和需求"
+class="title-slide slide level1">
 <h1>Linux服务器管理员的典型工作场景和需求</h1>
 
 </section>
@@ -69,8 +79,7 @@
 <li>移动办公时可以保持远程服务器上的操作被“记住”和“按需复原”</li>
 <li>让进程更优雅的运行在后台，退出SSH会话不影响刚才启动的进程</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="远程管理工具箱" class="title-slide slide level1">
 <h1>远程管理工具箱</h1>
@@ -82,34 +91,40 @@
 <li>工作电脑
 <ul>
 <li>SSH客户端软件</li>
-<li><a href="https://code.visualstudio.com/docs/remote/ssh">Visual Studio Code Remote - SSH</a></li>
+<li><a href="https://code.visualstudio.com/docs/remote/ssh">Visual
+Studio Code Remote - SSH</a></li>
 </ul></li>
 <li>服务器上
 <ul>
-<li>tmux（<a href="https://www.gnu.org/software/screen/">screen</a>的增强版）</li>
+<li>tmux（<a
+href="https://www.gnu.org/software/screen/">screen</a>的增强版）</li>
 </ul></li>
 </ul>
 </section>
 <section id="visual-studio-code-remote---ssh" class="slide level2">
-<h2><a href="https://code.visualstudio.com/docs/remote/ssh">Visual Studio Code Remote - SSH</a></h2>
+<h2><a href="https://code.visualstudio.com/docs/remote/ssh">Visual
+Studio Code Remote - SSH</a></h2>
 <p><img data-src="images/ansible/architecture-ssh.png" /></p>
 </section>
 <section class="slide level2">
 
-<h3 id="system-requirements"><a href="https://code.visualstudio.com/docs/remote/ssh#_getting-started">系统依赖条件</a></h3>
+<h3 id="system-requirements"><a
+href="https://code.visualstudio.com/docs/remote/ssh#_getting-started">系统依赖条件</a></h3>
 <ul>
 <li>工作主机依赖条件
 <ul>
 <li>SSH 客户端软件
 <ul>
-<li><strong>Windows 平台</strong> <code>推荐但可选</code> <code>git-bash</code></li>
+<li><strong>Windows 平台</strong> <code>推荐但可选</code>
+<code>git-bash</code></li>
 </ul></li>
 </ul></li>
 <li>远程主机依赖条件
 <ul>
 <li>开启 <code>SSH 服务</code> 的当前主流 Linux 发行版本
 <ul>
-<li><a href="https://code.visualstudio.com/docs/remote/faq#_what-are-the-connectivity-requirements-for-vs-code-server">远程主机可以访问互联网</a></li>
+<li><a
+href="https://code.visualstudio.com/docs/remote/faq#_what-are-the-connectivity-requirements-for-vs-code-server">远程主机可以访问互联网</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -118,7 +133,9 @@
 
 <h3 id="setup-vscode-remote-on-win-1">Windows 平台安装与配置</h3>
 <ul>
-<li><code>VSCode</code> 扩展应用商店安装 <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Development Extenstion Pack</a></li>
+<li><code>VSCode</code> 扩展应用商店安装 <a
+href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote
+Development Extenstion Pack</a></li>
 <li>（推荐但可选）配置 SSH 免密登录远程主机
 <ul>
 <li>使用 <code>git-bash</code> 配置 SSH 免密登录</li>
@@ -127,11 +144,15 @@
 </section>
 <section class="slide level2">
 
-<h3 id="使用-git-bash-配置-ssh-免密登录">使用 <code>git-bash</code> 配置 SSH 免密登录</h3>
+<h3 id="使用-git-bash-配置-ssh-免密登录">使用 <code>git-bash</code> 配置
+SSH 免密登录</h3>
 <ol type="1">
 <li>添加新的 <code>SSH Targets</code></li>
-<li>打开 <code>git bash</code> ，输入以下指令完成 <code>git bash</code> SSH 免密登录</li>
-<li>在选择 <code>SSH 配置文件</code> 时，选择当前用户 <code>家目录</code> 下 <code>.ssh/config</code> 用于保存远程主机配置信息</li>
+<li>打开 <code>git bash</code> ，输入以下指令完成 <code>git bash</code>
+SSH 免密登录</li>
+<li>在选择 <code>SSH 配置文件</code> 时，选择当前用户
+<code>家目录</code> 下 <code>.ssh/config</code>
+用于保存远程主机配置信息</li>
 <li>在 <code>VSCode</code> 里连接新添加的远程 SSH 主机</li>
 </ol>
 <pre class="bash"><code># 检查是否已经生成过 SSH 公私钥对 id_rsa.pub 和 id_rsa
@@ -160,11 +181,15 @@ ssh cuc@192.168.56.161</code></pre>
 <ul>
 <li>快捷键绑定冲突
 <ul>
-<li><code>CTRL-F</code> 在 <code>Windows</code> 平台的 <code>VSCode</code> 里是默认绑定的「打开搜索对话框」快捷键，与 <code>vim</code> 注册快捷键冲突</li>
+<li><code>CTRL-F</code> 在 <code>Windows</code> 平台的
+<code>VSCode</code> 里是默认绑定的「打开搜索对话框」快捷键，与
+<code>vim</code> 注册快捷键冲突</li>
 </ul></li>
-<li>远程 Linux 主机上会启动一个 <code>node</code> 服务进程用于响应本地 <code>VSCode</code> 的远程编辑与管理任务
+<li>远程 Linux 主机上会启动一个 <code>node</code> 服务进程用于响应本地
+<code>VSCode</code> 的远程编辑与管理任务
 <ul>
-<li><code>100MB+</code> 内存占用，对于小内存 Linux 系统来说是一个不小的负担</li>
+<li><code>100MB+</code> 内存占用，对于小内存 Linux
+系统来说是一个不小的负担</li>
 </ul></li>
 </ul>
 <pre class="bash"><code># 验证 vscode 远程服务进程的内存占用率
@@ -204,8 +229,7 @@ tmux
 # 再次SSH登录到虚拟机上执行
 # 注意查看输出结果，观察ping进程的父进程是谁，和退出SSH登录之前相比是否有变化？
 pstree -A</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="用户组与权限管理" class="title-slide slide level1">
 <h1>用户/组与权限管理</h1>
@@ -261,7 +285,9 @@ $ ls -l /etc/shadow
 
 <h3 id="文件类型">文件类型</h3>
 <blockquote>
-<p><a href="https://www.freebsd.org/cgi/man.cgi?query=ls&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+11.1-RELEASE+and+Ports&amp;arch=default&amp;format=html">FreeBSD 的 man 手册页 ls 摘录</a></p>
+<p><a
+href="https://www.freebsd.org/cgi/man.cgi?query=ls&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+11.1-RELEASE+and+Ports&amp;arch=default&amp;format=html">FreeBSD
+的 man 手册页 ls 摘录</a></p>
 </blockquote>
 <ul>
 <li>b   块特殊文件（Block special file）</li>
@@ -285,7 +311,8 @@ $ ls -l /etc/shadow
 <h2>Saved GID (SGID)</h2>
 <ul>
 <li>对应属主用户组列权限位中的<strong>s</strong>标记，取代原有显示<strong>x</strong>标记的位置</li>
-<li>如果SGID设置在二进制<strong>文件</strong>上，则不论用户是谁，在执行该程序的时候，它的有效用户组（effective group）将会变成该程序的用户组所有者（group id）</li>
+<li>如果SGID设置在二进制<strong>文件</strong>上，则不论用户是谁，在执行该程序的时候，它的有效用户组（effective
+group）将会变成该程序的用户组所有者（group id）</li>
 <li>如果SGID是设置在A<strong>目录</strong>上，则在该A<strong>目录</strong>内所建立的文件或目录的用户组，将强制被设置为此A目录的用户组</li>
 </ul>
 </section>
@@ -299,7 +326,9 @@ $ ls -l /etc/shadow
 </section>
 <section id="suid-sgid-exp" class="slide level2">
 <h2>关于 SUID 和 SGID 的实践验证 🌰</h2>
-<p><a href="https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf"><img data-src="https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf.svg" alt="asciicast" /></a></p>
+<p><a href="https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf"><img
+data-src="https://asciinema.org/a/ClSacEE7TQCBt6PSvAK23iXuf.svg"
+alt="asciicast" /></a></p>
 </section>
 <section id="改变文件和目录的属主与权限" class="slide level2">
 <h2>改变文件和目录的属主与权限</h2>
@@ -320,8 +349,7 @@ chmod 6755 filename
 
 # 设置Sticky Bit
 chmod 1755 dirname</code></pre>
-</section>
-</section>
+</section></section>
 <section>
 <section id="sudo-的一些坑" class="title-slide slide level1">
 <h1>sudo 的一些坑</h1>
@@ -358,8 +386,7 @@ sudo pip install
 </del></li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件系统与存储管理" class="title-slide slide level1">
 <h1>文件系统与存储管理</h1>
@@ -377,7 +404,8 @@ sudo pip install
 <ul>
 <li>分区原则与策略</li>
 <li>fdisk / gdisk</li>
-<li>大于2TB分区支持使用 <a href="https://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html">parted</a></li>
+<li>大于2TB分区支持使用 <a
+href="https://www.cyberciti.biz/tips/fdisk-unable-to-create-partition-greater-2tb.html">parted</a></li>
 </ul></li>
 <li>文件系统挂载
 <ul>
@@ -405,28 +433,43 @@ mkfs -t {{ext4}} {{path/to/partition}}
 # 4. 将分区挂载到指定目录 
 mount -t {{filesystem_type}} {{path/to/device_file}} {{path/to/target_directory}}</code></pre>
 </section>
-<section id="逻辑卷管理---lvm-logical-volume-management" class="slide level2">
-<h2><a href="https://wiki.archlinux.org/index.php/LVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">逻辑卷管理</a> - <a href="https://wiki.ubuntu.com/Lvm">LVM, Logical Volume Management</a></h2>
+<section id="逻辑卷管理---lvm-logical-volume-management"
+class="slide level2">
+<h2><a
+href="https://wiki.archlinux.org/index.php/LVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">逻辑卷管理</a>
+- <a href="https://wiki.ubuntu.com/Lvm">LVM, Logical Volume
+Management</a></h2>
 <ul>
-<li>LVM 是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备</li>
+<li>LVM
+是一种可用在Linux内核的逻辑分卷管理器；可用于管理磁盘驱动器或其他类似的大容量存储设备</li>
 </ul>
-<p>LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统分区独立于底层硬件）。 通过LVM，你可以实现存储空间的抽象化并在上面建立虚拟分区（virtual partitions），可以更简便地扩大和缩小分区，可以增删分区时无需担心某个硬盘上没有足够的连续空间，LVM是用来方便管理的，<strong>不会提供额外的安全保证</strong>。</p>
+<p>LVM利用Linux内核的device-mapper来实现存储系统的虚拟化（系统分区独立于底层硬件）。
+通过LVM，你可以实现存储空间的抽象化并在上面建立虚拟分区（virtual
+partitions），可以更简便地扩大和缩小分区，可以增删分区时无需担心某个硬盘上没有足够的连续空间，LVM是用来方便管理的，<strong>不会提供额外的安全保证</strong>。</p>
 <blockquote>
-<p><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-pclvm-rstr/">配合存储硬件的Raid技术，提供高可靠性</a></p>
+<p><a
+href="https://www.ibm.com/developerworks/cn/linux/l-cn-pclvm-rstr/">配合存储硬件的Raid技术，提供高可靠性</a></p>
 </blockquote>
 </section>
 <section id="lvm-的基本组成块building-blocks" class="slide level2">
 <h2>LVM 的基本组成块（building blocks）</h2>
 <ul>
-<li>物理卷(PV, Physical Volume )：可以在上面建立卷组的媒介，可以是硬盘分区，也可以是硬盘本身或者回环文件（loopback file）。物理卷包括一个特殊的header，其余部分被切割为一块块物理区域（physical extents）。基于物理卷可以创建“逻辑上或虚拟的”硬盘。</li>
-<li>卷组(VG, Volume Group)：将一组物理卷收集为一个管理单元。一个卷组就相当于一个“物理”硬盘。</li>
-<li>逻辑卷(LV, Logical Volume)：虚拟分区，由物理区域（physical extents）组成。相当于基于“物理”硬盘（卷组）之上的文件系统分区。</li>
-<li>物理区域(PE, Physical Extent)：硬盘可供指派给逻辑卷的最小单位（通常为4MB）。</li>
+<li>物理卷(PV, Physical Volume
+)：可以在上面建立卷组的媒介，可以是硬盘分区，也可以是硬盘本身或者回环文件（loopback
+file）。物理卷包括一个特殊的header，其余部分被切割为一块块物理区域（physical
+extents）。基于物理卷可以创建“逻辑上或虚拟的”硬盘。</li>
+<li>卷组(VG, Volume
+Group)：将一组物理卷收集为一个管理单元。一个卷组就相当于一个“物理”硬盘。</li>
+<li>逻辑卷(LV, Logical Volume)：虚拟分区，由物理区域（physical
+extents）组成。相当于基于“物理”硬盘（卷组）之上的文件系统分区。</li>
+<li>物理区域(PE, Physical
+Extent)：硬盘可供指派给逻辑卷的最小单位（通常为4MB）。</li>
 </ul>
 </section>
 <section id="lvm-arch" class="slide level2">
 <h2>基于 LVM 的磁盘管理体系结构</h2>
-<p><a href="images/chap0x03/lvm-arch.svg"><img data-src="images/chap0x03/lvm-arch.png" /></a></p>
+<p><a href="images/chap0x03/lvm-arch.svg"><img
+data-src="images/chap0x03/lvm-arch.png" /></a></p>
 </section>
 <section id="lvm-based-partitions" class="slide level2">
 <h2>基于 LVM 的磁盘管理步骤</h2>
@@ -537,8 +580,7 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <li>在系统设置时需要更复杂的额外步骤</li>
 <li>LVM 配置丢失或损坏时，数据恢复难度较高</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件备份---文件打包" class="title-slide slide level1">
 <h1>文件备份 - 文件打包</h1>
@@ -547,10 +589,11 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <section class="slide level2">
 
 <ul>
-<li>大部分的Linux压缩工具遵循 <code>KISS(Keep It Simple and Stupid)原则</code> ，即“<strong>每个程序只做一件事，不要试图在单个程序中完成多个任务</strong>”，所以压缩工具只是被设计用来对单个文件进行压缩，如果要对很多文件、一个目录下所有子目录和文件进行压缩，则需要先使用<strong>打包工具</strong>对批量的文件和目录进行打包，变成一个文件之后，再将压缩任务交给专门的压缩工具软件。</li>
+<li>大部分的Linux压缩工具遵循
+<code>KISS(Keep It Simple and Stupid)原则</code>
+，即“<strong>每个程序只做一件事，不要试图在单个程序中完成多个任务</strong>”，所以压缩工具只是被设计用来对单个文件进行压缩，如果要对很多文件、一个目录下所有子目录和文件进行压缩，则需要先使用<strong>打包工具</strong>对批量的文件和目录进行打包，变成一个文件之后，再将压缩任务交给专门的压缩工具软件。</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件备份---文件归档" class="title-slide slide level1">
 <h1>文件备份 - 文件归档</h1>
@@ -561,14 +604,17 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <ul>
 <li>连同所有目录、文件的<strong>属主信息</strong>、<strong>时间戳信息</strong>一并<strong>打包</strong>保存</li>
 <li>妥善处理ln创建的链接文件（保留原有的目标指向信息），避免重复备份</li>
-<li><a href="https://help.ubuntu.com/community/BackupYourSystem/TAR">BackupYourSystem/TAR from ubuntu official documentation</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/full_system_backup_with_rsync">Full system backup with rsync</a>
+<li><a
+href="https://help.ubuntu.com/community/BackupYourSystem/TAR">BackupYourSystem/TAR
+from ubuntu official documentation</a></li>
+<li><a
+href="https://wiki.archlinux.org/index.php/full_system_backup_with_rsync">Full
+system backup with rsync</a>
 <ul>
 <li>增量备份</li>
 </ul></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="文件恢复" class="title-slide slide level1">
 <h1>文件恢复</h1>
@@ -579,13 +625,13 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <ul>
 <li>在<strong>系统正常时</strong>要<strong><em>定期测试备份文件是否可以正常恢复和还原</em></strong>
 <ul>
-<li><a href="https://about.gitlab.com/2017/02/01/gitlab-dot-com-database-incident/">2017年2月1日GitLab.com数据库被误删事件的官方通告</a></li>
+<li><a
+href="https://about.gitlab.com/2017/02/01/gitlab-dot-com-database-incident/">2017年2月1日GitLab.com数据库被误删事件的官方通告</a></li>
 </ul></li>
 <li>恢复前记得先备份当前目标目录和文件，避免错误、不可逆的文件覆盖</li>
 <li>恢复前检查备份文件完整性（使用签名、散列值校验等）</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="系统备份" class="title-slide slide level1">
 <h1>系统备份</h1>
@@ -615,8 +661,7 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <li>基于文件备份和恢复机制</li>
 <li>使用专用的磁盘和文件系统级别的备份和恢复解决方案</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="开机自启动项管理" class="title-slide slide level1">
 <h1>开机自启动项管理</h1>
@@ -625,15 +670,20 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <section class="slide level2">
 
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Init">SysVinit</a> | <a href="https://wiki.debian.org/LSBInitScripts">LSBInitScripts</a> | <a href="https://wiki.gentoo.org/wiki/OpenRC">OpenRC: Gentoo独有的系统服务启动控制机制</a>
+<li><a href="https://en.wikipedia.org/wiki/Init">SysVinit</a> | <a
+href="https://wiki.debian.org/LSBInitScripts">LSBInitScripts</a> | <a
+href="https://wiki.gentoo.org/wiki/OpenRC">OpenRC:
+Gentoo独有的系统服务启动控制机制</a>
 <ul>
 <li>/etc/init.d</li>
 </ul></li>
-<li><a href="http://upstart.ubuntu.com/">Upstart: Ubuntu（曾经）团队开发的系统服务启动控制机制</a>
+<li><a href="http://upstart.ubuntu.com/">Upstart:
+Ubuntu（曾经）团队开发的系统服务启动控制机制</a>
 <ul>
 <li>/usr/share/upstart</li>
 </ul></li>
-<li><a href="https://www.freedesktop.org/wiki/Software/systemd/">Systemd</a>
+<li><a
+href="https://www.freedesktop.org/wiki/Software/systemd/">Systemd</a>
 <ul>
 <li>/usr/lib/systemd</li>
 </ul></li>
@@ -660,8 +710,10 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <ul>
 <li>激进的设计
 <ul>
-<li>重新发明了一堆历史悠久的核心服务(syslog, ntp, cron, fstab, dhcpcd等等)，虽然是简化功能和配置，但有经验的系统管理员更信赖他们熟悉的服务（尽管配置较为复杂）</li>
-<li>作为系统的1号进程，承载的功能太多：单点故障风险集中、不符合UNIX设计哲学 <code>KISS</code></li>
+<li>重新发明了一堆历史悠久的核心服务(syslog, ntp, cron, fstab,
+dhcpcd等等)，虽然是简化功能和配置，但有经验的系统管理员更信赖他们熟悉的服务（尽管配置较为复杂）</li>
+<li>作为系统的1号进程，承载的功能太多：单点故障风险集中、不符合UNIX设计哲学
+<code>KISS</code></li>
 <li>不遵循 POSIX 标准，无法移植到Linux之外的平台</li>
 </ul></li>
 <li>过快的开发迭代
@@ -675,8 +727,7 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <section id="systemd---架构" class="slide level2">
 <h2>Systemd - 架构</h2>
 <p><img data-src="images/chap0x03/Systemd_components.svg.png" /></p>
-</section>
-</section>
+</section></section>
 <section>
 <section id="动手实战systemd" class="title-slide slide level1">
 <h1>动手实战Systemd</h1>
@@ -685,14 +736,14 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 <section class="slide level2">
 
 <ul>
-<li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">Systemd 入门教程：命令篇 by 阮一峰的网络日志</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">Systemd 入门教程：实战篇 by 阮一峰的网络日志</a>
-<ul>
-<li>参照第2章作业的要求，完整实验操作过程通过<a href="https://asciinema.org">asciinema</a>进行录像并上传，文档通过github上传</li>
-</ul></li>
+<li><a
+href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">Systemd
+入门教程：命令篇 by 阮一峰的网络日志</a></li>
+<li><a
+href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">Systemd
+入门教程：实战篇 by 阮一峰的网络日志</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="netplan" class="title-slide slide level1">
 <h1><a href="https://netplan.io/">NetPlan</a></h1>
@@ -700,14 +751,18 @@ lvresize --size -{{120G}} --resizefs {{volume_group}}/{{logical_volume}}</code><
 </section>
 <section id="又一个网络配置管理工具" class="slide level2">
 <h2>又一个「网络配置管理」工具</h2>
-<p>设计用于「替代」经典 Linux 网络管理工具 <a href="http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html">ifupdown</a></p>
+<p>设计用于「替代」经典 Linux 网络管理工具 <a
+href="http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html">ifupdown</a></p>
 <p><img data-src="images/chap0x03/netplan_design_overview.png" /></p>
 </section>
 <section id="哪些发行版本在用" class="slide level2">
 <h2>哪些发行版本在用</h2>
 <ul>
-<li><a href="https://blog.ubuntu.com/2017/07/10/netplan-by-default-in-17-10">Ubuntu 17.10</a> 开始在 Ubuntu 家族所有发行版中默认安装和启用</li>
-<li>目前其他发行版应用更广泛的还是经典的 <a href="http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html">ifupdown</a></li>
+<li><a
+href="https://blog.ubuntu.com/2017/07/10/netplan-by-default-in-17-10">Ubuntu
+17.10</a> 开始在 Ubuntu 家族所有发行版中默认安装和启用</li>
+<li>目前其他发行版应用更广泛的还是经典的 <a
+href="http://manpages.ubuntu.com/manpages/xenial/man5/interfaces.5.html">ifupdown</a></li>
 </ul>
 </section>
 <section id="快速上手" class="slide level2">
@@ -752,12 +807,14 @@ network:
 <p><code>enp3s0</code></p>
 <ul>
 <li><code>en</code> 代表以太网卡</li>
-<li><code>p3s0</code> 代表 PCI 接口的物理位置为 <code>(3, 0)</code>, 其中横座标代表 <code>bus</code>，纵座标代表 <code>slot</code></li>
+<li><code>p3s0</code> 代表 PCI 接口的物理位置为 <code>(3, 0)</code>,
+其中横座标代表 <code>bus</code>，纵座标代表 <code>slot</code></li>
 </ul>
 </section>
 <section class="slide level2">
 
-<p>摘自 <a href="https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L10">udev/udev-builtin-net_id.c</a></p>
+<p>摘自 <a
+href="https://github.com/systemd/systemd/blob/master/src/udev/udev-builtin-net_id.c#L10">udev/udev-builtin-net_id.c</a></p>
 <pre class="c"><code>/* http://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames
  *
  * Two character prefixes based on the type of interface:
@@ -783,72 +840,87 @@ network:
  *   v&lt;slot&gt;                               - VIO slot number (IBM PowerVM)
  *   a&lt;vendor&gt;&lt;model&gt;i&lt;instance&gt;           — Platform bus ACPI instance id
  */</code></pre>
-</section>
-</section>
+</section></section>
 <section>
-<section id="其他过时的知名网络管理工具" class="title-slide slide level1">
+<section id="其他过时的知名网络管理工具"
+class="title-slide slide level1">
 <h1>其他过时的知名网络管理工具</h1>
 
 </section>
 <section class="slide level2">
 
-<p><a href="https://wiki.linuxfoundation.org/networking/net-tools">net-tools</a> 已过时，<a href="https://wiki.linuxfoundation.org/networking/iproute2">iproute2</a> 是现在。</p>
+<p><a
+href="https://wiki.linuxfoundation.org/networking/net-tools">net-tools</a>
+已过时，<a
+href="https://wiki.linuxfoundation.org/networking/iproute2">iproute2</a>
+是现在。</p>
 <blockquote>
-<p>Most network configuration manuals still refer to ifconfig and route as the primary network configuration tools, but ifconfig is known to behave inadequately in modern network environments. <strong>They should be deprecated</strong>, but most distros still include them.</p>
+<p>Most network configuration manuals still refer to ifconfig and route
+as the primary network configuration tools, but ifconfig is known to
+behave inadequately in modern network environments. <strong>They should
+be deprecated</strong>, but most distros still include them.</p>
 </blockquote>
 </section>
 <section class="slide level2">
 
 <table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
 <thead>
-<tr class="header">
-<th style="text-align: center;"><a href="http://net-tools.sourceforge.net/">过时命令 net-tools</a></th>
-<th style="text-align: center;"><a href="https://dougvitale.wordpress.com/2011/12/21/deprecated-linux-networking-commands-and-their-replacements/">替代命令 iproute2</a></th>
+<tr>
+<th style="text-align: center;"><a
+href="http://net-tools.sourceforge.net/">过时命令 net-tools</a></th>
+<th style="text-align: center;"><a
+href="https://dougvitale.wordpress.com/2011/12/21/deprecated-linux-networking-commands-and-their-replacements/">替代命令
+iproute2</a></th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">arp</td>
 <td style="text-align: center;">ip n (ip neighbor)</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">ifconfig</td>
-<td style="text-align: center;">ip a (ip addr), ip link, ip -s (ip -stats)</td>
+<td style="text-align: center;">ip a (ip addr), ip link, ip -s (ip
+-stats)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">iwconfig</td>
 <td style="text-align: center;">iw</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">nameif</td>
 <td style="text-align: center;">ip link, ifrename</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">netstat</td>
 <td style="text-align: center;">ss</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">netstat -i</td>
 <td style="text-align: center;">ip -s link</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">netstat -r</td>
 <td style="text-align: center;">ip route</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">netstat -g</td>
 <td style="text-align: center;">ip maddr</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">route</td>
 <td style="text-align: center;">ip r (ip route)</td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
+</section></section>
 <section>
-<section id="不同发行版的不同网络管理方案流派" class="title-slide slide level1">
+<section id="不同发行版的不同网络管理方案流派"
+class="title-slide slide level1">
 <h1>不同发行版的不同网络管理方案流派</h1>
 
 </section>
@@ -871,27 +943,32 @@ network:
 <col style="width: 29%" />
 </colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: left;">Linux 发行版</th>
 <th style="text-align: left;">桌面版</th>
 <th style="text-align: left;">服务器版</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;">Ubuntu 22.04</td>
-<td style="text-align: left;">NetworkManager（默认）<br>netplan 或 systemd-networkd（可选）</td>
-<td style="text-align: left;">netplan（默认）<br>NetworkManager 或 systemd-networkd（可选）</td>
+<td style="text-align: left;">NetworkManager（默认）<br>netplan 或
+systemd-networkd（可选）</td>
+<td style="text-align: left;">netplan（默认）<br>NetworkManager 或
+systemd-networkd（可选）</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;">Debian 11</td>
-<td style="text-align: left;">NetworkManager（默认）<br>ifupdown、iproute2 或 systemd-networkd（可选）</td>
-<td style="text-align: left;">ifupdown（默认）<br>iproute2、NetworkManager 或 systemd-networkd（可选）</td>
+<td
+style="text-align: left;">NetworkManager（默认）<br>ifupdown、iproute2
+或 systemd-networkd（可选）</td>
+<td
+style="text-align: left;">ifupdown（默认）<br>iproute2、NetworkManager
+或 systemd-networkd（可选）</td>
 </tr>
 </tbody>
 </table>
-</section>
-</section>
+</section></section>
 <section>
 <section id="本章完成后的自查清单" class="title-slide slide level1">
 <h1>本章完成后的自查清单</h1>
@@ -908,8 +985,7 @@ network:
 <li>如何通过systemd设置实现在网络连通时运行一个指定脚本，在网络断开时运行另一个脚本？</li>
 <li>如何通过systemd设置实现一个脚本在任何情况下被杀死之后会立即重新启动？实现<strong><em>杀不死</em></strong>？</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="参考文献" class="title-slide slide level1">
 <h1>参考文献</h1>
@@ -918,38 +994,62 @@ network:
 <section class="slide level2">
 
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/User_identifier">User identifier from WikiPedia</a></li>
-<li><a href="http://people.canonical.com/~cjwatson/ubuntu-policy/policy.html/ch-opersys.html">Ubuntu Policy Manual Chapter 9 - The Operating System</a></li>
+<li><a href="https://en.wikipedia.org/wiki/User_identifier">User
+identifier from WikiPedia</a></li>
+<li><a
+href="http://people.canonical.com/~cjwatson/ubuntu-policy/policy.html/ch-opersys.html">Ubuntu
+Policy Manual Chapter 9 - The Operating System</a></li>
 <li><a href="https://wiki.archlinux.org/index.php/umask">umask</a></li>
-<li><a href="https://www.zhihu.com/question/55300424">如何评价 2017 年 2 月 1 日 GitLab 数据库被误删？ from 知乎</a></li>
+<li><a href="https://www.zhihu.com/question/55300424">如何评价 2017 年 2
+月 1 日 GitLab 数据库被误删？ from 知乎</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="http://forensicswiki.org/wiki/Tools">Forensics Tools on Linux</a></li>
-<li><a href="http://harttle.com/2015/11/06/tmux-startup.html">优雅地使用命令行：Tmux 终端复用</a></li>
-<li><a href="http://cenalulu.github.io/linux/tmux/">Tmux - Linux从业者必备利器</a></li>
-<li><a href="http://www.tldp.org/LDP/lame/LAME/linux-admin-made-easy/server-backup.html">Linux Administration Made Easy Chapter 8. Backup and Restore Procedures</a></li>
-<li><a href="https://help.ubuntu.com/community/BackupYourSystem">BackupYourSystem from ubuntu official documentation</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">Systemd 入门教程：命令篇 by 阮一峰的网络日志</a></li>
-<li><a href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">Systemd 入门教程：实战篇 by 阮一峰的网络日志</a></li>
+<li><a href="http://forensicswiki.org/wiki/Tools">Forensics Tools on
+Linux</a></li>
+<li><a
+href="http://harttle.com/2015/11/06/tmux-startup.html">优雅地使用命令行：Tmux
+终端复用</a></li>
+<li><a href="http://cenalulu.github.io/linux/tmux/">Tmux -
+Linux从业者必备利器</a></li>
+<li><a
+href="http://www.tldp.org/LDP/lame/LAME/linux-admin-made-easy/server-backup.html">Linux
+Administration Made Easy Chapter 8. Backup and Restore
+Procedures</a></li>
+<li><a
+href="https://help.ubuntu.com/community/BackupYourSystem">BackupYourSystem
+from ubuntu official documentation</a></li>
+<li><a
+href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html">Systemd
+入门教程：命令篇 by 阮一峰的网络日志</a></li>
+<li><a
+href="http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-part-two.html">Systemd
+入门教程：实战篇 by 阮一峰的网络日志</a></li>
 </ul>
 </section>
 <section class="slide level2">
 
 <ul>
-<li><a href="https://en.wikipedia.org/wiki/Systemd">systemd on wikipedia</a></li>
-<li><a href="https://fedoraproject.org/wiki/Systemd/zh-cn">Fedora官网Wiki对Systemd的介绍</a></li>
-<li><a href="https://wiki.archlinux.org/index.php/systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">ArchiLinux官网Wiki对Systemd的介绍</a></li>
-<li><a href="https://wiki.debian.org/systemd">Debian官网Wiki对Systemd的介绍</a></li>
-<li><a href="https://wiki.ubuntu.com/SystemdForUpstartUsers">Ubuntu官网Wiki对Systemd的介绍</a></li>
-<li><a href="https://www.zhihu.com/question/25873473">systemd 为什么会有那么大的争议？</a></li>
-<li><a href="https://wiki.debian.org/Debate/initsystem/">Debian官方对目前主流系统引导机制的优缺点分析讨论</a></li>
-<li><a href="https://www.freedesktop.org/software/systemd/man/bootup.html">系统启动过程</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Systemd">systemd on
+wikipedia</a></li>
+<li><a
+href="https://fedoraproject.org/wiki/Systemd/zh-cn">Fedora官网Wiki对Systemd的介绍</a></li>
+<li><a
+href="https://wiki.archlinux.org/index.php/systemd_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">ArchiLinux官网Wiki对Systemd的介绍</a></li>
+<li><a
+href="https://wiki.debian.org/systemd">Debian官网Wiki对Systemd的介绍</a></li>
+<li><a
+href="https://wiki.ubuntu.com/SystemdForUpstartUsers">Ubuntu官网Wiki对Systemd的介绍</a></li>
+<li><a href="https://www.zhihu.com/question/25873473">systemd
+为什么会有那么大的争议？</a></li>
+<li><a
+href="https://wiki.debian.org/Debate/initsystem/">Debian官方对目前主流系统引导机制的优缺点分析讨论</a></li>
+<li><a
+href="https://www.freedesktop.org/software/systemd/man/bootup.html">系统启动过程</a></li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -961,12 +1061,43 @@ network:
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',

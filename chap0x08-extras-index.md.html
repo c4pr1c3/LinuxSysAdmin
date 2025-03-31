@@ -18,10 +18,19 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
   <!-- Printing and PDF exports -->
@@ -58,8 +67,7 @@
 <li><a href="ansible.md">ansible</a></li>
 <li><a href="cloud-init.md">Cloud-Init</a></li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="番外与番外的区别与联系" class="title-slide slide level1">
 <h1>「番外」与「番外」的区别与联系</h1>
@@ -91,10 +99,11 @@
 <li>基础配置：SSH 免密登录、创建新用户、SSH 安全加固配置等</li>
 </ul></li>
 <li>三：Apache httpd Server, Nginx, Bind9, ntpd</li>
-<li><a href="https://github.com/awesome-selfhosted/awesome-selfhosted">万物</a>：Wordpress, Drupal, Joomla</li>
+<li><a
+href="https://github.com/awesome-selfhosted/awesome-selfhosted">万物</a>：Wordpress,
+Drupal, Joomla</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="重新认识本课程主线内容" class="title-slide slide level1">
 <h1>重新认识本课程主线内容</h1>
@@ -108,7 +117,8 @@
 <ul>
 <li>第 1 章
 <ul>
-<li>其中「无人值守安装镜像的制作」实验可以完成「从零到一」的 <strong>自动化</strong></li>
+<li>其中「无人值守安装镜像的制作」实验可以完成「从零到一」的
+<strong>自动化</strong></li>
 </ul></li>
 </ul>
 </section>
@@ -138,8 +148,7 @@
 <ul>
 <li>第 8 章</li>
 </ul>
-</section>
-</section>
+</section></section>
 <section>
 <section id="小结" class="title-slide slide level1">
 <h1>小结</h1>
@@ -148,12 +157,15 @@
 <section class="slide level2">
 
 <ul>
-<li><a href="pxe.md">PXE</a> 和 <code>无人值守安装镜像</code> 可以解决 <code>从零到一</code> <strong>自动化</strong> 问题</li>
-<li><a href="ansible.md">ansible</a> 解决 <code>从二到万物</code> <strong>自动化</strong> 问题</li>
-<li><a href="cloud-init.md">Cloud-Init</a> 可以解决 <code>从一到二</code>、<code>从一到三</code> 甚至 <code>从一到万物</code> 的 <strong>自动化</strong> 问题</li>
+<li><a href="pxe.md">PXE</a> 和 <code>无人值守安装镜像</code> 可以解决
+<code>从零到一</code> <strong>自动化</strong> 问题</li>
+<li><a href="ansible.md">ansible</a> 解决 <code>从二到万物</code>
+<strong>自动化</strong> 问题</li>
+<li><a href="cloud-init.md">Cloud-Init</a> 可以解决
+<code>从一到二</code>、<code>从一到三</code> 甚至
+<code>从一到万物</code> 的 <strong>自动化</strong> 问题</li>
 </ul>
-</section>
-</section>
+</section></section>
     </div>
   </div>
 
@@ -165,12 +177,43 @@
       // Full list of configuration options available at:
       // https://github.com/hakimel/reveal.js#configuration
       Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
         // Display the page number of the current slide
         slideNumber: true,
         // Push each slide change to the browser history
         history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
         // Transition style
         transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
         math: {
           mathjax: '',
           config: 'TeX-AMS_HTML-full',
