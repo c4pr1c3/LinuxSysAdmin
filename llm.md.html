@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="黄玮">
+  <title>Linux系统与网络管理</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">code{white-space: pre;}</style>
+
+
+    <!-- For syntax highlighting using highlight.js-->
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/white.css" id="theme">
+  <!-- Printing and PDF exports -->
+<link rel="stylesheet" media="print" href="reveal.js/css/print/pdf.css" />
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Linux系统与网络管理</h1>
+  <p class="author">黄玮</p>
+</section>
+
+<section>
+<section id="第七章-ai-大模型的本地部署与使用-2025"
+class="title-slide slide level1">
+<h1>第七章 AI 大模型的本地部署与使用 (2025)</h1>
+
+</section>
+<section class="slide level2">
+
+<blockquote>
+<p>Run LLM on your own machine.</p>
+</blockquote>
+<p><img data-src="images/llm/ollama-hello-world.png" /></p>
+</section></section>
+<section>
+<section id="基础知识准备" class="title-slide slide level1">
+<h1>基础知识准备</h1>
+
+</section>
+<section id="llm-knowledge-0" class="slide level2">
+<h2>基础知识速通</h2>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 32%" />
+<col style="width: 17%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>术语</th>
+<th>定义</th>
+<th>层级关系</th>
+<th>核心特征</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>人工智能 (AI)</strong></td>
+<td>使机器能够执行通常需要人类智能的任务（如视觉识别、决策、语言理解等）。</td>
+<td>最外层概念，涵盖所有以下技术</td>
+<td>- 跨领域通用，包含符号AI与统计AI<br>-
+包含专家系统、规划、搜索、ML等多种方法</td>
+</tr>
+<tr>
+<td><strong>机器学习 (ML)</strong></td>
+<td>AI
+的子集，通过统计算法让计算机从数据中自动学习并改进，而无需显性编程。</td>
+<td>属于 AI，DL 与 LLM 的上层</td>
+<td>- 包括监督、无监督与强化学习<br>-
+强调模型的泛化能力、可解释性与数据驱动</td>
+</tr>
+<tr>
+<td><strong>深度学习 (DL)</strong></td>
+<td>ML
+的子领域，利用多层（深度）神经网络自动抽取特征与表示，适合大规模、非结构化数据处理。</td>
+<td>属于 ML，LLM 的上层</td>
+<td>- 基于人工神经网络架构（如卷积、循环、Transformer）<br>-
+高度依赖计算资源与大规模数据</td>
+</tr>
+<tr>
+<td><strong>大型语言模型 (LLM)</strong></td>
+<td>通过深度学习训练的大规模自然语言处理模型，通常基于Transformer架构，具备理解和生成连贯文本的能力。</td>
+<td>属于 DL</td>
+<td>- 参数量巨大（数十亿至数千亿）<br>-
+支持多种下游NLP任务（翻译、摘要、对话等）</td>
+</tr>
+<tr>
+<td><strong>多模态内容生成</strong></td>
+<td>指利用深度学习模型同时生成多种模态（如文本、图像、音频、视频等）的内容，实现跨媒体的综合创作。</td>
+<td>属于<strong>LLM</strong>及<strong>DL</strong>的生成方向专项应用</td>
+<td>- 支持文本→图像（如 DALL·E）、文本→视频、文本→音频等生成<br>-
+依赖自回归或自注意力生成架构，需海量预训练数据与算力</td>
+</tr>
+<tr>
+<td><strong>多模态内容理解</strong></td>
+<td>指模型在多种模态数据（如图像、文本、音频、视频）上的联合分析与理解，用于视觉问答、跨模态检索、情感分析等任务。</td>
+<td>属于<strong>DL</strong>的跨模态融合理解专项应用</td>
+<td>- 通过多分支网络或融合层实现特征对齐与交互<br>-
+典型任务包括图像字幕生成、视觉问答、跨模态检索等</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-knowledge-1" class="slide level2">
+<h2>基础知识速通</h2>
+<p><img data-src="images/llm/llm-lifecycle.png" /></p>
+<pre class="mermaid"><code>%%{init: {
+    &#39;theme&#39;: &#39;neutral&#39;,
+    &#39;mirrorActors&#39;: true
+}}%%
+sequenceDiagram
+    participant 数据 as 数据准备
+    participant 预处理 as 数据预处理
+    participant 模型架构 as 模型架构设计
+    participant 训练 as 预训练阶段
+    participant 微调 as 微调阶段
+    participant 后训练 as 后训练阶段（如RLHF）
+    participant 推理 as 推理部署
+
+    数据-&gt;&gt;预处理: 收集/清洗原始文本 (Common Crawl, Wikipedia)
+    预处理-&gt;&gt;训练: 分词、编码、构造训练样本
+    模型架构-&gt;&gt;训练: 定义Transformer结构 (GPT, LLaMA, etc.)
+    训练-&gt;&gt;训练: 使用分布式训练技术 (DeepSpeed, Megatron-LM)
+    训练-&gt;&gt;微调: 输出基础模型权重（Base Model）
+
+    微调-&gt;&gt;微调: 使用特定任务数据训练 (LoRA, PEFT, QLoRA)
+    微调-&gt;&gt;后训练: 可选传递微调模型参数
+
+    后训练-&gt;&gt;后训练: 强化学习训练 (RLHF, DPO, RLAIF)
+    后训练-&gt;&gt;推理: 输出指令对齐模型
+
+    推理-&gt;&gt;推理: 量化、蒸馏、部署优化 (ONNX, TensorRT, vLLM)
+    推理-&gt;&gt;用户: 提供推理结果
+
+    note right of 推理: 🚨 推理部署阶段是模型上线关键环节。可用工具：Ollama, vLLM 等
+</code></pre>
+</section>
+<section id="llm-knowledge-1-1" class="slide level2">
+<h2>基础知识速通</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 50%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>阶段</th>
+<th>技术/工具举例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据准备</td>
+<td>Common Crawl, Wikipedia</td>
+<td>来源于开放文本语料</td>
+</tr>
+<tr>
+<td>数据预处理</td>
+<td>SentencePiece, Tokenizers</td>
+<td>编码、清洗、分词</td>
+</tr>
+<tr>
+<td>模型架构设计</td>
+<td>Transformer, GPT, LLaMA</td>
+<td>模型结构定义</td>
+</tr>
+<tr>
+<td>训练（预训练）</td>
+<td>DeepSpeed, Megatron-LM, FSDP</td>
+<td>大规模预训练的分布式技术</td>
+</tr>
+<tr>
+<td>微调</td>
+<td>LoRA, QLoRA, PEFT</td>
+<td>针对任务或能力定向优化</td>
+</tr>
+<tr>
+<td>后训练（Alignment）</td>
+<td>RLHF, DPO, RLAIF</td>
+<td>增加模型的安全性与对齐能力</td>
+</tr>
+<tr>
+<td><strong>推理</strong></td>
+<td><strong>Ollama</strong> , vLLM, TensorRT, ONNX</td>
+<td>高效部署与低延迟推理</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-knowledge-1-2" class="slide level2">
+<h2>基础知识速通</h2>
+<ul>
+<li>Ollama
+是一个本地部署和运行大语言模型的工具，它提供了非常简洁的命令行和 API
+接口，使用户可以方便地在本地机器上拉取、管理和运行 LLM（如
+Qwen、DeepSeek、LLaMA 等），并且支持量化模型（如 GGUF
+格式）以降低资源需求。</li>
+<li>vLLM 是一个专注于 <strong>高性能推理</strong>
+的开源推理引擎，它的核心价值在于提供 <strong>高吞吐量、低延迟</strong>
+的大模型推理服务。</li>
+</ul>
+</section>
+<section id="llm-knowledge-1-3" class="slide level2">
+<h2>基础知识速通</h2>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 56%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>特性</th>
+<th><strong>vLLM</strong></th>
+<th><strong>Ollama</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>所属阶段</td>
+<td>推理部署</td>
+<td>推理部署</td>
+</tr>
+<tr>
+<td>推理目标</td>
+<td><strong>高并发、高性能服务端部署</strong></td>
+<td>本地推理、轻量部署</td>
+</tr>
+<tr>
+<td>支持模型格式</td>
+<td>HuggingFace Transformers (PyTorch)</td>
+<td>GGUF（ggml）、转换过的模型</td>
+</tr>
+<tr>
+<td>主要使用场景</td>
+<td>Web服务/API（如聊天机器人）</td>
+<td><strong>本地桌面</strong> / 边缘设备推理</td>
+</tr>
+<tr>
+<td>是否支持多用户并发</td>
+<td>✅ 是，调度优化</td>
+<td>❌ 不擅长并发</td>
+</tr>
+<tr>
+<td>是否内置模型管理</td>
+<td>❌ 无，需外部加载</td>
+<td>✅ 支持模型拉取与管理</td>
+</tr>
+<tr>
+<td>安装复杂度</td>
+<td>中等（需 GPU/环境配置）</td>
+<td>低（单命令即可运行）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-knowledge-1-4" class="slide level2">
+<h2>基础知识速通</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>vLLM</th>
+<th>GGUF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>依赖框架</td>
+<td>PyTorch / HuggingFace</td>
+<td>ggml / llama.cpp</td>
+</tr>
+<tr>
+<td>模型格式</td>
+<td><code>.bin</code>, <code>.safetensors</code></td>
+<td><code>.gguf</code></td>
+</tr>
+<tr>
+<td>推理目标</td>
+<td>高性能服务端部署（GPU）</td>
+<td>本地轻量化运行（CPU/GPU）</td>
+</tr>
+<tr>
+<td>是否支持 GGUF</td>
+<td>❌ 不支持</td>
+<td>✅ 原生支持</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-deploy-1" class="slide level2">
+<h2>AI 大模型本地部署常见解决方案</h2>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 23%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr>
+<th>方案</th>
+<th>描述</th>
+<th>具体示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>裸机部署</strong></td>
+<td>直接在本地物理或桌面操作系统（如 Windows
+11、Linux、macOS）上安装推理框架与模型，无额外虚拟化或容器层，获得最小化系统开销与最低延迟。</td>
+<td>- <strong>Windows 11 桌面：</strong><br> • Cherry
+Studio（桌面客户端，支持多种 LLM 服务与本地模型）<br> • Ollama
+CLI（本地下载与运行模型的命令行工具）<br>- <strong>macOS
+桌面：</strong><br> • LM Studio（拖拽安装的本地 LLM 桌面应用）<br> -
+<strong>Linux 服务器：</strong> llama.cpp 或 vLLM 直装运行</td>
+</tr>
+<tr>
+<td><strong>容器化部署</strong></td>
+<td>使用 Docker/Podman
+等容器引擎，将推理服务及依赖打包成镜像，通过容器编排（Kubernetes、Docker
+Compose）实现快速交付、弹性伸缩与环境一致性。</td>
+<td>-
+<code>docker run --name ollama -p 11434:11434 ollama/ollama</code>（Ollama
+Docker 镜像）<br>- NVIDIA Triton 官方 Docker 镜像（支持 GPU
+加速与动态批处理）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-deploy-2" class="slide level2">
+<h2>AI 大模型本地部署常见解决方案</h2>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 23%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr>
+<th>方案</th>
+<th>描述</th>
+<th>具体示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>虚拟机部署</strong></td>
+<td>在虚拟化平台（如 KVM、VMWare ESXi
+等服务器端虚拟化）上运行完整操作系统，再在其内部部署模型服务，提供操作系统级隔离与快照能力，但有一定性能开销。</td>
+<td>- <strong>VMware/KVM：</strong> 部署 NVIDIA Triton Inference
+Server<br>- <strong>Hyper-V：</strong> 在 Ubuntu VM 内安装 TorchServe 或
+ONNX Runtime</td>
+</tr>
+<tr>
+<td><strong>模型服务框架</strong></td>
+<td>专门的高性能推理服务器或库，提供统一
+API（HTTP/gRPC）、动态批处理、监控与多框架支持，可与上述部署方案结合使用以简化推理管理。</td>
+<td>- NVIDIA Triton Inference Server（TensorFlow/PyTorch/ONNX
+多框架支持）<br>- ONNX Runtime（轻量级边缘与云端加速插件）<br>-
+TorchServe（专为 PyTorch 模型设计，支持多模型管理）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>VirtualBox 和 VMWare 等桌面虚拟化产品不支持 GPU
+直通，无法在虚拟机中使用 GPU 加速。</p>
+</blockquote>
+</section>
+<section id="llm-deploy-3" class="slide level2">
+<h2>AI 大模型本地部署常见解决方案</h2>
+<table>
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 23%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr>
+<th>方案</th>
+<th>描述</th>
+<th>具体示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>私有云/托管</strong></td>
+<td>在企业或客户自有数据中心、私有云环境中部署托管平台，提供全生命周期管理、权限控制与合规支持，兼顾内部安全与集中化运维。</td>
+<td>- Hugging Face Private Hub（私有化模型仓库与推理平台）</td>
+</tr>
+<tr>
+<td><strong>边缘部署</strong></td>
+<td>在资源受限或需要低延迟的终端/边缘设备（如树莓派、工业电脑、IoT
+设备）上进行推理，通常需要模型量化、硬件加速与专用轻量化框架支持。</td>
+<td>- Raspberry Pi + TensorFlow Lite（量化模型推理）<br>- 量化 LLM on
+Ollama（在边缘设备上运行 PTQ/WOQ 模型）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="容器化部署的优势" class="slide level2">
+<h2>容器化部署的优势</h2>
+<ul>
+<li><strong>环境一致性</strong>
+。容器镜像将操作系统、依赖库与模型代码打包，保证开发、测试与生产环境一致，有效避免“Works
+on My Machine”问题。</li>
+<li><strong>弹性伸缩与编排</strong> 。借助 Kubernetes
+等编排平台，可自动扩缩容、负载均衡与故障自愈，适合大规模服务。</li>
+<li><strong>快速交付与移植性</strong>
+。容器镜像可在任意支持容器运行时的主机上启动，极大提升部署效率与跨环境迁移能力。</li>
+<li><strong>云原生集成</strong>
+。容器天然适配云平台生态（CI/CD、监控、日志等），利于与云端或混合云配合使用。</li>
+<li><strong>资源隔离与安全性</strong> 。容器通过命名空间与 cgroups
+隔离进程、网络与存储，提供一定的安全性与资源控制。可以在同一台物理机上运行多个不同版本的大模型容器实例，互不干扰。</li>
+</ul>
+</section>
+<section id="llm-container-architecture" class="slide level2">
+<h2>容器化 GPU 部署典型组件架构</h2>
+<p><a
+href="https://developer.nvidia.com/blog/nvidia-docker-gpu-server-application-deployment-made-easy/"><img
+data-src="images/llm/nvidia-docker-arch.png" /></a></p>
+</section>
+<section id="llm-container-call-chain" class="slide level2">
+<h2>容器化 GPU 部署典型技术调用链</h2>
+<p><a
+href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/arch-overview.html"><img
+data-src="images/llm/nvidia-container-runtime-architecture.png" /></a></p>
+</section>
+<section id="llm-knowledge-2" class="slide level2">
+<h2>基础知识温故而知新</h2>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 3%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>名称</th>
+<th>主导开发厂商/组织</th>
+<th>类型</th>
+<th>底层依赖/运行时</th>
+<th>主要作用</th>
+<th>与其他技术的关系/替代</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>容器 (Container)</td>
+<td>N/A</td>
+<td>概念/标准</td>
+<td>OCI / Linux 内核</td>
+<td>通过命名空间（namespaces）和 cgroups 实现
+<strong>进程隔离</strong></td>
+<td>是以下所有工具和技术的基础</td>
+</tr>
+<tr>
+<td>runc</td>
+<td>Docker, Inc. / OCI</td>
+<td>低级运行时 (OCI)</td>
+<td>Linux kernel</td>
+<td>实现 OCI 运行时规范，创建并管理容器进程</td>
+<td>Docker &amp; Podman 默认运行时</td>
+</tr>
+<tr>
+<td>containerd</td>
+<td>Docker, Inc. / CNCF</td>
+<td>守护进程（Daemon）+ 中级运行时</td>
+<td>runc、GRPC API</td>
+<td>基于 OCI 规范和 runC
+构建的守护进程，提供镜像管理、容器生命周期、网络与存储接口等功能，并调用
+runC 执行容器</td>
+<td>对 runC 的封装</td>
+</tr>
+<tr>
+<td>LXC</td>
+<td>LinuxContainers.org / Canonical 等</td>
+<td>低级运行时/工具集</td>
+<td>Linux kernel</td>
+<td>提供用户空间 API，创建“系统级”容器</td>
+<td>runc 的早期替代方案，非 OCI 实现</td>
+</tr>
+<tr>
+<td>moby</td>
+<td>Docker, Inc.</td>
+<td>容器组件集合</td>
+<td>containerd、runc、libnetwork</td>
+<td>Docker 的开源组件集，提供容器运行时、网络、存储等功能</td>
+<td>Docker 的基础组件，Docker Engine 的核心部分</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="llm-knowledge-3" class="slide level2">
+<h2>基础知识温故而知新</h2>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 3%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+<col style="width: 25%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>名称</th>
+<th>主导开发厂商/组织</th>
+<th>类型</th>
+<th>底层依赖/运行时</th>
+<th>主要作用</th>
+<th>与其他技术的关系/替代</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Docker</td>
+<td>Docker, Inc.</td>
+<td>容器引擎</td>
+<td>containerd + runc</td>
+<td>提供构建、运行、分发容器镜像的完整平台</td>
+<td>依赖 runc；可通过 Docker Desktop 在非 Linux 上运行</td>
+</tr>
+<tr>
+<td>Podman</td>
+<td>Red Hat</td>
+<td>容器引擎 (daemonless)</td>
+<td>libpod + runc/crun</td>
+<td>类似 Docker CLI，免守护进程，支持 rootless 容器</td>
+<td>Docker 的无守护替代，可与 runc/crun 切换</td>
+</tr>
+<tr>
+<td>Docker Desktop</td>
+<td>Docker, Inc.</td>
+<td>桌面应用/虚拟化层</td>
+<td>HyperKit (macOS)/WSL2 (Win)</td>
+<td>在 macOS/Windows 上运行 Docker Engine + Kubernetes</td>
+<td>封装 Docker ，依赖轻量 VM</td>
+</tr>
+<tr>
+<td>OrbStack</td>
+<td>OrbStack 公司（独立开发者）</td>
+<td>桌面应用/虚拟化层</td>
+<td>Moby、containerd、runc</td>
+<td>macOS 上的 Docker Desktop 替代，内置开源 Docker Engine（基于
+Moby），支持容器与 Linux VM</td>
+<td>Docker Desktop 的替代方案</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="基础知识闪回" class="slide level2">
+<h2>基础知识闪回</h2>
+<ul>
+<li>OCI: <a href="https://opencontainers.org/">Open Container Initiative
+(OCI)</a></li>
+<li>runc 和 crun 都是容器运行时，可以互换使用，因为二者都实现 OCI
+运行时规范。与 runc 相比，crun
+容器运行时有一些优点，因为它速度更快，且需要较少的内存。</li>
+</ul>
+<blockquote>
+<p>crun 是由 Red Hat 主导开发的开源项目，经 2025-05-20 实测在
+<code>Ubuntu 22.04</code> 和 <code>Ubuntu 24.04</code>
+上均不能正常工作。</p>
+</blockquote>
+</section>
+<section class="slide level2">
+
+<h3 id="动手实践时间">动手实践时间</h3>
+<ul>
+<li><a href="exp/llm/ansible/">使用 ansible 初始化安装并配置 Ubuntu 上的
+Docker CLI</a></li>
+</ul>
+<pre class="bash"><code># 看看你使用的容器运行时类型和版本信息
+docker info | grep -E &quot;(runc|crun)&quot;
+# Runtimes: io.containerd.runc.v2 runc
+# Default Runtime: runc
+# runc version: v1.1.4-0-g5fd4c4d
+
+# 查看 containerd 版本信息
+docker info | grep -E &quot;(containerd)&quot;
+# Runtimes: io.containerd.runc.v2 runc
+# containerd version: 2456e983eb9e37e47538f59ea18f2043c9a73640
+
+# WSL2 Ubuntu 22.04 开启英伟达 GPU 容器支持后
+docker info 2&gt;/dev/null | grep -i runtime
+# Runtimes: io.containerd.runc.v2 nvidia runc
+# Default Runtime: runc</code></pre>
+</section></section>
+<section>
+<section id="实践目标" class="title-slide slide level1">
+<h1>实践目标</h1>
+
+</section>
+<section id="ollama-one-api-open-webui" class="slide level2">
+<h2>ollama + one-api + open-webui</h2>
+<p><a
+href="https://mermaid.live/edit#pako:eNrFlN9r01AUx_-VcCH0JR3pmq7tfRiM-uKDOBkiSF7ukrs2kNzU2xu1loJTOkSZOtoHwVmYKBSUVREZm2z-NUnqf-HJrxrb-myezsn53PPje7mnhwzXpAgjWe5ZzBJY6ulMgq8gWtShBSwVGPUEJ3ZBSQOOxbnLtwzh8g7EBfeozvp9WdZZh97zKDPoNYs0OXGSA8QTLvOcXcoTv024sAyrTZiQtrui5bKGbVFwSCf1Jf_0ffDsLPw0XT5xk9Gt7esRC1YxMsPLI3_wbQVp28QhGRw7Enj_AnfuGzkwOD70n58ss7ceUFaOuMQIJif--MUydofu3u5QHoFgSuFoAvOsqNymLEKTFsGJD0KLCSrLS4IE3_fDSVowL15xczNRBkv-q6Nfj_elRosIaTY9C74-SfAkHoGZMFiaXX4G_C8qC85BEAbAL09hiFXqzCE4EIuCU1WCl5Pw9UECxYHiQsqfI__tOPwxDMbHi6kWuoxJf3joX4wWu8wNviJhMjIwea0WE87F_nNVeZnTu4wKZdcFGa6G_uCjPz2fTd_5BwP_9DytmCH_Xb5cr8vyzbsEMp0P6r65Cj9cZBmRghzKHWKZsB3ipaCjeCfoCINp0j3i2UJH8PYBjR75TpcZCEf7QEHc9ZothPeI3QHPa5tEZFth_heewF3XdbIj1LRgpdxI1lG8lWIE4R56iHBVXdO06oZWqa1X1Epdqyioi3CpVFsrq_WqqsG_ilqt9RX0KM6prtVL9VJNXa9qagxsKKjJo2HS6pwyk_KG6zEBedRytf8b66rz0A"><img
+data-src="images/llm/one-api-ollama-seq.png" /></a></p>
+<pre class="mermaid"><code>%%{init: {
+    &#39;theme&#39;: &#39;neutral&#39;,
+    &#39;mirrorActors&#39;: true
+}}%%
+sequenceDiagram
+    autonumber
+    participant PythonClient as Python 客户端
+    participant OneAPI as One-API 网关
+    participant OllamaAPI as Ollama API
+    participant OllamaSvc as Ollama 服务
+    participant Qwen3 as Qwen3 模型
+    participant WebUser as Web 用户
+    participant OpenWebUI as Open WebUI
+
+    %% Python 客户端流程
+    PythonClient-&gt;&gt;OneAPI: 发送 Chat 请求
+    OneAPI-&gt;&gt;OllamaAPI: 转发请求
+    OllamaAPI-&gt;&gt;OllamaSvc: 调用 Ollama 服务
+    OllamaSvc-&gt;&gt;Qwen3: 模型推理
+    Qwen3--&gt;&gt;OllamaSvc: 返回结果
+    OllamaSvc--&gt;&gt;OllamaAPI: 返回响应
+    OllamaAPI--&gt;&gt;OneAPI: 返回结果
+    OneAPI--&gt;&gt;PythonClient: 返回响应
+
+    %% Web 用户流程
+    WebUser-&gt;&gt;OpenWebUI: 输入对话内容
+    OpenWebUI-&gt;&gt;OllamaSvc: 调用 Ollama 服务
+    OllamaSvc-&gt;&gt;Qwen3: 模型推理
+    Qwen3--&gt;&gt;OllamaSvc: 返回结果
+    OllamaSvc--&gt;&gt;OpenWebUI: 返回响应
+    OpenWebUI--&gt;&gt;WebUser: 显示结果</code></pre>
+</section></section>
+<section>
+<section id="基础共性配置" class="title-slide slide level1">
+<h1>基础共性配置</h1>
+
+</section>
+<section id="llm-gpu-setup-1" class="slide level2">
+<h2>GPU 加速配置</h2>
+<ul>
+<li><strong>WSL2 + NVIDIA GPU (CUDA on WSL)</strong>：在 Windows
+安装支持 WSL 的 NVIDIA 驱动（下载 <a
+href="https://docs.nvidia.com/cuda/wsl-user-guide/index.html">CUDA on
+WSL 用户指南</a>），启动后在 WSL2 中执行 <code>nvidia-smi</code> 验证
+GPU。Docker 容器可通过 <code>--gpus all</code> 选项使用 GPU (<a
+href="https://docs.openwebui.com/#:~:text=To%20run%20Open%20WebUI%20with,GPU%20support%2C%20use%20this%20command">Home
+| Open WebUI</a>)。有了 CUDA 支持，可显著提升模型推理速度 (<a
+href="https://docs.nvidia.com/cuda/wsl-user-guide/index.html#:~:text=With%20NVIDIA%20CUDA%20support%20for,GPU%20with%20less%20CPU%20intervention">1.
+NVIDIA GPU Accelerated Computing on WSL 2 — CUDA on WSL 12.8
+documentation</a>)。<br />
+</li>
+<li><strong>Intel GPU (oneAPI)</strong>：如果电脑有 Intel
+集成显卡，可使用 Intel oneAPI 提供的工具链加速。安装 <a
+href="https://software.intel.com/content/www/us/en/develop/tools/oneapi/base-toolkit.html">Intel
+oneAPI Base Toolkit</a> 并按 Intel 文档配置 WSL2 GPU 驱动 (<a
+href="https://www.intel.com/content/www/us/en/docs/oneapi/installation-guide-linux/2023-0/configure-wsl-2-for-gpu-workflows.html#:~:text=To%20be%20able%20to%20use,GPU%20drivers%20as%20described%20below">Configure
+WSL 2 for GPU Workflows</a>)。完成后，可以在支持 SYCL 的库中利用 Intel
+GPU 进行计算。</li>
+</ul>
+</section>
+<section id="llm-gpu-setup-2" class="slide level2">
+<h2>GPU 加速配置</h2>
+<ul>
+<li><strong>AMD GPU</strong> <a
+href="https://rocm.docs.amd.com/en/latest/">AMD ROCm</a> | <a
+href="https://ollama.com/blog/amd-preview">Ollama now supports AMD
+graphics cards - 2024-3-14</a></li>
+<li><strong>Apple M 系列 GPU (Metal)</strong>：macOS 上若要用 GPU
+加速，可使用基于 Metal 的后端。目前 PyTorch 已在 macOS 支持 MPS
+后端，只需在代码中指定 <code>device="mps"</code>，即可使用 Apple 芯片的
+GPU (<a
+href="https://developer.apple.com/metal/pytorch/#:~:text=PyTorch%20uses%20the%20new%20Metal,tuned%20kernels%20provided%20by%20MPS">Accelerated
+PyTorch training on Mac - Metal - Apple Developer</a>)。在 Open WebUI
+这种通过 Docker 运行的场景中，GPU 加速较复杂，可先以 CPU
+方式运行，或使用支持 MPS 的框架版本（如配置 PyTorch-nightly）。</li>
+</ul>
+</section></section>
+<section>
+<section id="实践操作-on-wsl2" class="title-slide slide level1">
+<h1>实践操作 on WSL2</h1>
+
+</section>
+<section class="slide level2">
+
+<ul>
+<li>安装 WSL2</li>
+<li>WSL2 中安装 Ubuntu 22.04</li>
+<li>安装 Docker Desktop</li>
+<li>配置显卡驱动</li>
+<li>安装配置 ollama + open-webui + one-api</li>
+<li>下载与运行大模型</li>
+</ul>
+</section>
+<section id="ollama-安装与配置" class="slide level2">
+<h2>Ollama 安装与配置</h2>
+<p><a
+href="https://github.com/c4pr1c3/ollama-docker">https://github.com/c4pr1c3/ollama-docker</a></p>
+</section>
+<section class="slide level2">
+
+<h3 id="下载与运行-qwen-模型">下载与运行 Qwen 模型</h3>
+<ul>
+<li><strong>选择合适模型</strong>：根据机器性能选型。入门可选
+<em>轻量级</em> 模型，如 Qwen2.5 系列的 <code>0.5B</code> 或
+<code>1.5B</code>；高性能机器可尝试更大模型（7B、14B）。</li>
+<li><strong>运行模型命令</strong>：Ollama
+可直接下载并运行模型示例：</li>
+</ul>
+<pre class="bash"><code>ollama run qwen2.5:0.5b    # 启动 Qwen2.5-0.5B 指令模型
+ollama run qwen2.5:14b     # 启动 Qwen2.5-14B 指令模型
+ollama run qwen:0.5b       # 启动 Qwen1.5-0.5B 聊天模型（假设 Ollama 库中已包含）  </code></pre>
+</section></section>
+<section>
+<section id="实践操作-on-macos" class="title-slide slide level1">
+<h1>实践操作 on macOS</h1>
+
+</section>
+<section id="两种安装部署方式" class="slide level2">
+<h2>两种安装部署方式</h2>
+<ul>
+<li>容器化方式
+<ul>
+<li>https://github.com/c4pr1c3/ollama-docker</li>
+</ul></li>
+<li>原生安装</li>
+</ul>
+</section>
+<section id="原生安装步骤" class="slide level2">
+<h2>原生安装步骤</h2>
+<pre class="bash"><code># 1. 安装 Homebrew
+/bin/bash -c &quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&quot;
+
+# 2. 安装 Ollama
+brew install ollama
+
+# 3. 设置国内下载镜像源
+export HF_ENDPOINT=https://hf-mirror.com</code></pre>
+</section>
+<section id="参考资料" class="slide level2">
+<h2>参考资料</h2>
+<ul>
+<li><a
+href="https://ollama.com/blog/ollama-is-now-available-as-an-official-docker-image">Ollama
+is now available as an official Docker image - 2023-10-5</a></li>
+<li>Ollama 与 Qwen 文档 <a
+href="https://qwen.readthedocs.io/zh-cn/latest/_sources/run_locally/ollama.md.txt#:~:text=device,%60ollama%20run%20qwen2.5%3A72b">qwen.readthedocs.io</a>
+| <a
+href="https://ollama.com/library/qwen#:~:text=from%200">qwen</a></li>
+<li>Open WebUI 官方文档 <a
+href="https://docs.openwebui.com/#:~:text=Open%20WebUI%20is%20an%20extensible%2C,a%20powerful%20AI%20deployment%20solution">Home
+| Open WebUI</a> | <a
+href="https://docs.openwebui.com/#:~:text=To%20run%20Open%20WebUI%20with,GPU%20support%2C%20use%20this%20command">Home
+| Open WebUI</a></li>
+<li>Docker &amp; WSL2 指南 <a
+href="https://crapts.org/2022/05/15/install-docker-in-wsl2-with-ubuntu-22-04-lts#:~:text=The%20reason%20this%20errors%20occurs,that%20Docker%20will%20work%20again">Install
+Docker in WSL2 with Ubuntu 22.04 LTS</a> | <a
+href="https://docs.docker.com/desktop/setup/install/mac-install/#:~:text=1,or%20from%20the%20release%20notes">Mac
+| Docker Docs</a></li>
+<li>国内网络加速实践 <a
+href="https://blog.csdn.net/spiderwower/article/details/138463635#:~:text=conda%20config%20,url%20https%3A%2F%2Fpypi.tuna.tsinghua.edu.cn%2Fsimple">ollama+open-webui，本地部署自己的大模型_ollama
+webui-CSDN博客</a> | <a
+href="https://blog.csdn.net/spiderwower/article/details/138463635#:~:text=%E8%AE%BE%E7%BD%AEnpm%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F%E6%BA%90%EF%BC%8C%E6%8F%90%E9%AB%98%E4%B8%8B%E8%BD%BD%E9%80%9F%E5%BA%A6">ollama+open-webui，本地部署自己的大模型_ollama
+webui-CSDN博客</a></li>
+<li>GPU 加速文档 <a
+href="https://docs.nvidia.com/cuda/wsl-user-guide/index.html#:~:text=With%20NVIDIA%20CUDA%20support%20for,GPU%20with%20less%20CPU%20intervention">1.
+NVIDIA GPU Accelerated Computing on WSL 2 — CUDA on WSL 12.8
+documentation</a> | <a
+href="https://developer.apple.com/metal/pytorch/#:~:text=PyTorch%20uses%20the%20new%20Metal,tuned%20kernels%20provided%20by%20MPS">Accelerated
+PyTorch training on Mac - Metal - Apple Developer</a></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // see https://github.com/hakimel/reveal.js/#navigation-mode
+        navigationMode: 'default',
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'fade', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+        math: {
+          mathjax: '',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+menu: {
+		// Specifies which side of the presentation the menu will 
+		// be shown. Use 'left' or 'right'.
+		side: 'left',
+
+		// Specifies the width of the menu.
+		// Can be one of the following:
+		// 'normal', 'wide', 'third', 'half', 'full', or
+		// any valid css length value
+		width: 'normal',
+
+		// Add slide numbers to the titles in the slide list.
+		// Use 'true' or format string (same as reveal.js slide numbers)
+		numbers: false,
+
+		// Specifies which slide elements will be used for generating
+		// the slide titles in the menu. The default selects the first
+		// heading element found in the slide, but you can specify any
+		// valid css selector and the text from the first matching
+		// element will be used.
+		// Note: that a section data-menu-title attribute or an element
+		// with a menu-title class will take precedence over this option
+		titleSelector: 'h1, h2, h3, h4, h5, h6',
+
+		// If slides do not have a matching title, attempt to use the
+		// start of the text content as the title instead
+		useTextContentForMissingTitles: false,
+
+		// Hide slides from the menu that do not have a title.
+		// Set to 'true' to only list slides with titles.
+		hideMissingTitles: false,
+
+		// Adds markers to the slide titles to indicate the 
+		// progress through the presentation. Set to 'false'
+		// to hide the markers.
+		markers: true,
+
+		// Specify custom panels to be included in the menu, by
+		// providing an array of objects with 'title', 'icon'
+		// properties, and either a 'src' or 'content' property.
+		custom: false,
+
+		// Specifies the themes that will be available in the themes
+		// menu panel. Set to 'true' to show the themes menu panel
+		// with the default themes list. Alternatively, provide an
+		// array to specify the themes to make available in the
+		// themes menu panel, for example...
+		// [
+		//     { name: 'Black', theme: 'css/theme/black.css' },
+		//     { name: 'White', theme: 'css/theme/white.css' },
+		//     { name: 'League', theme: 'css/theme/league.css' }
+		// ]
+		themes: false,
+
+		// Specifies the path to the default theme files. If your
+		// presentation uses a different path to the standard reveal
+		// layout then you need to provide this option, but only
+		// when 'themes' is set to 'true'. If you provide your own 
+		// list of themes or 'themes' is set to 'false' the 
+		// 'themesPath' option is ignored.
+		themesPath: 'css/theme/',
+
+		// Specifies if the transitions menu panel will be shown.
+		// Set to 'true' to show the transitions menu panel with
+		// the default transitions list. Alternatively, provide an
+		// array to specify the transitions to make available in
+		// the transitions panel, for example...
+		// ['None', 'Fade', 'Slide']
+		transitions: false,
+
+		// Adds a menu button to the slides to open the menu panel.
+		// Set to 'false' to hide the button.
+		openButton: true,
+
+		// If 'true' allows the slide number in the presentation to
+		// open the menu panel. The reveal.js slideNumber option must 
+		// be displayed for this to take effect
+		openSlideNumber: false,
+
+		// If true allows the user to open and navigate the menu using
+		// the keyboard. Standard keyboard interaction with reveal
+		// will be disabled while the menu is open.
+		keyboard: true,
+
+		// Normally the menu will close on user actions such as
+		// selecting a menu item, or clicking the presentation area.
+		// If 'true', the sticky option will leave the menu open
+		// until it is explicitly closed, that is, using the close
+		// button or pressing the ESC or m key (when the keyboard 
+		// interaction option is enabled).
+		sticky: false,
+
+		// If 'true' standard menu items will be automatically opened
+		// when navigating using the keyboard. Note: this only takes 
+		// effect when both the 'keyboard' and 'sticky' options are enabled.
+		autoOpen: true,
+
+		// If 'true' the menu will not be created until it is explicitly
+		// requested by calling RevealMenu.init(). Note this will delay
+		// the creation of all menu panels, including custom panels, and
+		// the menu button.
+		delayInit: false,
+
+		// If 'true' the menu will be shown when the menu is initialised.
+		openOnInit: false,
+
+		// By default the menu will load it's own font-awesome library
+		// icons. If your presentation needs to load a different
+		// font-awesome library the 'loadIcons' option can be set to false
+		// and the menu will not attempt to load the font-awesome library.
+		loadIcons: true
+	},
+
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/menu/menu.js'},
+          { src: 'reveal.js/plugin/markdown/marked.js'},
+          { src: 'reveal.js/plugin/markdown/markdown.js'},
+          { src: 'reveal.js/plugin/search/search.js'},
+          { src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

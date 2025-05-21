@@ -1,0 +1,44 @@
+---
+- hosts: docker
+  vars:
+    init: 'yes' # 是否初始化磁盘设置
+  become: true
+  become_user: root
+  tasks:
+  - name: Uninstall old versions
+    apt:
+      name: ['docker', 'docker-engine', 'docker.io', 'containerd', 'runc']
+      state: absent
+    when: ansible_distribution == 'Ubuntu'
+  - name: Install prerequisites for Docker repository
+    apt:
+      name: ['ca-certificates', 'curl', 'gnupg', 'lsb-release']
+      update_cache: yes
+    when: ansible_distribution == 'Ubuntu'
+  - name: Add Docker GPG key
+    apt_key:
+      data: "{{ lookup('file', './files/docker/gpg') }}"
+      keyring: /etc/apt/trusted.gpg.d/docker.gpg
+    when: ansible_distribution == 'Ubuntu'
+  - name: Add Docker APT repository
+    apt_repository:
+      repo: deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/docker.gpg] https://download.docker.com/{{ ansible_system | lower }}/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable
+    when: ansible_distribution == 'Ubuntu'
+  - name: Install Docker CE
+    apt:
+      name: ['docker-ce', 'docker-ce-cli', 'containerd.io', 'docker-buildx-plugin', 'docker-compose-plugin']
+      update_cache: yes
+    when: ansible_distribution == 'Ubuntu'
+  - name: configure daemon.json with repository-mirrors
+    copy:
+      content: |
+        {
+          "registry-mirrors": ["https://docker.1ms.run"]
+        }
+      dest: /etc/docker/daemon.json
+  - name: restart docker service
+    service:
+      name: docker
+      state: restarted
+
+
