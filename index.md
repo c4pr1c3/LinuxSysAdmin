@@ -13,6 +13,7 @@ author: 黄玮
 * [第六章：网络资源共享](chap0x06.md.html) | [第六章：shell脚本编程练习进阶（实验）](chap0x06.exp.md.html)
 * [第七章：DHCP与DNS服务](chap0x07.md.html) 
 * [第八章：DevOps文化、运维自动化与持续部署](chap0x08.md.html) 
+* [本地部署大模型（2025）](llm.md.html)
 
 ## 打印版课件列表
 
@@ -24,6 +25,7 @@ author: 黄玮
 * [第六章](chap0x06.md.print.html)
 * [第七章](chap0x07.md.print.html)
 * [第八章](chap0x08.md.print.html)
+* [本地部署大模型（2025）](llm.md.print.html)
 
 ## 番外课件
 
